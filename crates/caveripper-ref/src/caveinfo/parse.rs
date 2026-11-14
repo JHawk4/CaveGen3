@@ -91,9 +91,24 @@ fn parse_unitfile(mut unitfile: &str, cave_cfg: &CaveConfig, mgr: &impl AssetMan
     let units = parse_sections(&unitfile_txt)
         .change_context(CaveInfoError::CaveUnitDefinition)
         .attach_printable_lazy(|| unitfile_path.to_string_lossy().into_owned())?
+        // The game reads only as many units as the count at the top says (RoomMapMgr::createRandomMap).
+        .take(leading_count(&unitfile_txt))
         .map(|section| try_parse_caveunit(&section, cave_cfg, mgr))
         .collect::<Result<_, _>>()?;
     Ok(units)
+}
+
+/// The number before a file's first section, skipping `#` comments. usize::MAX if there's none.
+fn leading_count(text: &str) -> usize {
+    for line in text.lines() {
+        let line = line.split('#').next().unwrap_or("").trim();
+        if line.is_empty() {
+            continue;
+        }
+        let digits: String = line.chars().take_while(|c| c.is_ascii_digit()).collect();
+        return digits.parse().unwrap_or(usize::MAX);
+    }
+    usize::MAX
 }
 
 fn try_parse_caveunit(section: &Section, cave: &CaveConfig, mgr: &impl AssetManager) -> Result<CaveUnit, CaveInfoError> {
@@ -118,6 +133,8 @@ fn try_parse_caveunit(section: &Section, cave: &CaveConfig, mgr: &impl AssetMana
     let layoutfile_path = PathBuf::from_iter(["assets", &cave.game, "mapunits", &unit_folder_name, "texts", "layout.txt"]);
     let mut spawnpoints = match mgr.load_txt(&layoutfile_path) {
         Ok(cave_unit_layout_file_txt) => parse_sections(&cave_unit_layout_file_txt)?
+            // Likewise only the given number of spawn points (BaseGen::read).
+            .take(leading_count(&cave_unit_layout_file_txt))
             .map(TryInto::try_into)
             .collect::<Result<Vec<SpawnPoint>, CaveInfoError>>()
             .change_context(CaveInfoError::LayoutFile)
