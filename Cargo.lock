@@ -169,6 +169,7 @@ dependencies = [
  "caveripper-ref",
  "encoding_rs",
  "flate2",
+ "rayon",
 ]
 
 [[package]]

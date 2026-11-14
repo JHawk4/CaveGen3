@@ -6,6 +6,8 @@
 pub mod caveinfo;
 pub mod data;
 pub mod error;
+mod generate;
+pub mod layout;
 pub mod math;
 mod parse;
 pub mod point;
@@ -13,3 +15,4 @@ pub mod rng;
 
 pub use data::{CaveConfig, GameData, Sublevel};
 pub use error::{Error, Result};
+pub use layout::{Layout, SpawnObject};

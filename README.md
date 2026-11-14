@@ -16,7 +16,7 @@ repository.
 | Milestone | State |
 |---|---|
 | 1. Repo, bundled data, RNG and math, Caveripper as a test reference | Done |
-| 2. New generator matching CaveGen and Caveripper | Next |
+| 2. New generator matching CaveGen and Caveripper | Done |
 | 3. Waypoints, judge, queries, search / stats / filter / search-from / search-special | Planned |
 | 4. Rendering and the full CLI | Planned |
 | 5. Web build | Planned |
@@ -41,8 +41,18 @@ Needs stable Rust (the toolchain is pinned in `rust-toolchain.toml`).
 cargo test
 ```
 
-The CaveGen comparison tests compare 16,400 vanilla layouts, 100 Colossal Caverns layouts and
-72,500 judge scores against CaveGen's output.
+What the tests check:
+
+- `crates/cavegen3/tests/cavegen_expect.rs`: CaveGen3's layouts match CaveGen's output for
+  16,400 vanilla layouts and 100 Colossal Caverns layouts.
+- `crates/cavegen3/tests/vs_reference.rs`: CaveGen3 and Caveripper produce identical layouts
+  (units, scores, door scores, and every object's exact position) for 600 seeds of every
+  floor. Set `VS_REFERENCE_SEEDS` for more.
+- `crates/cavegen3/tests/parse_vs_reference.rs`: both parse every bundled cave identically.
+- `crates/caveripper-ref/tests`: the reference passes CaveGen's expect tests and 72,500
+  judge scores.
+
+`cargo run --release -p cavegen3 --example bench` times both generators on every floor.
 
 ## Credits and license
 

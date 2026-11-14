@@ -14,3 +14,4 @@ encoding_rs = "0.8"
 flate2 = "1.0"
 # Caveripper's library, used only to check this crate gives the same results.
 caveripper-ref = { path = "../caveripper-ref" }
+rayon = "1.6"
