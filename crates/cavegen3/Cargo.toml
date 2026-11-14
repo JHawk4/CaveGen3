@@ -1,0 +1,13 @@
+[package]
+name = "cavegen3"
+version = "0.1.0"
+description = "Fast Pikmin 2 cave generation, seed search and layout judging"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
+flate2 = "1.0"

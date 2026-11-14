@@ -1,0 +1,6 @@
+# Game data and reference files must keep their exact bytes.
+data/** -text
+reference/** -text
+*.rs text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
