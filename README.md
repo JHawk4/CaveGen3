@@ -17,8 +17,8 @@ repository.
 |---|---|
 | 1. Repo, bundled data, RNG and math, Caveripper as a test reference | Done |
 | 2. New generator matching CaveGen and Caveripper | Done |
-| 3. Waypoints, judge, queries, search / stats / filter / search-from / search-special | Planned |
-| 4. Rendering and the full CLI | Planned |
+| 3. Waypoints, judge, queries and parallel search (library) | Done |
+| 4. Rendering and the full CLI (generate, caveinfo, search, search-from, search-special, stats, filter, judge) | Next |
 | 5. Web build | Planned |
 | 6. Discord bot | Planned |
 
@@ -49,6 +49,9 @@ What the tests check:
   (units, scores, door scores, and every object's exact position) for 600 seeds of every
   floor. Set `VS_REFERENCE_SEEDS` for more.
 - `crates/cavegen3/tests/parse_vs_reference.rs`: both parse every bundled cave identically.
+- `crates/cavegen3/tests/waypoints_vs_reference.rs`: waypoint graphs and carry paths match.
+- `crates/cavegen3/tests/query_vs_reference.rs`: queries give the same answers on every seed tested.
+- `crates/cavegen3/tests/jhawk_judge_vs_cavegen.rs`: 72,500 judge scores match CaveGen.
 - `crates/caveripper-ref/tests`: the reference passes CaveGen's expect tests and 72,500
   judge scores.
 

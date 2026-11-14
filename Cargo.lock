@@ -170,6 +170,8 @@ dependencies = [
  "encoding_rs",
  "flate2",
  "float-ord",
+ "pest",
+ "pest_derive",
  "petgraph",
  "rayon",
 ]

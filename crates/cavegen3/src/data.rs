@@ -21,6 +21,9 @@ use crate::{
 pub trait FileSource: Send + Sync {
     /// Reads a file by its path relative to the data root, using `/` separators.
     fn read(&self, path: &str) -> Option<Vec<u8>>;
+
+    /// Lists a folder: each entry's name and whether it's a folder itself.
+    fn list(&self, dir: &str) -> Vec<(String, bool)>;
 }
 
 /// Reads data files from a folder on disk.
@@ -30,6 +33,61 @@ impl FileSource for DirSource {
     fn read(&self, path: &str) -> Option<Vec<u8>> {
         std::fs::read(self.0.join(path)).ok()
     }
+
+    fn list(&self, dir: &str) -> Vec<(String, bool)> {
+        let Ok(entries) = std::fs::read_dir(self.0.join(dir)) else { return Vec::new() };
+        let mut out: Vec<(String, bool)> = entries
+            .filter_map(|e| e.ok())
+            .filter_map(|e| Some((e.file_name().into_string().ok()?, e.path().is_dir())))
+            .collect();
+        out.sort();
+        out
+    }
+}
+
+/// A treasure's carry weights and value, from `otakara_config.txt` and `item_config.txt`.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct Treasure {
+    pub internal_name: String,
+    pub game: String,
+    pub min_carry: u32,
+    pub max_carry: u32,
+    pub value: u32,
+}
+
+/// Parses a treasure config file: `{ ... }` blocks of `key value` lines, using the
+/// `name`, `min`, `max` and `money` keys.
+fn parse_treasure_config(text: &str, game: &str) -> Vec<Treasure> {
+    let mut out = Vec::new();
+    let mut rest = text;
+    while let Some(open) = rest.find('{') {
+        let after = &rest[open + 1..];
+        let Some(close) = after.find('}') else { break };
+        let block = &after[..close];
+        rest = &after[close + 1..];
+        let mut fields = std::collections::HashMap::new();
+        for line in block.lines() {
+            let words: Vec<&str> = line.split_whitespace().collect();
+            if let (Some(first), Some(last)) = (words.first(), words.last()) {
+                fields.insert(*first, *last);
+            }
+        }
+        let field = |k: &str| fields.get(k).and_then(|v| v.parse().ok());
+        if let (Some(name), Some(min), Some(max), Some(money)) = (fields.get("name"), field("min"), field("max"), field("money")) {
+            out.push(Treasure { internal_name: name.to_string(), game: game.to_string(), min_carry: min, max_carry: max, value: money });
+        }
+    }
+    out
+}
+
+/// Names of everything in the bundled data, for telling what a query refers to.
+#[derive(Debug, Default)]
+pub struct Catalog {
+    /// Lowercase teki names (icon names, plus eggs, bomb rocks and fire geysers).
+    pub teki: Vec<String>,
+    /// Lowercase map unit folder names.
+    pub units: Vec<String>,
+    pub treasures: Vec<Treasure>,
 }
 
 /// One cave: a story mode cave or a challenge mode level. Defined in
@@ -113,6 +171,7 @@ pub struct GameData {
     source: Box<dyn FileSource>,
     caves: Vec<CaveConfig>,
     parsed: Vec<OnceLock<Result<Vec<CaveInfo>>>>,
+    catalog: OnceLock<Catalog>,
 }
 
 impl GameData {
@@ -135,7 +194,45 @@ impl GameData {
             .ok_or_else(|| Error::new("missing resources/caveinfo_config.txt"))?;
         let caves = CaveConfig::parse_list(&String::from_utf8_lossy(&list))?;
         let parsed = caves.iter().map(|_| OnceLock::new()).collect();
-        Ok(GameData { source, caves, parsed })
+        Ok(GameData { source, caves, parsed, catalog: OnceLock::new() })
+    }
+
+    /// Games with data in `assets/`.
+    pub fn games(&self) -> Vec<String> {
+        self.source.list("assets").into_iter().filter(|(_, dir)| *dir).map(|(name, _)| name).collect()
+    }
+
+    /// Every known teki, map unit and treasure across the bundled games.
+    pub fn catalog(&self) -> &Catalog {
+        self.catalog.get_or_init(|| {
+            let mut catalog = Catalog::default();
+            for game in self.games() {
+                // Eggs, bomb rocks and fire geysers have no icon in the teki folder.
+                catalog.teki.extend(["egg", "bomb", "hiba"].map(String::from));
+                for (file, _) in self.source.list(&format!("assets/{game}/teki")) {
+                    if let Some(name) = file.strip_suffix(".png") {
+                        catalog.teki.push(name.to_ascii_lowercase());
+                    }
+                }
+                for (dir, is_dir) in self.source.list(&format!("assets/{game}/mapunits")) {
+                    if is_dir {
+                        catalog.units.push(dir.to_ascii_lowercase());
+                    }
+                }
+                for file in ["otakara_config.txt", "item_config.txt"] {
+                    if let Ok(text) = self.read_text(&format!("assets/{game}/{file}")) {
+                        catalog.treasures.extend(parse_treasure_config(&text, &game));
+                    }
+                }
+            }
+            catalog
+        })
+    }
+
+    /// A treasure's info. Romhacks fall back to vanilla treasures, as 216 needs.
+    pub fn treasure(&self, game: &str, name: &str) -> Option<&Treasure> {
+        let find = |g: &str| self.catalog().treasures.iter().find(|t| t.game == g && t.internal_name.eq_ignore_ascii_case(name));
+        find(game).or_else(|| if game != "pikmin2" { find("pikmin2") } else { None })
     }
 
     /// Every known cave, including romhacks whose data isn't bundled.

@@ -133,6 +133,16 @@ pub enum RoomType {
 }
 
 impl RoomType {
+    /// Parses "room", "cap"/"alcove" or "hall"/"hallway" (any case).
+    pub fn parse(name: &str) -> Option<RoomType> {
+        match name.to_ascii_lowercase().as_str() {
+            "room" => Some(RoomType::Room),
+            "cap" | "alcove" => Some(RoomType::DeadEnd),
+            "hall" | "hallway" => Some(RoomType::Hallway),
+            _ => None,
+        }
+    }
+
     pub fn from_code(code: usize) -> Option<RoomType> {
         match code {
             0 => Some(RoomType::DeadEnd),

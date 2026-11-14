@@ -11,9 +11,11 @@ publish = false
 encoding_rs = "0.8"
 float-ord = "0.3"
 petgraph = "0.6"
+pest = "2.5"
+pest_derive = "2.5"
+rayon = "1.6"
 
 [dev-dependencies]
 flate2 = "1.0"
 # Caveripper's library, used only to check this crate gives the same results.
 caveripper-ref = { path = "../caveripper-ref" }
-rayon = "1.6"
