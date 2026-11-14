@@ -177,6 +177,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "cavegen3-web"
+version = "0.1.0"
+dependencies = [
+ "cavegen3",
+]
+
+[[package]]
 name = "caveripper-ref"
 version = "0.1.0"
 dependencies = [

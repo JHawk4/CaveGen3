@@ -14,7 +14,7 @@ fn carry_paths_match_reference() {
     let mgr = FsAssetManager::init().unwrap();
     let mut floors = Vec::new();
     for cfg in data.caves().iter().filter(|c| c.game == "pikmin2") {
-        let ref_cfg = mgr.cave_cfg.iter().find(|c| c.full_name == cfg.full_name && c.game == cfg.game).unwrap();
+        let ref_cfg = mgr.cave_cfg.iter().find(|c| c.caveinfo_filename == cfg.caveinfo_filename && c.game == cfg.game).unwrap();
         for (i, ci) in data.floors(cfg).unwrap().iter().enumerate() {
             floors.push((ci, mgr.load_caveinfo(&RefSublevel::from_cfg(ref_cfg, i + 1)).unwrap()));
         }

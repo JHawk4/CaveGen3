@@ -16,6 +16,10 @@
 //!
 //! `data/cavegen_expected_colossal.txt.gz` is the same format for seeds 0-99 of
 //! Colossal Caverns, from CaveGen's `colossal` files (3 onions, no extra units).
+//! `data/cavegen_expected_251.txt.gz` and `data/cavegen_expected_newyear.txt.gz` cover
+//! 20 seeds of every Pikmin 251 and Pikmin 2: New Year sublevel, made the same way with
+//! `none both -num 20 -seed 0 -consecutiveSeeds -251` (or `-newYear`). New Year's CH28
+//! is left out: its third floor names a unit file the hack's data doesn't include.
 //! CaveGen's `-expectTest` only covers the vanilla game, so this file came from a
 //! normal `cave colossal 1 -num 100 -seed 0x00000000 -consecutiveSeeds` run with
 //! `Memo.outputSublevelForExpect` called for each layout and an onion line added.
@@ -39,6 +43,8 @@ use rayon::prelude::*;
 
 const EXPECTED_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_output.txt.gz");
 const EXPECTED_COLOSSAL_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_colossal.txt.gz");
+const EXPECTED_251_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_251.txt.gz");
+const EXPECTED_NEWYEAR_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_newyear.txt.gz");
 
 /// Maximum number of mismatched layouts to print in full.
 const MAX_REPORTED: usize = 20;
@@ -228,27 +234,45 @@ fn matches_cavegen_expected_output() {
         Ok(path) => parse_expected(&std::fs::read_to_string(path).unwrap()),
         Err(_) => load_expected(EXPECTED_GZ),
     };
-    check_against_cavegen(&expected);
+    check_against_cavegen("pikmin2", &expected, &[]);
 }
 
 #[test]
 fn matches_cavegen_colossal_output() {
-    check_against_cavegen(&load_expected(EXPECTED_COLOSSAL_GZ));
+    check_against_cavegen("colossal", &load_expected(EXPECTED_COLOSSAL_GZ), &[]);
 }
 
-fn check_against_cavegen(expected: &[ExpectedLayout]) {
+// Sublevels where CaveGen and Caveripper disagree. CaveGen3 matches Caveripper on all of
+// them (see vs_reference.rs). Which one matches the game hasn't been checked against the
+// decomp yet; the differences are in map unit placement, gate spots, cap teki and
+// treasure spots. Every other sublevel of these romhacks matches CaveGen.
+const KNOWN_DIFFERENCES_251: &[&str] = &["GdD-4", "IM-5", "PoM-7", "PoW-3"];
+const KNOWN_DIFFERENCES_NEWYEAR: &[&str] = &["CH-2", "CH-4", "CH20-5", "CH24-2", "RH-7", "SR-6", "SS-1", "TC-2"];
+
+#[test]
+fn matches_cavegen_251_output() {
+    check_against_cavegen("251", &load_expected(EXPECTED_251_GZ), KNOWN_DIFFERENCES_251);
+}
+
+#[test]
+fn matches_cavegen_newyear_output() {
+    check_against_cavegen("newyear", &load_expected(EXPECTED_NEWYEAR_GZ), KNOWN_DIFFERENCES_NEWYEAR);
+}
+
+/// `game` is the game the cave names in `expected` belong to. Sublevels in `skip` aren't compared.
+fn check_against_cavegen(game: &str, expected: &[ExpectedLayout], skip: &[&str]) {
     let data = GameData::bundled().expect("Couldn't load the bundled game data");
     assert!(!expected.is_empty());
 
     let failures: Mutex<Vec<(String, u32, String)>> = Mutex::new(Vec::new());
     let mut by_sublevel: BTreeMap<(String, usize), Vec<&ExpectedLayout>> = BTreeMap::new();
-    for e in expected.iter() {
+    for e in expected.iter().filter(|e| !skip.contains(&format!("{}-{}", e.cave, e.floor).as_str())) {
         by_sublevel.entry((e.cave.clone(), e.floor)).or_default().push(e);
     }
 
     by_sublevel.par_iter().for_each(|((cave, floor), layouts)| {
         // Colossal Caverns has a single floor and is named just "colossal".
-        let name = if cave == "colossal" { cave.clone() } else { format!("{cave}-{floor}") };
+        let name = if cave == "colossal" { cave.clone() } else { format!("{game}:{cave}-{floor}") };
         let sublevel = data.sublevel(&name).unwrap_or_else(|e| panic!("{name}: {e}"));
         let caveinfo = data.caveinfo(&sublevel).unwrap();
         for e in layouts {

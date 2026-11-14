@@ -30,7 +30,7 @@ fn main() {
 
     let mut rows = Vec::new();
     for cfg in data.caves().iter().filter(|c| data.has_game(&c.game)) {
-        let ref_cfg = mgr.cave_cfg.iter().find(|c| c.full_name == cfg.full_name && c.game == cfg.game).unwrap();
+        let ref_cfg = mgr.cave_cfg.iter().find(|c| c.caveinfo_filename == cfg.caveinfo_filename && c.game == cfg.game).unwrap();
         for (i, ci) in data.floors(cfg).unwrap().iter().enumerate() {
             let ref_ci = mgr.load_caveinfo(&RefSublevel::from_cfg(ref_cfg, i + 1)).unwrap();
             let (mut ours, mut theirs) = (f64::INFINITY, f64::INFINITY);

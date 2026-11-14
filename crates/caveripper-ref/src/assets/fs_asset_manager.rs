@@ -248,19 +248,17 @@ impl FsAssetManager {
 
         let treasures = SHIFT_JIS
             .decode(
-                read(&treasure_path)
-                    .change_context(CaveripperError::AssetLoadingError)
-                    .attach_printable_lazy(move || treasure_path.to_string_lossy().to_string())?
-                    .as_slice(),
+                // CaveGen3: romhacks imported from CaveGen have no treasure configs; treat a
+                // missing one as empty, so lookups fall back to vanilla treasures.
+                read(&treasure_path).unwrap_or_default().as_slice(),
             )
             .0
             .into_owned();
         let ek_treasures = SHIFT_JIS
             .decode(
-                read(&ek_treasure_path)
-                    .change_context(CaveripperError::AssetLoadingError)
-                    .attach_printable_lazy(move || ek_treasure_path.to_string_lossy().to_string())?
-                    .as_slice(),
+                // CaveGen3: romhacks imported from CaveGen have no treasure configs; treat a
+                // missing one as empty, so lookups fall back to vanilla treasures.
+                read(&ek_treasure_path).unwrap_or_default().as_slice(),
             )
             .0
             .into_owned();

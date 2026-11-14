@@ -27,11 +27,21 @@ pub trait FileSource: Send + Sync {
 }
 
 /// Reads data files from a folder on disk.
+///
+/// Like the game's file system, names are matched ignoring case: some romhacks refer to a file
+/// with different capitalization than it has, which only matters on case-sensitive systems.
 pub struct DirSource(pub PathBuf);
 
 impl FileSource for DirSource {
     fn read(&self, path: &str) -> Option<Vec<u8>> {
-        std::fs::read(self.0.join(path)).ok()
+        std::fs::read(self.0.join(path)).ok().or_else(|| {
+            let mut dir = self.0.clone();
+            for part in path.split('/') {
+                let entry = std::fs::read_dir(&dir).ok()?.filter_map(|e| e.ok()).find(|e| e.file_name().eq_ignore_ascii_case(part))?;
+                dir = entry.path();
+            }
+            std::fs::read(dir).ok()
+        })
     }
 
     fn list(&self, dir: &str) -> Vec<(String, bool)> {
@@ -312,7 +322,8 @@ impl GameData {
                 let (name, floor) = split_short_name(only).ok_or_else(unknown)?;
                 lookup(name, false, floor)
             }
-            [prefix, name] if *prefix == "ch" || *prefix == "cm" => {
+            // "CH-BB2". (New Year's "CH-5" is Commodore House 5, handled below.)
+            [prefix, name] if (*prefix == "ch" || *prefix == "cm") && split_short_name(name).is_some() => {
                 let (name, floor) = split_short_name(name).ok_or_else(unknown)?;
                 lookup(name, true, floor)
             }

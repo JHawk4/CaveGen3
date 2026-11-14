@@ -92,8 +92,9 @@ fn matches_reference() {
     let seeds = seeds(n);
 
     let mut floors = Vec::new();
-    for cfg in data.caves().iter().filter(|c| data.has_game(&c.game)) {
-        let ref_cfg = mgr.cave_cfg.iter().find(|c| c.full_name == cfg.full_name && c.game == cfg.game).unwrap();
+    // New Year's Timeless Realm (CH28) names a unit file its data doesn't include.
+    for cfg in data.caves().iter().filter(|c| data.has_game(&c.game) && !(c.game == "newyear" && c.full_name == "Timeless Realm")) {
+        let ref_cfg = mgr.cave_cfg.iter().find(|c| c.caveinfo_filename == cfg.caveinfo_filename && c.game == cfg.game).unwrap();
         for (i, ci) in data.floors(cfg).unwrap().iter().enumerate() {
             let ref_ci = mgr.load_caveinfo(&RefSublevel::from_cfg(ref_cfg, i + 1)).unwrap();
             floors.push((ci, ref_ci));
