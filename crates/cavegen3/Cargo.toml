@@ -8,6 +8,9 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+encoding_rs = "0.8"
 
 [dev-dependencies]
 flate2 = "1.0"
+# Caveripper's library, used only to check this crate gives the same results.
+caveripper-ref = { path = "../caveripper-ref" }

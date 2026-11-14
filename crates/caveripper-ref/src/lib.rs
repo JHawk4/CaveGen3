@@ -24,7 +24,7 @@ pub mod jhawk_judge;
 pub mod assets;
 pub mod errors;
 pub mod pikmin_math;
-mod point;
+pub mod point;
 pub mod render;
 pub mod sublevel;
 
