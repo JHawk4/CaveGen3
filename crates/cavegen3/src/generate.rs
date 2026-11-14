@@ -30,6 +30,7 @@ pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
         units: Vec::new(),
         doors: Vec::new(),
         open: Vec::new(),
+        grid: Grid::new(),
         cap_queue: Vec::new(),
         room_queue: Vec::new(),
         corridor_queue: Vec::new(),
@@ -70,6 +71,8 @@ struct Generator<'a> {
     doors: Vec<PlacedDoor<'a>>,
     /// Indices of doors with nothing attached, in ascending order (the game's iteration order).
     open: Vec<u32>,
+    /// Which grid cells placed units cover.
+    grid: Grid,
     cap_queue: Vec<UnitId>,
     room_queue: Vec<UnitId>,
     corridor_queue: Vec<UnitId>,
@@ -225,22 +228,13 @@ impl<'a> Generator<'a> {
         };
 
         for room_type in priority {
-            let queue = match room_type {
-                RoomType::Room => self.room_queue.clone(),
-                RoomType::DeadEnd => self.cap_queue.clone(),
-                RoomType::Hallway => {
-                    self.shuffle_corridor_priority();
-                    self.corridor_queue.clone()
-                }
-            };
-            for id in queue {
-                let num_doors = self.unit(id).num_doors;
-                let mut door_priority: Vec<usize> = (0..num_doors).collect();
-                self.rng.rand_swaps(&mut door_priority);
-                for door_index in door_priority {
-                    if let Some(c) = self.try_place_unit_at(destination, id, door_index) {
-                        return Some(c);
-                    }
+            if room_type == RoomType::Hallway {
+                self.shuffle_corridor_priority();
+            }
+            for qi in 0..self.queue(room_type).len() {
+                let id = self.queue(room_type)[qi];
+                if let Some(c) = self.try_unit_doors_in_random_order(destination, id) {
+                    return Some(c);
                 }
             }
         }
@@ -480,30 +474,45 @@ impl<'a> Generator<'a> {
     /// Closes off an open door with whatever fits, trying caps first.
     fn try_place_cap(&mut self) -> Option<Candidate> {
         let max_doors = self.ci.max_num_doors_single_unit();
-        for &open_door in self.open.clone().iter() {
+        for oi in 0..self.open.len() {
+            let open_door = self.open[oi];
             for room_type in [RoomType::DeadEnd, RoomType::Hallway, RoomType::Room] {
-                let queue = match room_type {
-                    RoomType::Room => self.room_queue.clone(),
-                    RoomType::DeadEnd => self.cap_queue.clone(),
-                    RoomType::Hallway => self.corridor_queue.clone(),
-                };
                 for num_doors in 1..=max_doors {
-                    for &id in queue.iter() {
+                    for qi in 0..self.queue(room_type).len() {
+                        let id = self.queue(room_type)[qi];
                         if self.unit(id).num_doors != num_doors {
                             continue;
                         }
-                        let mut door_priority: Vec<usize> = (0..num_doors).collect();
-                        self.rng.rand_swaps(&mut door_priority);
-                        for door_index in door_priority {
-                            if let Some(c) = self.try_place_unit_at(open_door, id, door_index) {
-                                return Some(c);
-                            }
+                        if let Some(c) = self.try_unit_doors_in_random_order(open_door, id) {
+                            return Some(c);
                         }
                     }
                 }
             }
         }
         None
+    }
+
+    fn queue(&self, room_type: RoomType) -> &[UnitId] {
+        match room_type {
+            RoomType::Room => &self.room_queue,
+            RoomType::DeadEnd => &self.cap_queue,
+            RoomType::Hallway => &self.corridor_queue,
+        }
+    }
+
+    /// Shuffles the unit's doors (using the RNG even if none can fit) and tries attaching the
+    /// unit to `destination` by each in turn.
+    fn try_unit_doors_in_random_order(&mut self, destination: u32, id: UnitId) -> Option<Candidate> {
+        let num_doors = self.unit(id).num_doors;
+        let mut order = [0usize; 64];
+        assert!(num_doors <= order.len(), "unit has more than 64 doors");
+        let order = &mut order[..num_doors];
+        for (i, d) in order.iter_mut().enumerate() {
+            *d = i;
+        }
+        self.rng.rand_swaps(order);
+        order.iter().find_map(|&door_index| self.try_place_unit_at(destination, id, door_index))
     }
 
     /// Checks whether unit `id`, attached by its door `door_index` to `destination`, fits.
@@ -523,7 +532,7 @@ impl<'a> Generator<'a> {
         };
 
         // No overlap with placed units.
-        if self.units.iter().any(|p| boxes_overlap(p.x, p.z, p.unit.width, p.unit.height, cx, cz, unit.width, unit.height)) {
+        if self.grid.any_in(cx, cz, unit.width as i32, unit.height as i32) {
             return None;
         }
 
@@ -548,7 +557,7 @@ impl<'a> Generator<'a> {
                 continue;
             }
             let (sx, sz) = space_in_front(nd);
-            if self.units.iter().any(|p| boxes_overlap(sx, sz, 1, 1, p.x, p.z, p.unit.width, p.unit.height)) {
+            if self.grid.occupied(sx, sz) {
                 return None;
             }
         }
@@ -585,6 +594,7 @@ impl<'a> Generator<'a> {
             });
         }
         self.units.push(PlacedUnit { unit, x: c.x, z: c.z, first_door, first_spawnpoint: 0, teki_score: 0, total_score: 0 });
+        self.grid.fill(c.x, c.z, unit.width as i32, unit.height as i32);
         if unit.room_type == RoomType::Room {
             self.rooms_placed += 1;
         }
@@ -631,6 +641,8 @@ impl<'a> Generator<'a> {
             }
         }
         self.rebuild_open_list();
+        // Units never overlap, so clearing the removed unit's cells is enough.
+        self.grid.set(removed.x, removed.z, removed.unit.width as i32, removed.unit.height as i32, false);
     }
 
     fn rebuild_open_list(&mut self) {
@@ -1275,38 +1287,50 @@ impl<'a> Generator<'a> {
 
     fn place_items(&mut self) {
         let challenge = self.ci.is_challenge_mode();
-        for num_spawned in 0..self.ci.max_treasures {
-            let mut spots: Vec<usize> = Vec::new();
-            let mut weights: Vec<i32> = Vec::new();
-            for unit in self.units.iter() {
-                if unit.unit.room_type == RoomType::Room {
-                    let sps = &self.spawnpoints[unit.spawnpoint_indices()];
-                    let items_here = sps.iter().flat_map(|sp| sp.contains.iter()).filter(|so| matches!(so, SpawnObject::Item(_))).count();
-                    let treasure_spots = sps.iter().filter(|sp| sp.group() == 2).count();
-                    for si in unit.spawnpoint_indices() {
-                        let sp = &self.spawnpoints[si];
-                        if sp.group() != 2 || !sp.contains.is_empty() {
-                            continue;
-                        }
-                        let w = if challenge {
-                            1 + unit.total_score / treasure_spots as i32
-                        } else {
-                            unit.total_score / (1 + items_here) as i32
-                        };
-                        spots.push(si);
-                        weights.push(w);
+
+        // Every spot a treasure could go, in the game's order, with what its weight depends on.
+        struct Slot {
+            spawnpoint: usize,
+            unit: usize,
+            alcove: bool,
+        }
+        let mut slots = Vec::new();
+        let mut treasure_spots = vec![0i32; self.units.len()];
+        let mut items_here = vec![0i32; self.units.len()];
+        for (ui, unit) in self.units.iter().enumerate() {
+            if unit.unit.room_type == RoomType::Room {
+                for si in unit.spawnpoint_indices() {
+                    let sp = &self.spawnpoints[si];
+                    items_here[ui] += sp.contains.iter().filter(|so| matches!(so, SpawnObject::Item(_))).count() as i32;
+                    if sp.group() == 2 {
+                        treasure_spots[ui] += 1;
+                        slots.push(Slot { spawnpoint: si, unit: ui, alcove: false });
                     }
-                } else if unit.unit.unit_folder_name.contains("item") {
-                    let si = unit
-                        .spawnpoint_indices()
-                        .find(|&i| self.spawnpoints[i].group() == 9)
-                        .expect("alcove has no alcove spawn point");
-                    if !self.spawnpoints[si].contains.is_empty() {
-                        continue;
-                    }
-                    spots.push(si);
-                    weights.push(if challenge { 1 + unit.total_score * 10 } else { 1 + unit.total_score });
                 }
+            } else if unit.unit.unit_folder_name.contains("item") {
+                let si = unit.spawnpoint_indices().find(|&i| self.spawnpoints[i].group() == 9).expect("alcove has no alcove spawn point");
+                slots.push(Slot { spawnpoint: si, unit: ui, alcove: true });
+            }
+        }
+
+        let mut spots: Vec<usize> = Vec::with_capacity(slots.len());
+        let mut weights: Vec<i32> = Vec::with_capacity(slots.len());
+        for num_spawned in 0..self.ci.max_treasures {
+            spots.clear();
+            weights.clear();
+            for slot in slots.iter() {
+                if !self.spawnpoints[slot.spawnpoint].contains.is_empty() {
+                    continue;
+                }
+                let score = self.units[slot.unit].total_score;
+                let w = match (slot.alcove, challenge) {
+                    (true, true) => 1 + score * 10,
+                    (true, false) => 1 + score,
+                    (false, true) => 1 + score / treasure_spots[slot.unit],
+                    (false, false) => score / (1 + items_here[slot.unit]),
+                };
+                spots.push(slot.spawnpoint);
+                weights.push(w);
             }
             for (&si, &w) in spots.iter().zip(&weights) {
                 self.spawnpoints[si].treasure_score = w;
@@ -1324,6 +1348,10 @@ impl<'a> Generator<'a> {
             let item = choose_rand_item(&mut self.rng, self.ci, num_spawned);
             if let (Some(si), Some(item)) = (chosen, item) {
                 self.spawnpoints[si].contains.push(SpawnObject::Item(item));
+                let unit = self.spawnpoints[si].unit as usize;
+                if self.units[unit].unit.room_type == RoomType::Room {
+                    items_here[unit] += 1;
+                }
             }
         }
     }
@@ -1497,6 +1525,65 @@ impl<'a> Generator<'a> {
             if color >= NUM_ONIONS {
                 break;
             }
+        }
+    }
+}
+
+/// Which map grid cells are covered by placed units. Overlap checks look cells up here
+/// instead of comparing against every placed unit. Grows as units are placed further out.
+struct Grid {
+    x0: i32,
+    z0: i32,
+    w: i32,
+    h: i32,
+    cells: Vec<bool>,
+}
+
+impl Grid {
+    fn new() -> Grid {
+        Grid { x0: -32, z0: -32, w: 64, h: 64, cells: vec![false; 64 * 64] }
+    }
+
+
+    #[inline]
+    fn occupied(&self, x: i32, z: i32) -> bool {
+        let (i, j) = (x - self.x0, z - self.z0);
+        i >= 0 && j >= 0 && i < self.w && j < self.h && self.cells[(j * self.w + i) as usize]
+    }
+
+    /// Whether any cell of the w x h box at (x, z) is covered.
+    fn any_in(&self, x: i32, z: i32, w: i32, h: i32) -> bool {
+        let (i0, i1) = ((x - self.x0).clamp(0, self.w), (x + w - self.x0).clamp(0, self.w));
+        let (j0, j1) = ((z - self.z0).max(0), (z + h - self.z0).min(self.h));
+        (j0..j1).any(|j| self.cells[(j * self.w + i0) as usize..(j * self.w + i1.max(i0)) as usize].contains(&true))
+    }
+
+    /// Covers the w x h box at (x, z), growing the grid first if needed.
+    fn fill(&mut self, x: i32, z: i32, w: i32, h: i32) {
+        self.set(x, z, w, h, true);
+    }
+
+    /// Sets the cells of the w x h box at (x, z), growing the grid first if needed.
+    fn set(&mut self, x: i32, z: i32, w: i32, h: i32, value: bool) {
+        if x < self.x0 || z < self.z0 || x + w > self.x0 + self.w || z + h > self.z0 + self.h {
+            let x0 = self.x0.min(x - 32);
+            let z0 = self.z0.min(z - 32);
+            let x1 = (self.x0 + self.w).max(x + w + 32);
+            let z1 = (self.z0 + self.h).max(z + h + 32);
+            let mut grown = Grid { x0, z0, w: x1 - x0, h: z1 - z0, cells: vec![false; ((x1 - x0) * (z1 - z0)) as usize] };
+            for j in 0..self.h {
+                for i in 0..self.w {
+                    if self.cells[(j * self.w + i) as usize] {
+                        let (gi, gj) = (i + self.x0 - x0, j + self.z0 - z0);
+                        grown.cells[(gj * grown.w + gi) as usize] = true;
+                    }
+                }
+            }
+            *self = grown;
+        }
+        for j in z - self.z0..z + h - self.z0 {
+            let row = (j * self.w) as usize;
+            self.cells[row + (x - self.x0) as usize..row + (x + w - self.x0) as usize].fill(value);
         }
     }
 }
