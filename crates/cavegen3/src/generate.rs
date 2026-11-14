@@ -1347,12 +1347,13 @@ impl<'a> Generator<'a> {
                 Some(top[self.rng.rand_int(top.len() as u32) as usize])
             };
             let item = choose_rand_item(&mut self.rng, self.ci, num_spawned);
-            if let (Some(si), Some(item)) = (chosen, item) {
-                self.spawnpoints[si].contains.push(SpawnObject::Item(item));
-                let unit = self.spawnpoints[si].unit as usize;
-                if self.units[unit].unit.room_type == RoomType::Room {
-                    items_here[unit] += 1;
-                }
+            // The game stops at the first spot or treasure it can't find (RandItemUnit::setItemSlot),
+            // so no more RNG calls happen for the remaining treasures.
+            let (Some(si), Some(item)) = (chosen, item) else { break };
+            self.spawnpoints[si].contains.push(SpawnObject::Item(item));
+            let unit = self.spawnpoints[si].unit as usize;
+            if self.units[unit].unit.room_type == RoomType::Room {
+                items_here[unit] += 1;
             }
         }
     }
@@ -1402,12 +1403,12 @@ impl<'a> Generator<'a> {
             let weights: Vec<u32> = self.ci.gate_info.iter().map(|g| g.spawn_distribution_weight).collect();
             let gate = if weights.is_empty() { None } else { Some(&self.ci.gate_info[self.rng.rand_index_weight(&weights).unwrap()]) };
             let spot = self.gate_spot();
-            if let (Some(gate), Some(d)) = (gate, spot) {
-                let object = SpawnObject::Gate(gate, self.doors[d].door.direction);
-                self.doors[d].seam = Some(object);
-                let adj = self.doors[d].adjacent.expect("door isn't attached") as usize;
-                self.doors[adj].seam = Some(object);
-            }
+            // Like treasures, the game stops at the first gate or door it can't find (RandGateUnit::setGateDoor).
+            let (Some(gate), Some(d)) = (gate, spot) else { break };
+            let object = SpawnObject::Gate(gate, self.doors[d].door.direction);
+            self.doors[d].seam = Some(object);
+            let adj = self.doors[d].adjacent.expect("door isn't attached") as usize;
+            self.doors[adj].seam = Some(object);
         }
     }
 

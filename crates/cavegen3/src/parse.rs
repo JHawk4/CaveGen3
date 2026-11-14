@@ -231,7 +231,31 @@ fn expand_rotations(units: Vec<CaveUnit>) -> Vec<CaveUnit> {
 fn parse_unitfile(unitfile: &str, cfg: &CaveConfig, data: &GameData) -> Result<Vec<CaveUnit>> {
     let path = format!("assets/{}/unitfiles/{unitfile}", cfg.game);
     let text = data.read_text(&path)?;
-    sections(&text).iter().map(|s| parse_caveunit(s, cfg, data).map_err(|e| e.context(&path))).collect()
+    // The game reads only as many units as the count at the top of the file says
+    // (RoomMapMgr::createRandomMap). A few romhack files list extra units after those.
+    let count = leading_count(&text).unwrap_or(usize::MAX);
+    sections(&text).iter().take(count).map(|s| parse_caveunit(s, cfg, data).map_err(|e| e.context(&path))).collect()
+}
+
+/// The number before a file's first section, skipping comments.
+fn leading_count(text: &str) -> Option<usize> {
+    let bytes = text.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        match bytes[i] {
+            b'#' => i = skip_comment(bytes, i),
+            b'{' => return None,
+            b if b.is_ascii_digit() => {
+                let start = i;
+                while i < bytes.len() && bytes[i].is_ascii_digit() {
+                    i += 1;
+                }
+                return text[start..i].parse().ok();
+            }
+            _ => i += 1,
+        }
+    }
+    None
 }
 
 fn parse_caveunit(section: &Section, cfg: &CaveConfig, data: &GameData) -> Result<CaveUnit> {
@@ -251,7 +275,8 @@ fn parse_caveunit(section: &Section, cfg: &CaveConfig, data: &GameData) -> Resul
     let unit_file = |file: &str| data.read_text(&format!("assets/{}/mapunits/{name}/texts/{file}", cfg.game));
 
     let mut spawnpoints = match unit_file("layout.txt") {
-        Ok(text) => sections(&text).iter().map(parse_spawnpoint).collect::<Result<Vec<_>>>().map_err(|e| e.context(format!("{name}/layout.txt")))?,
+        // As with unit files, the game reads only the count given at the top (BaseGen::read).
+        Ok(text) => sections(&text).iter().take(leading_count(&text).unwrap_or(usize::MAX)).map(parse_spawnpoint).collect::<Result<Vec<_>>>().map_err(|e| e.context(format!("{name}/layout.txt")))?,
         Err(_) => Vec::new(),
     };
     let waterboxes = match unit_file("waterbox.txt") {

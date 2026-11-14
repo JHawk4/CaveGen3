@@ -1176,6 +1176,10 @@ impl<'a> LayoutBuilder<'a> {
                         "Placed treasure \"{}\" at {} - score {}.",
                         chosen_treasure.internal_name, chosen_spot.pos, chosen_spot.treasure_score
                     );
+                } else {
+                    // The game stops at the first spot or treasure it can't find
+                    // (RandItemUnit::setItemSlot), making no more RNG calls.
+                    break;
                 }
             }
         }
@@ -1268,6 +1272,9 @@ impl<'a> LayoutBuilder<'a> {
                         .unwrap()
                         .borrow_mut()
                         .seam_spawnpoint = Rc::clone(&spawn_spot.borrow().seam_spawnpoint);
+                } else {
+                    // The game stops at the first gate or door it can't find (RandGateUnit::setGateDoor).
+                    break;
                 }
             }
         }

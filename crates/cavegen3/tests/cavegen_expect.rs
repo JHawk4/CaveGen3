@@ -242,12 +242,12 @@ fn matches_cavegen_colossal_output() {
     check_against_cavegen("colossal", &load_expected(EXPECTED_COLOSSAL_GZ), &[]);
 }
 
-// Sublevels where CaveGen and Caveripper disagree. CaveGen3 matches Caveripper on all of
-// them (see vs_reference.rs). Which one matches the game hasn't been checked against the
-// decomp yet; the differences are in map unit placement, gate spots, cap teki and
-// treasure spots. Every other sublevel of these romhacks matches CaveGen.
-const KNOWN_DIFFERENCES_251: &[&str] = &["GdD-4", "IM-5", "PoM-7", "PoW-3"];
-const KNOWN_DIFFERENCES_NEWYEAR: &[&str] = &["CH-2", "CH-4", "CH20-5", "CH24-2", "RH-7", "SR-6", "SS-1", "TC-2"];
+// Sublevels where CaveGen is wrong. CaveGen picks story or challenge mode from the first two
+// letters of the cave's short name, so New Year's Commodore House ("CH") is generated as a
+// challenge cave (normal-mode hole, treasure and gate rules). With CaveGen's `-storyMode` they
+// match. Every other sublevel of these romhacks matches CaveGen.
+const KNOWN_DIFFERENCES_251: &[&str] = &[];
+const KNOWN_DIFFERENCES_NEWYEAR: &[&str] = &["CH-2", "CH-4"];
 
 #[test]
 fn matches_cavegen_251_output() {
