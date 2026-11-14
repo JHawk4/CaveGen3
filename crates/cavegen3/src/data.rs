@@ -219,7 +219,14 @@ impl GameData {
                 let (name, floor) = split_short_name(name).ok_or_else(unknown)?;
                 lookup(name, true, floor)
             }
-            [name, floor] => lookup(name, false, floor.parse().map_err(|_| unknown())?),
+            [name, floor] => {
+                // "CH12-2", or the "CH12-CM2" form that `CaveInfo::name` produces.
+                let floor = match floor.parse() {
+                    Ok(f) => f,
+                    Err(_) => split_short_name(floor).ok_or_else(unknown)?.1,
+                };
+                lookup(name, false, floor)
+            }
             _ => Err(unknown()),
         }
     }

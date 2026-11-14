@@ -19,6 +19,9 @@ use crate::{
 
 type UnitId = u16;
 
+/// Door score candidates: (score, scored door, link index, target door), smallest first.
+type ScoreHeap = std::collections::BinaryHeap<std::cmp::Reverse<(i32, u32, u32, u32)>>;
+
 pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
     let mut g = Generator {
         ci: caveinfo,
@@ -653,11 +656,14 @@ impl<'a> Generator<'a> {
             RoomType::Room => {
                 // Count placed rooms by name, in order of first appearance.
                 let mut counts: Vec<(u16, usize)> = Vec::new();
+                let mut slot = vec![u16::MAX; self.ci.cave_units.len()];
                 for u in self.units.iter().filter(|u| u.unit.room_type == RoomType::Room) {
-                    match counts.iter_mut().find(|(name, _)| *name == u.unit.name_id) {
-                        Some(entry) => entry.1 += 1,
-                        None => counts.push((u.unit.name_id, 1)),
+                    let name = u.unit.name_id as usize;
+                    if slot[name] == u16::MAX {
+                        slot[name] = counts.len() as u16;
+                        counts.push((u.unit.name_id, 0));
                     }
+                    counts[slot[name] as usize].1 += 1;
                 }
                 // The game's swapping sort, ascending by count.
                 for i in 0..counts.len() {
@@ -667,20 +673,26 @@ impl<'a> Generator<'a> {
                         }
                     }
                 }
-                // Move each name's entries to the back, least-used names first.
-                for (name, _) in counts {
-                    let mut matching = Vec::new();
-                    let mut i = 0;
-                    while i < self.room_queue.len() {
-                        if self.unit(self.room_queue[i]).name_id == name {
-                            matching.push(self.room_queue.remove(i));
-                        } else {
-                            i += 1;
-                        }
-                    }
-                    self.rng.rand_backs_n(&mut matching, 4);
-                    self.room_queue.append(&mut matching);
+                // The game moves each placed name's entries to the back of the queue in that
+                // order, shuffling each group. Equivalently: unplaced names keep their order at
+                // the front, then each group follows in sorted order.
+                let mut rank = vec![usize::MAX; self.ci.cave_units.len()];
+                for (r, (name, _)) in counts.iter().enumerate() {
+                    rank[*name as usize] = r;
                 }
+                let mut groups: Vec<Vec<UnitId>> = vec![Vec::new(); counts.len()];
+                let mut rest = Vec::with_capacity(self.room_queue.len());
+                for &id in self.room_queue.iter() {
+                    match rank[self.unit(id).name_id as usize] {
+                        usize::MAX => rest.push(id),
+                        r => groups[r].push(id),
+                    }
+                }
+                for mut group in groups {
+                    self.rng.rand_backs_n(&mut group, 4);
+                    rest.append(&mut group);
+                }
+                self.room_queue = rest;
             }
         }
     }
@@ -965,52 +977,61 @@ impl<'a> Generator<'a> {
             }
         }
 
+        // Candidate scores for unscored doors reachable from scored ones. The game rescans every
+        // scored door each step and takes the smallest candidate, the first one in iteration
+        // order on ties. A min-heap keyed by (score, scored door index, link index) picks the
+        // same one: candidates never change once their door is scored, and stale ones (whose
+        // target got scored meanwhile) are skipped.
+        let mut heap = std::collections::BinaryHeap::new();
+
         self.units[0].total_score = self.units[0].teki_score;
         for d in self.units[0].door_indices() {
             let score = self.units[0].total_score + 1 + self.doors[d].seam_teki_score;
-            self.doors[d].door_score = score;
             let adj = self.doors[d].adjacent.expect("door isn't attached") as usize;
-            self.doors[adj].door_score = score;
-            let adj_unit = self.doors[adj].unit as usize;
-            let candidate = score + self.units[adj_unit].teki_score;
-            self.lower_total_score(adj_unit, candidate);
+            self.score_door_pair(d, adj, score, &mut heap);
         }
 
-        // Set scores outwards by repeatedly picking the smallest new door score. The game stops
-        // after 500 steps (RandMapScore::setMapUnitScore) and only considers scores below 12,800,000.
-        for _ in 0..500 {
-            let mut selected = None;
-            let mut selected_score = 12_800_000;
-            for unit in self.units.iter() {
-                for start in unit.door_indices() {
-                    let start_door = &self.doors[start];
-                    if start_door.door_score < 0 {
-                        continue;
-                    }
-                    for link in start_door.door.door_links.iter() {
-                        let other = unit.first_door as usize + link.door_id;
-                        let other_door = &self.doors[other];
-                        if other_door.door_score >= 0 {
-                            continue;
-                        }
-                        let potential = (link.distance / 10.0) as i32
-                            + unit.teki_score * i32::from(link.tekiflag)
-                            + other_door.seam_teki_score
-                            + start_door.door_score;
-                        if potential < selected_score {
-                            selected_score = potential;
-                            selected = Some(other);
-                        }
-                    }
-                }
+        // The game stops after 500 steps (RandMapScore::setMapUnitScore).
+        let mut steps = 0;
+        while steps < 500 {
+            let Some(std::cmp::Reverse((score, _, _, target))) = heap.pop() else { break };
+            if self.doors[target as usize].door_score >= 0 {
+                continue;
             }
-            let Some(selected) = selected else { break };
-            self.doors[selected].door_score = selected_score;
-            let adj = self.doors[selected].adjacent.expect("door isn't attached") as usize;
-            self.doors[adj].door_score = selected_score;
-            let adj_unit = self.doors[adj].unit as usize;
-            let candidate = selected_score + self.units[adj_unit].teki_score;
-            self.lower_total_score(adj_unit, candidate);
+            steps += 1;
+            let adj = self.doors[target as usize].adjacent.expect("door isn't attached") as usize;
+            self.score_door_pair(target as usize, adj, score, &mut heap);
+        }
+    }
+
+    /// Sets the score of a door and the door it connects to, updates the connected unit's
+    /// score, and adds the candidates the two doors open up.
+    fn score_door_pair(&mut self, door: usize, adj: usize, score: i32, heap: &mut ScoreHeap) {
+        self.doors[door].door_score = score;
+        self.doors[adj].door_score = score;
+        let adj_unit = self.doors[adj].unit as usize;
+        let candidate = score + self.units[adj_unit].teki_score;
+        self.lower_total_score(adj_unit, candidate);
+        self.push_score_candidates(door, heap);
+        self.push_score_candidates(adj, heap);
+    }
+
+    /// Adds a candidate for each unscored door linked to `start` through its unit.
+    fn push_score_candidates(&self, start: usize, heap: &mut ScoreHeap) {
+        let start_door = &self.doors[start];
+        let unit = &self.units[start_door.unit as usize];
+        for (link_idx, link) in start_door.door.door_links.iter().enumerate() {
+            let other = unit.first_door as usize + link.door_id;
+            let other_door = &self.doors[other];
+            if other_door.door_score >= 0 {
+                continue;
+            }
+            let potential =
+                (link.distance / 10.0) as i32 + unit.teki_score * i32::from(link.tekiflag) + other_door.seam_teki_score + start_door.door_score;
+            // The game only considers scores below 12,800,000.
+            if potential < 12_800_000 {
+                heap.push(std::cmp::Reverse((potential, start as u32, link_idx as u32, other as u32)));
+            }
         }
     }
 
