@@ -485,7 +485,8 @@ async function init() {
     withBytes(resources, (p, n) => readResult(wasm.add_files(p, n)));
     caves = readResult(wasm.caves());
     const games = (await (await fetch("data/games.txt")).text()).split(/\s+/).filter(Boolean);
-    const order = Object.keys(GAME_NAMES);
+    // Not Object.keys(GAME_NAMES): JavaScript lists number-like keys such as "251" first.
+    const order = ["pikmin2", "251", "newyear", "colossal", "216", "bikmin"];
     games.sort((a, b) => order.indexOf(a) - order.indexOf(b));
     caves = caves.filter((c) => games.includes(c.game));
     fillGames(games);
