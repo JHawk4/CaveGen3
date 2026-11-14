@@ -169,6 +169,8 @@ dependencies = [
  "caveripper-ref",
  "encoding_rs",
  "flate2",
+ "float-ord",
+ "petgraph",
  "rayon",
 ]
 

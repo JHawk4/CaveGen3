@@ -9,6 +9,8 @@ publish = false
 
 [dependencies]
 encoding_rs = "0.8"
+float-ord = "0.3"
+petgraph = "0.6"
 
 [dev-dependencies]
 flate2 = "1.0"

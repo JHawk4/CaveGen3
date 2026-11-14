@@ -4,10 +4,13 @@
 //! their spawn points. This keeps generation free of reference counting and per-candidate
 //! allocation.
 
+use std::sync::OnceLock;
+
 use crate::{
     caveinfo::{CapInfo, CaveInfo, CaveUnit, DoorUnit, GateInfo, ItemInfo, SpawnPoint, TekiInfo},
     generate,
     point::Point,
+    waypoint::WaypointGraph,
 };
 
 /// Something that spawns in a layout.
@@ -123,9 +126,16 @@ pub struct Layout<'a> {
     pub ship: Option<u32>,
     pub hole: Option<u32>,
     pub geyser: Option<u32>,
+    /// Built on first use by [`Layout::waypoint_graph`].
+    pub(crate) waypoints: OnceLock<WaypointGraph>,
 }
 
 impl<'a> Layout<'a> {
+    /// The carry-path graph, built the first time it's needed.
+    pub fn waypoint_graph(&self) -> &WaypointGraph {
+        self.waypoints.get_or_init(|| WaypointGraph::build(self))
+    }
+
     /// Generates the layout for `seed`.
     pub fn generate(seed: u32, caveinfo: &'a CaveInfo) -> Layout<'a> {
         generate::generate(seed, caveinfo)

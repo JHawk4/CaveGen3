@@ -60,6 +60,7 @@ pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
         ship: g.ship,
         hole: g.hole,
         geyser: g.geyser,
+        waypoints: Default::default(),
     }
 }
 

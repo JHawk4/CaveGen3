@@ -1,5 +1,5 @@
 mod generate;
-pub(crate) mod waypoint;
+pub mod waypoint;
 
 use std::{
     cell::{OnceCell, RefCell},

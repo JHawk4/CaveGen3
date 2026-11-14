@@ -12,6 +12,7 @@ pub mod math;
 mod parse;
 pub mod point;
 pub mod rng;
+pub mod waypoint;
 
 pub use data::{CaveConfig, GameData, Sublevel};
 pub use error::{Error, Result};
