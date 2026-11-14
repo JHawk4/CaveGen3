@@ -1,0 +1,1375 @@
+{
+ "caves": {
+  "Abduction Den": {
+   "en": "Abduction Den",
+   "ja": "さらいの洞窟"
+  },
+  "Brawny Abyss": {
+   "en": "Brawny Abyss",
+   "ja": "鉄人の穴"
+  },
+  "Breeding Ground": {
+   "en": "Breeding Ground",
+   "ja": "倍々ゲームの穴"
+  },
+  "Bulblax Kingdom": {
+   "en": "Bulblax Kingdom",
+   "ja": "デメマダラの王国"
+  },
+  "Bully Den": {
+   "en": "Bully Den",
+   "ja": "どっすん迷路"
+  },
+  "Cave of Pain": {
+   "en": "Cave of Pain",
+   "ja": "天罰の穴"
+  },
+  "Cave of Snarls": {
+   "en": "Cave of Snarls",
+   "ja": "鼻息の洞穴"
+  },
+  "Cavern of Chaos": {
+   "en": "Cavern of Chaos",
+   "ja": "混沌の魔窟"
+  },
+  "Cavernous Abyss": {
+   "en": "Cavernous Abyss",
+   "ja": "大足の穴"
+  },
+  "Citadel of Spiders": {
+   "en": "Citadel of Spiders",
+   "ja": "クモの根城"
+  },
+  "Collector's Room": {
+   "en": "Collector's Room",
+   "ja": "コレクタールーム"
+  },
+  "Concrete Maze": {
+   "en": "Concrete Maze",
+   "ja": "コンクリート迷路"
+  },
+  "Creator's Garden": {
+   "en": "Creator's Garden",
+   "ja": "あのひとの庭"
+  },
+  "Cryptic Cavern": {
+   "en": "Cryptic Cavern",
+   "ja": "かくしもちの洞窟"
+  },
+  "Dream Den": {
+   "en": "Dream Den",
+   "ja": "夢の穴"
+  },
+  "Dweevil Nest": {
+   "en": "Dweevil Nest",
+   "ja": "ショイグモの巣"
+  },
+  "Emergence Cave": {
+   "en": "Emergence Cave",
+   "ja": "始まりの洞窟"
+  },
+  "Emperor's Realm": {
+   "en": "Emperor's Realm",
+   "ja": "デメマダラの巣窟"
+  },
+  "Explorer's Cave": {
+   "en": "Explorer's Cave",
+   "ja": "こてしらべの洞窟"
+  },
+  "Frontier Cavern": {
+   "en": "Frontier Cavern",
+   "ja": "辺境の洞窟"
+  },
+  "Giant's Bath": {
+   "en": "Giant's Bath",
+   "ja": "巨人のトイレ"
+  },
+  "Glutton's Kitchen": {
+   "en": "Glutton's Kitchen",
+   "ja": "食神の台所"
+  },
+  "Green Hole": {
+   "en": "Green Hole",
+   "ja": "グリーンホール"
+  },
+  "Hazard Training": {
+   "en": "Hazard Training",
+   "ja": "炎と水の試練場"
+  },
+  "Hidden Garden": {
+   "en": "Hidden Garden",
+   "ja": "ひみつの花園"
+  },
+  "Hole of Beasts": {
+   "en": "Hole of Beasts",
+   "ja": "けだものの穴"
+  },
+  "Hole of Heroes": {
+   "en": "Hole of Heroes",
+   "ja": "百戦錬磨の穴"
+  },
+  "Hot House": {
+   "en": "Hot House",
+   "ja": "地下の温室"
+  },
+  "Lost Toy Box": {
+   "en": "Lost Toy Box",
+   "ja": "神々のおもちゃ箱"
+  },
+  "Novice Training": {
+   "en": "Novice Training",
+   "ja": "新参者の試練場"
+  },
+  "Red Chasm": {
+   "en": "Red Chasm",
+   "ja": "赤の洞窟"
+  },
+  "Rumbling Grotto": {
+   "en": "Rumbling Grotto",
+   "ja": "土とんの洞窟"
+  },
+  "Secret Testing Range": {
+   "en": "Secret Testing Range",
+   "ja": "秘密兵器実験場"
+  },
+  "Shower Room": {
+   "en": "Shower Room",
+   "ja": "シャワールーム"
+  },
+  "Snack Pit": {
+   "en": "Snack Pit",
+   "ja": "食神のかまど"
+  },
+  "Snagret Hole": {
+   "en": "Snagret Hole",
+   "ja": "ヘビガラスの穴"
+  },
+  "Sniper Room": {
+   "en": "Sniper Room",
+   "ja": "スナイパールーム"
+  },
+  "Submerged Castle": {
+   "en": "Submerged Castle",
+   "ja": "水中の城"
+  },
+  "Subterranean Complex": {
+   "en": "Subterranean Complex",
+   "ja": "地下の秘密基地"
+  },
+  "Subterranean Lair": {
+   "en": "Subterranean Lair",
+   "ja": "地底警備室"
+  },
+  "Three Color Training": {
+   "en": "Three Color Training",
+   "ja": "三色試練場"
+  },
+  "Trampled Garden": {
+   "en": "Trampled Garden",
+   "ja": "花園を荒らすもの"
+  },
+  "Twilight Garden": {
+   "en": "Twilight Garden",
+   "ja": "たそがれの庭"
+  },
+  "White Flower Garden": {
+   "en": "White Flower Garden",
+   "ja": "白い花園"
+  }
+ },
+ "teki": {
+  "armor": {
+   "en": "Cloaking Burrow-nit",
+   "ja": "ハオリムシ"
+  },
+  "baby": {
+   "en": "Bulborb Larva",
+   "ja": "ベビーチャッピー"
+  },
+  "bigfoot": {
+   "en": "Raging Long Legs",
+   "ja": "ゾウノアシ"
+  },
+  "bigtreasure": {
+   "en": "Titan Dweevil",
+   "ja": "ヘラクレスオオヨロヒグモ"
+  },
+  "blackman": {
+   "en": "Waterwraith",
+   "ja": "アメボウズ"
+  },
+  "blackpom": {
+   "en": "Violet Candypop Bud",
+   "ja": "ムラサキポンガシグサ"
+  },
+  "bluechappy": {
+   "en": "Orange Bulborb",
+   "ja": "テンテンチャッピー"
+  },
+  "bluekochappy": {
+   "en": "Dwarf Orange Bulborb",
+   "ja": "テンコチャッピー"
+  },
+  "bluepom": {
+   "en": "Lapis Lazuli Candypop Bud",
+   "ja": "ルリポンガシグサ"
+  },
+  "bomb": {
+   "en": "Bomb-rock",
+   "ja": "バクダン岩",
+   "unofficial": true
+  },
+  "bombotakara": {
+   "en": "Volatile Dweevil",
+   "ja": "サクレショイグモ"
+  },
+  "bombsarai": {
+   "en": "Careening Dirigibug",
+   "ja": "サクレウラメ"
+  },
+  "catfish": {
+   "en": "Water Dumple",
+   "ja": "ダンゴナマズ"
+  },
+  "chappy": {
+   "en": "Red Bulborb",
+   "ja": "アカチャッピー"
+  },
+  "clover": {
+   "en": "Clover",
+   "ja": "クローバー"
+  },
+  "daiodogreen": {
+   "en": "Glowstem (green)",
+   "ja": "ヒカリエノキ（緑）"
+  },
+  "daiodored": {
+   "en": "Glowstem",
+   "ja": "ヒカリエノキ"
+  },
+  "damagumo": {
+   "en": "Beady Long Legs",
+   "ja": "ダマグモ"
+  },
+  "dangomushi": {
+   "en": "Segmented Crawbster",
+   "ja": "ゴロムシ"
+  },
+  "demon": {
+   "en": "Bumbling Snitchbug",
+   "ja": "トテツチホカシ"
+  },
+  "egg": {
+   "en": "Egg",
+   "ja": "タマゴ",
+   "unofficial": true
+  },
+  "elecbug": {
+   "en": "Anode Beetle",
+   "ja": "エレキムシ"
+  },
+  "elechiba": {
+   "en": "Electrical Wire",
+   "ja": "電線",
+   "unofficial": true
+  },
+  "elecotakara": {
+   "en": "Anode Dweevil",
+   "ja": "キショイグモ"
+  },
+  "fart": {
+   "en": "Doodlebug",
+   "ja": "オナラシ"
+  },
+  "firechappy": {
+   "en": "Fiery Bulblax",
+   "ja": "ヤキチャッピー"
+  },
+  "fireotakara": {
+   "en": "Fiery Dweevil",
+   "ja": "ベニショイグモ"
+  },
+  "fkabuto": {
+   "en": "Armored Cannon Beetle Larva",
+   "ja": "フタクチドックリ"
+  },
+  "fminihoudai": {
+   "en": "Gatling Groink",
+   "ja": "タマコキン"
+  },
+  "frog": {
+   "en": "Yellow Wollywog",
+   "ja": "イモガエル"
+  },
+  "fuefuki": {
+   "en": "Antenna Beetle",
+   "ja": "カマドフマ"
+  },
+  "gashiba": {
+   "en": "Gas Pipe",
+   "ja": "毒ガスの噴き出し口",
+   "unofficial": true
+  },
+  "gasotakara": {
+   "en": "Munge Dweevil",
+   "ja": "ムラサキショイグモ"
+  },
+  "hana": {
+   "en": "Creeping Chrysanthemum",
+   "ja": "びっくり菊"
+  },
+  "hanachirashi": {
+   "en": "Withering Blowhog",
+   "ja": "アオケダタラ"
+  },
+  "hiba": {
+   "en": "Fire Geyser",
+   "ja": "火の噴き出し口",
+   "unofficial": true
+  },
+  "hikarikinoko": {
+   "en": "Common Glowcap",
+   "ja": "ヒカリキノコ"
+  },
+  "houdai": {
+   "en": "Man-at-legs",
+   "ja": "ダマグモキャノン"
+  },
+  "imomushi": {
+   "en": "Ravenous Whiskerpillar",
+   "ja": "ハナゲイモ"
+  },
+  "jigumo": {
+   "en": "Hermit Crawmad",
+   "ja": "シャコモドキ"
+  },
+  "kabuto": {
+   "en": "Armored Cannon Beetle Larva",
+   "ja": "フタクチドックリ"
+  },
+  "kareooinu_l": {
+   "en": "Figwort (withered)",
+   "ja": "モモフグリ（枯れ）"
+  },
+  "kareooinu_s": {
+   "en": "Figwort (small, withered)",
+   "ja": "モモフグリ（小・枯れ）"
+  },
+  "kingchappy": {
+   "en": "Emperor Bulblax",
+   "ja": "ダイオウデメマダラ"
+  },
+  "kochappy": {
+   "en": "Dwarf Red Bulborb",
+   "ja": "アカコチャッピー"
+  },
+  "kogane": {
+   "en": "Iridescent Flint Beetle",
+   "ja": "コガネモチ"
+  },
+  "kumachappy": {
+   "en": "Spotty Bulbear",
+   "ja": "クマチャッピー"
+  },
+  "kumakochappy": {
+   "en": "Dwarf Bulbear",
+   "ja": "チビクマ"
+  },
+  "kurage": {
+   "en": "Lesser Spotted Jellyfloat",
+   "ja": "コマンマン"
+  },
+  "leafchappy": {
+   "en": "Bulbmin",
+   "ja": "ハチャッピー"
+  },
+  "magaret": {
+   "en": "Margaret",
+   "ja": "マーガレット"
+  },
+  "mar": {
+   "en": "Puffy Blowhog",
+   "ja": "フーセンドックリ"
+  },
+  "marofrog": {
+   "en": "Wollywog",
+   "ja": "マロガエル"
+  },
+  "minihoudai": {
+   "en": "Gatling Groink",
+   "ja": "タマコキン"
+  },
+  "miulin": {
+   "en": "Mamuta",
+   "ja": "ミウリン"
+  },
+  "nekojarashi": {
+   "en": "Foxtail",
+   "ja": "ネコジャラシ"
+  },
+  "onikurage": {
+   "en": "Greater Spotted Jellyfloat",
+   "ja": "オオマンマン"
+  },
+  "ooinu_l": {
+   "en": "Figwort",
+   "ja": "モモフグリ"
+  },
+  "ooinu_s": {
+   "en": "Figwort (small)",
+   "ja": "モモフグリ（小）"
+  },
+  "oopanmodoki": {
+   "en": "Giant Breadbug",
+   "ja": "オオパンモドキ"
+  },
+  "panmodoki": {
+   "en": "Breadbug",
+   "ja": "パンモドキ"
+  },
+  "pelplant": {
+   "en": "Pellet Posy",
+   "ja": "ペレット草"
+  },
+  "queen": {
+   "en": "Empress Bulblax",
+   "ja": "クイーンチャッピー"
+  },
+  "qurione": {
+   "en": "Honeywisp",
+   "ja": "ピキマキ"
+  },
+  "randpom": {
+   "en": "Queen Candypop Bud",
+   "ja": "ポポガシグサ"
+  },
+  "redpom": {
+   "en": "Crimson Candypop Bud",
+   "ja": "ベニポンガシグサ"
+  },
+  "rkabuto": {
+   "en": "Decorated Cannon Beetle",
+   "ja": "ミヤビフタクチ"
+  },
+  "rock": {
+   "en": "Falling Boulder",
+   "ja": "落石",
+   "unofficial": true
+  },
+  "sarai": {
+   "en": "Swooping Snitchbug",
+   "ja": "サライムシ"
+  },
+  "shijimichou": {
+   "en": "Unmarked Spectralids",
+   "ja": "サンショクシジミ"
+  },
+  "snakecrow": {
+   "en": "Burrowing Snagret",
+   "ja": "ヘビガラス"
+  },
+  "snakewhole": {
+   "en": "Pileated Snagret",
+   "ja": "アカヘビガラス"
+  },
+  "sokkuri": {
+   "en": "Skitter Leaf",
+   "ja": "ハンボ"
+  },
+  "stone": {
+   "en": "Falling Boulder",
+   "ja": "落石",
+   "unofficial": true
+  },
+  "tadpole": {
+   "en": "Wogpole",
+   "ja": "オタマ"
+  },
+  "tamagomushi": {
+   "en": "Mitite",
+   "ja": "タマゴムシ"
+  },
+  "tank": {
+   "en": "Fiery Blowhog",
+   "ja": "ブタドックリ"
+  },
+  "tanpopo": {
+   "en": "Dandelion",
+   "ja": "タンポポ"
+  },
+  "tobi": {
+   "en": "Shearwig",
+   "ja": "トビンコ"
+  },
+  "tukushi": {
+   "en": "Horsetail",
+   "ja": "ツクシ"
+  },
+  "ujia": {
+   "en": "Female Sheargrub",
+   "ja": "ウジンコ♀"
+  },
+  "ujib": {
+   "en": "Male Sheargrub",
+   "ja": "ウジンコ♂"
+  },
+  "umimushi": {
+   "en": "Ranging Bloyster",
+   "ja": "ケメクジ"
+  },
+  "umimushiblind": {
+   "en": "Toady Bloyster",
+   "ja": "ツブラメケメクジ"
+  },
+  "wakame_l": {
+   "en": "Shoot",
+   "ja": "若芽"
+  },
+  "wakame_s": {
+   "en": "Shoot (small)",
+   "ja": "若芽（小）"
+  },
+  "watage": {
+   "en": "Seeding Dandelion",
+   "ja": "タンポポ（綿毛）"
+  },
+  "waterotakara": {
+   "en": "Caustic Dweevil",
+   "ja": "ルリショイグモ"
+  },
+  "wealthy": {
+   "en": "Iridescent Glint Beetle",
+   "ja": "オオガネモチ"
+  },
+  "whitepom": {
+   "en": "Ivory Candypop Bud",
+   "ja": "シロポンガシグサ"
+  },
+  "wtank": {
+   "en": "Watery Blowhog",
+   "ja": "ミズブタ"
+  },
+  "yellowchappy": {
+   "en": "Hairy Bulborb",
+   "ja": "ケチャッピー"
+  },
+  "yellowkochappy": {
+   "en": "Snow Bulborb",
+   "ja": "ユキチャッピー"
+  },
+  "yellowpom": {
+   "en": "Golden Candypop Bud",
+   "ja": "キイロポンガシグサ"
+  },
+  "zenmai": {
+   "en": "Fiddlehead",
+   "ja": "ゼンマイ"
+  }
+ },
+ "treasures": {
+  "ahiru": {
+   "en": "Rubber Ugly",
+   "ja": "天下一ブサイク"
+  },
+  "ahiru_head": {
+   "en": "Paradoxical Enigma",
+   "ja": "超存在"
+  },
+  "akagai": {
+   "en": "Fortified Delicacy",
+   "ja": "海怪珍味マキマキ"
+  },
+  "apple": {
+   "en": "Insect Condo",
+   "ja": "バグズ・キングダム"
+  },
+  "apple_blue": {
+   "en": "Meat Satchel",
+   "ja": "欲棒"
+  },
+  "badminton": {
+   "en": "Air Brake",
+   "ja": "エアシューター"
+  },
+  "bane": {
+   "en": "Coiled Launcher",
+   "ja": "サイコジャンパー"
+  },
+  "bane_blue": {
+   "en": "Extreme Perspirator",
+   "ja": "トレーニングマシン"
+  },
+  "bane_red": {
+   "en": "Master's Instrument",
+   "ja": "アートだましい"
+  },
+  "bane_yellow": {
+   "en": "Pilgrim Bulb",
+   "ja": "ラッパユリの球根"
+  },
+  "baum_kuchen": {
+   "en": "Confection Hoop",
+   "ja": "おかしの大車輪"
+  },
+  "baum_kuchen_s": {
+   "en": "Pastry Wheel",
+   "ja": "おかしの小車輪"
+  },
+  "be_dama_blue": {
+   "en": "Mirth Sphere",
+   "ja": "思考結晶ＷＡＲＡＩ"
+  },
+  "be_dama_blue_l": {
+   "en": "Crystallized Clairvoyance",
+   "ja": "チャネリング・クリスタル"
+  },
+  "be_dama_red": {
+   "en": "Omniscient Sphere",
+   "ja": "思考結晶ＩＫＡＲＩ"
+  },
+  "be_dama_red_l": {
+   "en": "Crystallized Telepathy",
+   "ja": "テレパシー・クリスタル"
+  },
+  "be_dama_yellow": {
+   "en": "Love Sphere",
+   "ja": "思考結晶ＡＩ"
+  },
+  "be_dama_yellow_l": {
+   "en": "Crystallized Telekinesis",
+   "ja": "サイコキネシス・クリスタル"
+  },
+  "bell": {
+   "en": "Maternal Sculpture",
+   "ja": "母と子のカタチ"
+  },
+  "bell_blue": {
+   "en": "Sulking Antenna",
+   "ja": "むっつりアンテナ"
+  },
+  "bell_red": {
+   "en": "Danger Chime",
+   "ja": "空騒ぎアラーム"
+  },
+  "bell_yellow": {
+   "en": "Spouse Alert",
+   "ja": "夫婦のきずな"
+  },
+  "bey_goma": {
+   "en": "Stupendous Lens",
+   "ja": "アルティメット・スピナー"
+  },
+  "bird_hane": {
+   "en": "Leviathan Feather",
+   "ja": "夢の羽"
+  },
+  "bolt": {
+   "en": "Superstrong Stabilizer",
+   "ja": "怪力金具フィックスマン"
+  },
+  "bolt_l": {
+   "en": "Repair Juggernaut",
+   "ja": "フィックスマニア"
+  },
+  "castanets": {
+   "en": "Harmonic Synthesizer",
+   "ja": "ハーモニック・シンセサイザ"
+  },
+  "channel": {
+   "en": "Space Wave Receiver",
+   "ja": "毒電波レシーバー"
+  },
+  "chess_king_black": {
+   "en": "Joy Receptacle",
+   "ja": "しあわせの箱"
+  },
+  "chess_king_white": {
+   "en": "Worthless Statue",
+   "ja": "えらそうでえらくない石像"
+  },
+  "chess_queen_black": {
+   "en": "Priceless Statue",
+   "ja": "えらそうでえらい石像"
+  },
+  "chess_queen_white": {
+   "en": "Triple Sugar Threat",
+   "ja": "甘党１・２・３"
+  },
+  "chocoichigo": {
+   "en": "Diet Doomer",
+   "ja": "エネミー・オブ・ダイエット"
+  },
+  "chocoichigo_l": {
+   "en": "Drought Ender",
+   "ja": "あらがえぬエンブレム"
+  },
+  "chocolate": {
+   "en": "King of Sweets",
+   "ja": "キング・オブ・スイート"
+  },
+  "chocolate_l": {
+   "en": "Enamel Buster",
+   "ja": "むしばのとも"
+  },
+  "chocowhite": {
+   "en": "Pale Passion",
+   "ja": "ラブ・ホワイト"
+  },
+  "chocowhite_l": {
+   "en": "White Goodness",
+   "ja": "らぶらぶホワイト"
+  },
+  "compact": {
+   "en": "Boom Cone",
+   "ja": "ミラクルマジカルステージ"
+  },
+  "compact_make": {
+   "en": "Mirrored Stage",
+   "ja": "ミラーステージ"
+  },
+  "cookie": {
+   "en": "Bug Bait",
+   "ja": "虫寄せせんべい"
+  },
+  "cookie_m_l": {
+   "en": "Imperative Cookie",
+   "ja": "さいみんクッキー"
+  },
+  "cookie_s": {
+   "en": "Comfort Cookie",
+   "ja": "ざぶとんクッキー"
+  },
+  "cookie_s_l": {
+   "en": "Succulent Mattress",
+   "ja": "スイート・クッション"
+  },
+  "cookie_u": {
+   "en": "Compelling Cookie",
+   "ja": "たつまきクッキー"
+  },
+  "cookie_u_l": {
+   "en": "Impenetrable Cookie",
+   "ja": "大がんこ"
+  },
+  "creap": {
+   "en": "Milk Tub",
+   "ja": "ミルクぶろ"
+  },
+  "dashboots": {
+   "en": "Repugnant Appendage",
+   "ja": "かぐわしき存在"
+  },
+  "denchi_1_black": {
+   "en": "Thirst Activator",
+   "ja": "オルタナティブ・リアクター"
+  },
+  "denchi_1_red": {
+   "en": "Courage Reactor",
+   "ja": "あいとゆうきリアクター"
+  },
+  "denchi_2_black": {
+   "en": "Durable Energy Cell",
+   "ja": "永久燃料ダイナモ改"
+  },
+  "denchi_2_red": {
+   "en": "Optical Illustration",
+   "ja": "きあいバッテリー"
+  },
+  "denchi_3_black": {
+   "en": "Fuel Reservoir",
+   "ja": "オメガトロン"
+  },
+  "denchi_3_red": {
+   "en": "Proton AA",
+   "ja": "プロトンＸ"
+  },
+  "dia_a_blue": {
+   "en": "Behemoth Jaw",
+   "ja": "大怪獣の歯"
+  },
+  "dia_a_green": {
+   "en": "Anxious Sprout",
+   "ja": "ソダチノコ"
+  },
+  "dia_a_red": {
+   "en": "Citrus Lump",
+   "ja": "ツラノカワ"
+  },
+  "dia_b_blue": {
+   "en": "Luck Wafer",
+   "ja": "エレメンタル・フォース"
+  },
+  "dia_b_green": {
+   "en": "Meat of Champions",
+   "ja": "キング肉"
+  },
+  "dia_b_red": {
+   "en": "Implement of Toil",
+   "ja": "ビンボー神のお守り"
+  },
+  "dia_c_blue": {
+   "en": "Boss Stone",
+   "ja": "ショーグン石"
+  },
+  "dia_c_green": {
+   "en": "Strife Monolith",
+   "ja": "勝負石"
+  },
+  "dia_c_red": {
+   "en": "Talisman of Life",
+   "ja": "人生花道"
+  },
+  "diamond_blue": {
+   "en": "Regal Diamond",
+   "ja": "ロイヤル・ダイアモンド"
+  },
+  "diamond_blue_l": {
+   "en": "Tear Stone",
+   "ja": "ティア・ストーン"
+  },
+  "diamond_green": {
+   "en": "Princess Pearl",
+   "ja": "ヒメシンジュ"
+  },
+  "diamond_green_l": {
+   "en": "Crystal Clover",
+   "ja": "フォー・リーフ"
+  },
+  "diamond_red": {
+   "en": "Petrified Heart",
+   "ja": "ピュア・ハート"
+  },
+  "diamond_red_l": {
+   "en": "Eternal Emerald Eye",
+   "ja": "エターナル・グリーン"
+  },
+  "doll": {
+   "en": "Silencer",
+   "ja": "サイレンサー"
+  },
+  "donguri": {
+   "en": "Armored Nut",
+   "ja": "ヒラノミ"
+  },
+  "donguri_l": {
+   "en": "Corpulent Nut",
+   "ja": "ボスノミ"
+  },
+  "donutschoco": {
+   "en": "Chocolate Cushion",
+   "ja": "チョコベッド"
+  },
+  "donutschoco_s": {
+   "en": "Chance Totem",
+   "ja": "運試しストーン"
+  },
+  "donutsichigo": {
+   "en": "Sweet Dreamer",
+   "ja": "娘のおやつ"
+  },
+  "donutsichigo_s": {
+   "en": "Dream Architect",
+   "ja": "機械じかけの夢"
+  },
+  "donutswhite": {
+   "en": "Cosmic Archive",
+   "ja": "コズミック・アーカイブ"
+  },
+  "donutswhite_s": {
+   "en": "Spiny Alien Treat",
+   "ja": "山菜王"
+  },
+  "elec": {
+   "en": "Shock Therapist",
+   "ja": "マイナスイオン・コンバータ"
+  },
+  "fire": {
+   "en": "Flare Cannon",
+   "ja": "フレア・キャノン"
+  },
+  "fire_helmet": {
+   "en": "Alien Billboard",
+   "ja": "古代の広告"
+  },
+  "flask": {
+   "en": "Future Orb",
+   "ja": "ノー・フューチャー"
+  },
+  "flower_blue": {
+   "en": "Science Project",
+   "ja": "宿題クローバー"
+  },
+  "flower_red": {
+   "en": "Cupid's Grenade",
+   "ja": "ヤブレカブレ"
+  },
+  "fue_a": {
+   "en": "Brute Knuckles",
+   "ja": "鉄人のコブシ"
+  },
+  "fue_b": {
+   "en": "Dream Material",
+   "ja": "ドリーム・マテリアル"
+  },
+  "fue_pullout": {
+   "en": "Professional Noisemaker",
+   "ja": "やかましメカ"
+  },
+  "fue_wide": {
+   "en": "Amplified Amplifier",
+   "ja": "真空波動スピーカー"
+  },
+  "futa_a_gold": {
+   "en": "Vorpal Platter",
+   "ja": "ゴールデン・ソーサー"
+  },
+  "futa_a_silver": {
+   "en": "Taste Sensation",
+   "ja": "ふるさとの味"
+  },
+  "g_futa_daisen": {
+   "en": "Gherkin Gate",
+   "ja": "発想アシスタント"
+  },
+  "g_futa_hirosima": {
+   "en": "Dimensional Slicer",
+   "ja": "フライング・ソーサー"
+  },
+  "g_futa_hiruzen": {
+   "en": "Healing Cask",
+   "ja": "さとりの座"
+  },
+  "g_futa_kajiwara": {
+   "en": "Survival Ointment",
+   "ja": "ペーパースライダー"
+  },
+  "g_futa_kitaama": {
+   "en": "Pondering Emblem",
+   "ja": "ミルキーゆりかご"
+  },
+  "g_futa_koiwai": {
+   "en": "Mysterious Remains",
+   "ja": "わかる者のシンボル"
+  },
+  "g_futa_kyodo": {
+   "en": "Salivatrix",
+   "ja": "ハイセンス・ゼニー"
+  },
+  "g_futa_kyosin": {
+   "en": "Yellow Taste Tyrant",
+   "ja": "宇宙一アート"
+  },
+  "g_futa_kyusyu": {
+   "en": "Massive Lid",
+   "ja": "ちちぶた"
+  },
+  "g_futa_nihonraku": {
+   "en": "Activity Arouser",
+   "ja": "どこでもフローター"
+  },
+  "g_futa_sakotani": {
+   "en": "Hypnotic Platter",
+   "ja": "まねきしもの"
+  },
+  "g_futa_sikoku": {
+   "en": "Happiness Emblem",
+   "ja": "あの日々の思い出"
+  },
+  "g_futa_titiyas": {
+   "en": "Creative Inspiration",
+   "ja": "ミルキーズ"
+  },
+  "gas": {
+   "en": "Comedy Bomb",
+   "ja": "ケミカル・ウエポン"
+  },
+  "gear": {
+   "en": "Omega Flywheel",
+   "ja": "オメガブースター"
+  },
+  "gear_silver": {
+   "en": "Spirit Flogger",
+   "ja": "社員の手本"
+  },
+  "gold_medal": {
+   "en": "Lustrous Element",
+   "ja": "レアメタルＧ"
+  },
+  "gum_tape": {
+   "en": "Superstick Textile",
+   "ja": "ネンチャッキーＧ"
+  },
+  "gum_tape_s": {
+   "en": "Exhausted Superstick",
+   "ja": "くたびれたネンチャッキー"
+  },
+  "halloween": {
+   "en": "Possessed Squash",
+   "ja": "オオモノノケカボチャ"
+  },
+  "haniwa": {
+   "en": "Gyroid Bust",
+   "ja": "Ｍｒ．ハニー"
+  },
+  "hotate": {
+   "en": "Scrumptious Shell",
+   "ja": "ウマイガイ"
+  },
+  "ichigo": {
+   "en": "Sunseed Berry",
+   "ja": "ヒダマリノミ"
+  },
+  "ichigo_l": {
+   "en": "Combustion Berry",
+   "ja": "バクレツノミ"
+  },
+  "j_block_blue": {
+   "en": "Favorite Gyro Block",
+   "ja": "おきにいりジャイロブロック"
+  },
+  "j_block_green": {
+   "en": "Lost Gyro Block",
+   "ja": "なくしてないたジャイロブロック"
+  },
+  "j_block_red": {
+   "en": "Fond Gyro Block",
+   "ja": "なつかしのジャイロブロック"
+  },
+  "j_block_white": {
+   "en": "Treasured Gyro Block",
+   "ja": "たからものジャイロブロック"
+  },
+  "j_block_yellow": {
+   "en": "Memorable Gyro Block",
+   "ja": "わすれえぬジャイロブロック"
+  },
+  "juji_key": {
+   "en": "Glee Spinner",
+   "ja": "たましいの石"
+  },
+  "juji_key_fc": {
+   "en": "Stone of Glory",
+   "ja": "栄光の石"
+  },
+  "kan": {
+   "en": "Decorative Goo",
+   "ja": "オレの色"
+  },
+  "kan_b_gold": {
+   "en": "Lip Service",
+   "ja": "ファミリーいかだ"
+  },
+  "kan_b_silver": {
+   "en": "Utter Scrap",
+   "ja": "とことんスクラップ"
+  },
+  "kan_imuraya": {
+   "en": "Drone Supplies",
+   "ja": "丸見えアーカイブ"
+  },
+  "kan_iwate": {
+   "en": "Endless Repository",
+   "ja": "パーマネントコンテナ"
+  },
+  "kan_kyokuyo": {
+   "en": "Fruit Guard",
+   "ja": "亜空間コンテナ"
+  },
+  "kan_maruha": {
+   "en": "Stringent Container",
+   "ja": "つきぬコンテナ"
+  },
+  "kan_meidiya": {
+   "en": "Nutrient Silo",
+   "ja": "みっちりコンテナ"
+  },
+  "kan_nichiro": {
+   "en": "Patience Tester",
+   "ja": "オープン・アーキテクチャ"
+  },
+  "key": {
+   "en": "The Key",
+   "ja": "あのカギ"
+  },
+  "kinoko": {
+   "en": "Anti-hiccup Fungus",
+   "ja": "ドッキリタケ"
+  },
+  "kinoko_doku": {
+   "en": "Toxic Toadstool",
+   "ja": "メニドクキノコ"
+  },
+  "kinoko_tubu": {
+   "en": "Growshroom",
+   "ja": "ソダチノタケ"
+  },
+  "kouseki_suisyou": {
+   "en": "Crystal King",
+   "ja": "鉱石生命体（♂）"
+  },
+  "kumakibori": {
+   "en": "Fossilized Ursidae",
+   "ja": "木造巨生物クマキボリ"
+  },
+  "kuri": {
+   "en": "Seed of Greed",
+   "ja": "ヨクノミ"
+  },
+  "leaf_kare": {
+   "en": "Disguised Delicacy",
+   "ja": "ミカケダマシ"
+  },
+  "leaf_normal": {
+   "en": "Love Nugget",
+   "ja": "ヒトメボレ"
+  },
+  "leaf_yellow": {
+   "en": "Child of the Earth",
+   "ja": "大地の息子"
+  },
+  "light_a": {
+   "en": "Stellar Orb",
+   "ja": "日焼けマシン"
+  },
+  "locket": {
+   "en": "Time Capsule",
+   "ja": "メモリアルカプセル"
+  },
+  "loozy": {
+   "en": "King of Bugs",
+   "ja": "虫の王"
+  },
+  "makigai": {
+   "en": "Olimarnite Shell",
+   "ja": "貝物オリマナイト"
+  },
+  "map01": {
+   "en": "Spherical Atlas",
+   "ja": "スフィアマップ"
+  },
+  "map02": {
+   "en": "Geographic Projection",
+   "ja": "ジオグラフィックシステム"
+  },
+  "matu_bokkuri": {
+   "en": "Conifer Spire",
+   "ja": "キノポックリ"
+  },
+  "medama_yaki": {
+   "en": "Hideous Victual",
+   "ja": "ハラワタモドキ"
+  },
+  "milk_cap": {
+   "en": "Abstract Masterpiece",
+   "ja": "推定物体ＧＦ"
+  },
+  "mojiban": {
+   "en": "Mystical Disc",
+   "ja": "ときめきマジカルサークル"
+  },
+  "momiji_kare": {
+   "en": "Onion Replica",
+   "ja": "オニヨンモドキ"
+  },
+  "momiji_normal": {
+   "en": "Arboreal Frippery",
+   "ja": "イチコロダオレ"
+  },
+  "momiji_red": {
+   "en": "Infernal Vegetable",
+   "ja": "ニガモドキ"
+  },
+  "nut": {
+   "en": "Adamantine Girdle",
+   "ja": "はがねのはらまき"
+  },
+  "nut_l": {
+   "en": "Massage Girdle",
+   "ja": "マッサージはらまき"
+  },
+  "otama": {
+   "en": "Merciless Extractor",
+   "ja": "自炊の神器"
+  },
+  "radar_a": {
+   "en": "Prototype Detector",
+   "ja": "おたからセンサープロトタイプ"
+  },
+  "radar_b": {
+   "en": "Five-man Napsack",
+   "ja": "快眠アシスタント"
+  },
+  "robot_head": {
+   "en": "Remembered Old Buddy",
+   "ja": "オヤジのおもいで"
+  },
+  "saru_head": {
+   "en": "Colossal Fossil",
+   "ja": "古代生物の化石"
+  },
+  "sensya": {
+   "en": "Invigorator",
+   "ja": "完全不眠土器カフェオレ"
+  },
+  "silver_medal": {
+   "en": "Mirrored Element",
+   "ja": "レアメタルＳ"
+  },
+  "sinjyu": {
+   "en": "Memorial Shell",
+   "ja": "一生の証"
+  },
+  "sinkukan": {
+   "en": "Vacuum Processor",
+   "ja": "バキューム・プロセッサー"
+  },
+  "sinkukan_b": {
+   "en": "Indomitable CPU",
+   "ja": "根性コンピュータ"
+  },
+  "sinkukan_c": {
+   "en": "Network Mainbrain",
+   "ja": "グリッドコンピュータ"
+  },
+  "suit_fire": {
+   "en": "Forged Courage",
+   "ja": "情熱合金ド・コンジョー"
+  },
+  "suit_powerup": {
+   "en": "Justice Alloy",
+   "ja": "正義合金ジャスティスＺ"
+  },
+  "tape_blue": {
+   "en": "Flame of Tomorrow",
+   "ja": "希望の火"
+  },
+  "tape_red": {
+   "en": "Furious Adhesive",
+   "ja": "ネンチャクシツ"
+  },
+  "tape_yellow": {
+   "en": "Quenching Emblem",
+   "ja": "かわきのエンブレム"
+  },
+  "tatebue": {
+   "en": "Director of Destiny",
+   "ja": "運命ディレクター"
+  },
+  "teala_dia_a": {
+   "en": "Essence of Rage",
+   "ja": "ココロナシカ"
+  },
+  "teala_dia_b": {
+   "en": "Essence of Despair",
+   "ja": "グリーン・アイ"
+  },
+  "teala_dia_c": {
+   "en": "Essence of True Love",
+   "ja": "宇宙愛のモニュメント"
+  },
+  "teala_dia_d": {
+   "en": "Essence of Desire",
+   "ja": "銀河愛のモニュメント"
+  },
+  "tel_dial": {
+   "en": "Nouveau Table",
+   "ja": "ゲイジュツ・テーブル"
+  },
+  "toy_cat": {
+   "en": "Wiggle Noggin",
+   "ja": "宇宙ネコ目"
+  },
+  "toy_dog": {
+   "en": "Sud Generator",
+   "ja": "バブル・ジェネレータ"
+  },
+  "toy_gentle": {
+   "en": "Manual Honer",
+   "ja": "手動工作マシン"
+  },
+  "toy_lady": {
+   "en": "Broken Food Master",
+   "ja": "折れた食神"
+  },
+  "toy_ring_a_blue": {
+   "en": "Frosty Bauble",
+   "ja": "アイス・ハート"
+  },
+  "toy_ring_a_green": {
+   "en": "Gemstar Husband",
+   "ja": "宝石生物ヒトデメラルド♂"
+  },
+  "toy_ring_a_red": {
+   "en": "Pink Menace",
+   "ja": "オーバーキル・レッド"
+  },
+  "toy_ring_b_blue": {
+   "en": "Universal Com",
+   "ja": "ねぼけまなこモニター"
+  },
+  "toy_ring_b_green": {
+   "en": "Joyless Jewel",
+   "ja": "ぬかよろこびジュエル"
+  },
+  "toy_ring_b_red": {
+   "en": "Gemstar Wife",
+   "ja": "宝石生物ヒトデメラルド♀"
+  },
+  "toy_ring_c_blue": {
+   "en": "Icon of Progress",
+   "ja": "進歩のあかし"
+  },
+  "toy_ring_c_green": {
+   "en": "Innocence Lost",
+   "ja": "トップ・スター"
+  },
+  "toy_ring_c_red": {
+   "en": "Fleeting Art Form",
+   "ja": "もえるゲイジュツ"
+  },
+  "toy_teala": {
+   "en": "Unspeakable Wonder",
+   "ja": "トレジャー・オブ・ワンダー"
+  },
+  "turi_uki": {
+   "en": "Aquatic Mine",
+   "ja": "アクアティックマイン"
+  },
+  "uji_jisyaku": {
+   "en": "Heavy-duty Magnetizer",
+   "ja": "超磁性体マグナイザー"
+  },
+  "wadou_kaichin": {
+   "en": "Unknown Merit",
+   "ja": "知られざる功"
+  },
+  "watch": {
+   "en": "Temporal Mechanism",
+   "ja": "こわれたタイムマシン"
+  },
+  "water": {
+   "en": "Monster Pump",
+   "ja": "モンスター・ポンプ"
+  },
+  "whistle": {
+   "en": "Emperor Whistle",
+   "ja": "ホイスル岩"
+  },
+  "xmas_item": {
+   "en": "Essential Furnishing",
+   "ja": "メタリック・インテリア"
+  },
+  "yoyo_blue": {
+   "en": "Impediment Scourge",
+   "ja": "ライトニングボルト"
+  },
+  "yoyo_red": {
+   "en": "Flame Tiller",
+   "ja": "コンバイン・ローラー"
+  },
+  "yoyo_yellow": {
+   "en": "Doomsday Apparatus",
+   "ja": "超重ギガンティス"
+  }
+ }
+}

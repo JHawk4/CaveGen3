@@ -66,6 +66,7 @@ def main():
     for png in (DATA / "resources/enemytex_special").iterdir():
         shutil.copyfile(png, out / "img/special" / png.name.lower())
     (out / "data/games.txt").write_text("\n".join(games) + "\n")
+    shutil.copyfile(DATA / "resources/names.json", out / "data/names.json")
 
     size = sum(p.stat().st_size for p in out.rglob("*") if p.is_file())
     print(f"{out}: {len(games)} games ({', '.join(games)}), {size / 1e6:.1f} MB")

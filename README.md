@@ -27,6 +27,10 @@ The page at https://jhawk4.github.io/CaveGen3/ runs the generator in the browser
 to WebAssembly). Pick a sublevel and a seed, and it draws the layout with its treasures, teki
 and gates. Links keep the sublevel and seed: `?sublevel=pikmin2:SCx-6&seed=1234ABCD`.
 
+The page is in English and Japanese (日本語). It follows the browser's language; the button in the
+corner switches, and `lang=ja` or `lang=en` in a link picks one. Treasures, teki and caves use
+their in-game names in either language. Hover over or tap an icon on the map to see what it is.
+
 To embed it in another site, add `embed=1` for a compact version with just the controls and
 the map:
 
@@ -45,6 +49,18 @@ python -m http.server --directory site
 ```
 
 GitHub Actions publishes it on every push to `main` (`.github/workflows/pages.yml`).
+
+## In-game names
+
+`data/resources/names.json` maps internal names to the names the game shows, in English and
+Japanese: every treasure and exploration kit item (`ahiru` → Rubber Ugly / 天下一ブサイク),
+every Piklopedia teki (`Kochappy` → Dwarf Red Bulborb / アカコチャッピー), and the Pikmin 2
+caves. It was built by `tools/extract_names.py` from the game's own message tables
+(`message/mesRes_eng.szs` and `mesRes_jpn.szs`), using the message numbering in the game's
+Piklopedia code. Objects with no Piklopedia entry (eggs, bomb-rocks, gas pipes and the like),
+and the "(small)", "(withered)" and "(green)" variant labels, are our wording and marked
+`"unofficial"` where they stand alone. Romhacks reuse the vanilla names; their own new
+treasures and teki show their internal names.
 
 ## Status
 

@@ -4,65 +4,69 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CaveGen3</title>
-<meta name="description" content="Generate Pikmin 2 cave layouts from a seed, in your browser.">
+<meta name="description" content="Generate Pikmin 2 cave layouts from a seed, in your browser. ピクミン2の洞窟レイアウトをシードから生成します。">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="site-header">
-  <h1>CaveGen3</h1>
-  <p>Pikmin 2 cave layouts for any seed, generated in your browser.</p>
+  <div class="title-row">
+    <h1>CaveGen3</h1>
+    <button type="button" id="lang-toggle" class="lang-toggle">日本語</button>
+  </div>
+  <p data-i18n="subtitle">Pikmin 2 cave layouts for any seed, generated in your browser.</p>
 </header>
 
 <main>
   <form id="controls" class="controls" autocomplete="off">
     <label class="field">
-      <span>Game</span>
+      <span data-i18n="game">Game</span>
       <select id="game"></select>
     </label>
     <label class="field grow">
-      <span>Cave</span>
+      <span data-i18n="cave">Cave</span>
       <select id="cave"></select>
     </label>
     <label class="field">
-      <span>Sublevel</span>
+      <span data-i18n="sublevel">Sublevel</span>
       <select id="floor"></select>
     </label>
     <label class="field">
-      <span>Seed</span>
+      <span data-i18n="seed">Seed</span>
       <span class="seed-row">
-        <button type="button" id="prev" class="icon-btn" title="Previous seed" aria-label="Previous seed">&lsaquo;</button>
+        <button type="button" id="prev" class="icon-btn" data-i18n-title="prevSeed" title="Previous seed" aria-label="Previous seed">&lsaquo;</button>
         <input id="seed" inputmode="text" spellcheck="false" maxlength="10" pattern="(0x)?[0-9A-Fa-f]{1,8}" title="Up to 8 hex digits" required>
-        <button type="button" id="next" class="icon-btn" title="Next seed" aria-label="Next seed">&rsaquo;</button>
+        <button type="button" id="next" class="icon-btn" data-i18n-title="nextSeed" title="Next seed" aria-label="Next seed">&rsaquo;</button>
       </span>
     </label>
     <div class="buttons">
-      <button type="button" id="random">Random seed</button>
-      <button type="submit" id="go" class="primary">Generate</button>
+      <button type="button" id="random" data-i18n="random">Random seed</button>
+      <button type="submit" id="go" class="primary" data-i18n="generate">Generate</button>
     </div>
   </form>
 
-  <div id="status" class="status" role="status" aria-live="polite">Loading&hellip;</div>
+  <div id="status" class="status" role="status" aria-live="polite"></div>
 
   <section class="result" id="result" hidden>
     <div class="map-wrap">
       <div class="map-toolbar">
         <span id="title" class="map-title"></span>
         <span class="spacer"></span>
-        <label class="check"><input type="checkbox" id="water" checked> Water</label>
-        <label class="zoom">Zoom
+        <label class="check"><input type="checkbox" id="water" checked> <span data-i18n="water">Water</span></label>
+        <label class="zoom"><span data-i18n="zoom">Zoom</span>
           <select id="zoom">
-            <option value="fit" selected>Fit</option>
+            <option value="fit" selected data-i18n="fit">Fit</option>
             <option value="0.5">50%</option>
             <option value="1">100%</option>
             <option value="1.5">150%</option>
             <option value="2">200%</option>
           </select>
         </label>
-        <button type="button" id="copy-link">Copy link</button>
-        <button type="button" id="download">Save image</button>
+        <button type="button" id="copy-link" data-i18n="copyLink">Copy link</button>
+        <button type="button" id="download" data-i18n="saveImage">Save image</button>
       </div>
       <div class="map-scroll" id="map-scroll">
         <canvas id="map" aria-label="Cave layout"></canvas>
+        <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
       </div>
     </div>
     <aside class="summary" id="summary"></aside>
@@ -70,13 +74,7 @@
 </main>
 
 <footer class="site-footer">
-  <p>
-    CaveGen3's layouts are checked against
-    <a href="https://github.com/JHawk4/CaveGen">CaveGen</a> and
-    <a href="https://github.com/mayabyte/caveripper">Caveripper</a>.
-    <a href="https://github.com/JHawk4/CaveGen3">Source</a>.
-    Pikmin 2 is &copy; Nintendo; romhack data belongs to its authors.
-  </p>
+  <p id="footer-text"></p>
 </footer>
 
 <script src="app.js"></script>

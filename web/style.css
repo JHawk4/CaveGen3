@@ -154,3 +154,28 @@ body.embed .site-header, body.embed .site-footer, body.embed .summary { display:
 body.embed .result { grid-template-columns: minmax(0, 1fr); margin-bottom: 0; }
 body.embed main { padding: 8px; }
 body.embed .controls { padding: 8px; gap: 8px; }
+
+.title-row { display: flex; align-items: center; gap: 12px; }
+.lang-toggle { margin-left: auto; min-height: 32px; padding: 4px 12px; font-size: 0.9rem; }
+
+.summary li span:first-of-type { min-width: 0; overflow-wrap: anywhere; }
+.icon-gap { width: 24px; flex: none; }
+
+.map-scroll { position: relative; }
+.tooltip {
+  position: absolute;
+  z-index: 2;
+  max-width: 280px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(20, 22, 19, 0.92);
+  color: #f2f3ef;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+:lang(ja) body, html:lang(ja) {
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+}
