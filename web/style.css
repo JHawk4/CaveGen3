@@ -41,6 +41,8 @@
 }
 
 * { box-sizing: border-box; }
+/* Elements marked hidden stay hidden even when a class gives them a display (like .field). */
+[hidden] { display: none !important; }
 
 html { background: var(--bg); }
 body {
