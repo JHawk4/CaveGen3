@@ -176,6 +176,13 @@ impl Web {
         if let Some(out) = self.agg_command(&args) {
             return out;
         }
+        self.query(text)
+    }
+
+    /// The commands that don't change state (`judge`, `search`, `caveinfo`), callable from
+    /// several threads at once (the command-line tool searches in parallel).
+    pub fn query(&self, text: &str) -> Result<String, String> {
+        let args: Vec<&str> = text.split('\t').collect();
         let data = self.data()?;
         let arg = |i: usize| args.get(i).copied().ok_or_else(|| format!("{}: missing argument {i}", args[0]));
         let num = |i: usize| -> Result<u64, String> { arg(i)?.trim().parse().map_err(|_| format!("bad number {:?}", args[i])) };
@@ -202,10 +209,16 @@ impl Web {
                     q => Some(parse_query(q, &sublevel, data)?),
                 };
                 let (start, count, mode, keep) = (num(4)?, num(5)?, arg(6)?, num(7)? as usize);
+                // Optional: tally how many of something every tested seed has (CaveGen's -count).
+                let tally_what = args.get(8).map(|w| w.trim()).filter(|w| !w.is_empty() && *w != "-");
+                let mut tally: BTreeMap<u32, u64> = BTreeMap::new();
                 let mut best: Vec<(u32, f64)> = Vec::new();
                 let mut scores = Vec::new();
                 for i in 0..count {
                     let seed = seed_at(mode, start, i);
+                    if let Some(what) = tally_what {
+                        *tally.entry(Layout::generate(seed, ci).count(what)).or_default() += 1;
+                    }
                     if let Some(q) = &query
                         && !q.matches(seed, data)
                     {
@@ -227,11 +240,13 @@ impl Web {
                     }
                 }
                 let best: Vec<String> = best.iter().map(|(seed, s)| format!("[{seed},{}]", fnum(*s))).collect();
+                let tally: Vec<String> = tally.iter().map(|(k, n)| format!("[{k},{n}]")).collect();
                 Ok(format!(
-                    "{{\"tested\":{count},\"matched\":{},\"best\":[{}],\"scores\":[{}]}}",
+                    "{{\"tested\":{count},\"matched\":{},\"best\":[{}],\"scores\":[{}],\"counts\":[{}]}}",
                     scores.len(),
                     best.join(","),
-                    if judge.is_some() { scores.join(",") } else { String::new() }
+                    if judge.is_some() { scores.join(",") } else { String::new() },
+                    tally.join(",")
                 ))
             }
             "caveinfo" => Ok(caveinfo_json(caveinfo(1)?.1, data)),

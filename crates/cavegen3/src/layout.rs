@@ -152,6 +152,33 @@ impl<'a> Layout<'a> {
         generate::generate(seed, caveinfo)
     }
 
+    /// How many of something the layout has, for CaveGen's -count and stats: a teki or treasure
+    /// by internal name (any case; treasures carried by teki count), or "teki", "treasure",
+    /// "gate" or "onion" for every one of that kind.
+    pub fn count(&self, what: &str) -> u32 {
+        let what = what.trim().to_ascii_lowercase();
+        let what = what.trim_end_matches('s');
+        let is = |name: &str| name.eq_ignore_ascii_case(what) || name.to_ascii_lowercase().trim_end_matches('s') == what;
+        let mut n = 0;
+        for (so, _) in self.spawn_objects() {
+            n += match so {
+                SpawnObject::Teki(info, _) => {
+                    u32::from(what == "teki" || is(&info.internal_name))
+                        + u32::from(info.carrying.as_deref().is_some_and(|c| what == "treasure" || is(c)))
+                }
+                SpawnObject::CapTeki(info, count) => {
+                    let teki = if what == "teki" || is(&info.internal_name) { *count } else { 0 };
+                    teki + u32::from(info.carrying.as_deref().is_some_and(|c| what == "treasure" || is(c)))
+                }
+                SpawnObject::Item(info) => u32::from(what == "treasure" || is(&info.internal_name)),
+                SpawnObject::Gate(..) => u32::from(what == "gate"),
+                SpawnObject::Onion(_) => u32::from(what == "onion"),
+                _ => 0,
+            };
+        }
+        n
+    }
+
     /// The doors of one unit.
     pub fn unit_doors(&self, unit: usize) -> &[PlacedDoor<'a>] {
         &self.doors[self.units[unit].door_indices()]

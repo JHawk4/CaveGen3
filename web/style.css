@@ -265,6 +265,15 @@ body.embed .controls { padding: 8px; gap: 8px; }
 #query { width: 100%; font-family: ui-monospace, Consolas, monospace; }
 #search-go { align-self: flex-start; }
 .search .status { margin: 0; }
+.count-results { display: flex; flex-direction: column; gap: 2px; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.count-results:empty { display: none; }
+.count-title { color: var(--muted); margin-bottom: 2px; }
+.count-row { display: grid; grid-template-columns: 2.5em minmax(0, 1fr) 4em; gap: 8px; align-items: center; }
+.count-k { text-align: right; font-weight: 700; }
+.count-bar { height: 10px; background: var(--field); border-radius: 3px; overflow: hidden; }
+.count-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--leaf), var(--leaf-2)); }
+.count-pct { text-align: right; color: var(--muted); }
+#count-what { font-family: ui-monospace, Consolas, monospace; }
 .search-results {
   margin: 0;
   padding-left: 2.2em;

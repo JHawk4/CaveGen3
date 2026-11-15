@@ -121,8 +121,12 @@
           <label class="field" data-i18n-tip="query"><span><span data-i18n="query">Query (optional)</span> · <a href="https://github.com/mayabyte/caveripper/blob/main/QUERY.md" target="_blank" rel="noopener" data-i18n="querySyntax">syntax</a></span>
             <input id="query" spellcheck="false" autocomplete="off">
           </label>
+          <label class="field" data-i18n-tip="countWhat"><span data-i18n="countWhat">Count (optional)</span>
+            <input id="count-what" spellcheck="false" autocomplete="off" placeholder="treasure, minihoudai, …">
+          </label>
           <button type="button" id="search-go" class="primary">Search</button>
           <p id="search-status" class="status" role="status" aria-live="polite"></p>
+          <div id="count-results" class="count-results"></div>
           <ol id="search-results" class="search-results"></ol>
         </fieldset>
       </div>

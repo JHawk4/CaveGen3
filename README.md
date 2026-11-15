@@ -38,20 +38,32 @@ their in-game names in either language. Hover over or tap an icon on the map to 
   fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants,
   gates, gate HP (written on each gate) or exits; show only the comedown, water, a grid and the
   treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
-  for plants, rings for easy teki), facing directions, the game's unit, door, treasure and hole
-  scores, teki scores, door links and numbers, waypoints and treasure carry paths.
-- **Treasure gauge** shades the floor by how high the gauge's needle would be there, from pale
-  yellow at the edge of its range to deep red beside a treasure, one shade per step of CaveGen's
+  for plants, rings for easy teki), spawn order (CaveGen's `-drawSpawnOrder`), carry distances
+  (`-drawPathDists`), the pod's facing (`-drawPodAngle`), facing directions, the game's unit,
+  door, treasure and hole scores, teki scores, door links and numbers, waypoints and treasure
+  carry paths.
+- **QuickGlance** puts CaveGen's colored discs behind what matters (the pod, treasures, the exit,
+  Gatling Groinks, Candypop Buds, Onions); **Pretty** draws the vanilla map units as CaveGen's
+  pictures of the real floor (`data/resources/pretty`, converted to WebP) instead of radar images.
+- **Colossal Caverns options** (shown only for Colossal Caverns): CaveGen's `-ultraRandomizer`,
+  `-extraUnits` (Pikmin 251's units too) and `-5onion`. In links and on the command line they're
+  suffixes on the name: `colossal+ultra+extra+5onion`. They're checked against CaveGen for 20
+  seeds of each and of all three together.
+- **Treasure gauge** shades the floor by how high the gauge's needle would be there: yellow
+  while it reads below 0.3, orange from 0.3 and red from 0.8, deeper at each step of CaveGen's
   gauge marks. Per the game's code (`OtakaraSensor::calcLevel`, `Radar::Mgr::calcNearestTreasure`)
   the needle reads 0.05 + 0.95 (1 − d/900)² for the nearest treasure, with d the flat distance
   minus the treasure's bounding radius. Treasures carried by teki use the teki's position with no
   extra radius, since teki sizes aren't in the data.
 - **Judge**: score the layout with any of CaveGen's judges (`score`, `pod`, `at`, `attk`,
   `cmat`, `key`, `colossal`, `mapunitcount`).
-- **Seed search**: test thousands of seeds (counting up from the seed, or random) and list the
-  best by the judge, with each one's rank among the seeds tested, or the seeds matching a
-  [Caveripper-style query](https://github.com/mayabyte/caveripper/blob/main/QUERY.md) such as
-  `hole carry dist < 1000`. Click a seed to open it.
+- **Seed search**: test thousands of seeds (counting up from the seed, random, or game-RNG
+  steps) and list the best by the judge, with each one's rank among the seeds tested, or the
+  seeds matching a [Caveripper-style query](https://github.com/mayabyte/caveripper/blob/main/QUERY.md)
+  such as `hole carry dist < 1000`, with the share that matched (Caveripper's `stats`). **Count**
+  tallies how many of something each seed has (CaveGen's `-count`), e.g. `minihoudai` or
+  `treasure`, and shows the distribution. Click a seed to open it; the search pauses while it
+  draws.
 - **CaveInfo**, below the map, laid out like Caveripper's caveinfo: the pod, exit and gates,
   the limits, a box per spawn group with each teki's minimum and weight (`x2 w10`), the
   treasures with their value and carry counts, and the map units' radar images.
@@ -82,8 +94,10 @@ The seed buttons can step through the game's RNG instead of counting by one (Cav
 the ones that look alike, and draws each group with how often each treasure, teki, gate and exit
 spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's default), the rooms
 only, or the first room placed, as in CaveGen, or by **comedown**: what the camera shows when you
-land, either the map units alone or the map units and the objects in view. Find the group that
-matches your landing to see where the treasures probably are. Gray cells show how often other map
+land, either the map units alone (the default) or the map units and the objects in view. Find
+the group that matches your landing to see where the treasures probably are. The landing view is
+large (about 1,400 by 1,200 units), so grouping by the objects in view too makes almost every
+seed its own group; the map units alone give a few dozen groups per floor. Gray cells show how often other map
 units were there.
 
 Rotations don't split groups: the same arrangement turned any way is one group (CaveGen only
@@ -121,30 +135,41 @@ GitHub Actions publishes it on every push to `main` (`.github/workflows/pages.ym
 
 ## Command line
 
-`cavegen3` generates layouts and saves them as PNG images, drawn the same way as the web
-page's map (same icons, overlays and comedown view). Build it once:
+`cavegen3` does everything the web page does from a terminal: layout and aggregator images as
+PNG, and CaveInfo, judges, searches, stats and counts as text (or JSON). Build it once:
 
 ```
 cargo build --release -p cavegen3-cli
 ```
 
-Then run `target/release/cavegen3` (`cavegen3.exe` on Windows):
+Then run `target/release/cavegen3` (`cavegen3.exe` on Windows). With no command it draws layouts:
 
 ```
 cavegen3 SCx-6 1234ABCD                      # one image: output/SCx6_1234ABCD.png
-cavegen3 BK-4 --count 100 --seeds r -o bk4   # 100 random seeds into bk4/
+cavegen3 BK-4 -n 100 --seeds r -o bk4        # 100 random seeds into bk4/
 cavegen3 SCx-6 1234ABCD --comedown           # only what you see when you land
-cavegen3 FC-3 0 --show spawnpoints,doorScores,grid --hide water
+cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 cavegen3 251:AT-2 5                          # romhacks take a game prefix
+cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
 ```
 
-- The seed is hex; leave it out for a random one. `--count` draws more: `--seeds c` counts up
-  by one, `g` steps the game's RNG (CaveGen's `-consecutiveSeeds`), `r` picks random seeds.
-  Images are drawn in parallel.
-- `--show` and `--hide` take the web page's map options (`cavegen3 --list-options`):
-  treasures, teki, plants, gates, exits and water are on by default.
-- `--scale 2` doubles the size (1 is 40 pixels per grid cell); `--screen 4:3` sets the
-  comedown's screen shape.
+| Command | What it does |
+|---|---|
+| `caves [game]` | Lists the caves and how to name their sublevels. |
+| `caveinfo FC-3` | The floor's limits, teki (min, weight, group, what they carry), treasures (value, carry counts), gates, alcove teki and map units. `--json` for the raw data. |
+| `judge BK-4 pod 1234ABCD [more seeds]` | Scores seeds with one of CaveGen's judges. |
+| `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
+| `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
+| `count SCx-7 minihoudai` | How many of something each seed has, as a distribution (CaveGen's `-count`). |
+| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group comedown-units`, `comedown`, `layout`, `rooms`, `first`), with what spawned at each spot and how often. |
+| `options` | Lists the map options for `--show` and `--hide`. |
+
+- Seeds are hex; leave the seed out for a random one. `--seeds c` counts up by one, `g` steps
+  the game's RNG (CaveGen's `-consecutiveSeeds`), `r` picks random seeds; `--start` sets where
+  `c` and `g` begin. Searches use every CPU core (about 60,000 judged layouts a second).
+- `--show` and `--hide` take the web page's map options; treasures, teki, plants, gates, gate
+  HP, exits and water are on by default. `--scale 2` doubles the size (1 is 40 pixels per grid
+  cell); `--screen 4:3` sets the comedown's screen shape.
 - It reads the repository's `data` folder; set `CAVEGEN3_DATA` or `--data` to use another.
 
 ## In-game names
@@ -166,7 +191,7 @@ treasures and teki show their internal names.
 | 1. Repo, bundled data, RNG and math, Caveripper as a test reference | Done |
 | 2. New generator matching CaveGen and Caveripper | Done |
 | 3. Waypoints, judge, queries and parallel search (library) | Done |
-| 4. Rendering and the full CLI (generate, caveinfo, search, search-from, search-special, stats, filter, judge) | In progress (PNG images done) |
+| 4. Rendering and the full CLI (generate, caveinfo, judge, search, stats, count, aggregate) | Done |
 | 5. Web page | Done (layouts, map overlays, judges, seed search, CaveInfo, aggregator) |
 | 6. Discord bot | Planned |
 

@@ -24,6 +24,8 @@ const UNIT: f32 = 170.0;
 #[derive(Deserialize)]
 pub struct Layout {
     pub sublevel: String,
+    pub long_name: String,
+    pub game: String,
     pub seed: String,
     pub width: f32,
     pub height: f32,
@@ -76,6 +78,10 @@ pub struct Object {
     /// A treasure that starts fully under the ground.
     #[serde(default)]
     pub buried: bool,
+    /// When it was placed, counting the map units first (with the generator's details).
+    pub order: Option<usize>,
+    /// How far it's carried to the pod, in tens of units (with the generator's details).
+    pub path_dist: Option<u32>,
 }
 
 impl Object {
@@ -150,6 +156,16 @@ pub struct Options {
     pub gauge: bool,
     pub grid: bool,
     pub comedown_box: bool,
+    /// CaveGen's -drawSpawnOrder: map units and objects numbered in placement order.
+    pub spawn_order: bool,
+    /// CaveGen's -drawPathDists: carry distances in tens of units.
+    pub path_dists: bool,
+    /// CaveGen's -drawPodAngle: an arrow for the pod's facing.
+    pub pod_angle: bool,
+    /// CaveGen's QuickGlance: translucent discs behind what matters.
+    pub quick_glance: bool,
+    /// CaveGen's Pretty: rendered floor pictures for the vanilla map units.
+    pub pretty: bool,
     /// Draw only what the camera shows on landing, turned so the camera faces up.
     pub comedown: bool,
     /// The screen's width over its height, for the comedown.
@@ -182,6 +198,11 @@ impl Default for Options {
             gauge: false,
             grid: false,
             comedown_box: false,
+            spawn_order: false,
+            path_dists: false,
+            pod_angle: false,
+            quick_glance: false,
+            pretty: false,
             comedown: false,
             aspect: 16.0 / 9.0,
             scale: 1.0,
@@ -212,6 +233,11 @@ pub const OPTION_NAMES: &[&str] = &[
     "gauge",
     "grid",
     "comedownBox",
+    "spawnOrder",
+    "pathDists",
+    "podAngle",
+    "quickGlance",
+    "pretty",
 ];
 
 impl Options {
@@ -244,6 +270,11 @@ impl Options {
             "gauge" => &mut self.gauge,
             "grid" => &mut self.grid,
             "comedownbox" => &mut self.comedown_box,
+            "spawnorder" => &mut self.spawn_order,
+            "pathdists" => &mut self.path_dists,
+            "podangle" => &mut self.pod_angle,
+            "quickglance" => &mut self.quick_glance,
+            "pretty" => &mut self.pretty,
             _ => return Err(format!("unknown map option {name:?}; the options are {}", OPTION_NAMES.join(", "))),
         };
         *field = on;
@@ -252,7 +283,9 @@ impl Options {
 
     /// Whether the layout needs the generator's details (spawn points, doors, scores, paths).
     pub fn needs_details(&self) -> bool {
-        self.spawnpoints
+        self.spawn_order
+            || self.path_dists
+            || self.spawnpoints
             || self.angles
             || self.unit_scores
             || self.spawn_scores
@@ -448,6 +481,20 @@ impl Assets {
         self.image(&format!("treasure/{game}/{n}"), &candidates, |_| {})
     }
 
+    /// CaveGen's "pretty" picture of a vanilla map unit, or a floor background.
+    pub fn pretty(&self, name: &str) -> Option<Arc<Pixmap>> {
+        let key = format!("pretty/{}", name.to_ascii_lowercase());
+        if let Some(img) = self.images.lock().unwrap().get(&key) {
+            return img.clone();
+        }
+        let img = self
+            .find("resources/pretty", &format!("{name}.webp"))
+            .and_then(|p| load_webp(&p))
+            .map(Arc::new);
+        self.images.lock().unwrap().insert(key, img.clone());
+        img
+    }
+
     pub fn special(&self, name: &str) -> Option<Arc<Pixmap>> {
         let candidates = [("resources/enemytex_special".to_string(), format!("{name}.png"))];
         self.image(&format!("special/{}", name.to_ascii_lowercase()), &candidates, |_| {})
@@ -471,6 +518,16 @@ impl Assets {
         self.images.lock().unwrap().insert(key, img.clone());
         img
     }
+}
+
+/// Decodes a WebP picture into a premultiplied pixmap.
+fn load_webp(path: &Path) -> Option<Pixmap> {
+    let img = image::open(path).ok()?.to_rgba8();
+    let mut p = Pixmap::new(img.width(), img.height())?;
+    for (px, c) in p.pixels_mut().iter_mut().zip(img.pixels()) {
+        *px = tiny_skia::ColorU8::from_rgba(c[0], c[1], c[2], c[3]).premultiply();
+    }
+    Some(p)
 }
 
 /// Radar images: opaque ones (CaveGen's, used for the romhacks) get their shading as alpha like
@@ -523,6 +580,49 @@ const GAUGE_SHADES: [(u8, u8, u8, f32); 10] = [
     (220, 40, 40, 0.55),
     (190, 15, 40, 0.62),
 ];
+
+/// CaveGen's QuickGlance disc color for an object, at alpha 100/255, or None.
+fn quick_glance_color(o: &Object, colossal: bool) -> Option<Color> {
+    let a = 100.0 / 255.0;
+    let name = o.name().to_ascii_lowercase();
+    let c = |r, g, b| Some(rgba(r, g, b, a));
+    match o.kind.as_str() {
+        "ship" => c(255, 30, 30),
+        "hole" | "geyser" => c(0, 140, 60),
+        "onion" => match o.color.unwrap_or(0) {
+            0 => c(0, 0, 255),
+            1 => c(255, 0, 0),
+            2 => c(255, 255, 0),
+            3 => c(160, 0, 255),
+            _ => c(60, 60, 60),
+        },
+        // Colossal Caverns marks only its buried treasures, in green.
+        "treasure" if colossal => {
+            if o.buried {
+                c(60, 255, 120)
+            } else {
+                None
+            }
+        }
+        "treasure" => c(220, 120, 0),
+        "teki" => {
+            if (o.carrying.is_some() && (name != "blackman" || colossal)) || name == "bigtreasure" {
+                c(220, 120, 0)
+            } else if name == "minihoudai" || (colossal && name == "kumachappy") {
+                c(255, 130, 220)
+            } else if colossal && name == "leafchappy" {
+                c(60, 255, 120)
+            } else if name == "blackpom" {
+                c(160, 0, 255)
+            } else if name == "whitepom" {
+                c(60, 60, 60)
+            } else {
+                None
+            }
+        }
+        _ => None,
+    }
+}
 
 // ---- Drawing ----
 
@@ -795,20 +895,56 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
         assets,
     };
 
+    // Pretty: CaveGen's floor backdrop for toy and grassy caves, under the pictures.
+    if opts.pretty {
+        let first = layout.units.first().map(|u| u.name.to_ascii_lowercase()).unwrap_or_default();
+        let bg = if first.contains("toy") {
+            assets.pretty("toy_bg")
+        } else if first.contains("kusachi") {
+            assets.pretty("kusachi_bg")
+        } else {
+            None
+        };
+        if let Some(bg) = bg {
+            let pattern = tiny_skia::Pattern::new(
+                bg.as_ref().as_ref(),
+                tiny_skia::SpreadMode::Repeat,
+                FilterQuality::Bilinear,
+                1.0,
+                Transform::identity(),
+            );
+            let paint = Paint {
+                shader: pattern,
+                ..Paint::default()
+            };
+            if let Some(rect) = Rect::from_xywh(0.0, 0.0, layout.width * cell, layout.height * cell) {
+                cv.pixmap.fill_rect(rect, &paint, cv.base, cv.mask.as_ref());
+            }
+        }
+    }
+
     // Map units, turned clockwise in quarter turns like the game's radar images.
     for u in &layout.units {
         let (cx, cz) = ((u.x + u.w / 2.0) * cell, (u.z + u.h / 2.0) * cell);
-        match assets.unit(&u.name, &u.game) {
+        let pretty = if opts.pretty { assets.pretty(&u.name) } else { None };
+        let is_pretty = pretty.is_some();
+        match pretty.or_else(|| assets.unit(&u.name, &u.game)) {
             Some(img) => {
                 let (w0, h0) = if u.rot % 2 == 1 { (u.h, u.w) } else { (u.w, u.h) };
+                // A picture is drawn a pixel larger so neighbors meet, and smoothed.
+                let extra = if is_pretty { 1.0 } else { 0.0 };
                 let t = cv
                     .base
                     .pre_translate(cx, cz)
                     .pre_concat(Transform::from_rotate(u.rot as f32 * 90.0))
                     .pre_translate(-w0 * cell / 2.0, -h0 * cell / 2.0)
-                    .pre_scale(w0 * cell / img.width() as f32, h0 * cell / img.height() as f32);
+                    .pre_scale((w0 * cell + extra) / img.width() as f32, (h0 * cell + extra) / img.height() as f32);
                 let pp = PixmapPaint {
-                    quality: FilterQuality::Nearest,
+                    quality: if is_pretty {
+                        FilterQuality::Bilinear
+                    } else {
+                        FilterQuality::Nearest
+                    },
                     ..PixmapPaint::default()
                 };
                 cv.pixmap.draw_pixmap(0, 0, img.as_ref().as_ref(), &pp, t, cv.mask.as_ref());
@@ -880,6 +1016,15 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
                 Transform::identity(),
                 cv.mask.as_ref(),
             );
+        }
+    }
+
+    if opts.quick_glance {
+        let colossal = layout.sublevel.to_ascii_lowercase().starts_with("colossal");
+        for o in &layout.objects {
+            if let Some(c) = quick_glance_color(o, colossal) {
+                cv.fill_circle(to_px(o.x), to_px(o.z), cell * 0.625, c);
+            }
         }
     }
 
@@ -1062,7 +1207,61 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
         }
     }
 
+    // The pod's facing alone (CaveGen's -drawPodAngle); "angles" already draws it.
+    if opts.pod_angle && !opts.angles {
+        if let Some(ship) = layout.objects.iter().find(|o| o.kind == "ship") {
+            if let Some(a) = ship.angle {
+                cv.facing(to_px(ship.x), to_px(ship.z), a, cell * 0.6, hex("#ffe14d"));
+            }
+        }
+    }
+
     // Numbers on top of everything.
+    if opts.spawn_order {
+        let mut pb = PathBuilder::new();
+        for u in &layout.units {
+            if let Some(r) = Rect::from_xywh(u.x * cell, u.z * cell, u.w * cell, u.h * cell) {
+                pb.push_rect(r);
+            }
+        }
+        cv.stroke_path(pb, rgba(0, 225, 225, 0.6), &stroke(thin));
+        for (i, u) in layout.units.iter().enumerate() {
+            cv.label(
+                &i.to_string(),
+                u.x * cell + cell * 0.08,
+                (u.z + u.h) * cell - cell * 0.2,
+                hex("#00ffff"),
+                label_size,
+                true,
+            );
+        }
+        for o in layout.objects.iter().filter(|o| opts.shows(o)) {
+            if let Some(n) = o.order {
+                cv.label(
+                    &n.to_string(),
+                    to_px(o.x) - cell * 0.38,
+                    to_px(o.z) + cell * 0.38,
+                    hex("#00ffff"),
+                    label_size,
+                    false,
+                );
+            }
+        }
+    }
+    if opts.path_dists {
+        for o in carried.iter().filter(|o| opts.shows(o)) {
+            if let Some(d) = o.path_dist {
+                cv.label(
+                    &d.to_string(),
+                    to_px(o.x) + cell * 0.1,
+                    to_px(o.z) - cell * 0.12,
+                    hex("#c79bff"),
+                    label_size,
+                    true,
+                );
+            }
+        }
+    }
     if opts.unit_scores || opts.teki_scores {
         for u in &layout.units {
             let (cx, cz) = ((u.x + u.w / 2.0) * cell, (u.z + u.h / 2.0) * cell);
@@ -1122,6 +1321,264 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
                 let dz2 = if opts.door_ids { cell * 0.25 } else { 0.0 };
                 cv.label(&d.score.to_string(), x, z + dz2, hex("#5ad2ff"), label_size, false);
             }
+        }
+    }
+    Ok(cv.pixmap)
+}
+
+// ---- Aggregator groups ----
+
+/// The aggregator's result, as the web crate's `agg_result` describes it.
+#[derive(Deserialize)]
+pub struct AggResult {
+    pub total: u64,
+    pub groups_total: u64,
+    pub dropped: u64,
+    /// The comedown view: near, far, near half-width, far half-width.
+    pub view: [f32; 4],
+    pub groups: Vec<AggGroup>,
+}
+
+#[derive(Deserialize)]
+pub struct AggGroup {
+    pub count: u64,
+    pub seeds: Vec<u32>,
+    /// The pod's position and facing in the group's frame, for comedown groupings.
+    pub pod: Option<[f32; 4]>,
+    pub units: Vec<AggUnit>,
+    /// Spots: position and (object id, how many seeds had it there).
+    pub spots: Vec<(f32, f32, Vec<(String, u64)>)>,
+    /// Half-cell grid positions other units covered, and how often.
+    pub cells: Vec<(f32, f32, u64)>,
+}
+
+#[derive(Deserialize)]
+pub struct AggUnit {
+    pub name: String,
+    pub game: String,
+    pub x: f32,
+    pub z: f32,
+    pub w: f32,
+    pub h: f32,
+    pub rot: u32,
+}
+
+/// What an aggregator group map shows.
+pub struct AggOptions {
+    pub treasures: bool,
+    pub teki: bool,
+    pub gates: bool,
+    pub exits: bool,
+    /// Hide objects at a spot in fewer than this share of the group's seeds.
+    pub min_share: f64,
+    pub scale: f32,
+    /// The game the sublevel belongs to, for icons.
+    pub game: String,
+}
+
+/// An aggregator object id: "t:Name|Carry", "i:Name", "g", "h", "y" or "s".
+pub enum AggObject {
+    Teki { name: String, carry: Option<String> },
+    Treasure(String),
+    Gate,
+    Hole,
+    Geyser,
+    Ship,
+}
+
+impl AggObject {
+    pub fn parse(id: &str) -> AggObject {
+        if let Some(rest) = id.strip_prefix("t:") {
+            let (name, carry) = match rest.split_once('|') {
+                Some((n, c)) if !c.is_empty() => (n.to_string(), Some(c.to_string())),
+                Some((n, _)) => (n.to_string(), None),
+                None => (rest.to_string(), None),
+            };
+            return AggObject::Teki { name, carry };
+        }
+        if let Some(name) = id.strip_prefix("i:") {
+            return AggObject::Treasure(name.to_string());
+        }
+        match id {
+            "g" => AggObject::Gate,
+            "h" => AggObject::Hole,
+            "y" => AggObject::Geyser,
+            _ => AggObject::Ship,
+        }
+    }
+
+    pub fn shown(&self, o: &AggOptions) -> bool {
+        match self {
+            AggObject::Treasure(_) => o.treasures,
+            AggObject::Teki { carry, .. } => o.teki || (carry.is_some() && o.treasures),
+            AggObject::Gate => o.gates,
+            _ => o.exits,
+        }
+    }
+}
+
+/// A share of `total` as the aggregator page writes it: "37", "4.2" or "0.3".
+pub fn pct(n: u64, total: u64) -> String {
+    let p = 100.0 * n as f64 / total.max(1) as f64;
+    if p >= 10.0 {
+        format!("{}", p.round())
+    } else if p >= 1.0 {
+        format!("{p:.1}")
+    } else {
+        // One significant digit, like JavaScript's toPrecision(1).
+        format!("{p:.0e}")
+            .parse::<f64>()
+            .map(|v| format!("{v}"))
+            .unwrap_or_else(|_| format!("{p:.2}"))
+    }
+}
+
+/// Draws one aggregator group, like the aggregator page's map for it.
+pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, assets: &Assets) -> Result<Pixmap, String> {
+    let cell = CELL * opts.scale;
+    let px = |v: f32| v / UNIT * cell;
+    // The comedown trapezoid in the group's frame.
+    let comedown = group.pod.map(|[x, z, fx, fz]| {
+        let [near, far, near_half, far_half] = view;
+        let r = (-fz, fx);
+        let at = |ahead: f32, side: f32| (x + fx * ahead + r.0 * side, z + fz * ahead + r.1 * side);
+        [at(near, -near_half), at(near, near_half), at(far, far_half), at(far, -far_half)]
+    });
+    // Its extent: units, cells others covered, spots and view, plus half a cell.
+    let (mut x0, mut z0, mut x1, mut z1) = (f32::INFINITY, f32::INFINITY, f32::NEG_INFINITY, f32::NEG_INFINITY);
+    let mut grow = |x: f32, z: f32, r: f32| {
+        x0 = x0.min(x - r);
+        z0 = z0.min(z - r);
+        x1 = x1.max(x + r);
+        z1 = z1.max(z + r);
+    };
+    for u in &group.units {
+        grow(u.x - u.w * 85.0, u.z - u.h * 85.0, 0.0);
+        grow(u.x + u.w * 85.0, u.z + u.h * 85.0, 0.0);
+    }
+    for &(cx, cz, _) in &group.cells {
+        grow(cx * 85.0, cz * 85.0, 85.0);
+    }
+    for (x, z, _) in &group.spots {
+        grow(*x, *z, 85.0);
+    }
+    for (x, z) in comedown.into_iter().flatten() {
+        grow(x, z, 0.0);
+    }
+    if !x0.is_finite() {
+        return Err("empty group".into());
+    }
+    let (x0, z0, x1, z1) = (x0 - 85.0, z0 - 85.0, x1 + 85.0, z1 + 85.0);
+    let (w, h) = (px(x1 - x0), px(z1 - z0));
+    let mut pixmap = Pixmap::new(w.round().max(1.0) as u32, h.round().max(1.0) as u32).ok_or("the image would be too large")?;
+    pixmap.fill(hex("#0f0f0f"));
+    let mut cv = Canvas {
+        pixmap,
+        base: Transform::from_translate(px(-x0), px(-z0)),
+        mask: None,
+        upright: 0.0,
+        alpha: 1.0,
+        assets,
+    };
+
+    // How often other units covered each cell.
+    for &(cx, cz, n) in &group.cells {
+        let a = 0.08 + 0.45 * (n as f32 / group.count.max(1) as f32);
+        cv.fill_rect(px(cx * 85.0 - 85.0), px(cz * 85.0 - 85.0), cell, cell, rgba(200, 200, 200, a));
+    }
+    // The group's own map units.
+    for u in &group.units {
+        match assets.unit(&u.name, &u.game) {
+            Some(img) => {
+                let (w0, h0) = if u.rot % 2 == 1 { (u.h, u.w) } else { (u.w, u.h) };
+                let t = cv
+                    .base
+                    .pre_translate(px(u.x), px(u.z))
+                    .pre_concat(Transform::from_rotate(u.rot as f32 * 90.0))
+                    .pre_translate(-w0 * cell / 2.0, -h0 * cell / 2.0)
+                    .pre_scale(w0 * cell / img.width() as f32, h0 * cell / img.height() as f32);
+                let pp = PixmapPaint {
+                    quality: FilterQuality::Nearest,
+                    ..PixmapPaint::default()
+                };
+                cv.pixmap.draw_pixmap(0, 0, img.as_ref().as_ref(), &pp, t, None);
+            }
+            None => cv.fill_rect(
+                px(u.x) - u.w * cell / 2.0,
+                px(u.z) - u.h * cell / 2.0,
+                u.w * cell,
+                u.h * cell,
+                hex("#333"),
+            ),
+        }
+    }
+    // What the camera sees when you land.
+    if let Some(corners) = comedown {
+        let mut pb = PathBuilder::new();
+        for (i, (x, z)) in corners.into_iter().enumerate() {
+            if i == 0 {
+                pb.move_to(px(x), px(z));
+            } else {
+                pb.line_to(px(x), px(z));
+            }
+        }
+        pb.close();
+        let mut s = stroke((cell / 16.0).max(1.5));
+        s.dash = StrokeDash::new(vec![cell / 4.0, cell / 6.0], 0.0);
+        cv.stroke_path(pb, hex("#ffe14d"), &s);
+    }
+    // Each spot's objects, stacked, sized by how often they spawned there; likeliest on top.
+    let mut spots: Vec<(f32, f32, Vec<(AggObject, u64)>)> = group
+        .spots
+        .iter()
+        .map(|(x, z, objs)| {
+            let items = objs
+                .iter()
+                .map(|(id, n)| (AggObject::parse(id), *n))
+                .filter(|(o, n)| o.shown(opts) && *n as f64 / group.count.max(1) as f64 >= opts.min_share)
+                .collect::<Vec<_>>();
+            (*x, *z, items)
+        })
+        .filter(|(_, _, items)| !items.is_empty())
+        .collect();
+    spots.sort_by_key(|(_, _, items)| items[0].1);
+    for (sx, sz, items) in &spots {
+        let sizes: Vec<f32> = items
+            .iter()
+            .map(|(_, n)| cell * 0.55 * (0.5 + 0.5 * (*n as f32 / group.count.max(1) as f32)))
+            .collect();
+        let mut y = px(*sz) - sizes.iter().sum::<f32>() / 2.0;
+        let x = px(*sx);
+        for ((o, n), size) in items.iter().zip(&sizes) {
+            let cy = y + size / 2.0;
+            let img = match o {
+                AggObject::Teki { name, .. } => assets.teki(name, &opts.game),
+                AggObject::Treasure(name) => assets.treasure(name, &opts.game),
+                AggObject::Gate => assets.special("Gray_bramble_gate_icon"),
+                AggObject::Hole => assets.special("Cave_icon"),
+                AggObject::Geyser => assets.special("Geyser_icon"),
+                AggObject::Ship => assets.special("pod_icon"),
+            };
+            if !cv.icon(img, x, cy, *size, None) {
+                let color = if matches!(o, AggObject::Treasure(_)) { "#c70" } else { "#7a2a8a" };
+                cv.fill_circle(x, cy, size / 2.5, hex(color));
+            }
+            if let AggObject::Teki { carry: Some(c), .. } = o {
+                cv.icon(assets.treasure(c, &opts.game), x + size * 0.4, cy + size * 0.35, size * 0.6, None);
+            }
+            if cell >= 14.0 {
+                let gold = matches!(o, AggObject::Treasure(_) | AggObject::Teki { carry: Some(_), .. });
+                let color = if gold { hex("#ffd75a") } else { Color::WHITE };
+                cv.label(
+                    &format!("{}%", pct(*n, group.count)),
+                    x + size / 2.0 + 1.0,
+                    cy,
+                    color,
+                    (cell * 0.24).max(9.0),
+                    true,
+                );
+            }
+            y += size;
         }
     }
     Ok(cv.pixmap)

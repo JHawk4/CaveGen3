@@ -421,13 +421,15 @@ async function runAgg() {
     await command("agg_start", sublevel, grouping, shape.near, shape.far, shape.nearHalf, shape.farHalf, periods);
     let doneSeeds = 0;
     let chunk = 50;
+    let chunkStart = startAt;
     let lastShown = performance.now();
     const max = Number($("agg-max").value) || 20;
     while (doneSeeds < total && !run.stopped) {
       const n = Math.min(chunk, total - doneSeeds);
       const t = performance.now();
-      await command("agg_run", startAt + doneSeeds, n, mode);
+      await command("agg_run", chunkStart, n, mode);
       doneSeeds += n;
+      chunkStart = nextChunkStart(mode, chunkStart, n);
       chunk = Math.max(10, Math.min(100000, Math.round((n * 80) / Math.max(1, performance.now() - t))));
       setStatus(T.aggRunning(doneSeeds, total));
       // Show the groups so far every couple of seconds on long runs.

@@ -153,7 +153,10 @@ const STRINGS = {
       `Tested ${tested.toLocaleString()} seeds in ${s} s` + (matched === null ? "." : `; ${matched.toLocaleString()} matched.`),
     searchStopped: (tested) => `Stopped after ${tested.toLocaleString()} seeds.`,
     noMatches: "No seeds matched.",
-    needJudgeOrQuery: "Pick a judge or write a query first.",
+    needJudgeOrQuery: "Pick a judge, write a query, or name something to count first.",
+    countWhat: "Count (optional)",
+    matchedShare: (matched, tested) => `${matched.toLocaleString()} of ${tested.toLocaleString()} seeds matched (${((100 * matched) / Math.max(1, tested)).toFixed(2)}%).`,
+    countTitle: (what, tested) => `How many ${what} (${tested.toLocaleString()} seeds)`,
     rank: (pct) => `top ${pct}%`,
     querySyntax: "syntax",
     tips: {
@@ -169,6 +172,7 @@ const STRINGS = {
       searchCount: "How many seeds to generate and check",
       searchMode: "Up from the seed (+1 each), random, or each next seed in the game's RNG",
       keep: "How many of the best seeds to list",
+      countWhat: "Tally how many of something each tested seed has, like CaveGen's -count: a teki or treasure by internal name (minihoudai, ahiru), or teki, treasure, gate or onion. Searching then tests every seed",
       query: "Keep only seeds matching this condition, in Caveripper's query language, e.g. hole carry dist < 1000. The sublevel can be left out",
       caveInfo: "What this sublevel can generate: its limits, and the weights the generator picks teki, treasures and map units by",
       opt: {
@@ -398,7 +402,10 @@ const STRINGS = {
       (matched === null ? "ました。" : `、${matched.toLocaleString()} 件が条件に合いました。`),
     searchStopped: (tested) => `${tested.toLocaleString()} シードで停止しました。`,
     noMatches: "条件に合うシードはありませんでした。",
-    needJudgeOrQuery: "先に評価を選ぶか、条件を入力してください。",
+    needJudgeOrQuery: "先に評価を選ぶか、条件か数えるものを入力してください。",
+    countWhat: "数える（任意）",
+    matchedShare: (matched, tested) => `${tested.toLocaleString()} シード中 ${matched.toLocaleString()} が条件に合いました（${((100 * matched) / Math.max(1, tested)).toFixed(2)}%）。`,
+    countTitle: (what, tested) => `${what} の数（${tested.toLocaleString()} シード）`,
     rank: (pct) => `上位 ${pct}%`,
     querySyntax: "書き方",
     tips: {
@@ -414,6 +421,7 @@ const STRINGS = {
       searchCount: "生成して調べるシードの数",
       searchMode: "シードから+1ずつ、ランダム、またはゲームの乱数で次々のシード",
       keep: "一覧に出す上位のシードの数",
+      countWhat: "調べた各シードに何がいくつあるかを数えます（CaveGenの -count）。内部名（minihoudai, ahiru など）か、teki・treasure・gate・onion。指定するとすべてのシードを調べます",
       query: "Caveripperの検索条件に合うシードだけを残します（例：hole carry dist < 1000）。階の名前は省略できます",
       caveInfo: "この階で生成されうるもの：上限と、原生生物・お宝・マップユニットが選ばれる重み",
       opt: {
@@ -1825,6 +1833,15 @@ function rngStep(seed, n) {
   return s;
 }
 
+/**
+ * Where the next slice of a search or aggregation starts, `n` seeds after `start`. Counting and
+ * random seeds are numbered, so that's start + n; game-RNG seeds continue the RNG from where the
+ * slice ended (each slice steps the RNG from its own start).
+ */
+function nextChunkStart(mode, start, n) {
+  return mode === "g" ? rngStep(start, n) : start + n;
+}
+
 function randomSeed() {
   return crypto.getRandomValues(new Uint32Array(1))[0];
 }
@@ -2032,6 +2049,7 @@ function stopSearch(clear = false) {
   if (clear) {
     search = null;
     $("search-results").replaceChildren();
+    $("count-results").replaceChildren();
     $("search-status").textContent = "";
   }
   $("search-go").textContent = T.searchButton;
@@ -2046,9 +2064,10 @@ async function startSearch() {
   if (!sel) return;
   const judge = $("judge").value;
   const query = $("query").value.trim();
+  const countWhat = $("count-what").value.trim();
   const status = $("search-status");
   status.classList.remove("error");
-  if (!judge && !query) {
+  if (!judge && !query && !countWhat) {
     status.textContent = T.needJudgeOrQuery;
     status.classList.add("error");
     return;
@@ -2069,6 +2088,8 @@ async function startSearch() {
     matched: 0,
     best: [],
     scores: [],
+    countWhat,
+    counts: new Map(),
     stopped: false,
     done: false,
     t0: performance.now(),
@@ -2078,6 +2099,7 @@ async function startSearch() {
   try {
     await loadGame(sel.cave.game);
     let chunk = 50;
+    let chunkStart = startAt;
     while (s.tested < total && !s.stopped) {
       if (searchHold) {
         await new Promise((resume) => searchWaiters.push(resume));
@@ -2085,15 +2107,18 @@ async function startSearch() {
       }
       const n = Math.min(chunk, total - s.tested);
       const t = performance.now();
-      const r = await command("search", s.sublevel, judge || "-", query || "-", startAt + s.tested, n, mode, keep);
+      const r = await command("search", s.sublevel, judge || "-", query || "-", chunkStart, n, mode, keep, countWhat || "-");
       s.tested += n;
+      chunkStart = nextChunkStart(mode, chunkStart, n);
       s.matched += r.matched;
+      for (const [k, c] of r.counts) s.counts.set(k, (s.counts.get(k) || 0) + c);
       if (judge) {
         s.best = s.best.concat(r.best).sort((a, b) => a[1] - b[1]).slice(0, keep);
         for (const v of r.scores) s.scores.push(v);
       } else {
         s.best = s.best.concat(r.best).slice(0, keep);
-        if (s.best.length >= keep) break;
+        // A query alone stops once it has enough seeds; counting needs every seed.
+        if (s.best.length >= keep && !countWhat) break;
       }
       // Aim for about 60 ms of work per slice.
       chunk = Math.max(10, Math.min(200000, Math.round((n * 60) / Math.max(1, performance.now() - t))));
@@ -2103,6 +2128,7 @@ async function startSearch() {
     }
     const secs = ((performance.now() - s.t0) / 1000).toFixed(1);
     status.textContent = s.stopped ? T.searchStopped(s.tested) : T.searchDone(s.tested, query ? s.matched : null, secs);
+    if (query && !s.stopped) status.textContent += " " + T.matchedShare(s.matched, s.tested);
   } catch (e) {
     console.error(e);
     status.textContent = e.message;
@@ -2118,7 +2144,32 @@ async function startSearch() {
   }
 }
 
+/** The count distribution: for each number of the thing, the share of seeds with that many. */
+function showCounts(s) {
+  const box = $("count-results");
+  if (!s.countWhat || !s.counts.size) {
+    box.replaceChildren();
+    return;
+  }
+  const rows = [...s.counts.entries()].sort((a, b) => a[0] - b[0]);
+  const tested = rows.reduce((t, [, n]) => t + n, 0);
+  const most = Math.max(...rows.map(([, n]) => n));
+  box.replaceChildren(
+    el("div", { class: "count-title" }, T.countTitle(s.countWhat, tested)),
+    ...rows.map(([k, n]) =>
+      el(
+        "div",
+        { class: "count-row" },
+        el("span", { class: "count-k" }, String(k)),
+        el("span", { class: "count-bar" }, el("span", { style: `width: ${(100 * n) / most}%` })),
+        el("span", { class: "count-pct" }, `${((100 * n) / tested).toFixed(1)}%`),
+      ),
+    ),
+  );
+}
+
 function showSearchResults(s, final) {
+  showCounts(s);
   const list = $("search-results");
   if (!s.best.length) {
     list.replaceChildren(final ? el("li", { class: "muted" }, T.noMatches) : "");
