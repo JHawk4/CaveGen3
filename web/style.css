@@ -117,6 +117,7 @@ button.primary:hover { background: var(--leaf-2); border-color: var(--leaf-2); }
 
 .status { margin: 10px 2px; min-height: 1.4em; color: var(--muted); }
 .status.error { color: var(--error); }
+.status:empty { min-height: 0; margin: 6px 0; }
 
 .result {
   display: grid;
@@ -173,6 +174,8 @@ button.primary:hover { background: var(--leaf-2); border-color: var(--leaf-2); }
 .summary ul { list-style: none; margin: 0; padding: 0; }
 .summary li { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
 .summary li img { width: 24px; height: 24px; object-fit: contain; flex: none; }
+.summary .scroll-list { max-height: 260px; overflow-y: auto; padding-right: 4px; scrollbar-width: thin; }
+.summary .gen-time { font-size: 0.8rem; }
 .summary .value { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
 .summary .muted { color: var(--muted); }
 
@@ -420,3 +423,7 @@ body.embed .map-scroll { height: 70vh; }
 main.narrow h2 { padding-bottom: 2px; border-bottom: 2px solid var(--sun); display: inline-block; }
 .map-toolbar { background: linear-gradient(180deg, var(--panel), var(--field)); }
 .map-title { color: var(--leaf-dark); }
+.advanced-col > fieldset { align-self: stretch; }
+.advanced-col.map-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.map-col .map-options { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 420px) { .advanced-col.map-col { grid-template-columns: minmax(0, 1fr); } }

@@ -18,7 +18,6 @@
     </nav>
     <button type="button" id="lang-toggle" class="lang-toggle">日本語</button>
   </div>
-  <p data-i18n="subtitle">Pikmin 2 cave layouts for any seed, generated in your browser.</p>
 </header>
 
 <main>
@@ -52,26 +51,44 @@
   <details id="advanced" class="advanced">
     <summary data-i18n="advanced">Advanced options</summary>
     <div class="advanced-grid">
-      <fieldset>
-        <legend data-i18n="showOnMap">Show on the map</legend>
-        <div id="map-options" class="map-options">
-          <label class="check" data-i18n-tip="comedown"><input type="checkbox" id="comedown"> <span data-i18n="comedown">Comedown only</span></label>
-          <label class="check" data-i18n-tip="water"><input type="checkbox" id="water" checked> <span data-i18n="water">Water</span></label>
-        </div>
-        <label class="field inline" data-i18n-tip="comedownScreen"><span data-i18n="comedownScreen">Screen (for the comedown)</span>
-          <select id="comedown-screen">
-            <option value="16:9" selected>16:9</option>
-            <option value="4:3">4:3</option>
-          </select>
-        </label>
-        <label class="field inline" data-i18n-tip="seedStep"><span data-i18n="seedStep">Seed buttons step</span>
-          <select id="seed-step">
-            <option value="c" data-i18n="seedStepPlus">+1 / −1</option>
-            <option value="g" data-i18n="seedStepGame">Game RNG</option>
-          </select>
-        </label>
-      </fieldset>
+      <div class="advanced-col map-col">
+        <fieldset>
+          <legend data-i18n="secObjects">Objects</legend>
+          <div id="map-options-objects" class="map-options">
+            <label class="check" data-i18n-tip="water"><input type="checkbox" id="water" checked> <span data-i18n="water">Water</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="secView">View</legend>
+          <div id="map-options-view" class="map-options">
+            <label class="check" data-i18n-tip="comedown"><input type="checkbox" id="comedown"> <span data-i18n="comedown">Comedown only</span></label>
+          </div>
+          <label class="field inline" data-i18n-tip="comedownScreen"><span data-i18n="comedownScreen">Screen (for the comedown)</span>
+            <select id="comedown-screen">
+              <option value="16:9" selected>16:9</option>
+              <option value="4:3">4:3</option>
+            </select>
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="secGeneration">Generation details</legend>
+          <div id="map-options-generation" class="map-options"></div>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="secScores">Scores</legend>
+          <div id="map-options-scores" class="map-options"></div>
+        </fieldset>
+      </div>
       <div class="advanced-col">
+        <fieldset>
+          <legend data-i18n="secSeeds">Seeds</legend>
+          <label class="field inline" data-i18n-tip="seedStep"><span data-i18n="seedStep">Seed buttons step</span>
+            <select id="seed-step">
+              <option value="c" data-i18n="seedStepPlus">+1 / −1</option>
+              <option value="g" data-i18n="seedStepGame">Game RNG</option>
+            </select>
+          </label>
+        </fieldset>
         <fieldset>
           <legend data-i18n="judge" data-i18n-tip="judge">Judge</legend>
           <select id="judge" aria-label="Judge" data-i18n-tip="judge"></select>

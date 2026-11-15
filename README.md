@@ -34,7 +34,9 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 
 **Advanced options** brings over much of the CaveGen GUI:
 
-- **Show on the map**: the comedown only, water, hide treasures, teki, plants, gates or exits, and draw spawn points,
+- **Objects**, **View**, **Generation details** and **Scores**: hide treasures, teki, plants,
+  gates, gate HP (written on each gate) or exits; show only the comedown, water, a grid; and draw
+  spawn points (with Caveripper's markers: a duck for treasures, a leaf for plants, rings for easy teki),
   facing directions, the game's unit, door, treasure and hole scores, teki scores, door links
   and numbers, waypoints, treasure carry paths, treasure gauge rings and a grid.
 - **Judge**: score the layout with any of CaveGen's judges (`score`, `pod`, `at`, `attk`,

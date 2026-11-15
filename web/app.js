@@ -5,7 +5,6 @@
 
 const STRINGS = {
   en: {
-    subtitle: "Pikmin 2 cave layouts for any seed, generated in your browser.",
     game: "Game",
     cave: "Cave",
     sublevel: "Sublevel",
@@ -36,7 +35,7 @@ const STRINGS = {
     loading: "Loading…",
     loadingGame: (game) => `Loading ${game} data…`,
     generating: "Generating…",
-    generated: (sub, seed, ms) => `${sub}, seed ${seed}. Generated in ${ms} ms.`,
+    generatedIn: (ms) => `Generated in ${ms} ms`,
     badSeed: "The seed should be up to 8 hex digits, like 1234ABCD.",
     cantGenerate: (msg) => `Couldn't generate this sublevel: ${msg}`,
     cantStart: (msg) => `Couldn't start: ${msg}. This page needs a recent browser.`,
@@ -80,11 +79,17 @@ const STRINGS = {
     suggestBack: "Back to CaveGen3",
     advanced: "Advanced options",
     showOnMap: "Show on the map",
+    secObjects: "Objects",
+    secView: "View",
+    secGeneration: "Generation details",
+    secScores: "Scores",
+    secSeeds: "Seeds",
     opt: {
       treasures: "Treasures",
       teki: "Teki",
       plants: "Plants",
       gates: "Gates",
+      gateHealth: "Gate health",
       exits: "Pod and exits",
       spawnpoints: "Spawn points",
       angles: "Facing directions",
@@ -157,9 +162,10 @@ const STRINGS = {
         treasures: "Treasure icons",
         teki: "Teki icons, with what they carry and whether they fall when approached",
         plants: "Plant icons",
-        gates: "Gates and their HP",
+        gates: "Gates",
+        gateHealth: "Each gate's HP, written on the gate",
         exits: "The pod, the hole or geyser, and Onions",
-        spawnpoints: "Every spawn point, colored by spawn group as in CaveGen; faded ones are empty",
+        spawnpoints: "Every spawn point, marked by what can spawn there as in Caveripper: pink rings for easy teki, red dots for hard teki, a duck for treasures, a hole for the exit, a leaf for plants, a star for special teki, the ship for the pod. Faded ones are empty",
         angles: "Arrows for the way each object and spawn point faces",
         unitScores: "Each map unit's score, which the generator uses to place the hole and treasures",
         spawnScores: "The scores used to pick the treasure spots (orange) and the hole (green)",
@@ -224,7 +230,6 @@ const STRINGS = {
     },
   },
   ja: {
-    subtitle: "ピクミン2の洞窟のレイアウトを、好きなシードでブラウザ上で生成します。",
     game: "ゲーム",
     cave: "洞窟",
     sublevel: "階",
@@ -255,7 +260,7 @@ const STRINGS = {
     loading: "読み込み中…",
     loadingGame: (game) => `${game}のデータを読み込み中…`,
     generating: "生成中…",
-    generated: (sub, seed, ms) => `${sub}、シード ${seed}。${ms}ミリ秒で生成しました。`,
+    generatedIn: (ms) => `${ms}ミリ秒で生成`,
     badSeed: "シードは 1234ABCD のような16進数8桁までで入力してください。",
     cantGenerate: (msg) => `この階は生成できませんでした：${msg}`,
     cantStart: (msg) => `起動できませんでした：${msg}。新しいブラウザでお試しください。`,
@@ -299,11 +304,17 @@ const STRINGS = {
     suggestBack: "CaveGen3に戻る",
     advanced: "詳細オプション",
     showOnMap: "マップに表示",
+    secObjects: "表示するもの",
+    secView: "表示方法",
+    secGeneration: "生成の詳細",
+    secScores: "スコア",
+    secSeeds: "シード",
     opt: {
       treasures: "お宝",
       teki: "原生生物",
       plants: "植物",
       gates: "ゲート",
+      gateHealth: "ゲートの体力",
       exits: "ポッドと出口",
       spawnpoints: "出現ポイント",
       angles: "向き",
@@ -377,9 +388,10 @@ const STRINGS = {
         treasures: "お宝のアイコン",
         teki: "原生生物のアイコン（持っているお宝、近づくと落ちてくるかも表示）",
         plants: "植物のアイコン",
-        gates: "ゲートと体力",
+        gates: "ゲート",
+        gateHealth: "各ゲートの体力をゲートの上に表示します",
         exits: "ポッド、穴か間欠泉、オニヨン",
-        spawnpoints: "すべての出現ポイント（CaveGenと同じくグループごとの色、薄いものは空）",
+        spawnpoints: "すべての出現ポイント（Caveripperと同じ記号：ピンクの輪は弱い原生生物、赤い点は強い原生生物、アヒルはお宝、穴は出口、葉は植物、星は特殊、船はポッド。薄いものは空）",
         angles: "各オブジェクトと出現ポイントの向きの矢印",
         unitScores: "各マップユニットのスコア（穴とお宝の配置に使われます）",
         spawnScores: "お宝（オレンジ）と穴（緑）の場所選びに使われるスコア",
@@ -957,25 +969,27 @@ function objectLabel(o) {
 }
 
 // Map options. `details` ones need the generator's extra layout data.
+// `section` is the Advanced options box each goes in.
 const MAP_OPTIONS = [
-  { key: "treasures", on: true },
-  { key: "teki", on: true },
-  { key: "plants", on: true },
-  { key: "gates", on: true },
-  { key: "exits", on: true },
-  { key: "spawnpoints", details: true },
-  { key: "angles", details: true },
-  { key: "unitScores", details: true },
-  { key: "spawnScores", details: true },
-  { key: "tekiScores", details: true },
-  { key: "doorScores", details: true },
-  { key: "doorLinks", details: true },
-  { key: "doorIds", details: true },
-  { key: "waypoints", details: true },
-  { key: "paths", details: true },
-  { key: "gauge" },
-  { key: "grid" },
-  { key: "comedownBox" },
+  { key: "treasures", on: true, section: "objects" },
+  { key: "teki", on: true, section: "objects" },
+  { key: "plants", on: true, section: "objects" },
+  { key: "gates", on: true, section: "objects" },
+  { key: "gateHealth", on: true, section: "objects" },
+  { key: "exits", on: true, section: "objects" },
+  { key: "comedownBox", section: "view" },
+  { key: "grid", section: "view" },
+  { key: "gauge", section: "view" },
+  { key: "spawnpoints", details: true, section: "generation" },
+  { key: "angles", details: true, section: "generation" },
+  { key: "doorIds", details: true, section: "generation" },
+  { key: "doorLinks", details: true, section: "generation" },
+  { key: "waypoints", details: true, section: "generation" },
+  { key: "paths", details: true, section: "generation" },
+  { key: "unitScores", details: true, section: "scores" },
+  { key: "spawnScores", details: true, section: "scores" },
+  { key: "tekiScores", details: true, section: "scores" },
+  { key: "doorScores", details: true, section: "scores" },
 ];
 
 function mapOptions() {
@@ -991,6 +1005,26 @@ function needsDetails() {
 // CaveGen's colors for spawn point groups 0-9, and treasure gauge rings.
 const SPAWN_COLORS = ["#ff82dc", "#dc0000", "#dc7800", "#000", "#008c3c", "#505050", "#8ce164", "#009696", "#a000a0", "#0000ff"];
 const GAUGE_TICKS = [0.5, 1, 2, 3, 4, 5, 6, 7, 8];
+// Caveripper's spawn group colors, for its spawn point markers.
+const SP_COLORS = { 0: "#fa57cf", 1: "#c90234", 2: "#e67300", 5: "#858585", 6: "#3b945a", 7: "#e63256", 8: "#59068a", 9: "#2dada7" };
+
+/** An icon recolored to one color, keeping its shape (Caveripper's Colorize). */
+const tintCache = new Map();
+function tintedIcon(img, color) {
+  const key = `${img.src}|${color}`;
+  if (!tintCache.has(key)) {
+    const c = document.createElement("canvas");
+    c.width = img.width;
+    c.height = img.height;
+    const g = c.getContext("2d");
+    g.drawImage(img, 0, 0);
+    g.globalCompositeOperation = "source-in";
+    g.fillStyle = color;
+    g.fillRect(0, 0, c.width, c.height);
+    tintCache.set(key, c);
+  }
+  return tintCache.get(key);
+}
 const GAUGE_COLORS = ["#a0ffff", "#ffffa0", "#b4b4ff", "#ffb4b4", "#dca0ff", "#ffdc8c", "#a0d296", "#be9678", "#0000ff"];
 
 function objectShown(o, opts) {
@@ -1017,7 +1051,7 @@ function imagesFor(layout) {
       if (o.carrying) urls.add(pickUrl(treasureIconUrls(o.carrying, o.game)));
     }
   }
-  for (const s of ["pod_icon", "Cave_icon", "36px-Clog_icon", "Geyser_icon", "Gray_bramble_gate_icon"]) urls.add(specialUrl(s));
+  for (const s of ["pod_icon", "Cave_icon", "36px-Clog_icon", "Geyser_icon", "Gray_bramble_gate_icon", "duck", "cave_white", "leaf_icon", "ship", "star"]) urls.add(specialUrl(s));
   for (let i = 0; i < 6; i++) urls.add(specialUrl(`onion${i}`));
   urls.delete(null);
   return [...urls];
@@ -1146,6 +1180,7 @@ function drawMap(layout, scale) {
     ctx.restore();
   };
   const thin = Math.max(1, cell / 30);
+  const special = (name) => loaded.get(specialUrl(name)) || null;
 
   const carried = layout.objects.filter((o) => o.kind === "treasure" || (o.kind === "teki" && o.carrying));
   if (opts.gauge) {
@@ -1208,24 +1243,67 @@ function drawMap(layout, scale) {
 
   const spawnpoints = layout.spawnpoints || [];
   if (opts.spawnpoints) {
-    for (const sp of spawnpoints) {
+    // Caveripper's markers: rings for easy teki, a dot for hard teki, a duck for treasures, the
+    // exit icon for the hole, a leaf for plants, the ship for the pod and a star for special teki.
+    for (const sp of [...spawnpoints].sort((a, b) => a.group - b.group)) {
       const x = toPx(sp.x);
       const z = toPx(sp.z);
-      ctx.globalAlpha = sp.used ? 1 : 0.7;
-      if (sp.group === 0) {
-        ctx.strokeStyle = SPAWN_COLORS[0];
-        ctx.lineWidth = thin;
-        ctx.beginPath();
-        ctx.arc(x, z, Math.max(3, toPx(sp.r)), 0, Math.PI * 2);
-        ctx.stroke();
+      ctx.globalAlpha = sp.used ? 1 : 0.55;
+      const marker = (name, color, size) => {
+        const img = special(name);
+        if (!img) return false;
+        ctx.save();
+        ctx.translate(x, z);
+        ctx.rotate(upright);
+        const tinted = color ? tintedIcon(img, color) : img;
+        const r = Math.min(size / img.width, size / img.height);
+        ctx.drawImage(tinted, (-img.width * r) / 2, (-img.height * r) / 2, img.width * r, img.height * r);
+        ctx.restore();
+        return true;
+      };
+      let drawn = true;
+      switch (sp.group) {
+        case 0: {
+          ctx.strokeStyle = SP_COLORS[0];
+          ctx.lineWidth = Math.max(1, cell / 40);
+          let r = Math.max(3, toPx(sp.r));
+          for (let i = 0; i < 3; i++, r *= 0.85) {
+            ctx.beginPath();
+            ctx.arc(x, z, r, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          break;
+        }
+        case 1:
+          ctx.fillStyle = SP_COLORS[1];
+          ctx.beginPath();
+          ctx.arc(x, z, Math.max(2.5, cell * 0.11), 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        case 2:
+          drawn = marker("duck", SP_COLORS[2], cell * 0.42);
+          break;
+        case 4:
+          drawn = marker("cave_white", null, cell * 0.42);
+          break;
+        case 6:
+          drawn = marker("leaf_icon", SP_COLORS[6], cell * 0.4);
+          break;
+        case 7:
+          drawn = marker("ship", null, cell * 0.42);
+          break;
+        case 8:
+          drawn = marker("star", SP_COLORS[8], cell * 0.5);
+          break;
+        default:
+          drawn = false;
       }
-      ctx.fillStyle = SPAWN_COLORS[sp.group] || "#fff";
-      ctx.strokeStyle = "#fff";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.arc(x, z, Math.max(2.5, cell * 0.09), 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
+      if (!drawn) {
+        ctx.fillStyle = SP_COLORS[sp.group] || SPAWN_COLORS[sp.group] || "#fff";
+        ctx.beginPath();
+        ctx.arc(x, z, Math.max(2.5, cell * 0.09), 0, Math.PI * 2);
+        ctx.fill();
+      }
       if (opts.angles) facing(ctx, x, z, sp.angle, cell * 0.35, "#fff");
     }
     ctx.globalAlpha = 1;
@@ -1260,7 +1338,6 @@ function drawMap(layout, scale) {
     ctx.fillText(text.slice(0, 3), 0, 0);
     ctx.restore();
   };
-  const special = (name) => loaded.get(specialUrl(name)) || null;
 
   const order = { hole: 0, geyser: 0, ship: 1, onion: 1, gate: 2, treasure: 3, teki: 4 };
   const objects = layout.objects.filter((o) => objectShown(o, opts)).sort((a, b) => order[a.kind] - order[b.kind]);
@@ -1288,8 +1365,7 @@ function drawMap(layout, scale) {
       case "gate": {
         size = cell * 0.85;
         drawIcon(special("Gray_bramble_gate_icon"), x, z, size, o.dir % 2 ? Math.PI / 2 : 0);
-        // Zoomed far out (Colossal Caverns), the numbers would hide the map; the tooltip has them.
-        if (cell >= 20) label(String(Math.round(o.health)), x - cell * 0.3, z + cell * 0.38, "#fff", Math.max(9, cell * 0.24), "left");
+        if (opts.gateHealth) label(String(Math.round(o.health)), x, z, "#fff", Math.max(8, cell * 0.26));
         break;
       }
       case "treasure": {
@@ -1457,10 +1533,11 @@ async function renderSummary(layout) {
   info.append(el("li", {}, T.unitsLine(layout.units.length, layout.width, layout.height)));
   info.append(el("li", {}, exit ? (exit.kind === "hole" ? T.exitHole(exit.plugged) : T.exitGeyser) : T.noExit));
   if (current && current.judge) info.append(el("li", { class: "judge-line" }, T.judgeLine(current.judge.type, current.judge.score)));
+  if (current) info.append(el("li", { class: "muted gen-time" }, T.generatedIn(current.ms.toFixed(1))));
   parts.push(info);
 
   parts.push(el("h2", {}, T.treasures(treasures.length)));
-  const tl = el("ul");
+  const tl = el("ul", { class: "scroll-list" });
   for (const t of treasures) {
     const name = displayName("treasures", t.name);
     const label = t.by ? T.carriedBy(name, displayName("teki", t.by)) : name;
@@ -1473,7 +1550,7 @@ async function renderSummary(layout) {
 
   const total = [...teki.values()].reduce((a, b) => a + b, 0);
   parts.push(el("h2", {}, T.teki(total)));
-  const kl = el("ul");
+  const kl = el("ul", { class: "scroll-list" });
   const sorted = [...teki.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   for (const [key, n] of sorted) {
     const [name, game] = key.split("|");
@@ -1619,7 +1696,7 @@ async function showCurrent(refit = false) {
   $("title").textContent = `${title} · ${layout.seed}`;
   await render(layout, refit);
   await renderSummary(layout);
-  setStatus(T.generated(layout.sublevel, layout.seed, ms.toFixed(1)));
+  setStatus("");
 }
 
 function updateUrl(cave, floor, seed) {
@@ -1652,8 +1729,8 @@ const JUDGES = ["score", "pod", "at", "attk", "cmat", "key", "colossal", "mapuni
 const SETTINGS_KEY = "cavegen3-options";
 
 function buildAdvanced() {
-  const box = $("map-options");
-  for (const { key, on } of MAP_OPTIONS) {
+  for (const { key, on, section } of MAP_OPTIONS) {
+    const box = $(`map-options-${section}`);
     const input = el("input", { type: "checkbox", id: `opt-${key}` });
     input.checked = !!on;
     box.append(el("label", { class: "check", "data-i18n-tip-opt": key }, input, el("span", { "data-i18n-opt": key })));

@@ -127,6 +127,8 @@ pub struct Options {
     pub teki: bool,
     pub plants: bool,
     pub gates: bool,
+    /// Each gate's HP, written on the gate.
+    pub gate_health: bool,
     pub exits: bool,
     pub spawnpoints: bool,
     pub angles: bool,
@@ -157,6 +159,7 @@ impl Default for Options {
             teki: true,
             plants: true,
             gates: true,
+            gate_health: true,
             exits: true,
             spawnpoints: false,
             angles: false,
@@ -185,6 +188,7 @@ pub const OPTION_NAMES: &[&str] = &[
     "teki",
     "plants",
     "gates",
+    "gateHealth",
     "exits",
     "spawnpoints",
     "angles",
@@ -215,6 +219,7 @@ impl Options {
             "teki" => &mut self.teki,
             "plants" => &mut self.plants,
             "gates" => &mut self.gates,
+            "gatehealth" => &mut self.gate_health,
             "exits" => &mut self.exits,
             "spawnpoints" => &mut self.spawnpoints,
             "angles" => &mut self.angles,
@@ -437,6 +442,25 @@ impl Assets {
         let candidates = [("resources/enemytex_special".to_string(), format!("{name}.png"))];
         self.image(&format!("special/{}", name.to_ascii_lowercase()), &candidates, |_| {})
     }
+
+    /// A special icon recolored to one color, keeping its shape (Caveripper's Colorize).
+    fn special_tinted(&self, name: &str, color: Color) -> Option<Arc<Pixmap>> {
+        let c = color.to_color_u8();
+        let key = format!("tinted/{}/{:?}", name.to_ascii_lowercase(), (c.red(), c.green(), c.blue()));
+        if let Some(img) = self.images.lock().unwrap().get(&key) {
+            return img.clone();
+        }
+        let img = self.special(name).map(|base| {
+            let mut p = (*base).clone();
+            for px in p.pixels_mut() {
+                let a = px.alpha();
+                *px = tiny_skia::ColorU8::from_rgba(c.red(), c.green(), c.blue(), a).premultiply();
+            }
+            Arc::new(p)
+        });
+        self.images.lock().unwrap().insert(key, img.clone());
+        img
+    }
 }
 
 /// Radar images: opaque ones (CaveGen's, used for the romhacks) get their shading as alpha like
@@ -465,6 +489,11 @@ fn rgba(r: u8, g: u8, b: u8, a: f32) -> Color {
     Color::from_rgba8(r, g, b, (a * 255.0).round() as u8)
 }
 
+// Caveripper's spawn group colors (groups 0-9), for its spawn point markers.
+const SP_COLORS: [&str; 10] = [
+    "#fa57cf", "#c90234", "#e67300", "", "", "#858585", "#3b945a", "#e63256", "#59068a", "#2dada7",
+];
+
 // CaveGen's colors for spawn point groups 0-9, and treasure gauge rings.
 const SPAWN_COLORS: [&str; 10] = [
     "#ff82dc", "#dc0000", "#dc7800", "#000", "#008c3c", "#505050", "#8ce164", "#009696", "#a000a0", "#0000ff",
@@ -483,6 +512,8 @@ struct Canvas<'a> {
     mask: Option<Mask>,
     /// Degrees that turn icons and numbers upright again in the comedown view.
     upright: f32,
+    /// Opacity for icons (empty spawn points are faded).
+    alpha: f32,
     assets: &'a Assets,
 }
 
@@ -542,6 +573,7 @@ impl Canvas<'_> {
             .pre_translate(-(img.width() as f32) / 2.0, -(img.height() as f32) / 2.0);
         let pp = PixmapPaint {
             quality: FilterQuality::Bicubic,
+            opacity: self.alpha,
             ..PixmapPaint::default()
         };
         self.pixmap.draw_pixmap(0, 0, img.as_ref().as_ref(), &pp, t, self.mask.as_ref());
@@ -738,6 +770,7 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
         base,
         mask,
         upright,
+        alpha: 1.0,
         assets,
     };
 
@@ -861,19 +894,48 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
     }
 
     if opts.spawnpoints {
-        for sp in &layout.spawnpoints {
+        // Caveripper's markers: rings for easy teki, a dot for hard teki, a duck for treasures, the
+        // exit icon for the hole, a leaf for plants, the ship for the pod and a star for special teki.
+        let mut points: Vec<&Spawnpoint> = layout.spawnpoints.iter().collect();
+        points.sort_by_key(|sp| sp.group);
+        for sp in points {
             let (x, z) = (to_px(sp.x), to_px(sp.z));
-            let alpha = if sp.used { 1.0 } else { 0.7 };
-            let mut color = SPAWN_COLORS.get(sp.group).map_or(Color::WHITE, |c| hex(c));
-            color.apply_opacity(alpha);
-            if sp.group == 0 {
-                cv.stroke_circle(x, z, to_px(sp.r).max(3.0), color, thin);
+            let alpha = if sp.used { 1.0 } else { 0.55 };
+            cv.alpha = alpha;
+            let faded = |c: &str| {
+                let mut c = hex(c);
+                c.apply_opacity(alpha);
+                c
+            };
+            let drawn = match sp.group {
+                0 => {
+                    let mut r = to_px(sp.r).max(3.0);
+                    for _ in 0..3 {
+                        cv.stroke_circle(x, z, r, faded(SP_COLORS[0]), (cell / 40.0).max(1.0));
+                        r *= 0.85;
+                    }
+                    true
+                }
+                1 => {
+                    cv.fill_circle(x, z, (cell * 0.11).max(2.5), faded(SP_COLORS[1]));
+                    true
+                }
+                2 => cv.icon(assets.special_tinted("duck", hex(SP_COLORS[2])), x, z, cell * 0.42, None),
+                4 => cv.icon(assets.special("cave_white"), x, z, cell * 0.42, None),
+                6 => cv.icon(assets.special_tinted("leaf_icon", hex(SP_COLORS[6])), x, z, cell * 0.4, None),
+                7 => cv.icon(assets.special("ship"), x, z, cell * 0.42, None),
+                8 => cv.icon(assets.special_tinted("star", hex(SP_COLORS[8])), x, z, cell * 0.5, None),
+                _ => false,
+            };
+            if !drawn {
+                let c = SP_COLORS
+                    .get(sp.group)
+                    .copied()
+                    .filter(|c| !c.is_empty())
+                    .unwrap_or(SPAWN_COLORS.get(sp.group).copied().unwrap_or("#fff"));
+                cv.fill_circle(x, z, (cell * 0.09).max(2.5), faded(c));
             }
-            let r = (cell * 0.09).max(2.5);
-            cv.fill_circle(x, z, r, color);
-            let mut white = Color::WHITE;
-            white.apply_opacity(alpha);
-            cv.stroke_circle(x, z, r, white, 1.0);
+            cv.alpha = 1.0;
             if opts.angles {
                 cv.facing(x, z, sp.angle, cell * 0.35, Color::WHITE);
             }
@@ -915,10 +977,9 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
             "gate" => {
                 let rot = if o.dir.unwrap_or(0) % 2 == 1 { 90.0 } else { 0.0 };
                 cv.icon(assets.special("Gray_bramble_gate_icon"), x, z, cell * 0.85, Some(rot));
-                // Zoomed far out (Colossal Caverns) the numbers would hide the map.
-                if cell >= 20.0 {
+                if opts.gate_health {
                     let hp = o.health.unwrap_or(0.0).round().to_string();
-                    cv.label(&hp, x - cell * 0.3, z + cell * 0.38, Color::WHITE, (cell * 0.24).max(9.0), true);
+                    cv.label(&hp, x, z, Color::WHITE, (cell * 0.26).max(8.0), false);
                 }
             }
             "treasure" => {
@@ -951,10 +1012,12 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
             }
             _ => {}
         }
-        if opts.angles && o.kind != "gate"
-            && let Some(a) = o.angle {
-                cv.facing(x, z, a, cell * 0.4, hex("#ffe14d"));
-            }
+        if opts.angles
+            && o.kind != "gate"
+            && let Some(a) = o.angle
+        {
+            cv.facing(x, z, a, cell * 0.4, hex("#ffe14d"));
+        }
     }
 
     // Numbers on top of everything.
@@ -980,24 +1043,26 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
             }
         }
     }
-    if opts.comedown_box && comedown.is_none()
-        && let Some(ship) = ship.filter(|s| s.angle.is_some()) {
-            let mut pb = PathBuilder::new();
-            for (i, (x, z)) in comedown_corners(ship.x, ship.z, ship.angle.unwrap(), comedown_shape(opts.aspect))
-                .into_iter()
-                .enumerate()
-            {
-                if i == 0 {
-                    pb.move_to(to_px(x), to_px(z));
-                } else {
-                    pb.line_to(to_px(x), to_px(z));
-                }
+    if opts.comedown_box
+        && comedown.is_none()
+        && let Some(ship) = ship.filter(|s| s.angle.is_some())
+    {
+        let mut pb = PathBuilder::new();
+        for (i, (x, z)) in comedown_corners(ship.x, ship.z, ship.angle.unwrap(), comedown_shape(opts.aspect))
+            .into_iter()
+            .enumerate()
+        {
+            if i == 0 {
+                pb.move_to(to_px(x), to_px(z));
+            } else {
+                pb.line_to(to_px(x), to_px(z));
             }
-            pb.close();
-            let mut s = stroke((cell / 16.0).max(1.5));
-            s.dash = StrokeDash::new(vec![cell / 4.0, cell / 6.0], 0.0);
-            cv.stroke_path(pb, hex("#ffe14d"), &s);
         }
+        pb.close();
+        let mut s = stroke((cell / 16.0).max(1.5));
+        s.dash = StrokeDash::new(vec![cell / 4.0, cell / 6.0], 0.0);
+        cv.stroke_path(pb, hex("#ffe14d"), &s);
+    }
     if opts.door_scores || opts.door_ids {
         let (mut unit, mut first) = (-1, 0);
         for (i, d) in layout.doors.iter().enumerate() {
