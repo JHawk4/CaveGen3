@@ -1,0 +1,355 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 5 	# Floor Count
+	{_eof} 
+}
+5 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 10 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 crazy1.txt 	# Units File
+	{f009} -1 crazy.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 180.000000 	# Waterwraith Timer
+	{f017} 4 4 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	LeafChappy_key 10 	# weight
+	1 	# type
+	UjiA 120 	# weight
+	0 	# type
+	KumaKochappy 10 	# weight
+	0 	# type
+	BlackMan_suit_powerup 10 	# weight
+	1 	# type
+	KumaKochappy 10 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	Hiba 40 	# weight
+	5 	# type
+	$1Egg 40 	# weight
+	5 	# type
+	Fart 4 	# weight
+	6 	# type
+	FireOtakara 30 	# weight
+	1 	# type
+	ElecOtakara_key 10 	# weight
+	1 	# type
+	WaterOtakara_key 10 	# weight
+	1 	# type
+	GasOtakara_key 10 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	1 	# num
+	nft113 10 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# Floor Start
+	{f001} 4 1 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 crazy2.txt 	# Units File
+	{f009} -1 crazy.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 180.000000 	# Waterwraith Timer
+	{f017} 4 3 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	BlackMan_suit_powerup 10 	# weight
+	1 	# type
+	LeafChappy 10 	# weight
+	0 	# type
+	ElecBug 50 	# weight
+	0 	# type
+	Kochappy 40 	# weight
+	0 	# type
+	Hiba 80 	# weight
+	5 	# type
+	Chappy_nft82 10 	# weight
+	0 	# type
+	Ooinu_l 28 	# weight
+	6 	# type
+	UjiB 30 	# weight
+	0 	# type
+	Kurage_key 20 	# weight
+	0 	# type
+	Qurione 50 	# weight
+	0 	# type
+	Tank 20 	# weight
+	0 	# type
+	Wtank 20 	# weight
+	0 	# type
+	$1Sarai 10 	# weight
+	0 	# type
+	BluePom 10 	# weight
+	8 	# type
+}
+# Iteminfo
+{
+	1 	# num
+	key 10 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	RandPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# Floor Start
+	{f001} 4 2 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 5 	# Treasure Spawns
+	{f004} 4 16 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 6 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 1 	# Place Geyser
+	{f008} -1 crazy3.txt 	# Units File
+	{f009} -1 crazy.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 240.000000 	# Waterwraith Timer
+	{f017} 4 2 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	BlackMan_suit_powerup 10 	# weight
+	1 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	ElecOtakara 20 	# weight
+	0 	# type
+	WaterOtakara 20 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	ElecOtakara 20 	# weight
+	0 	# type
+	WaterOtakara 20 	# weight
+	0 	# type
+	GasOtakara 50 	# weight
+	1 	# type
+	$1Tadpole 130 	# weight
+	0 	# type
+	Frog 30 	# weight
+	1 	# type
+	Rock 20 	# weight
+	6 	# type
+	RandPom 10 	# weight
+	8 	# type
+	$1Hanachirashi 10 	# weight
+	8 	# type
+	$4BombOtakara 60 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	2 	# num
+	nft90 10 	# weight
+	key 20 	# weight
+}
+# Gateinfo
+{
+	1 	# num
+	gate 2500.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	2 	# num
+	0 	# captype
+	YellowPom 10 	# weight
+	1 	# type
+	0 	# captype
+	RandPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 3 	# Floor Start
+	{f001} 4 3 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 6 	# Treasure Spawns
+	{f004} 4 3 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 crazy4.txt 	# Units File
+	{f009} -1 crazy.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 300.000000 	# Waterwraith Timer
+	{f017} 4 3 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	SnakeCrow_nft76 10 	# weight
+	1 	# type
+	Fuefuki_nft79 10 	# weight
+	0 	# type
+	PanModoki 10 	# weight
+	0 	# type
+	PanModoki 10 	# weight
+	0 	# type
+	PanModoki 10 	# weight
+	0 	# type
+	Chappy 30 	# weight
+	1 	# type
+	$1Egg 80 	# weight
+	5 	# type
+	MaroFrog 30 	# weight
+	1 	# type
+	Bomb 120 	# weight
+	0 	# type
+	KumaKochappy 80 	# weight
+	0 	# type
+	Mar 30 	# weight
+	1 	# type
+	KumaChappy 10 	# weight
+	1 	# type
+	Wealthy 10 	# weight
+	8 	# type
+	Zenmai 10 	# weight
+	6 	# type
+	Wakame_l 15 	# weight
+	6 	# type
+	Wakame_s 10 	# weight
+	6 	# type
+	BlackMan_suit_powerup 10 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	1 	# num
+	key 30 	# weight
+}
+# Gateinfo
+{
+	1 	# num
+	gate 3000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	2 	# num
+	0 	# captype
+	BluePom 10 	# weight
+	1 	# type
+	0 	# captype
+	RedPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 4 	# Floor Start
+	{f001} 4 4 	# Floor End
+	{f002} 4 6 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_manh_boss_conc.txt 	# Units File
+	{f009} -1 crazy.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	2 	# num
+	BlackMan_suit_powerup 10 	# weight
+	8 	# type
+	Egg 20 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	BlackPom 20 	# weight
+	1 	# type
+}

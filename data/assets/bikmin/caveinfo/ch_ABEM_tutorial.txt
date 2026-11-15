@@ -1,0 +1,550 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 11 	# Floor Count
+	{_eof} 
+}
+11 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 1 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_north_tutorial_snow.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 2 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 2 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	Tadpole_nft89 11 	# weight
+	0 	# type
+	Tadpole_nft1 11 	# weight
+	0 	# type
+	Tadpole_nft43 11 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	2 	# num
+	key 10 	# weight
+	nft3 10 	# weight
+}
+# Gateinfo
+{
+	1 	# num
+	gate 2000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# Floor Start
+	{f001} 4 1 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	2 	# num
+	SnakeCrow_key 10 	# weight
+	8 	# type
+	Tank_nft73 40 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 2 	# Floor Start
+	{f001} 4 2 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	Damagumo_key 10 	# weight
+	8 	# type
+	Jigumo_nft75 10 	# weight
+	0 	# type
+	Jigumo_nft75 10 	# weight
+	0 	# type
+	Jigumo_nft75 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 3 	# Floor Start
+	{f001} 4 3 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	UmiMushi_key 10 	# weight
+	8 	# type
+	Kochappy_nft110 40 	# weight
+	1 	# type
+	OniKurage_radar_a 10 	# weight
+	0 	# type
+	OniKurage_radar_a 10 	# weight
+	0 	# type
+	OniKurage_radar_a 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 4 	# Floor Start
+	{f001} 4 4 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	SnakeWhole_key 10 	# weight
+	8 	# type
+	SnakeCrow_nft19 10 	# weight
+	1 	# type
+	SnakeCrow_nft20 10 	# weight
+	1 	# type
+	BombSarai_nft37 10 	# weight
+	0 	# type
+	BombSarai_nft37 10 	# weight
+	0 	# type
+	BombSarai_nft37 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 5 	# Floor Start
+	{f001} 4 5 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	BigFoot_key 10 	# weight
+	8 	# type
+	Fuefuki_nft99 10 	# weight
+	1 	# type
+	Fuefuki_nft45 10 	# weight
+	1 	# type
+	Fuefuki_nft47 10 	# weight
+	1 	# type
+	Fuefuki_nft48 10 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 6 	# Floor Start
+	{f001} 4 6 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	KingChappy_key 10 	# weight
+	8 	# type
+	Wtank_suit_fire 40 	# weight
+	1 	# type
+	FireChappy_nft70 10 	# weight
+	0 	# type
+	FireChappy_nft70 10 	# weight
+	0 	# type
+	FireChappy_nft70 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 7 	# Floor Start
+	{f001} 4 7 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	Queen_key 10 	# weight
+	8 	# type
+	Frog_nft80 40 	# weight
+	1 	# type
+	MaroFrog_nft80 10 	# weight
+	0 	# type
+	MaroFrog_nft80 10 	# weight
+	0 	# type
+	MaroFrog_nft80 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 8 	# Floor Start
+	{f001} 4 8 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	DangoMushi_key 10 	# weight
+	8 	# type
+	Hana_nft116 40 	# weight
+	1 	# type
+	Hana_nft123 10 	# weight
+	0 	# type
+	Hana_nft124 10 	# weight
+	0 	# type
+	Hana_nft125 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 9 	# Floor Start
+	{f001} 4 9 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	Houdai_key 10 	# weight
+	8 	# type
+	Hana_nft6 10 	# weight
+	1 	# type
+	Hana_nft22 10 	# weight
+	1 	# type
+	Hana_nft49 10 	# weight
+	1 	# type
+	Hana_nft72 10 	# weight
+	1 	# type
+	Hana_nft114 10 	# weight
+	0 	# type
+	Hana_nft71 10 	# weight
+	0 	# type
+	RedPom 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 10 	# Floor Start
+	{f001} 4 10 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 1 	# Place Geyser
+	{f008} -1 true_arena.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 bogmire 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	BigTreasure_key 10 	# weight
+	8 	# type
+	RedPom 10 	# weight
+	1 	# type
+	YellowPom 10 	# weight
+	1 	# type
+	BluePom 10 	# weight
+	1 	# type
+	WhitePom 10 	# weight
+	1 	# type
+	Hana_nft127 10 	# weight
+	0 	# type
+	Hana_nft130 10 	# weight
+	0 	# type
+	Hana_nft129 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}

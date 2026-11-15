@@ -1,0 +1,18 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# FOREST NAVEL REAL!??!??
+{
+	1 	# version
+	true_arena 	# foldername
+	9 9 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+	0 	# index
+	2 4 0 	# dir/offs/wpindex
+	0 	# door links
+}

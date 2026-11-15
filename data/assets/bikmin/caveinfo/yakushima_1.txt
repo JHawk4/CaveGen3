@@ -1,0 +1,435 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 7 	# Floor Count
+	{_eof} 
+}
+7 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 4 	# Treasure Spawns
+	{f004} 4 4 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 factory1.txt 	# Units File
+	{f009} -1 nether.ini 	# Lighting File
+	{f00A} -1 nether 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 1 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	BlueChappy_nft92 10 	# weight
+	1 	# type
+	UjiB 30 	# weight
+	0 	# type
+	Mar 10 	# weight
+	1 	# type
+	BlueKochappy 30 	# weight
+	0 	# type
+	Miulin 10 	# weight
+	1 	# type
+	UjiA 20 	# weight
+	0 	# type
+	DaiodoRed 7 	# weight
+	6 	# type
+	GasOtakara 30 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	2 	# num
+	key 10 	# weight
+	nft108 10 	# weight
+}
+# Gateinfo
+{
+	4 	# num
+	gate 3000.00 	# life
+	1 	# weight
+	gate 3000.00 	# life
+	1 	# weight
+	gate 3000.00 	# life
+	1 	# weight
+	gate 3000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	RedPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# Floor Start
+	{f001} 4 1 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_waluigi_pinball.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	Frog 10 	# weight
+	1 	# type
+	Frog 10 	# weight
+	1 	# type
+	Frog 10 	# weight
+	1 	# type
+	GasOtakara 20 	# weight
+	0 	# type
+	ElecOtakara 20 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	0 	# type
+	WaterOtakara 20 	# weight
+	1 	# type
+	FireOtakara 5 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	1 	# num
+	nft109 10 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 2 	# Floor Start
+	{f001} 4 2 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 9 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 1 	# Place Geyser
+	{f008} -1 factory2.txt 	# Units File
+	{f009} -1 nether.ini 	# Lighting File
+	{f00A} -1 nether 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	Hiba 100 	# weight
+	5 	# type
+	Tank 10 	# weight
+	0 	# type
+	Wtank 10 	# weight
+	0 	# type
+	BlueKochappy 70 	# weight
+	1 	# type
+	MaroFrog 20 	# weight
+	1 	# type
+	MiniHoudai 10 	# weight
+	1 	# type
+	BombOtakara 10 	# weight
+	5 	# type
+	DaiodoGreen 8 	# weight
+	6 	# type
+	DaiodoRed 8 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	2 	# num
+	nft45 10 	# weight
+	nft46 10 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Kogane 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 3 	# Floor Start
+	{f001} 4 3 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 5 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 1 	# Place Geyser
+	{f008} -1 netherrest.txt 	# Units File
+	{f009} -1 nether.ini 	# Lighting File
+	{f00A} -1 netherfloor 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 4 	# Echo Strength
+	{f012} 4 2 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	WhitePom 10 	# weight
+	1 	# type
+	BlackPom 10 	# weight
+	1 	# type
+	UjiA 200 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 4 	# Floor Start
+	{f001} 4 4 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 9 	# Treasure Spawns
+	{f004} 4 4 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 nether1.txt 	# Units File
+	{f009} -1 nether.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 1 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	15 	# num
+	Hiba 50 	# weight
+	5 	# type
+	BlueChappy_nft77 10 	# weight
+	8 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	Armor 10 	# weight
+	1 	# type
+	Armor 10 	# weight
+	0 	# type
+	Mar 10 	# weight
+	0 	# type
+	Fart_key 10 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	Kogane 10 	# weight
+	0 	# type
+	Kogane 10 	# weight
+	0 	# type
+	Hiba 3 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	4 	# num
+	gate 4000.00 	# life
+	1 	# weight
+	gate 4000.00 	# life
+	1 	# weight
+	gate 4000.00 	# life
+	1 	# weight
+	gate 4000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	3 	# num
+	0 	# captype
+	RandPom 10 	# weight
+	1 	# type
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+	0 	# captype
+	RedPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 5 	# Floor Start
+	{f001} 4 5 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 6 	# Treasure Spawns
+	{f004} 4 2 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 nether2.txt 	# Units File
+	{f009} -1 nether.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 2 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	Jigumo_key 50 	# weight
+	1 	# type
+	Jigumo_nft37 10 	# weight
+	0 	# type
+	Sarai 10 	# weight
+	0 	# type
+	Sarai 10 	# weight
+	0 	# type
+	Sarai 10 	# weight
+	0 	# type
+	Sarai 10 	# weight
+	0 	# type
+	Sarai 10 	# weight
+	0 	# type
+	Sarai 10 	# weight
+	0 	# type
+	Sarai 10 	# weight
+	0 	# type
+	FireOtakara 20 	# weight
+	1 	# type
+	FireOtakara 20 	# weight
+	1 	# type
+	FireOtakara 20 	# weight
+	1 	# type
+	Hiba 40 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	2 	# num
+	gate 3000.00 	# life
+	1 	# weight
+	gate 3000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	BlackPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 6 	# Floor Start
+	{f001} 4 6 	# Floor End
+	{f002} 4 1 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_dangomushi_tile.txt 	# Units File
+	{f009} -1 nether.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	1 	# num
+	BigFoot_suit_fire 10 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}

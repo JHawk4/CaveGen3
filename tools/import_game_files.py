@@ -47,13 +47,15 @@ def unpack(szs, dest):
 def bti_to_png(bti, png):
     png.parent.mkdir(parents=True, exist_ok=True)
     r = subprocess.run(["wimgt", "decode", "-q", "-o", bti.as_posix(), "-d", png.as_posix()], capture_output=True)
-    if r.returncode != 0 and not decode_gray_bti(bti, png):
+    # wimgt fails on some romhack BTIs, and skips others silently without writing anything.
+    if (r.returncode != 0 or not png.is_file()) and not decode_bti(bti, png):
         print(f"warning: couldn't decode {bti}: {r.stderr.decode(errors='replace').strip()}")
 
 
-def decode_gray_bti(bti, png):
-    """Fallback for the I4/I8/IA4/IA8 BTI files wimgt refuses (some romhacks write unusual
-    header fields). Writes an 8-bit grayscale+alpha PNG. Returns False for other formats."""
+def decode_bti(bti, png):
+    """Fallback for the BTI files wimgt refuses or skips (some romhacks write unusual header
+    fields). Handles I4/I8/IA4/IA8 and CMPR and writes an RGBA PNG. Returns False for other
+    formats."""
     import struct
     import zlib
 
@@ -61,38 +63,63 @@ def decode_gray_bti(bti, png):
     fmt = data[0]
     w, h = struct.unpack(">HH", data[2:6])
     offset = struct.unpack(">I", data[0x1C:0x20])[0]
-    # (block width, block height, bits per pixel)
-    blocks = {0: (8, 8, 4), 1: (8, 4, 8), 2: (8, 4, 8), 3: (4, 4, 16)}
-    if fmt not in blocks:
-        return False
-    bw, bh, bpp = blocks[fmt]
-    pixels = [[(0, 0)] * w for _ in range(h)]
+    pixels = [[(0, 0, 0, 0)] * w for _ in range(h)]
+
+    def put(x, y, px):
+        if y < h and x < w:
+            pixels[y][x] = px
+
+    def rgb565(c):
+        r, g, b = c >> 11, (c >> 5) & 63, c & 31
+        return (r * 255 // 31, g * 255 // 63, b * 255 // 31)
+
     pos = offset
-    for by in range(0, h, bh):
-        for bx in range(0, w, bw):
-            for y in range(bh):
-                for x in range(bw):
-                    if fmt == 0:  # I4
-                        byte = data[pos + (y * bw + x) // 2]
-                        i = (byte >> 4 if x % 2 == 0 else byte & 0xF) * 17
-                        px = (i, 255)
-                    elif fmt == 1:  # I8
-                        px = (data[pos + y * bw + x], 255)
-                    elif fmt == 2:  # IA4
-                        byte = data[pos + y * bw + x]
-                        px = ((byte & 0xF) * 17, (byte >> 4) * 17)
-                    else:  # IA8
-                        a, i = data[pos + 2 * (y * bw + x)], data[pos + 2 * (y * bw + x) + 1]
-                        px = (i, a)
-                    if by + y < h and bx + x < w:
-                        pixels[by + y][bx + x] = px
-            pos += bw * bh * bpp // 8
+    if fmt == 0xE:  # CMPR: 8x8 blocks of four 4x4 DXT1 sub-blocks
+        for by in range(0, h, 8):
+            for bx in range(0, w, 8):
+                for sub in range(4):
+                    c0, c1 = struct.unpack(">HH", data[pos:pos + 4])
+                    a, b = rgb565(c0), rgb565(c1)
+                    if c0 > c1:
+                        pal = [a + (255,), b + (255,),
+                               tuple((2 * p + q) // 3 for p, q in zip(a, b)) + (255,),
+                               tuple((p + 2 * q) // 3 for p, q in zip(a, b)) + (255,)]
+                    else:
+                        pal = [a + (255,), b + (255,),
+                               tuple((p + q) // 2 for p, q in zip(a, b)) + (255,), (0, 0, 0, 0)]
+                    for y in range(4):
+                        row = data[pos + 4 + y]
+                        for x in range(4):
+                            put(bx + (sub % 2) * 4 + x, by + (sub // 2) * 4 + y, pal[(row >> (6 - 2 * x)) & 3])
+                    pos += 8
+    else:
+        # (block width, block height, bits per pixel)
+        blocks = {0: (8, 8, 4), 1: (8, 4, 8), 2: (8, 4, 8), 3: (4, 4, 16)}
+        if fmt not in blocks:
+            return False
+        bw, bh, bpp = blocks[fmt]
+        for by in range(0, h, bh):
+            for bx in range(0, w, bw):
+                for y in range(bh):
+                    for x in range(bw):
+                        if fmt == 0:  # I4
+                            byte = data[pos + (y * bw + x) // 2]
+                            i, a = (byte >> 4 if x % 2 == 0 else byte & 0xF) * 17, 255
+                        elif fmt == 1:  # I8
+                            i, a = data[pos + y * bw + x], 255
+                        elif fmt == 2:  # IA4
+                            byte = data[pos + y * bw + x]
+                            i, a = (byte & 0xF) * 17, (byte >> 4) * 17
+                        else:  # IA8
+                            a, i = data[pos + 2 * (y * bw + x)], data[pos + 2 * (y * bw + x) + 1]
+                        put(bx + x, by + y, (i, i, i, a))
+                pos += bw * bh * bpp // 8
     raw = b"".join(b"\0" + bytes(c for px in row for c in px) for row in pixels)
 
     def chunk(kind, body):
         return struct.pack(">I", len(body)) + kind + body + struct.pack(">I", zlib.crc32(kind + body))
 
-    png.write_bytes(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 4, 0, 0, 0))
+    png.write_bytes(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0))
                     + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b""))
     return True
 

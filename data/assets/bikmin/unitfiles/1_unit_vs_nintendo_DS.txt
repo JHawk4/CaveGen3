@@ -1,0 +1,24 @@
+#
+#
+#	units definition file
+#
+#
+2 	# number of units
+# room_nintendo_DS
+{
+	1 	# version
+	room_nintendo_DS 	# foldername
+	18 16 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}
+# room_filler_DS
+{
+	1 	# version
+	room_filler_DS 	# foldername
+	18 16 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

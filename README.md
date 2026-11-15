@@ -18,7 +18,7 @@ The game data it needs is included, so there's nothing to extract.
 | Pikmin 2: New Year | `newyear` | Timeless Realm (CH28) floor 3 is missing a unit file in the hack's own data. |
 | Colossal Caverns | `colossal` | |
 | Pikmin 216 | `216` | Version 1.3. Its generation code is assumed to be vanilla's; only the data has been checked. |
-| Bikmin 269 | `bikmin` | Listed, but its files aren't included yet: it ships only as a patch to the retail ISO. |
+| Bikmin 269 | `bikmin` | DX definitive v1.1. Its main.dol differs from retail; generation is assumed to be vanilla's, and only the data has been checked. |
 
 [docs/ADDING_ROMHACKS.md](docs/ADDING_ROMHACKS.md) explains how to add another romhack.
 

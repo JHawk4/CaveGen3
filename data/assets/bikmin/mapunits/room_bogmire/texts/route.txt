@@ -1,0 +1,12 @@
+2 # waypoint count 
+{
+	0 # index 
+	0
+	0.0 0.0 328.003 90.0 
+}
+{
+	1 # index 
+	1 # numLinks 
+	0 # link 0 
+	0.0 0.0 0.0 415.0 
+}

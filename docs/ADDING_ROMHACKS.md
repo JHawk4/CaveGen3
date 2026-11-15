@@ -49,6 +49,10 @@ Pick one of these:
   It unpacks the `.szs` archives and decodes the textures with Wiimms SZS Tools (`wszst` and
   `wimgt`, which must be on PATH). `--base pikmin2` copies in vanilla map units the romhack
   uses but doesn't include.
+
+  Bikmin 269 ships as an xdelta patch, which only applies cleanly to the full-size retail
+  Pikmin 2 USA dump (1,459,978,240 bytes; convert an `.rvz` with `DolphinTool convert -f iso`).
+  Trimmed or rebuilt ISOs move the files, and the patched ISO comes out scrambled.
 - **From a CaveGen folder.** If the romhack is already set up for JHawk's CaveGen (see its
   `Adding_New_Romhacks.md`, which covers extracting an ISO with Dolphin and Wiimms SZS Tools),
   convert CaveGen's folder:
@@ -119,8 +123,6 @@ Gzip it into `testdata/cavegen_expected_<game>.txt.gz` and add a test next to
 
 ## Known gaps
 
-- **Pikmin 2: 216 and Bikmin** are in `caveinfo_config.txt` (both are supported by
-  Caveripper) but their files aren't bundled yet. Extract them from an ISO as above.
 - **New Year's Timeless Realm (CH28)**: its third floor names `3_units_boss_time.txt`, which
   isn't in the hack's files, so the cave can't be generated.
 - A few Pikmin 251 and New Year sublevels generate differently in CaveGen and Caveripper;

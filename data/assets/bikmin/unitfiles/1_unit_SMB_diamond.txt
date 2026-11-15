@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# room_SMB_diamond
+{
+	1 	# version
+	room_SMB_diamond 	# foldername
+	18 16 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

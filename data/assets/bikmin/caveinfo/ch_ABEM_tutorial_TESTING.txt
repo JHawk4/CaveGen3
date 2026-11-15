@@ -1,0 +1,54 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 1 	# Floor Count
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 1 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 1 	# Place Geyser
+	{f008} -1 1_units_north_tutorial_snow.txt 	# Units File
+	{f009} -1 qchap_light.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 2 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 2 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	Tadpole_nft80 11 	# weight
+	0 	# type
+	Tadpole_nft80 11 	# weight
+	0 	# type
+	Tadpole_nft80 11 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	2 	# num
+	key 10 	# weight
+	nft3 10 	# weight
+}
+# Gateinfo
+{
+	1 	# num
+	gate 2000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	0 	# num
+}

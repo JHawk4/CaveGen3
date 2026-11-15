@@ -1,0 +1,92 @@
+# BaseGen file
+10 	 # num gens
+# basegen 0
+{
+	7 	# type [It's A Beautiful]
+	0.000000 0.000000 427.975 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 1
+{
+	8 	# type [Day Outside Birds]
+	0.000000 0.000000 0.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 2
+{
+	0 	# type [Are Singing Flowers]
+	-450.0 0.000000 0.000000 	# pos
+	90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	4 	# max num
+}
+# basegen 3
+{
+	0 	# type [Are Blooming On]
+	0.000000 0.000000 -420.0 	# pos
+	270.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	4 	# max num
+}
+# basegen 4
+{
+	0 	# type [Days Like These]
+	450.0 0.000000 0.000000 	# pos
+	45.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	4 	# max num
+}
+# basegen 5
+{
+	1 	# type [Kids Like You]
+	-242.705 0.000000 -176.336 	# pos
+	315.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	4 	# max num
+}
+# basegen 6
+{
+	1 	# type [Should Be Burning]
+	242.705 0.000000 -176.335 	# pos
+	135.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	4 	# max num
+}
+# basegen 7
+{
+	1 	# type [In Hell Turn]
+	242.705 0.000000 176.336 	# pos
+	225.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 8
+{
+	1 	# type [Around Kid It'd]
+	-242.705 0.000000 176.336 	# pos
+	315.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 9
+{
+	4 	# type [Be A Crime]
+	0.000000 0.000000 -427.975 	# pos
+	45.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

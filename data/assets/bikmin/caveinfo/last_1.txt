@@ -1,0 +1,384 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 7 	# Floor Count
+	{_eof} 
+}
+7 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_block_fort.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 skyfort 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 3 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	Hanachirashi 30 	# weight
+	1 	# type
+	Damagumo_nft91 10 	# weight
+	8 	# type
+	Fuefuki 10 	# weight
+	1 	# type
+	ElecBug 50 	# weight
+	0 	# type
+	ElecBug 50 	# weight
+	0 	# type
+	Sarai 5 	# weight
+	6 	# type
+	ElecBug 50 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	1 	# num
+	key 40 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# Floor Start
+	{f001} 4 1 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 jn1.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 spaceds 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 3 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	Frog_nft71 10 	# weight
+	1 	# type
+	Tobi 40 	# weight
+	1 	# type
+	Frog 20 	# weight
+	1 	# type
+	Wtank 30 	# weight
+	1 	# type
+	GasHiba 60 	# weight
+	5 	# type
+	Bomb 30 	# weight
+	0 	# type
+	Bomb 30 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	2 	# num
+	key 30 	# weight
+	nft115 10 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 2 	# Floor Start
+	{f001} 4 2 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_houdai_metal.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 spaceds 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 2 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	ElecBug 10 	# weight
+	0 	# type
+	ElecBug 10 	# weight
+	0 	# type
+	ElecBug 10 	# weight
+	0 	# type
+	ElecBug 10 	# weight
+	0 	# type
+	ElecBug 10 	# weight
+	0 	# type
+	ElecBug 10 	# weight
+	0 	# type
+	BigFoot_nft81 10 	# weight
+	1 	# type
+	Mar_key 20 	# weight
+	8 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 3 	# Floor Start
+	{f001} 4 3 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 0 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_kingboo_arena.txt 	# Units File
+	{f009} -1 light.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 180.000000 	# Waterwraith Timer
+	{f017} 4 3 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	KumaChappy_key 30 	# weight
+	1 	# type
+	SnakeWhole_nft94 10 	# weight
+	8 	# type
+	$1Egg 4 	# weight
+	6 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	BlueKochappy 20 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	BlueKochappy 10 	# weight
+	0 	# type
+	BlueKochappy 1 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	1 	# num
+	key 30 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 4 	# Floor Start
+	{f001} 4 4 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.100000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_hit224_metal.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 spaceds 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 2 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	RandPom 20 	# weight
+	1 	# type
+	Kogane 10 	# weight
+	0 	# type
+	Egg 11 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 5 	# Floor Start
+	{f001} 4 5 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 15 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 1 	# Place Geyser
+	{f008} -1 2_units_cent_nor1_metal.txt 	# Units File
+	{f009} -1 spaceds.ini 	# Lighting File
+	{f00A} -1 spaceds 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 6 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	OniKurage_nft117 10 	# weight
+	1 	# type
+	MiniHoudai_key 20 	# weight
+	1 	# type
+	PanModoki 20 	# weight
+	1 	# type
+	Tobi 10 	# weight
+	0 	# type
+	Tobi 10 	# weight
+	0 	# type
+	Tobi 10 	# weight
+	0 	# type
+	Tobi 10 	# weight
+	0 	# type
+	Tobi 10 	# weight
+	0 	# type
+	$4BombOtakara 11 	# weight
+	5 	# type
+	BlueKochappy 50 	# weight
+	1 	# type
+	DaiodoGreen 20 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	2 	# num
+	key 60 	# weight
+	nft114 10 	# weight
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 6 	# Floor Start
+	{f001} 4 6 	# Floor End
+	{f002} 4 99 	# Teki Spawns
+	{f003} 4 99 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 1 	# Place Geyser
+	{f008} -1 ImpactSite.txt 	# Units File
+	{f009} -1 impactsite.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Amount of keys on this floor
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	Houdai_nft116 10 	# weight
+	8 	# type
+	Kogane 11 	# weight
+	0 	# type
+	RedPom 11 	# weight
+	1 	# type
+	Ooinu_s 10 	# weight
+	6 	# type
+	Ooinu_l 7 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
