@@ -273,11 +273,17 @@ impl GameData {
             .any(|c| self.source.read(&format!("assets/{}/caveinfo/{}", c.game, c.caveinfo_filename)).is_some())
     }
 
-    /// Finds a cave by any of its names. `game` restricts the search to one game;
+    /// Finds a cave by any of its names. `game` restricts the search to one game; without one,
+    /// only vanilla caves are searched, since romhacks reuse vanilla abbreviations (New Year's
+    /// Elemental River is "ER", also Emperor's Realm's). Colossal Caverns counts as vanilla.
     /// `challenge_only` skips story mode caves.
     pub fn find_cave(&self, name: &str, game: Option<&str>, challenge_only: bool) -> Option<&CaveConfig> {
+        let in_game = |cfg: &CaveConfig| match game {
+            Some(g) => cfg.game.eq_ignore_ascii_case(g),
+            None => cfg.game == "pikmin2" || cfg.game == "colossal",
+        };
         self.caves.iter().find(|cfg| {
-            game.is_none_or(|g| cfg.game.eq_ignore_ascii_case(g))
+            in_game(cfg)
                 && (!challenge_only || cfg.is_challenge_mode)
                 && (cfg.full_name.eq_ignore_ascii_case(name) || cfg.shortened_names.iter().any(|n| n.eq_ignore_ascii_case(name)))
         })
@@ -304,12 +310,19 @@ impl GameData {
     }
 
     /// Parses a sublevel name such as "SCx6", "scx-6", "Snagret Hole 6", "CH12-1",
-    /// "ch-cm2" (challenge mode by short name), "colossal", or "newyear:BG3".
+    /// "ch-cm2" (challenge mode by short name), "colossal", or "newyear:BG3". Names without a
+    /// `game:` prefix are vanilla Pikmin 2 caves.
     pub fn sublevel(&self, input: &str) -> Result<Sublevel> {
+        self.sublevel_in(input, None)
+    }
+
+    /// Like [`GameData::sublevel`], but a name without a `game:` prefix belongs to
+    /// `default_game` when one is given (vanilla otherwise).
+    pub fn sublevel_in(&self, input: &str, default_game: Option<&str>) -> Result<Sublevel> {
         let unknown = || Error::new(format!("unrecognized sublevel \"{input}\""));
         let (game, rest) = match input.split_once(':') {
             Some((game, rest)) => (Some(game.trim().to_ascii_lowercase()), rest.to_ascii_lowercase()),
-            None => (None, input.to_ascii_lowercase()),
+            None => (default_game.map(str::to_ascii_lowercase), input.to_ascii_lowercase()),
         };
         let game = game.as_deref();
         let components: Vec<&str> = rest.split('-').map(str::trim).filter(|c| !c.is_empty()).collect();

@@ -146,4 +146,17 @@ fn sublevel_names() {
         assert!(name.eq_ignore_ascii_case(expected) || input == "ch-cm2", "{input} -> {name}");
     }
     assert!(data.sublevel("not a cave 3").is_err());
+
+    // Without a game prefix, names are vanilla; romhack caves need theirs.
+    for (input, game, cave) in [
+        ("ER-1", "pikmin2", "Emperor's Realm"),
+        ("newyear:ER-3", "newyear", "Elemental River"),
+        ("newyear:Elemental River 3", "newyear", "Elemental River"),
+        ("251:SS2", "251", "Subterranean Sands"),
+    ] {
+        let sublevel = data.sublevel(input).unwrap_or_else(|e| panic!("{input}: {e}"));
+        assert_eq!((sublevel.cfg.game.as_str(), sublevel.cfg.full_name.as_str()), (game, cave), "{input}");
+    }
+    assert!(data.sublevel("Elemental River 3").is_err());
+    assert!(data.sublevel("SS2").is_err());
 }

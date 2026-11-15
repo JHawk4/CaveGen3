@@ -192,7 +192,7 @@ impl Web {
                 };
                 let query = match arg(3)?.trim() {
                     "" | "-" => None,
-                    q => Some(parse_query(q, &sublevel.short_name(), data)?),
+                    q => Some(parse_query(q, &sublevel, data)?),
                 };
                 let (start, count, random, keep) = (num(4)?, num(5)?, arg(6)? == "r", num(7)? as usize);
                 let mut best: Vec<(u32, f64)> = Vec::new();
@@ -276,13 +276,14 @@ impl Web {
 }
 
 /// Parses a seed search query. Queries name their sublevel ("sh6 hole carry dist < 1000"); one
-/// that doesn't is about `sublevel`.
-fn parse_query(text: &str, sublevel: &str, data: &GameData) -> Result<StructuralQuery, String> {
-    match StructuralQuery::try_parse(text, data) {
+/// that doesn't is about `sublevel`. Names without a `game:` prefix belong to `sublevel`'s game.
+fn parse_query(text: &str, sublevel: &cavegen3::Sublevel, data: &GameData) -> Result<StructuralQuery, String> {
+    let game = Some(sublevel.cfg.game.as_str());
+    match StructuralQuery::try_parse_in(text, data, game) {
         Ok(q) => Ok(q),
         // Only retry when it failed for want of a sublevel at the start.
         Err(e) if e.to_string().contains("1:1") => {
-            StructuralQuery::try_parse(&format!("{sublevel} {text}"), data).map_err(|e| e.to_string())
+            StructuralQuery::try_parse_in(&format!("{} {text}", sublevel.short_name()), data, game).map_err(|e| e.to_string())
         }
         Err(e) => Err(e.to_string()),
     }
@@ -732,6 +733,12 @@ mod tests {
         assert!(found.starts_with("{\"tested\":50,"), "{found}");
         assert!(web.command("caveinfo\tSCx6").unwrap().contains("\"teki\":[{\"name\":"));
         assert!(web.command("search\tSCx6\t-\tnot a query ((\t0\t5\tc\t5").is_err());
+        // A romhack sublevel's query, with or without naming the sublevel, stays in that romhack
+        // (251's SS is Subterranean Sands; vanilla has no SS).
+        for q in ["hole carry dist < 1500", "ss2 hole carry dist < 1500"] {
+            let found = web.command(&format!("search\t251:SS2\t-\t{q}\t0\t5\tr\t5")).unwrap();
+            assert!(found.starts_with("{\"tested\":5,"), "{q}: {found}");
+        }
 
         // The aggregator: every seed lands in exactly one group, and each group's spots count
         // one pod per layout.

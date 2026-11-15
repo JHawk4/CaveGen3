@@ -52,8 +52,15 @@ impl Query for StructuralQuery {
 }
 
 impl StructuralQuery {
-    /// Parses a query such as `scx7 minihoudai < 2 & sh6 hole carry dist < 1000`.
+    /// Parses a query such as `scx7 minihoudai < 2 & sh6 hole carry dist < 1000`. Sublevel names
+    /// without a `game:` prefix are vanilla.
     pub fn try_parse(input: &str, data: &GameData) -> Result<Self> {
+        Self::try_parse_in(input, data, None)
+    }
+
+    /// Like [`StructuralQuery::try_parse`], but sublevel names without a `game:` prefix belong to
+    /// `default_game` when one is given.
+    pub fn try_parse_in(input: &str, data: &GameData, default_game: Option<&str>) -> Result<Self> {
         let pairs = QueryParser::parse(Rule::query, input).map_err(|e| Error::new(format!("couldn't parse query: {e}")))?;
         let mut sublevels: Vec<Sublevel> = Vec::new();
         let mut current: Option<usize> = None;
@@ -61,7 +68,7 @@ impl StructuralQuery {
         for pair in pairs {
             match pair.as_rule() {
                 Rule::sublevel_ident => {
-                    let sublevel = data.sublevel(pair.as_str())?;
+                    let sublevel = data.sublevel_in(pair.as_str(), default_game)?;
                     data.caveinfo(&sublevel)?;
                     current = Some(sublevels.iter().position(|s| *s == sublevel).unwrap_or_else(|| {
                         sublevels.push(sublevel);
