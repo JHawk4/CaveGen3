@@ -1566,6 +1566,14 @@ async function renderSummary(layout) {
     if (o.kind === "gate") gates.push(o);
   }
 
+  // Caveinfo order, which is the order the generator places treasures in.
+  const order = (layout.treasure_order || []).map((n) => n.toLowerCase());
+  const rank = (t) => {
+    const i = order.indexOf(t.name.toLowerCase());
+    return i < 0 ? order.length : i;
+  };
+  treasures.sort((a, b) => rank(a) - rank(b));
+
   const exit = layout.objects.find((o) => o.kind === "hole" || o.kind === "geyser");
   parts.push(el("h2", {}, T.layout));
   const info = el("ul");

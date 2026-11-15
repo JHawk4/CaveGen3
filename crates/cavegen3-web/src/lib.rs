@@ -608,6 +608,20 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
         );
     }
 
+    // Every treasure the sublevel can have, in caveinfo order (the file's TekiInfo carriers, then
+    // ItemInfo, then CapInfo carriers), which is the order the generator places them in.
+    let mut order: Vec<String> = Vec::new();
+    let carried = ci.teki_info.iter().filter_map(|t| t.carrying.as_ref());
+    let items = ci.item_info.iter().map(|i| &i.internal_name);
+    let caps = ci.cap_info.iter().filter_map(|c| c.carrying.as_ref());
+    for name in carried.chain(items).chain(caps) {
+        let name = q(&name.to_ascii_lowercase());
+        if !order.contains(&name) {
+            order.push(name);
+        }
+    }
+    extra.push_str(&format!(",\"treasure_order\":[{}]", order.join(",")));
+
     format!(
         "{{\"sublevel\":{},\"long_name\":{},\"game\":{},\"floor\":{},\"floors\":{num_floors},\"seed\":\"{:08X}\",\"width\":{width},\"height\":{height},\"final_floor\":{},\"units\":[{}],\"objects\":[{}]{extra}}}",
         q(&sublevel.short_name()),
