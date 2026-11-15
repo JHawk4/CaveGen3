@@ -1203,7 +1203,10 @@ function drawMap(layout, scale) {
     const bg = first.includes("toy") ? imageOf([prettyUrl("toy_bg")]) : first.includes("kusachi") ? imageOf([prettyUrl("kusachi_bg")]) : null;
     if (bg) {
       ctx.save();
-      ctx.fillStyle = ctx.createPattern(bg, "repeat");
+      // Fixed to the floor: 40 of the backdrop's pixels per map cell, as in CaveGen.
+      const pattern = ctx.createPattern(bg, "repeat");
+      pattern.setTransform(new DOMMatrix().scale(cell / 40));
+      ctx.fillStyle = pattern;
       ctx.fillRect(0, 0, layout.width * cell, layout.height * cell);
       ctx.restore();
     }

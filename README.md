@@ -49,6 +49,9 @@ their in-game names in either language. Hover over or tap an icon on the map to 
   clean_pretty` cleans them before they're converted to WebP in `data/resources/pretty`: it
   removes the purple that shows through, evens out the lighting and each tile set's color, and
   fixes the dark band along each picture's edge, so neighboring tiles blend together.
+  Toy and grassy caves have a floor backdrop under the pictures; `--example pretty_backdrops`
+  cuts exactly one repeat of the floor texture out of CaveGen's framed backdrop pictures, so it
+  tiles without seams, and it's drawn at a fixed size on the floor (40 pixels per map cell).
 - **Colossal Caverns options** (shown only for Colossal Caverns): CaveGen's `-ultraRandomizer`,
   `-extraUnits` (Pikmin 251's units too) and `-5onion`. In links and on the command line they're
   suffixes on the name: `colossal+ultra+extra+5onion`. They're checked against CaveGen for 20

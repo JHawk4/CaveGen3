@@ -911,7 +911,8 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
                 tiny_skia::SpreadMode::Repeat,
                 FilterQuality::Bilinear,
                 1.0,
-                Transform::identity(),
+                // Fixed to the floor: 40 of the backdrop's pixels per map cell, as in CaveGen.
+                Transform::from_scale(cell / 40.0, cell / 40.0),
             );
             let paint = Paint {
                 shader: pattern,
