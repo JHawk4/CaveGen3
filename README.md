@@ -45,21 +45,40 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 - **CaveInfo**, below the map: the sublevel's limits and the teki, treasures, gates, alcove teki
   and map units it generates from, with their weights.
 
-The map zooms with the mouse wheel, a pinch, the − / + buttons or a double-click, and drags to
-move. **Comedown only** crops it to the box around the pod you see when you land (its size is in
-Advanced options; `comedown=1` in a link turns it on), and **Comedown box outline** marks that
-box on the full map.
+The map pane keeps its size: the mouse wheel, a trackpad pinch, two fingers, the − / + buttons
+or a double-click zoom about the pointer, zooming out shrinks the map against a dark background,
+and dragging moves it anywhere, past the edges too. **Save image** saves the whole map.
+
+**Comedown only** shows just what's on screen when you land, turned so the camera faces up as
+in the game (`comedown=1` in a link turns it on), and **Comedown outline** marks it on the full
+map. It's worked out from the landing camera in the game's files
+(`/user/Nishimura/Camera/caveCameraParms.txt`, the "Mid(Low)" settings `PlayCamera::init`
+starts with: 600 units back, 21° down, a 23° field of view). The camera looks the way the pod
+faces, so the floor in view is a trapezoid from a little behind the pod to about 1,000 units
+ahead, about 1,100 wide at the far edge on a 16:9 screen (800 on 4:3; pick the screen in
+Advanced options). This was checked against a run video (Hole of Beasts 2, seed `23A06B6B`),
+which also set how far ahead of the pod the camera aims when you get control.
+
+The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
+`-consecutiveSeeds`); the seed search and the aggregator offer the same.
 
 ### Aggregator
 
 `aggregator.html` recreates CaveGen's Aggregator: it generates many seeds of a sublevel, groups
 the ones that look alike, and draws each group with how often each treasure, teki, gate and exit
 spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's default), the rooms
-only, or the first room placed, as in CaveGen, or by **comedown**: what's in view around the pod
-when you land, either the map units alone or the map units and the objects in view. Find the
-group that matches your landing to see where the treasures probably are. Each group's map is
-turned so its anchor room (the first room, or the pod's room) faces the same way, and gray cells
-show how often other map units were there.
+only, or the first room placed, as in CaveGen, or by **comedown**: what the camera shows when you
+land, either the map units alone or the map units and the objects in view. Find the group that
+matches your landing to see where the treasures probably are. Gray cells show how often other map
+units were there.
+
+Rotations don't split groups: the same arrangement turned any way is one group (CaveGen only
+lined up the first room's rotation). Comedown groups are turned so the camera faces up. Map
+units that look the same after a quarter or half turn count as the same in any of those
+rotations: the aggregator checks each unit's shape, doors and water, and the page checks its
+radar image. In vanilla Pikmin 2 these include the four-way junctions, the cross rooms (like
+Frontier Cavern's four-way room) and straight hallways. Their spawn points don't always line up
+after a turn, so a group with such a room overlays the spawn spots of each way it was turned.
 
 ### Suggestion box
 
