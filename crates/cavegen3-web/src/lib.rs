@@ -523,9 +523,12 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
                 if info.carrying.is_some() { path_json(pos) } else { String::new() },
             ),
             SpawnObject::Item(info) => {
-                let value = data.treasure(&info.game, &info.internal_name).map_or(0, |t| t.value);
+                let t = data.treasure(&info.game, &info.internal_name);
+                let value = t.map_or(0, |t| t.value);
+                let radius = f(t.map_or(0.0, |t| t.radius));
+                let buried = t.is_some_and(|t| t.fully_buried());
                 format!(
-                    "{{\"kind\":\"treasure\",\"name\":{},\"game\":{},\"value\":{value},\"x\":{x},\"z\":{z}{angle}{}}}",
+                    "{{\"kind\":\"treasure\",\"name\":{},\"game\":{},\"value\":{value},\"radius\":{radius},\"buried\":{buried},\"x\":{x},\"z\":{z}{angle}{}}}",
                     q(&info.internal_name),
                     q(&info.game),
                     path_json(pos),

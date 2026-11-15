@@ -71,6 +71,11 @@ pub struct Object {
     #[serde(default)]
     pub plugged: bool,
     pub color: Option<u32>,
+    /// A treasure's bounding radius, which the treasure gauge subtracts from the distance.
+    pub radius: Option<f32>,
+    /// A treasure that starts fully under the ground.
+    #[serde(default)]
+    pub buried: bool,
 }
 
 impl Object {
@@ -124,6 +129,8 @@ pub struct Waypoint {
 pub struct Options {
     pub water: bool,
     pub treasures: bool,
+    /// Hide treasures that start fully buried (CaveGen's -drawNoBuriedItems).
+    pub hide_buried: bool,
     pub teki: bool,
     pub plants: bool,
     pub gates: bool,
@@ -156,6 +163,7 @@ impl Default for Options {
         Options {
             water: true,
             treasures: true,
+            hide_buried: false,
             teki: true,
             plants: true,
             gates: true,
@@ -185,6 +193,7 @@ impl Default for Options {
 pub const OPTION_NAMES: &[&str] = &[
     "water",
     "treasures",
+    "hideBuried",
     "teki",
     "plants",
     "gates",
@@ -216,6 +225,7 @@ impl Options {
         let field = match key.as_str() {
             "water" => &mut self.water,
             "treasures" => &mut self.treasures,
+            "hideburied" => &mut self.hide_buried,
             "teki" => &mut self.teki,
             "plants" => &mut self.plants,
             "gates" => &mut self.gates,
@@ -256,7 +266,7 @@ impl Options {
 
     fn shows(&self, o: &Object) -> bool {
         match o.kind.as_str() {
-            "treasure" => self.treasures,
+            "treasure" => self.treasures && !(self.hide_buried && o.buried),
             "teki" if o.group() == Some(6) => self.plants,
             "teki" => self.teki,
             "gate" => self.gates,
@@ -267,12 +277,12 @@ impl Options {
 
 // ---- The comedown ----
 
-// The landing camera, from the game's caveCameraParms.txt; see `CAMERA` in web/app.js.
-const CAM_DIST: f32 = 600.0;
-const CAM_ANGLE: f32 = 21.0;
-const CAM_FOV: f32 = 23.0;
-const CAM_LIFT: f32 = 38.0;
-const CAM_LOOK_AHEAD: f32 = 75.0;
+// The landing camera (the game's Far(Low) settings, fitted to run videos); see `CAMERA` in web/app.js.
+const CAM_DIST: f32 = 900.0;
+const CAM_ANGLE: f32 = 25.0;
+const CAM_FOV: f32 = 26.0;
+const CAM_LIFT: f32 = 40.0;
+const CAM_LOOK_AHEAD: f32 = -55.0;
 
 /// The floor in view when you land: a trapezoid from `near` to `far` units ahead of the pod.
 #[derive(Clone, Copy)]
@@ -499,8 +509,18 @@ const SPAWN_COLORS: [&str; 10] = [
     "#ff82dc", "#dc0000", "#dc7800", "#000", "#008c3c", "#505050", "#8ce164", "#009696", "#a000a0", "#0000ff",
 ];
 const GAUGE_TICKS: [f32; 9] = [0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0];
-const GAUGE_COLORS: [&str; 9] = [
-    "#a0ffff", "#ffffa0", "#b4b4ff", "#ffb4b4", "#dca0ff", "#ffdc8c", "#a0d296", "#be9678", "#0000ff",
+// The treasure gauge's bands, as on the web page (`GAUGE_SHADES` in web/app.js): the needle sits at
+// 0.5 + 9.5 (1 - d/900)^2 tenths, d being the flat distance minus the treasure's radius.
+const GAUGE_SHADES: [(u8, u8, u8, f32); 9] = [
+    (255, 236, 140, 0.16),
+    (255, 214, 90, 0.22),
+    (255, 190, 60, 0.28),
+    (255, 165, 40, 0.34),
+    (250, 135, 30, 0.40),
+    (240, 105, 30, 0.46),
+    (228, 75, 35, 0.52),
+    (210, 45, 40, 0.58),
+    (180, 20, 50, 0.64),
 ];
 
 // ---- Drawing ----
@@ -832,12 +852,33 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
         .filter(|o| o.kind == "treasure" || (o.kind == "teki" && o.carrying.is_some()))
         .collect();
 
-    if opts.gauge {
-        for o in &carried {
+    if opts.gauge && !carried.is_empty() {
+        // On its own layer, from the outermost band in: each band clears what's inside it and
+        // paints its own shade; then the layer goes on the map.
+        if let Some(mut layer) = Pixmap::new(cv.pixmap.width(), cv.pixmap.height()) {
             for (i, tick) in GAUGE_TICKS.iter().enumerate() {
-                let r = (1.0 - ((tick - 0.5) / 9.5).sqrt()) * 900.0;
-                cv.stroke_circle(to_px(o.x), to_px(o.z), to_px(r), hex(GAUGE_COLORS[i]), thin);
+                let reach = 900.0 * (1.0 - ((tick - 0.5) / 9.5).sqrt());
+                let mut pb = PathBuilder::new();
+                for o in &carried {
+                    // A teki's own size isn't known, so treasures it carries use no extra radius.
+                    let extra = if o.kind == "treasure" { o.radius.unwrap_or(0.0) } else { 0.0 };
+                    pb.push_circle(to_px(o.x), to_px(o.z), to_px(reach + extra));
+                }
+                let Some(path) = pb.finish() else { continue };
+                let mut clear = paint(Color::BLACK);
+                clear.blend_mode = tiny_skia::BlendMode::Clear;
+                layer.fill_path(&path, &clear, FillRule::Winding, cv.base, None);
+                let (r, g, b, a) = GAUGE_SHADES[i];
+                layer.fill_path(&path, &paint(rgba(r, g, b, a)), FillRule::Winding, cv.base, None);
             }
+            cv.pixmap.draw_pixmap(
+                0,
+                0,
+                layer.as_ref(),
+                &PixmapPaint::default(),
+                Transform::identity(),
+                cv.mask.as_ref(),
+            );
         }
     }
 

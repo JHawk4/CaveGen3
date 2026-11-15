@@ -63,6 +63,18 @@ pub struct Treasure {
     pub min_carry: u32,
     pub max_carry: u32,
     pub value: u32,
+    /// Its bounding radius, which the treasure gauge subtracts from the distance.
+    pub radius: f32,
+    /// Its height and how deep it's buried: `depth >= height` means fully buried (as CaveGen).
+    pub height: f32,
+    pub depth: f32,
+}
+
+impl Treasure {
+    /// Whether it starts fully under the ground, as CaveGen's -drawNoBuriedItems decides.
+    pub fn fully_buried(&self) -> bool {
+        self.depth > 0.0 && self.depth >= self.height
+    }
 }
 
 /// Parses a treasure config file: `{ ... }` blocks of `key value` lines, using the
@@ -83,8 +95,18 @@ fn parse_treasure_config(text: &str, game: &str) -> Vec<Treasure> {
             }
         }
         let field = |k: &str| fields.get(k).and_then(|v| v.parse().ok());
+        let float = |k: &str| fields.get(k).and_then(|v| v.parse::<f32>().ok()).unwrap_or(0.0);
         if let (Some(name), Some(min), Some(max), Some(money)) = (fields.get("name"), field("min"), field("max"), field("money")) {
-            out.push(Treasure { internal_name: name.to_string(), game: game.to_string(), min_carry: min, max_carry: max, value: money });
+            out.push(Treasure {
+                internal_name: name.to_string(),
+                game: game.to_string(),
+                min_carry: min,
+                max_carry: max,
+                value: money,
+                radius: float("radius"),
+                height: float("height"),
+                depth: float("depth"),
+            });
         }
     }
     out

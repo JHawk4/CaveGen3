@@ -34,11 +34,18 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 
 **Advanced options** brings over much of the CaveGen GUI:
 
-- **Objects**, **View**, **Generation details** and **Scores**: hide treasures, teki, plants,
-  gates, gate HP (written on each gate) or exits; show only the comedown, water, a grid; and draw
-  spawn points (with Caveripper's markers: a duck for treasures, a leaf for plants, rings for easy teki),
-  facing directions, the game's unit, door, treasure and hole scores, teki scores, door links
-  and numbers, waypoints, treasure carry paths, treasure gauge rings and a grid.
+- **Objects**, **View**, **Generation details** and **Scores**: hide treasures (or only the
+  fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants,
+  gates, gate HP (written on each gate) or exits; show only the comedown, water, a grid and the
+  treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
+  for plants, rings for easy teki), facing directions, the game's unit, door, treasure and hole
+  scores, teki scores, door links and numbers, waypoints and treasure carry paths.
+- **Treasure gauge** shades the floor by how high the gauge's needle would be there, from pale
+  yellow at the edge of its range to deep red beside a treasure, one shade per step of CaveGen's
+  gauge marks. Per the game's code (`OtakaraSensor::calcLevel`, `Radar::Mgr::calcNearestTreasure`)
+  the needle reads 0.05 + 0.95 (1 − d/900)² for the nearest treasure, with d the flat distance
+  minus the treasure's bounding radius. Treasures carried by teki use the teki's position with no
+  extra radius, since teki sizes aren't in the data.
 - **Judge**: score the layout with any of CaveGen's judges (`score`, `pod`, `at`, `attk`,
   `cmat`, `key`, `colossal`, `mapunitcount`).
 - **Seed search**: test thousands of seeds (counting up from the seed, or random) and list the
@@ -57,13 +64,14 @@ and dragging moves it anywhere, past the edges too. **Save image** saves the who
 
 **Comedown only** shows just what's on screen when you land, turned so the camera faces up as
 in the game (`comedown=1` in a link turns it on), and **Comedown outline** marks it on the full
-map. It's worked out from the landing camera in the game's files
-(`/user/Nishimura/Camera/caveCameraParms.txt`, the "Mid(Low)" settings `PlayCamera::init`
-starts with: 600 units back, 21° down, a 23° field of view). The camera looks the way the pod
-faces, so the floor in view is a trapezoid from a little behind the pod to about 1,000 units
-ahead, about 1,100 wide at the far edge on a 16:9 screen (800 on 4:3; pick the screen in
-Advanced options). This was checked against a run video (Hole of Beasts 2, seed `23A06B6B`),
-which also set how far ahead of the pod the camera aims when you get control.
+map. It uses the game's "Far(Low)" camera settings
+(`/user/Nishimura/Camera/caveCameraParms.txt`: 900 units back, 25° down, a 26° field of view),
+looking the way the pod faces from just behind it, where the captain lands. The floor in view is
+a trapezoid from about 330 units behind the pod to about 1,100 ahead, about 1,200 wide at the far
+edge on a 4:3 screen (1,600 on 16:9; pick the screen in Advanced options). These numbers were
+fitted to speedrun videos whose seeds were recovered from the video (Emergence Cave 1 and Hole of
+Beasts 1, three runners): there the pod sits a little above the middle of the screen while the
+Pikmin pour out. It's accurate to roughly a tenth of the screen, not to the pixel.
 
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.

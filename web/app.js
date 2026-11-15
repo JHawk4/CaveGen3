@@ -86,6 +86,7 @@ const STRINGS = {
     secSeeds: "Seeds",
     opt: {
       treasures: "Treasures",
+      hideBuried: "Hide fully buried treasures",
       teki: "Teki",
       plants: "Plants",
       gates: "Gates",
@@ -101,7 +102,7 @@ const STRINGS = {
       doorIds: "Door numbers",
       waypoints: "Waypoints",
       paths: "Carry paths",
-      gauge: "Treasure gauge rings",
+      gauge: "Treasure gauge",
       grid: "Grid",
       comedownBox: "Comedown outline",
     },
@@ -160,6 +161,7 @@ const STRINGS = {
       caveInfo: "What this sublevel can generate: its limits, and the weights the generator picks teki, treasures and map units by",
       opt: {
         treasures: "Treasure icons",
+        hideBuried: "Hide treasures that start completely under the ground (as CaveGen's -drawNoBuriedItems)",
         teki: "Teki icons, with what they carry and whether they fall when approached",
         plants: "Plant icons",
         gates: "Gates",
@@ -175,7 +177,7 @@ const STRINGS = {
         doorIds: "Each door's number within its map unit",
         waypoints: "The carry waypoints, with arrows toward the pod",
         paths: "The way each treasure is carried back to the pod",
-        gauge: "Around each treasure, the distances where the treasure gauge changes",
+        gauge: "Shades the floor by how high the treasure gauge's needle would be there: pale yellow at the edge of its 900-unit range, deepening to red right next to a treasure. Each shade is one step of CaveGen's gauge marks (0.5, 1, 2 … 8 tenths)",
         grid: "The map's grid cells",
         comedownBox: "An outline of what the camera shows when you land",
       },
@@ -311,6 +313,7 @@ const STRINGS = {
     secSeeds: "シード",
     opt: {
       treasures: "お宝",
+      hideBuried: "完全に埋まったお宝を隠す",
       teki: "原生生物",
       plants: "植物",
       gates: "ゲート",
@@ -326,7 +329,7 @@ const STRINGS = {
       doorIds: "ドア番号",
       waypoints: "ウェイポイント",
       paths: "運搬ルート",
-      gauge: "お宝ゲージの範囲",
+      gauge: "お宝ゲージ",
       grid: "グリッド",
       comedownBox: "着地時の範囲の枠",
     },
@@ -386,6 +389,7 @@ const STRINGS = {
       caveInfo: "この階で生成されうるもの：上限と、原生生物・お宝・マップユニットが選ばれる重み",
       opt: {
         treasures: "お宝のアイコン",
+        hideBuried: "最初から完全に地中に埋まっているお宝を隠します（CaveGenの -drawNoBuriedItems）",
         teki: "原生生物のアイコン（持っているお宝、近づくと落ちてくるかも表示）",
         plants: "植物のアイコン",
         gates: "ゲート",
@@ -401,7 +405,7 @@ const STRINGS = {
         doorIds: "マップユニット内のドア番号",
         waypoints: "運搬のウェイポイントと、ポッドへ向かう矢印",
         paths: "各お宝がポッドまで運ばれる道すじ",
-        gauge: "各お宝のまわりの、お宝ゲージが変わる距離",
+        gauge: "その場所でお宝ゲージの針がどこまで上がるかで床を塗り分けます。範囲（900）の端は薄い黄色、お宝に近いほど濃い赤。1段がCaveGenのゲージの目盛り（0.5, 1, 2 … 8）1つ分です",
         grid: "マップのマス目",
         comedownBox: "着地したときにカメラに映る範囲の枠",
       },
@@ -696,13 +700,13 @@ function unitImage(img) {
 
 // ---- The comedown: what you see when you land ----
 
-// The landing camera, from the game's /user/Nishimura/Camera/caveCameraParms.txt (the
-// "Mid(Low)" settings PlayCamera::init starts with): it looks the way the pod faces, from
-// `dist` units behind the captain and `angle` degrees above, with a vertical field of view of
-// `fov` degrees, aimed `lift` units above the captain. `lookAhead` is how far ahead of the pod
-// the camera's target is when you get control; it's measured from a run video, since the
-// captain and Pikmin step out in front of the pod.
-const CAMERA = { dist: 600, angle: 21, fov: 23, lift: 38, lookAhead: 75 };
+// The landing camera: the game's "Far(Low)" settings in /user/Nishimura/Camera/caveCameraParms.txt
+// (`dist` units back, `angle` degrees down, a vertical field of view of `fov` degrees, aimed
+// `lift` units above the target), looking the way the pod faces. The target is `lookAhead` units
+// ahead of the pod: negative, since the captain lands just behind it. These were fitted to
+// speedrun videos whose seeds were recovered (Emergence Cave 1 and Hole of Beasts 1 in three
+// runs): the screen shows from about 330 units behind the pod to about 1,100 ahead.
+const CAMERA = { dist: 900, angle: 25, fov: 26, lift: 40, lookAhead: -55 };
 
 /** The screen's width over its height: 16:9 or 4:3 (the game's Screen setting). */
 function screenAspect() {
@@ -972,6 +976,7 @@ function objectLabel(o) {
 // `section` is the Advanced options box each goes in.
 const MAP_OPTIONS = [
   { key: "treasures", on: true, section: "objects" },
+  { key: "hideBuried", section: "objects" },
   { key: "teki", on: true, section: "objects" },
   { key: "plants", on: true, section: "objects" },
   { key: "gates", on: true, section: "objects" },
@@ -1004,7 +1009,25 @@ function needsDetails() {
 
 // CaveGen's colors for spawn point groups 0-9, and treasure gauge rings.
 const SPAWN_COLORS = ["#ff82dc", "#dc0000", "#dc7800", "#000", "#008c3c", "#505050", "#8ce164", "#009696", "#a000a0", "#0000ff"];
+// The treasure gauge (og::Screen::OtakaraSensor::calcLevel): its needle rises to
+// 0.05 + 0.95 (1 - d/900)^2 of the way for the nearest treasure, where d is the flat distance
+// minus the treasure's bounding radius (Radar::Mgr::calcNearestTreasure). In tenths, as on
+// CaveGen's gauge rings, that's 0.5 + 9.5 (1 - d/900)^2. Each band is where the needle sits
+// between two of these marks: yellow far out, deep red-orange right next to a treasure.
 const GAUGE_TICKS = [0.5, 1, 2, 3, 4, 5, 6, 7, 8];
+const GAUGE_SHADES = [
+  [255, 236, 140, 0.16],
+  [255, 214, 90, 0.22],
+  [255, 190, 60, 0.28],
+  [255, 165, 40, 0.34],
+  [250, 135, 30, 0.40],
+  [240, 105, 30, 0.46],
+  [228, 75, 35, 0.52],
+  [210, 45, 40, 0.58],
+  [180, 20, 50, 0.64],
+];
+/** The distance at which the gauge reaches `tick` tenths. */
+const gaugeDistance = (tick) => 900 * (1 - Math.sqrt((tick - 0.5) / 9.5));
 // Caveripper's spawn group colors, for its spawn point markers.
 const SP_COLORS = { 0: "#fa57cf", 1: "#c90234", 2: "#e67300", 5: "#858585", 6: "#3b945a", 7: "#e63256", 8: "#59068a", 9: "#2dada7" };
 
@@ -1025,12 +1048,11 @@ function tintedIcon(img, color) {
   }
   return tintCache.get(key);
 }
-const GAUGE_COLORS = ["#a0ffff", "#ffffa0", "#b4b4ff", "#ffb4b4", "#dca0ff", "#ffdc8c", "#a0d296", "#be9678", "#0000ff"];
 
 function objectShown(o, opts) {
   switch (o.kind) {
     case "treasure":
-      return opts.treasures;
+      return opts.treasures && !(opts.hideBuried && o.buried);
     case "teki":
       return o.group === 6 ? opts.plants : opts.teki;
     case "gate":
@@ -1183,17 +1205,34 @@ function drawMap(layout, scale) {
   const special = (name) => loaded.get(specialUrl(name)) || null;
 
   const carried = layout.objects.filter((o) => o.kind === "treasure" || (o.kind === "teki" && o.carrying));
-  if (opts.gauge) {
-    ctx.lineWidth = thin;
-    for (const o of carried) {
-      GAUGE_TICKS.forEach((tick, i) => {
-        const r = (1 - Math.sqrt((tick - 0.5) / 9.5)) * 900;
-        ctx.strokeStyle = GAUGE_COLORS[i];
-        ctx.beginPath();
-        ctx.arc(toPx(o.x), toPx(o.z), toPx(r), 0, Math.PI * 2);
-        ctx.stroke();
-      });
-    }
+  if (opts.gauge && carried.length) {
+    // Shade the floor by the needle's band. Drawn on its own layer, from the outermost band in:
+    // each band clears what's inside it and paints its own shade, then the layer goes on the map.
+    const layer = document.createElement("canvas");
+    layer.width = canvas.width;
+    layer.height = canvas.height;
+    const g = layer.getContext("2d");
+    g.setTransform(ctx.getTransform());
+    GAUGE_TICKS.forEach((tick, i) => {
+      g.beginPath();
+      for (const o of carried) {
+        // A teki's own size isn't known here, so treasures it carries use no extra radius.
+        const r = gaugeDistance(tick) + (o.kind === "treasure" ? o.radius || 0 : 0);
+        g.moveTo(toPx(o.x) + toPx(r), toPx(o.z));
+        g.arc(toPx(o.x), toPx(o.z), toPx(r), 0, Math.PI * 2);
+      }
+      g.globalCompositeOperation = "destination-out";
+      g.fillStyle = "#000";
+      g.fill("nonzero");
+      g.globalCompositeOperation = "source-over";
+      const [r, gr, b, a] = GAUGE_SHADES[i];
+      g.fillStyle = `rgba(${r}, ${gr}, ${b}, ${a})`;
+      g.fill("nonzero");
+    });
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(layer, 0, 0);
+    ctx.restore();
   }
 
   const doors = layout.doors || [];
