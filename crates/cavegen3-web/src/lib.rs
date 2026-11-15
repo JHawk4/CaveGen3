@@ -352,9 +352,9 @@ fn caveinfo_json(ci: &CaveInfo, data: &GameData) -> String {
         .item_info
         .iter()
         .map(|t| {
-            let value = data.treasure(&t.game, &t.internal_name).map_or(0, |t| t.value);
+            let (value, min_carry, max_carry) = data.treasure(&t.game, &t.internal_name).map_or((0, 0, 0), |t| (t.value, t.min_carry, t.max_carry));
             format!(
-                "{{\"name\":{},\"game\":{},\"min\":{},\"weight\":{},\"value\":{value}}}",
+                "{{\"name\":{},\"game\":{},\"min\":{},\"weight\":{},\"value\":{value},\"carry\":[{min_carry},{max_carry}]}}",
                 q(&t.internal_name),
                 q(&t.game),
                 t.min_amount,

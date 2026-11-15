@@ -18,10 +18,8 @@ Object.assign(STRINGS.en, {
   aggMinPct: "Hide below",
   aggMaxGroups: "Groups shown",
   aggHelp:
-    "Each map is one group of seeds that look alike, in any rotation: rooms that look the same turned (like four-way rooms) count as the same. " +
-    "Icons show what spawned at each spot and how often; gray is how often other map units covered a cell. " +
-    "With comedown grouping, the dashed outline is what the camera shows when you land, turned so the camera faces up; find the group that matches your landing to see where treasures probably are. " +
-    "Scroll or pinch to zoom a map, drag to move it, hover for details.",
+    "Each map is a group of seeds that look alike in any rotation. Icons show what spawned at each spot and how often; " +
+    "gray shows how often other map units covered a cell; the dashed outline is the landing camera's view.",
   aggRunning: (done, total) => `Aggregating… ${done.toLocaleString()} of ${total.toLocaleString()} seeds`,
   aggDone: (total, groups, s) => `${total.toLocaleString()} seeds in ${s} s, ${groups.toLocaleString()} groups.`,
   aggStopped: (total) => `Stopped after ${total.toLocaleString()} seeds.`,
@@ -47,10 +45,8 @@ Object.assign(STRINGS.ja, {
   aggMinPct: "これ未満は非表示",
   aggMaxGroups: "表示するグループ数",
   aggHelp:
-    "各マップは見た目が同じシードのグループです。向きが違うだけのものや、回転しても同じに見える部屋（四方向の部屋など）は同じとみなします。" +
-    "アイコンは各地点に出たものとその割合、灰色はほかのマップユニットがそのマスにあった頻度です。" +
-    "着地時の範囲でまとめた場合、点線は着地直後にカメラに映る範囲で、カメラが上を向くよう回転してあります。自分の着地と同じグループを探すと、お宝がありそうな場所がわかります。" +
-    "ホイールかピンチで拡大・縮小、ドラッグで移動、カーソルを合わせると詳細が出ます。",
+    "各マップは、回転を含めて見た目が同じシードのグループです。アイコンは各地点に出たものとその割合、" +
+    "灰色はほかのマップユニットがそのマスにあった頻度、点線は着地直後のカメラの範囲です。",
   aggRunning: (done, total) => `集計中… ${done.toLocaleString()} / ${total.toLocaleString()} シード`,
   aggDone: (total, groups, s) => `${total.toLocaleString()} シードを${s}秒で集計、${groups.toLocaleString()} グループ。`,
   aggStopped: (total) => `${total.toLocaleString()} シードで停止しました。`,

@@ -58,7 +58,6 @@ const STRINGS = {
     navSuggest: "Suggestion box",
     pageTitle: { generator: "CaveGen3", aggregator: "Aggregator · CaveGen3", suggest: "Suggestion box · CaveGen3" },
     comedown: "Comedown only",
-    comedownTitle: "Show only what's on screen when you land, turned the way the camera faces",
     comedownScreen: "Screen (for the comedown)",
     seedStep: "Seed buttons step",
     seedStepPlus: "+1 / −1",
@@ -67,7 +66,6 @@ const STRINGS = {
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
     zoomFit: "Fit the map to the window",
-    zoomHelp: "Scroll or pinch to zoom, drag to move, double-click to zoom in. The comedown is what the landing camera sees (from the game's camera settings).",
     suggestTitle: "Suggestion box",
     suggestIntro: "Found a wrong layout, a missing romhack, or have an idea for CaveGen3? Leave a note. Your name is optional.",
     suggestName: "Name (optional)",
@@ -104,7 +102,6 @@ const STRINGS = {
     },
     judge: "Judge",
     judgeNone: "None",
-    judgeHelp: "CaveGen's layout judges. Lower is better; most estimate seconds for a kind of run.",
     judgeNames: {
       score: "score: game's own treasure scores",
       pod: "pod: Pay off Debt",
@@ -115,18 +112,24 @@ const STRINGS = {
       colossal: "colossal: Colossal Caverns",
       mapunitcount: "mapunitcount: number of map units",
     },
+    judgeTips: {
+      score: "The game's own unit and treasure scores, as CaveGen judges them",
+      pod: "Estimated seconds to collect this sublevel's treasures in a Pay off Debt run",
+      at: "Estimated seconds to collect every treasure in an All Treasures run",
+      attk: "Challenge Mode score attack estimate",
+      cmat: "Challenge Mode all-treasures estimate",
+      key: "Challenge Mode estimate for getting the key and reaching the exit",
+      colossal: "Colossal Caverns estimate",
+      mapunitcount: "The number of map units; fewer usually means a faster floor",
+    },
     judgeLine: (type, score) => `Judge (${type}): ${score}`,
     search: "Seed search",
-    searchHelp: "Tests many seeds of this sublevel and lists the best by the judge above, or the ones matching a query.",
     searchCount: "Seeds to test",
     searchMode: "Seeds",
     consecutive: "Counting up from the seed",
     randomSeeds: "Random",
     query: "Query (optional)",
     queryPlaceholder: "e.g. hole carry dist < 1000",
-    queryHelp:
-      'Uses <a href="https://github.com/mayabyte/caveripper/blob/main/QUERY.md">Caveripper\'s query language</a>. ' +
-      "The sublevel can be left out.",
     keep: "Results",
     searchButton: "Search",
     stop: "Stop",
@@ -137,8 +140,41 @@ const STRINGS = {
     noMatches: "No seeds matched.",
     needJudgeOrQuery: "Pick a judge or write a query first.",
     rank: (pct) => `top ${pct}%`,
+    querySyntax: "syntax",
+    tips: {
+      comedown: "Show only what's on screen when you land, turned so the camera faces up",
+      water: "Shade the water",
+      comedownScreen: "The game's screen setting. A 16:9 screen shows more to the sides when you land",
+      seedStep: "What the ‹ and › buttons beside the seed do: add or subtract 1, or step the game's random number generator (CaveGen's -consecutiveSeeds)",
+      judge: "Rate each layout with one of CaveGen's judges. Lower is better; most estimate the seconds a kind of run takes",
+      search: "Test many seeds of this sublevel, then list the best by the judge, or the ones matching the query",
+      searchCount: "How many seeds to test",
+      searchMode: "Which seeds: counting up from the seed box, random, or the game's random number generator stepped from the seed box",
+      keep: "How many seeds to list",
+      query: "Keep only seeds matching this condition, in Caveripper's query language, e.g. hole carry dist < 1000. The sublevel can be left out",
+      caveInfo: "What this sublevel can generate: its limits, and the weights the generator picks teki, treasures and map units by",
+      opt: {
+        treasures: "Treasure icons",
+        teki: "Teki icons, with what they carry and whether they fall when approached",
+        plants: "Plant icons",
+        gates: "Gates and their HP",
+        exits: "The pod, the hole or geyser, and Onions",
+        spawnpoints: "Every spawn point, colored by spawn group as in CaveGen; faded ones are empty",
+        angles: "Arrows for the way each object and spawn point faces",
+        unitScores: "Each map unit's score, which the generator uses to place the hole and treasures",
+        spawnScores: "The scores used to pick the treasure spots (orange) and the hole (green)",
+        tekiScores: "The teki score in each map unit (red)",
+        doorScores: "Each door's score (blue)",
+        doorLinks: "Lines between linked doors in the same map unit",
+        doorIds: "Each door's number within its map unit",
+        waypoints: "The carry waypoints, with arrows toward the pod",
+        paths: "The way each treasure is carried back to the pod",
+        gauge: "Around each treasure, the distances where the treasure gauge changes",
+        grid: "The map's grid cells",
+        comedownBox: "An outline of what the camera shows when you land",
+      },
+    },
     caveInfo: "CaveInfo",
-    caveInfoHelp: "What this sublevel can generate: its limits, and the weights the generator picks from.",
     floorInfo: "Floor",
     maxTeki: "Max teki",
     maxTreasures: "Max treasures",
@@ -166,6 +202,9 @@ const STRINGS = {
     gateInfo: "Gates",
     capInfo: "Alcove teki",
     units: "Map units",
+    ciScore: (n) => `Score: ${n}`,
+    ciCarryTip: "Pikmin needed to carry it / most that can carry it",
+    ciGroups: { special: "Special", hard: "Hard", easy: "Easy", plant: "Plant", seam: "Seam", other: "Other", cap: "Alcove", treasure: "Treasure" },
     groupNames: { 0: "0 easy", 1: "1 hard", 5: "5 seam", 6: "6 plant", 8: "8 special" },
     unitTypes: { room: "room", hallway: "hallway", cap: "alcove" },
     footer:
@@ -238,7 +277,6 @@ const STRINGS = {
     navSuggest: "ご意見箱",
     pageTitle: { generator: "CaveGen3", aggregator: "集計 · CaveGen3", suggest: "ご意見箱 · CaveGen3" },
     comedown: "着地時の範囲だけ",
-    comedownTitle: "着地したときに画面に映る範囲だけを、カメラの向きに合わせて表示します",
     comedownScreen: "画面（着地時の範囲用）",
     seedStep: "シードボタンの進め方",
     seedStepPlus: "+1 / −1",
@@ -247,7 +285,6 @@ const STRINGS = {
     zoomIn: "拡大",
     zoomOut: "縮小",
     zoomFit: "ウィンドウに合わせる",
-    zoomHelp: "ホイールかピンチで拡大・縮小、ドラッグで移動、ダブルクリックで拡大。着地時の範囲は、ゲームのカメラ設定から求めた着地直後の画面です。",
     suggestTitle: "ご意見箱",
     suggestIntro: "レイアウトの誤り、未対応の改造版、CaveGen3への要望などがあればお知らせください。名前は任意です。",
     suggestName: "名前（任意）",
@@ -284,7 +321,6 @@ const STRINGS = {
     },
     judge: "評価",
     judgeNone: "なし",
-    judgeHelp: "CaveGenのレイアウト評価。小さいほど良く、多くは走り方ごとの秒数の見積もりです。",
     judgeNames: {
       score: "score：ゲーム内のお宝スコア",
       pod: "pod：借金返済",
@@ -295,18 +331,24 @@ const STRINGS = {
       colossal: "colossal：Colossal Caverns",
       mapunitcount: "mapunitcount：マップユニットの数",
     },
+    judgeTips: {
+      score: "ゲーム内のユニットとお宝のスコア（CaveGenの評価）",
+      pod: "借金返済で、この階のお宝を集めるまでの見積もり秒数",
+      at: "お宝全回収で、すべてのお宝を集めるまでの見積もり秒数",
+      attk: "チャレンジモードのスコアアタックの見積もり",
+      cmat: "チャレンジモードのお宝全回収の見積もり",
+      key: "チャレンジモードでカギを取って出口に着くまでの見積もり",
+      colossal: "Colossal Caverns の見積もり",
+      mapunitcount: "マップユニットの数（少ないほど速いことが多い）",
+    },
     judgeLine: (type, score) => `評価（${type}）：${score}`,
     search: "シード検索",
-    searchHelp: "この階のシードをたくさん試して、上の評価で良いものや、条件に合うものを一覧にします。",
     searchCount: "試すシードの数",
     searchMode: "シード",
     consecutive: "上のシードから順に",
     randomSeeds: "ランダム",
     query: "条件（任意）",
     queryPlaceholder: "例：hole carry dist < 1000",
-    queryHelp:
-      '<a href="https://github.com/mayabyte/caveripper/blob/main/QUERY.md">Caveripperの検索条件の書き方</a>（英語）を使います。' +
-      "階の名前は省略できます。",
     keep: "表示件数",
     searchButton: "検索",
     stop: "停止",
@@ -318,8 +360,41 @@ const STRINGS = {
     noMatches: "条件に合うシードはありませんでした。",
     needJudgeOrQuery: "先に評価を選ぶか、条件を入力してください。",
     rank: (pct) => `上位 ${pct}%`,
+    querySyntax: "書き方",
+    tips: {
+      comedown: "着地したときに画面に映る範囲だけを、カメラが上を向くよう回転して表示します",
+      water: "水の部分に色をつけます",
+      comedownScreen: "ゲームの画面設定。16:9のほうが着地時に左右が広く映ります",
+      seedStep: "シード欄の横の ‹ › ボタンの動き：1ずつ増減するか、ゲームの乱数を進める（CaveGenの -consecutiveSeeds）",
+      judge: "CaveGenの評価で各レイアウトを採点します。小さいほど良く、多くは走り方ごとの秒数の見積もりです",
+      search: "この階のシードをたくさん試して、評価の良いものや条件に合うものを一覧にします",
+      searchCount: "試すシードの数",
+      searchMode: "試すシード：シード欄から順に、ランダム、またはシード欄からゲームの乱数を進めたもの",
+      keep: "一覧に出すシードの数",
+      query: "Caveripperの検索条件に合うシードだけを残します（例：hole carry dist < 1000）。階の名前は省略できます",
+      caveInfo: "この階で生成されうるもの：上限と、原生生物・お宝・マップユニットが選ばれる重み",
+      opt: {
+        treasures: "お宝のアイコン",
+        teki: "原生生物のアイコン（持っているお宝、近づくと落ちてくるかも表示）",
+        plants: "植物のアイコン",
+        gates: "ゲートと体力",
+        exits: "ポッド、穴か間欠泉、オニヨン",
+        spawnpoints: "すべての出現ポイント（CaveGenと同じくグループごとの色、薄いものは空）",
+        angles: "各オブジェクトと出現ポイントの向きの矢印",
+        unitScores: "各マップユニットのスコア（穴とお宝の配置に使われます）",
+        spawnScores: "お宝（オレンジ）と穴（緑）の場所選びに使われるスコア",
+        tekiScores: "各マップユニットの原生生物スコア（赤）",
+        doorScores: "各ドアのスコア（青）",
+        doorLinks: "同じマップユニット内でつながっているドアどうしの線",
+        doorIds: "マップユニット内のドア番号",
+        waypoints: "運搬のウェイポイントと、ポッドへ向かう矢印",
+        paths: "各お宝がポッドまで運ばれる道すじ",
+        gauge: "各お宝のまわりの、お宝ゲージが変わる距離",
+        grid: "マップのマス目",
+        comedownBox: "着地したときにカメラに映る範囲の枠",
+      },
+    },
     caveInfo: "CaveInfo",
-    caveInfoHelp: "この階で生成されうるもの：上限と、生成時に選ばれる重み。",
     floorInfo: "階の設定",
     maxTeki: "原生生物の上限",
     maxTreasures: "お宝の上限",
@@ -347,6 +422,9 @@ const STRINGS = {
     gateInfo: "ゲート",
     capInfo: "行き止まりの原生生物",
     units: "マップユニット",
+    ciScore: (n) => `スコア：${n}`,
+    ciCarryTip: "運ぶのに必要なピクミンの数 / 運べる最大の数",
+    ciGroups: { special: "特殊", hard: "強", easy: "弱", plant: "植物", seam: "境目", other: "その他", cap: "行き止まり", treasure: "お宝" },
     groupNames: { 0: "0 弱", 1: "1 強", 5: "5 境目", 6: "6 植物", 8: "8 特殊" },
     unitTypes: { room: "部屋", hallway: "通路", cap: "行き止まり" },
     footer:
@@ -1578,7 +1656,7 @@ function buildAdvanced() {
   for (const { key, on } of MAP_OPTIONS) {
     const input = el("input", { type: "checkbox", id: `opt-${key}` });
     input.checked = !!on;
-    box.append(el("label", { class: "check" }, input, el("span", { "data-i18n-opt": key })));
+    box.append(el("label", { class: "check", "data-i18n-tip-opt": key }, input, el("span", { "data-i18n-opt": key })));
   }
   fillJudges();
   // Saved choices (map options and judge) from last time.
@@ -1616,7 +1694,7 @@ function fillJudges() {
   const sel = $("judge");
   const value = sel.value;
   sel.replaceChildren(el("option", { value: "" }, T.judgeNone));
-  for (const j of JUDGES) sel.append(el("option", { value: j }, T.judgeNames[j]));
+  for (const j of JUDGES) sel.append(el("option", { value: j, title: T.judgeTips[j] }, T.judgeNames[j]));
   sel.value = value;
 }
 
@@ -1770,6 +1848,35 @@ async function openSearchResult(s, seed) {
 
 // ---- CaveInfo report ----
 
+// Spawn groups as Caveripper's caveinfo shows them: its order, names and colors.
+const CI_GROUPS = [
+  { group: 8, key: "special", color: "#59068a", icon: "star" },
+  { group: 1, key: "hard", color: "#c90234", score: 10 },
+  { group: 0, key: "easy", color: "#fa57cf", score: 2 },
+  { group: 6, key: "plant", color: "#3b945a", icon: "leaf_icon" },
+  { group: 5, key: "seam", color: "#858585", score: 5 },
+];
+const CI_CAP_COLOR = "#2dada7";
+const CI_TREASURE_COLOR = "#e67300";
+const CI_GATE_COLOR = "#7a7a7a";
+const CI_CELL = 22; // pixels per grid cell in the map unit thumbnails
+
+/** A map unit's radar image on a small canvas, drawn like the map (alpha shading, brightened). */
+async function unitThumb(u) {
+  const c = el("canvas", { class: "ci-unit-img", width: u.w * CI_CELL, height: u.h * CI_CELL, "aria-hidden": "true" });
+  const img = await firstImage(unitUrls(u.name, u.game));
+  const ctx = c.getContext("2d");
+  if (img) {
+    ctx.imageSmoothingEnabled = false;
+    ctx.filter = "brightness(1.6)";
+    ctx.drawImage(unitImage(img), 0, 0, c.width, c.height);
+  } else {
+    ctx.fillStyle = "#333";
+    ctx.fillRect(0, 0, c.width, c.height);
+  }
+  return c;
+}
+
 async function showCaveInfo() {
   const sel = selected();
   const box = $("caveinfo-body");
@@ -1782,77 +1889,119 @@ async function showCaveInfo() {
     box.replaceChildren(el("p", { class: "error" }, e.message));
     return;
   }
-  const yesNo = (b) => (b ? T.yes : T.no);
   const fl = ci.floor;
-  const pct = (p) => `${Math.round(p * 100)}%`;
-  const facts = [
+  const pct = (p) => `${Math.round(p * 1000) / 10}%`;
+  const special = (name) => el("img", { src: specialUrl(name), alt: "" });
+
+  // Title row: the sublevel, then the pod, the exit and the gates, as in Caveripper's.
+  const meta = el("div", { class: "ci-meta" });
+  meta.append(el("span", { class: "ci-meta-icon", title: T.ship }, special("pod_icon")));
+  if (!fl.final) {
+    const hole = el("span", { class: "ci-meta-icon", title: fl.plugged ? `${T.hole} · ${T.plugged}` : T.hole }, special("Cave_icon"));
+    if (fl.plugged) hole.append(el("img", { src: specialUrl("36px-Clog_icon"), alt: "", class: "ci-over" }));
+    meta.append(hole);
+  }
+  if (fl.geyser || fl.final) meta.append(el("span", { class: "ci-meta-icon", title: T.geyser }, special("Geyser_icon")));
+  if (ci.gates.length) {
+    const g = ci.gates[0];
+    meta.append(
+      el("span", { class: "ci-meta-icon ci-gate", title: `${T.gate} · ${T.hp(Math.round(g.health))}` }, special("Gray_bramble_gate_icon"),
+        el("small", {}, T.hp(Math.round(g.health))), el("b", {}, `×${fl.max_gates}`)),
+    );
+  }
+  const head = el("div", { class: "ci-head" }, el("h3", {}, T.floorName(caveName(sel.cave), sel.floor)), meta);
+
+  const stats = [
     [T.maxTeki, fl.max_teki],
     [T.maxTreasures, fl.max_treasures],
     [T.maxGates, fl.max_gates],
-    [T.rooms, fl.rooms],
-    [T.corridorProb, pct(fl.corridor_probability)],
-    [T.capProb, pct(fl.cap_probability)],
-    [T.hasGeyser, yesNo(fl.geyser)],
-    [T.pluggedHole, yesNo(fl.plugged)],
-    [T.finalFloor, yesNo(fl.final)],
   ];
-  if (fl.waterwraith > 0) facts.push([T.waterwraith, `${fl.waterwraith} s`]);
-  const factList = el("dl", { class: "facts" });
-  for (const [k, v] of facts) factList.append(el("div", {}, el("dt", {}, k), el("dd", {}, String(v))));
+  if (fl.waterwraith > 0) stats.push([T.waterwraith, `${Math.round(fl.waterwraith)} s`]);
+  const statLine = el("div", { class: "ci-stats" }, ...stats.map(([k, v]) => el("span", {}, `${k} `, el("b", {}, String(v)))));
 
-  const table = (headers, rows) => {
-    const t = el("table");
-    t.append(el("thead", {}, el("tr", {}, ...headers.map((h) => el("th", {}, h)))));
-    const body = el("tbody");
-    for (const r of rows) body.append(el("tr", {}, ...r.map((c) => el("td", {}, c))));
-    t.append(body);
-    return el("div", { class: "table-wrap" }, t);
+  // Boxes of spawn objects, colored by spawn group.
+  const entityBox = (title, color, tiles, score = 0, icon = null) => {
+    const header = el("div", { class: "ci-box-head" });
+    if (icon) header.append(el("img", { src: specialUrl(icon), alt: "", class: "ci-box-icon" }));
+    else header.append(el("span", { class: "ci-dot" }));
+    header.append(el("span", {}, title));
+    if (score) header.append(el("span", { class: "ci-score" }, T.ciScore(score)));
+    return el("section", { class: "ci-box", style: `--c: ${color}` }, header, el("div", { class: "ci-tiles" }, ...tiles));
   };
-  const nameCell = async (kind, item) => {
-    const urls = kind === "teki" ? tekiIconUrls(item.name, item.game) : treasureIconUrls(item.name, item.game);
-    const parts = [await iconEl(urls), el("span", {}, displayName(kind, item.name))];
-    if (item.carrying) parts.push(el("span", { class: "muted" }, ` (${T.carrying(displayName("treasures", item.carrying))})`));
-    if (item.falling) parts.push(el("span", { class: "muted" }, ` (${T.falling})`));
-    return el("span", { class: "name-cell", title: item.name }, ...parts);
+  const tekiTile = async (t) => {
+    const name = displayName("teki", t.name);
+    const tip = [name];
+    if (t.carrying) tip.push(T.carrying(displayName("treasures", t.carrying)));
+    if (t.falling) tip.push(T.falling);
+    const pic = el("span", { class: "ci-pic" }, await iconEl(tekiIconUrls(t.name, t.game)));
+    if (t.carrying) pic.append(el("span", { class: "ci-carry" }, await iconEl(treasureIconUrls(t.carrying, t.game))));
+    if (t.falling) pic.append(el("img", { src: specialUrl("falling_icon"), alt: "", class: "ci-fall" }));
+    const nums = [];
+    if (t.min > 0) nums.push(`x${t.min}`);
+    if (t.weight > 0) nums.push(`w${t.weight}`);
+    return el("figure", { class: "ci-tile", title: tip.join(" · ") }, pic, el("figcaption", { class: "ci-nums" }, nums.join(" ")), el("figcaption", { class: "ci-name" }, name));
   };
-  const groupName = (g) => T.groupNames[g] || String(g);
-
-  const sections = [el("h3", {}, T.floorInfo), factList];
-  if (ci.teki.length) {
-    const rows = [];
-    for (const t of ci.teki) rows.push([await nameCell("teki", t), String(t.min), String(t.weight), groupName(t.group)]);
-    sections.push(el("h3", {}, T.tekiInfo), table([T.colName, T.colMin, T.colWeight, T.colGroup], rows));
-  }
-  if (ci.items.length) {
-    const rows = [];
-    for (const t of ci.items) rows.push([await nameCell("treasures", t), String(t.min), String(t.weight), t.value ? String(t.value) : ""]);
-    sections.push(el("h3", {}, T.itemInfo), table([T.colName, T.colMin, T.colWeight, T.colValue], rows));
-  }
-  if (ci.gates.length) {
-    const rows = ci.gates.map((g) => [T.hp(Math.round(g.health)), String(g.weight)]);
-    sections.push(el("h3", {}, T.gateInfo), table([T.colHealth, T.colWeight], rows));
-  }
-  if (ci.caps.length) {
-    const rows = [];
-    for (const t of ci.caps) rows.push([await nameCell("teki", t), String(t.min), String(t.weight), String(t.group)]);
-    sections.push(el("h3", {}, T.capInfo), table([T.colName, T.colMin, T.colWeight, T.colGroup], rows));
-  }
-  const units = el("ul", { class: "unit-list" });
-  for (const u of ci.units) {
-    const url = available ? pickUrl(unitUrls(u.name, u.game)) : unitUrls(u.name, u.game)[0];
-    const img = url ? el("img", { src: url, alt: "", loading: "lazy", style: `aspect-ratio: ${u.w} / ${u.h}` }) : el("span");
-    units.append(
-      el(
-        "li",
-        { title: u.name },
-        el("span", { class: "unit-thumb" }, img),
-        el("span", { class: "unit-name" }, u.name),
-        el("span", { class: "muted" }, `${u.w}×${u.h} · ${T.unitTypes[u.type] || u.type} · ${T.colDoors} ${u.doors}`),
-      ),
+  const treasureTile = async (t) => {
+    const name = displayName("treasures", t.name);
+    const extra = [];
+    if (t.value) extra.push(el("span", { class: "ci-poko" }, el("img", { src: specialUrl("Poko_icon"), alt: "" }), String(t.value)));
+    if (t.carry && t.carry[1]) extra.push(el("span", { class: "ci-carry-n", title: T.ciCarryTip }, `${t.carry[0]}/${t.carry[1]}`));
+    const nums = [];
+    if (t.min > 0) nums.push(`x${t.min}`);
+    if (t.weight > 0) nums.push(`w${t.weight}`);
+    return el(
+      "figure",
+      { class: "ci-tile", title: name },
+      el("span", { class: "ci-pic" }, await iconEl(treasureIconUrls(t.name, t.game))),
+      el("figcaption", { class: "ci-nums" }, nums.join(" ")),
+      el("figcaption", { class: "ci-name" }, name),
+      el("figcaption", { class: "ci-extra" }, ...extra),
     );
+  };
+
+  const boxes = [];
+  const known = new Set(CI_GROUPS.map((g) => g.group));
+  for (const g of CI_GROUPS) {
+    const teki = ci.teki.filter((t) => t.group === g.group);
+    if (teki.length) boxes.push(entityBox(T.ciGroups[g.key], g.color, await Promise.all(teki.map(tekiTile)), g.score, g.icon));
   }
-  sections.push(el("h3", {}, `${T.units} (${ci.units.length})`), units);
-  box.replaceChildren(...sections);
+  const other = ci.teki.filter((t) => !known.has(t.group));
+  if (other.length) boxes.push(entityBox(T.ciGroups.other, "#4a6fa5", await Promise.all(other.map(tekiTile))));
+  if (ci.caps.length) boxes.push(entityBox(T.ciGroups.cap, CI_CAP_COLOR, await Promise.all(ci.caps.map(tekiTile))));
+  if (ci.items.length) boxes.push(entityBox(T.ciGroups.treasure, CI_TREASURE_COLOR, await Promise.all(ci.items.map(treasureTile)), 0, "Poko_icon"));
+  if (ci.gates.length > 1) {
+    const tiles = ci.gates.map((g) =>
+      el("figure", { class: "ci-tile" }, el("span", { class: "ci-pic" }, special("Gray_bramble_gate_icon")),
+        el("figcaption", { class: "ci-nums" }, `w${g.weight}`), el("figcaption", { class: "ci-name" }, T.hp(Math.round(g.health)))),
+    );
+    boxes.push(entityBox(T.gateInfo, CI_GATE_COLOR, tiles));
+  }
+
+  // Map units: alcoves and one-cell-deep hallways first, then rooms and longer hallways.
+  const small = ci.units.filter((u) => u.type !== "room" && u.h === 1);
+  const large = ci.units.filter((u) => !(u.type !== "room" && u.h === 1));
+  const unitTile = async (u) =>
+    el(
+      "figure",
+      { class: `ci-unit ci-unit-${u.type}`, title: `${u.name} · ${u.w}×${u.h} · ${T.unitTypes[u.type] || u.type} · ${T.colDoors} ${u.doors}` },
+      await unitThumb(u),
+      el("figcaption", {}, u.name),
+    );
+  const unitLine = el(
+    "div",
+    { class: "ci-unit-stats" },
+    el("span", {}, `${T.rooms} `, el("b", {}, String(fl.rooms))),
+    el("span", {}, `${T.corridorProb} `, el("b", {}, pct(fl.corridor_probability))),
+    el("span", {}, `${T.capProb} `, el("b", {}, pct(fl.cap_probability))),
+  );
+  const units = el(
+    "div",
+    { class: "ci-units" },
+    unitLine,
+    el("div", { class: "ci-unit-grid" }, ...(await Promise.all([...small, ...large].map(unitTile)))),
+  );
+
+  box.replaceChildren(el("div", { class: "ci" }, head, statLine, el("div", { class: "ci-boxes" }, ...boxes), units));
 }
 
 // ---- Language ----
@@ -1868,6 +2017,8 @@ function applyLanguage() {
     node.setAttribute("aria-label", T[node.dataset.i18nTitle]);
   }
   for (const node of document.querySelectorAll("[data-i18n-placeholder]")) node.placeholder = T[node.dataset.i18nPlaceholder];
+  for (const node of document.querySelectorAll("[data-i18n-tip]")) node.title = T.tips[node.dataset.i18nTip];
+  for (const node of document.querySelectorAll("[data-i18n-tip-opt]")) node.title = T.tips.opt[node.dataset.i18nTipOpt];
   if ($("seed")) $("seed").title = T.seedTitle;
   if ($("footer-text")) $("footer-text").innerHTML = T.footer;
   if ($("search-go")) $("search-go").textContent = search && !search.done ? T.stop : T.searchButton;

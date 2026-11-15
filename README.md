@@ -34,7 +34,7 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 
 **Advanced options** brings over much of the CaveGen GUI:
 
-- **Show on the map**: hide treasures, teki, plants, gates or exits, and draw spawn points,
+- **Show on the map**: the comedown only, water, hide treasures, teki, plants, gates or exits, and draw spawn points,
   facing directions, the game's unit, door, treasure and hole scores, teki scores, door links
   and numbers, waypoints, treasure carry paths, treasure gauge rings and a grid.
 - **Judge**: score the layout with any of CaveGen's judges (`score`, `pod`, `at`, `attk`,
@@ -43,8 +43,11 @@ their in-game names in either language. Hover over or tap an icon on the map to 
   best by the judge, with each one's rank among the seeds tested, or the seeds matching a
   [Caveripper-style query](https://github.com/mayabyte/caveripper/blob/main/QUERY.md) such as
   `hole carry dist < 1000`. Click a seed to open it.
-- **CaveInfo**, below the map: the sublevel's limits and the teki, treasures, gates, alcove teki
-  and map units it generates from, with their weights.
+- **CaveInfo**, below the map, laid out like Caveripper's caveinfo: the pod, exit and gates,
+  the limits, a box per spawn group with each teki's minimum and weight (`x2 w10`), the
+  treasures with their value and carry counts, and the map units' radar images.
+
+Every option has a tooltip saying what it does.
 
 The map pane keeps its size: the mouse wheel, a trackpad pinch, two fingers, the − / + buttons
 or a double-click zoom about the pointer, zooming out shrinks the map against a dark background,

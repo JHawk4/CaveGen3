@@ -10,7 +10,7 @@
 <body data-page="generator">
 <header class="site-header">
   <div class="title-row">
-    <h1>CaveGen3</h1>
+    <h1 class="logo"><a href="./"><svg viewBox="0 0 24 34" width="26" height="37" aria-hidden="true"><path d="M12 33 C12 26 11.6 20 12 13" stroke="#3c8531" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M12 25 C8.5 25.5 5 23.5 3.6 20.6 C7.4 19.6 10.6 21.5 12 25 Z" fill="#5fb447" stroke="#3c8531" stroke-width="1"/><ellipse cx="12.00" cy="4.40" rx="3.1" ry="4.3" transform="rotate(0 12.00 4.40)" fill="#ffffff" stroke="#c9c2d6" stroke-width="0.8"/><ellipse cx="16.37" cy="7.58" rx="3.1" ry="4.3" transform="rotate(72 16.37 7.58)" fill="#ffffff" stroke="#c9c2d6" stroke-width="0.8"/><ellipse cx="14.70" cy="12.72" rx="3.1" ry="4.3" transform="rotate(144 14.70 12.72)" fill="#ffffff" stroke="#c9c2d6" stroke-width="0.8"/><ellipse cx="9.30" cy="12.72" rx="3.1" ry="4.3" transform="rotate(216 9.30 12.72)" fill="#ffffff" stroke="#c9c2d6" stroke-width="0.8"/><ellipse cx="7.63" cy="7.58" rx="3.1" ry="4.3" transform="rotate(288 7.63 7.58)" fill="#ffffff" stroke="#c9c2d6" stroke-width="0.8"/><circle cx="12" cy="9" r="3.1" fill="#f2c230" stroke="#d39a12" stroke-width="0.9"/></svg>CaveGen3</a></h1>
     <nav class="site-nav">
       <a href="./" aria-current="page" data-i18n="navGenerator">Generator</a>
       <a href="aggregator.html" data-i18n="navAggregator">Aggregator</a>
@@ -54,51 +54,53 @@
     <div class="advanced-grid">
       <fieldset>
         <legend data-i18n="showOnMap">Show on the map</legend>
-        <div id="map-options" class="map-options"></div>
-        <label class="field inline"><span data-i18n="comedownScreen">Screen (for the comedown)</span>
+        <div id="map-options" class="map-options">
+          <label class="check" data-i18n-tip="comedown"><input type="checkbox" id="comedown"> <span data-i18n="comedown">Comedown only</span></label>
+          <label class="check" data-i18n-tip="water"><input type="checkbox" id="water" checked> <span data-i18n="water">Water</span></label>
+        </div>
+        <label class="field inline" data-i18n-tip="comedownScreen"><span data-i18n="comedownScreen">Screen (for the comedown)</span>
           <select id="comedown-screen">
             <option value="16:9" selected>16:9</option>
             <option value="4:3">4:3</option>
           </select>
         </label>
-        <label class="field inline"><span data-i18n="seedStep">Seed buttons step</span>
+        <label class="field inline" data-i18n-tip="seedStep"><span data-i18n="seedStep">Seed buttons step</span>
           <select id="seed-step">
             <option value="c" data-i18n="seedStepPlus">+1 / −1</option>
             <option value="g" data-i18n="seedStepGame">Game RNG</option>
           </select>
         </label>
       </fieldset>
-      <fieldset>
-        <legend data-i18n="judge">Judge</legend>
-        <select id="judge" aria-label="Judge"></select>
-        <p class="help" data-i18n="judgeHelp"></p>
-      </fieldset>
-      <fieldset class="search">
-        <legend data-i18n="search">Seed search</legend>
-        <p class="help" data-i18n="searchHelp"></p>
-        <div class="search-row">
-          <label class="field"><span data-i18n="searchCount">Seeds to test</span>
-            <input id="search-count" type="number" min="1" max="100000000" step="1000" value="10000">
+      <div class="advanced-col">
+        <fieldset>
+          <legend data-i18n="judge" data-i18n-tip="judge">Judge</legend>
+          <select id="judge" aria-label="Judge" data-i18n-tip="judge"></select>
+        </fieldset>
+        <fieldset class="search">
+          <legend data-i18n="search" data-i18n-tip="search">Seed search</legend>
+          <div class="search-row">
+            <label class="field" data-i18n-tip="searchCount"><span data-i18n="searchCount">Seeds to test</span>
+              <input id="search-count" type="number" min="1" max="100000000" step="1000" value="10000">
+            </label>
+            <label class="field" data-i18n-tip="searchMode"><span data-i18n="searchMode">Seeds</span>
+              <select id="search-mode">
+                <option value="c" data-i18n="consecutive">Counting up from the seed</option>
+                <option value="r" data-i18n="randomSeeds">Random</option>
+                <option value="g" data-i18n="gameRngSeeds">Game RNG steps from the seed</option>
+              </select>
+            </label>
+            <label class="field" data-i18n-tip="keep"><span data-i18n="keep">Results</span>
+              <input id="search-keep" type="number" min="1" max="500" value="20">
+            </label>
+          </div>
+          <label class="field" data-i18n-tip="query"><span><span data-i18n="query">Query (optional)</span> · <a href="https://github.com/mayabyte/caveripper/blob/main/QUERY.md" target="_blank" rel="noopener" data-i18n="querySyntax">syntax</a></span>
+            <input id="query" spellcheck="false" autocomplete="off">
           </label>
-          <label class="field"><span data-i18n="searchMode">Seeds</span>
-            <select id="search-mode">
-              <option value="c" data-i18n="consecutive">Counting up from the seed</option>
-              <option value="r" data-i18n="randomSeeds">Random</option>
-              <option value="g" data-i18n="gameRngSeeds">Game RNG steps from the seed</option>
-            </select>
-          </label>
-          <label class="field"><span data-i18n="keep">Results</span>
-            <input id="search-keep" type="number" min="1" max="500" value="20">
-          </label>
-        </div>
-        <label class="field"><span data-i18n="query">Query (optional)</span>
-          <input id="query" spellcheck="false" autocomplete="off">
-        </label>
-        <p class="help" data-i18n-html="queryHelp"></p>
-        <button type="button" id="search-go" class="primary">Search</button>
-        <p id="search-status" class="status" role="status" aria-live="polite"></p>
-        <ol id="search-results" class="search-results"></ol>
-      </fieldset>
+          <button type="button" id="search-go" class="primary">Search</button>
+          <p id="search-status" class="status" role="status" aria-live="polite"></p>
+          <ol id="search-results" class="search-results"></ol>
+        </fieldset>
+      </div>
     </div>
   </details>
 
@@ -109,8 +111,6 @@
       <div class="map-toolbar">
         <span id="title" class="map-title"></span>
         <span class="spacer"></span>
-        <label class="check" data-i18n-title="comedownTitle"><input type="checkbox" id="comedown"> <span data-i18n="comedown">Comedown only</span></label>
-        <label class="check"><input type="checkbox" id="water" checked> <span data-i18n="water">Water</span></label>
         <span class="zoom-buttons" role="group">
           <button type="button" id="zoom-out" data-i18n-title="zoomOut" title="Zoom out">−</button>
           <button type="button" id="zoom-fit" data-i18n-title="zoomFit" title="Fit"><span id="zoom-label">100%</span></button>
@@ -123,14 +123,12 @@
         <canvas id="map" aria-label="Cave layout"></canvas>
         <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
       </div>
-      <p class="map-help" data-i18n="zoomHelp"></p>
     </div>
     <aside class="summary" id="summary"></aside>
   </section>
 
   <details id="caveinfo-box" class="caveinfo">
-    <summary data-i18n="caveInfo">CaveInfo</summary>
-    <p class="help" data-i18n="caveInfoHelp"></p>
+    <summary data-i18n="caveInfo" data-i18n-tip="caveInfo">CaveInfo</summary>
     <div id="caveinfo-body"></div>
   </details>
 </main>
