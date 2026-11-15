@@ -31,6 +31,20 @@ The page is in English and Japanese (日本語). It follows the browser's langua
 corner switches, and `lang=ja` or `lang=en` in a link picks one. Treasures, teki and caves use
 their in-game names in either language. Hover over or tap an icon on the map to see what it is.
 
+**Advanced options** brings over much of the CaveGen GUI:
+
+- **Show on the map**: hide treasures, teki, plants, gates or exits, and draw spawn points,
+  facing directions, the game's unit, door, treasure and hole scores, teki scores, door links
+  and numbers, waypoints, treasure carry paths, treasure gauge rings and a grid.
+- **Judge**: score the layout with any of CaveGen's judges (`score`, `pod`, `at`, `attk`,
+  `cmat`, `key`, `colossal`, `mapunitcount`).
+- **Seed search**: test thousands of seeds (counting up from the seed, or random) and list the
+  best by the judge, with each one's rank among the seeds tested, or the seeds matching a
+  [Caveripper-style query](https://github.com/mayabyte/caveripper/blob/main/QUERY.md) such as
+  `hole carry dist < 1000`. Click a seed to open it.
+- **CaveInfo**, below the map: the sublevel's limits and the teki, treasures, gates, alcove teki
+  and map units it generates from, with their weights.
+
 To embed it in another site, add `embed=1` for a compact version with just the controls and
 the map:
 
@@ -70,7 +84,7 @@ treasures and teki show their internal names.
 | 2. New generator matching CaveGen and Caveripper | Done |
 | 3. Waypoints, judge, queries and parallel search (library) | Done |
 | 4. Rendering and the full CLI (generate, caveinfo, search, search-from, search-special, stats, filter, judge) | Next |
-| 5. Web page | Done (generate and view layouts) |
+| 5. Web page | Done (layouts, map overlays, judges, seed search, CaveInfo) |
 | 6. Discord bot | Planned |
 
 ## Layout

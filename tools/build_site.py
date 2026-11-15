@@ -9,6 +9,7 @@ game ignores case and web servers don't; the page asks for lowercase names.
 """
 
 import gzip
+import json
 import shutil
 import struct
 import sys
@@ -22,7 +23,7 @@ WASM = ROOT / "target/wasm32-unknown-unknown/release/cavegen3_web.wasm"
 def bundle(files):
     out = bytearray()
     for rel, path in files:
-        data = path.read_bytes()
+        data = path.read_bytes() if path else b""
         name = rel.encode("utf-8")
         out += struct.pack("<I", len(name)) + name + struct.pack("<I", len(data)) + data
     return gzip.compress(bytes(out), compresslevel=9, mtime=0)
@@ -47,6 +48,8 @@ def main():
         game = game_dir.name
         texts = sorted(p for p in game_dir.rglob("*.txt"))
         files = [(p.relative_to(DATA).as_posix(), p) for p in texts]
+        # Seed search queries learn which teki exist from their icons; empty stand-ins are enough.
+        files += [(p.relative_to(DATA).as_posix(), None) for p in sorted((game_dir / "teki").glob("*.png"))]
         (out / f"data/{game}.bin.gz").write_bytes(bundle(files))
         games.append(game)
 
@@ -66,6 +69,10 @@ def main():
     for png in (DATA / "resources/enemytex_special").iterdir():
         shutil.copyfile(png, out / "img/special" / png.name.lower())
     (out / "data/games.txt").write_text("\n".join(games) + "\n")
+    # Every image path, so the page asks only for images that exist (Colossal Caverns alone has
+    # hundreds of objects; trying a missing icon in each game's folder in turn was slow).
+    image_paths = sorted(p.relative_to(out).as_posix() for p in (out / "img").rglob("*.png"))
+    (out / "data/images.json").write_text(json.dumps(image_paths, separators=(",", ":")))
     shutil.copyfile(DATA / "resources/names.json", out / "data/names.json")
 
     size = sum(p.stat().st_size for p in out.rglob("*") if p.is_file())

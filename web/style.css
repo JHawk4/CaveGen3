@@ -179,3 +179,107 @@ body.embed .controls { padding: 8px; gap: 8px; }
 :lang(ja) body, html:lang(ja) {
   font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
 }
+
+/* Advanced options */
+.advanced, .caveinfo {
+  margin-top: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 12px;
+}
+.advanced > summary, .caveinfo > summary {
+  cursor: pointer;
+  padding: 10px 0;
+  font-weight: 600;
+}
+.advanced[open] > summary, .caveinfo[open] > summary { border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+.advanced[open], .caveinfo[open] { padding-bottom: 12px; }
+.caveinfo { margin-bottom: 20px; }
+
+.advanced-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 12px;
+}
+.advanced fieldset {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 0;
+  padding: 8px 10px 10px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.advanced legend { font-size: 0.85rem; color: var(--muted); padding: 0 4px; }
+.map-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 2px 10px; }
+.map-options .check { font-size: 0.88rem; }
+.help { margin: 0; font-size: 0.82rem; color: var(--muted); }
+#judge { width: 100%; }
+.search-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.search-row input[type="number"] { width: 8em; }
+#query { width: 100%; font-family: ui-monospace, Consolas, monospace; }
+#search-go { align-self: flex-start; }
+.search .status { margin: 0; }
+.search-results {
+  margin: 0;
+  padding-left: 2.2em;
+  max-height: 320px;
+  overflow: auto;
+  font-variant-numeric: tabular-nums;
+}
+.search-results li { padding: 1px 0; }
+.search-results li.muted { list-style: none; margin-left: -2.2em; color: var(--muted); }
+.search-results .value { margin-left: 10px; }
+.search-results .rank { margin-left: 8px; font-size: 0.85rem; }
+.seed-link {
+  min-height: 0;
+  padding: 1px 6px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9rem;
+}
+.judge-line { font-weight: 600; }
+
+@media (max-width: 1100px) {
+  .advanced-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .advanced fieldset.search { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .advanced-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* CaveInfo report */
+.caveinfo h3 { font-size: 0.95rem; margin: 14px 0 6px; }
+.caveinfo .facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 4px 16px;
+  margin: 0;
+}
+.caveinfo .facts div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--border); padding: 2px 0; }
+.caveinfo dt { color: var(--muted); }
+.caveinfo dd { margin: 0; font-variant-numeric: tabular-nums; }
+.table-wrap { overflow-x: auto; }
+.caveinfo table { border-collapse: collapse; font-size: 0.9rem; min-width: 360px; }
+.caveinfo th { text-align: left; color: var(--muted); font-weight: 600; padding: 3px 12px 3px 0; border-bottom: 1px solid var(--border); }
+.caveinfo td { padding: 3px 12px 3px 0; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+.name-cell { display: flex; align-items: center; gap: 8px; }
+.name-cell img, .name-cell .icon-gap { width: 24px; height: 24px; object-fit: contain; flex: none; }
+.unit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px 12px;
+  font-size: 0.85rem;
+}
+.unit-list li { display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 8px; align-items: center; }
+.unit-thumb { grid-row: 1 / 3; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--map-bg); border-radius: 4px; }
+.unit-thumb img { max-width: 40px; max-height: 40px; image-rendering: pixelated; filter: brightness(1.6); }
+.unit-name { overflow-wrap: anywhere; }
+
+body.embed .advanced, body.embed .caveinfo { display: none; }
+input[type="checkbox"] { min-height: 0; padding: 0; margin: 0; }
+.advanced fieldset { align-self: start; }

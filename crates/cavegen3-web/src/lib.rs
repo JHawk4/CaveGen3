@@ -5,8 +5,10 @@
 //! 1. `alloc(len)` reserves `len` bytes; JavaScript writes into them and passes the pointer.
 //! 2. `add_files(ptr, len)` adds a bundle of data files (see [`parse_bundle`]). Call it once with
 //!    the shared resources and once per game before generating that game's sublevels.
-//! 3. `caves()` and `generate(ptr, len, seed)` return a pointer to JSON text, whose length is
-//!    `result_len()`. The text stays valid until the next call.
+//! 3. `caves()`, `generate(ptr, len, seed, flags)` and `command(ptr, len)` return a pointer to
+//!    JSON text, whose length is `result_len()`. The text stays valid until the next call.
+//!    `command` takes tab-separated text for the page's advanced options: a judge score, a seed
+//!    search, or a sublevel's CaveInfo (see [`Web::command`]).
 //!
 //! The same functions are plain Rust underneath (see [`Web`]), so they're tested natively.
 
@@ -17,8 +19,16 @@ use std::{
 
 use cavegen3::{
     GameData, Layout, SpawnObject,
+    caveinfo::CaveInfo,
     data::FileSource,
+    jhawk_judge::{JhawkJudge, JudgeType},
+    point::Point,
+    query::{Query, StructuralQuery},
+    waypoint::get_path_to_goal,
 };
+
+/// `generate` flag: add spawn points, doors, scores, waypoints and carry paths.
+pub const DETAILS: u32 = 1;
 
 /// Data files held in memory, shared with [`GameData`] so more games can be added later.
 /// Paths match ignoring case, as on the game's file system.
@@ -128,13 +138,204 @@ impl Web {
     }
 
     /// Generates one layout and describes it as JSON (see the page's `render` for the fields).
-    pub fn generate_json(&self, sublevel: &str, seed: u32) -> Result<String, String> {
+    /// With [`DETAILS`] in `flags` it also has spawn points, doors, scores, waypoints and paths.
+    pub fn generate_json(&self, sublevel: &str, seed: u32, flags: u32) -> Result<String, String> {
         let data = self.data()?;
         let sublevel = data.sublevel(sublevel).map_err(|e| e.to_string())?;
         let caveinfo = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
         let num_floors = data.floors(&sublevel.cfg).map_err(|e| e.to_string())?.len();
-        Ok(layout_json(&Layout::generate(seed, caveinfo), &sublevel, num_floors, data))
+        let layout = Layout::generate(seed, caveinfo);
+        Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
     }
+
+    /// Runs one tab-separated command and returns JSON:
+    ///
+    /// - `judge <sublevel> <type> <seed>`: `{"score": n}`
+    /// - `search <sublevel> <type or -> <query or -> <start> <count> <c|r> <keep>`: tests `count`
+    ///   seeds, consecutive from `start` (`c`) or `count` random ones numbered from `start` (`r`).
+    ///   Seeds must match the query; with a judge type the `keep` lowest scores are returned,
+    ///   otherwise the first `keep` matches. `{"tested", "matched", "best": [[seed, score]],
+    ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
+    /// - `caveinfo <sublevel>`: the sublevel's generation parameters (see [`caveinfo_json`]).
+    pub fn command(&self, text: &str) -> Result<String, String> {
+        let args: Vec<&str> = text.split('\t').collect();
+        let data = self.data()?;
+        let arg = |i: usize| args.get(i).copied().ok_or_else(|| format!("{}: missing argument {i}", args[0]));
+        let num = |i: usize| -> Result<u64, String> { arg(i)?.trim().parse().map_err(|_| format!("bad number {:?}", args[i])) };
+        let caveinfo = |i: usize| -> Result<(cavegen3::Sublevel, &CaveInfo), String> {
+            let sublevel = data.sublevel(arg(i)?).map_err(|e| e.to_string())?;
+            let caveinfo = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
+            Ok((sublevel, caveinfo))
+        };
+        match args[0] {
+            "judge" => {
+                let (_, ci) = caveinfo(1)?;
+                let judge = JhawkJudge::new(arg(2)?.parse::<JudgeType>()?, ci);
+                let layout = Layout::generate(num(3)? as u32, ci);
+                Ok(format!("{{\"score\":{}}}", fnum(judge.judge(&layout))))
+            }
+            "search" => {
+                let (sublevel, ci) = caveinfo(1)?;
+                let judge = match arg(2)?.trim() {
+                    "" | "-" => None,
+                    t => Some(JhawkJudge::new(t.parse::<JudgeType>()?, ci)),
+                };
+                let query = match arg(3)?.trim() {
+                    "" | "-" => None,
+                    q => Some(parse_query(q, &sublevel.short_name(), data)?),
+                };
+                let (start, count, random, keep) = (num(4)?, num(5)?, arg(6)? == "r", num(7)? as usize);
+                let mut best: Vec<(u32, f64)> = Vec::new();
+                let mut scores = Vec::new();
+                for i in 0..count {
+                    let seed = if random { mix32(start.wrapping_add(i)) } else { start.wrapping_add(i) as u32 };
+                    if let Some(q) = &query
+                        && !q.matches(seed, data)
+                    {
+                        continue;
+                    }
+                    let score = match &judge {
+                        Some(j) => j.judge(&Layout::generate(seed, ci)),
+                        None => 0.0,
+                    };
+                    scores.push(fnum(score));
+                    if judge.is_some() {
+                        let at = best.partition_point(|&(_, s)| s <= score);
+                        if at < keep {
+                            best.insert(at, (seed, score));
+                            best.truncate(keep);
+                        }
+                    } else if best.len() < keep {
+                        best.push((seed, score));
+                    }
+                }
+                let best: Vec<String> = best.iter().map(|(seed, s)| format!("[{seed},{}]", fnum(*s))).collect();
+                Ok(format!(
+                    "{{\"tested\":{count},\"matched\":{},\"best\":[{}],\"scores\":[{}]}}",
+                    scores.len(),
+                    best.join(","),
+                    if judge.is_some() { scores.join(",") } else { String::new() }
+                ))
+            }
+            "caveinfo" => Ok(caveinfo_json(caveinfo(1)?.1, data)),
+            other => Err(format!("unknown command {other:?}")),
+        }
+    }
+}
+
+/// Parses a seed search query. Queries name their sublevel ("sh6 hole carry dist < 1000"); one
+/// that doesn't is about `sublevel`.
+fn parse_query(text: &str, sublevel: &str, data: &GameData) -> Result<StructuralQuery, String> {
+    match StructuralQuery::try_parse(text, data) {
+        Ok(q) => Ok(q),
+        // Only retry when it failed for want of a sublevel at the start.
+        Err(e) if e.to_string().contains("1:1") => {
+            StructuralQuery::try_parse(&format!("{sublevel} {text}"), data).map_err(|e| e.to_string())
+        }
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+/// Spreads the numbers 0, 1, 2, ... over all seeds. It's a bijection, so no seed repeats.
+fn mix32(i: u64) -> u32 {
+    let mut x = (i as u32).wrapping_add(0x9E37_79B9);
+    x = (x ^ (x >> 16)).wrapping_mul(0x85EB_CA6B);
+    x = (x ^ (x >> 13)).wrapping_mul(0xC2B2_AE35);
+    x ^ (x >> 16)
+}
+
+/// A score as JSON, rounded to 2 decimals.
+fn fnum(v: f64) -> String {
+    let r = (v * 100.0).round() / 100.0;
+    if r.is_finite() { format!("{r}") } else { "null".into() }
+}
+
+/// A sublevel's generation parameters: `{floor, teki, items, gates, caps, units}`.
+fn caveinfo_json(ci: &CaveInfo, data: &GameData) -> String {
+    let opt = |s: &Option<String>| s.as_deref().map_or("null".into(), q);
+    let teki: Vec<String> = ci
+        .teki_info
+        .iter()
+        .map(|t| {
+            format!(
+                "{{\"name\":{},\"game\":{},\"min\":{},\"weight\":{},\"group\":{},\"carrying\":{},\"falling\":{}}}",
+                q(&t.internal_name),
+                q(&t.game),
+                t.minimum_amount,
+                t.filler_distribution_weight,
+                t.group,
+                opt(&t.carrying),
+                t.spawn_method.is_some()
+            )
+        })
+        .collect();
+    let items: Vec<String> = ci
+        .item_info
+        .iter()
+        .map(|t| {
+            let value = data.treasure(&t.game, &t.internal_name).map_or(0, |t| t.value);
+            format!(
+                "{{\"name\":{},\"game\":{},\"min\":{},\"weight\":{},\"value\":{value}}}",
+                q(&t.internal_name),
+                q(&t.game),
+                t.min_amount,
+                t.filler_distribution_weight
+            )
+        })
+        .collect();
+    let gates: Vec<String> =
+        ci.gate_info.iter().map(|g| format!("{{\"health\":{},\"weight\":{}}}", f(g.health), g.spawn_distribution_weight)).collect();
+    let caps: Vec<String> = ci
+        .cap_info
+        .iter()
+        .map(|t| {
+            format!(
+                "{{\"name\":{},\"game\":{},\"min\":{},\"weight\":{},\"group\":{},\"carrying\":{},\"falling\":{}}}",
+                q(&t.internal_name),
+                q(&t.game),
+                t.minimum_amount,
+                t.filler_distribution_weight,
+                t.group,
+                opt(&t.carrying),
+                t.is_falling()
+            )
+        })
+        .collect();
+    let mut seen = BTreeSet::new();
+    let units: Vec<String> = ci
+        .cave_units
+        .iter()
+        .filter(|u| u.rotation == 0 && seen.insert(u.unit_folder_name.to_ascii_lowercase()))
+        .map(|u| {
+            format!(
+                "{{\"name\":{},\"game\":{},\"w\":{},\"h\":{},\"type\":{},\"doors\":{}}}",
+                q(&u.unit_folder_name),
+                q(&u.game),
+                u.width,
+                u.height,
+                q(&u.room_type.to_string()),
+                u.num_doors
+            )
+        })
+        .collect();
+    format!(
+        "{{\"floor\":{{\"max_teki\":{},\"max_treasures\":{},\"max_gates\":{},\"rooms\":{},\"corridor_probability\":{},\"cap_probability\":{},\"geyser\":{},\"plugged\":{},\"final\":{},\"waterwraith\":{}}},\"teki\":[{}],\"items\":[{}],\"gates\":[{}],\"caps\":[{}],\"units\":[{}]}}",
+        ci.max_main_objects,
+        ci.max_treasures,
+        ci.max_gates,
+        ci.num_rooms,
+        f(ci.corridor_probability),
+        f(ci.cap_probability),
+        ci.has_geyser,
+        ci.exit_plugged,
+        ci.is_final_floor,
+        f(ci.waterwraith_timer),
+        teki.join(","),
+        items.join(","),
+        gates.join(","),
+        caps.join(","),
+        units.join(","),
+    )
 }
 
 /// A JSON string literal.
@@ -159,7 +360,7 @@ fn f(v: f32) -> String {
     if r.is_finite() { format!("{r}") } else { "0".into() }
 }
 
-fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize, data: &GameData) -> String {
+fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize, data: &GameData, details: bool) -> String {
     let ci = layout.caveinfo;
     let (mut width, mut height) = (0, 0);
     let mut units = Vec::new();
@@ -172,8 +373,9 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
             .iter()
             .map(|w| format!("[{},{},{},{}]", f(w.p1[0]), f(w.p1[2]), f(w.p2[0]), f(w.p2[2])))
             .collect();
+        let scores = if details { format!(",\"score\":{},\"teki_score\":{}", u.total_score, u.teki_score) } else { String::new() };
         units.push(format!(
-            "{{\"name\":{},\"game\":{},\"x\":{},\"z\":{},\"w\":{},\"h\":{},\"rot\":{},\"type\":{},\"water\":[{}]}}",
+            "{{\"name\":{},\"game\":{},\"x\":{},\"z\":{},\"w\":{},\"h\":{},\"rot\":{},\"type\":{},\"water\":[{}]{scores}}}",
             q(&u.unit.unit_folder_name),
             q(&u.unit.game),
             u.x,
@@ -186,46 +388,144 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
         ));
     }
 
+    // Every object with its position and facing, in the same order as Layout::spawn_objects.
+    let mut placed: Vec<(&SpawnObject, Point, f32)> = Vec::new();
+    for sp in layout.spawnpoints.iter() {
+        for so in sp.contains.iter() {
+            let pos = match so {
+                SpawnObject::Teki(_, offset) => sp.pos + *offset,
+                _ => sp.pos,
+            };
+            placed.push((so, pos, sp.angle));
+        }
+    }
+    for (i, door) in layout.doors.iter().enumerate() {
+        let first = door.adjacent.is_none_or(|adj| i < adj as usize);
+        if let Some(so) = door.seam.as_ref().filter(|_| first) {
+            placed.push((so, door.center(), 0.0));
+        }
+    }
+
+    // Carry paths back to the ship, as CaveGen draws them.
+    let graph = (details && layout.ship.is_some()).then(|| layout.waypoint_graph());
+    let path_json = |pos: Point| -> String {
+        let Some(g) = graph else { return String::new() };
+        let path = get_path_to_goal(pos, 1.0, 10001, g.carry_path_wps_nodes(pos).collect());
+        // The path has a point per step; every 8th is plenty to draw it.
+        let mut pts: Vec<String> = path.iter().step_by(8).map(|p| format!("{},{}", f(p[0]), f(p[2]))).collect();
+        if let Some(last) = path.last() {
+            pts.push(format!("{},{}", f(last[0]), f(last[2])));
+        }
+        format!(",\"path\":[{}]", pts.join(","))
+    };
+
     let mut objects = Vec::new();
-    for (so, pos) in layout.spawn_objects() {
+    for (so, pos, angle) in placed {
         let (x, z) = (f(pos[0]), f(pos[2]));
+        let angle = if details { format!(",\"angle\":{}", f(angle)) } else { String::new() };
         let obj = match so {
             SpawnObject::Teki(info, _) => format!(
-                "{{\"kind\":\"teki\",\"name\":{},\"game\":{},\"group\":{},\"falling\":{},\"carrying\":{},\"x\":{x},\"z\":{z}}}",
+                "{{\"kind\":\"teki\",\"name\":{},\"game\":{},\"group\":{},\"falling\":{},\"carrying\":{},\"x\":{x},\"z\":{z}{angle}{}}}",
                 q(&info.internal_name),
                 q(&info.game),
                 info.group,
                 info.spawn_method.is_some(),
                 info.carrying.as_deref().map_or("null".into(), q),
+                if info.carrying.is_some() { path_json(pos) } else { String::new() },
             ),
             SpawnObject::CapTeki(info, count) => format!(
-                "{{\"kind\":\"teki\",\"name\":{},\"game\":{},\"group\":\"cap\",\"falling\":{},\"carrying\":{},\"count\":{count},\"x\":{x},\"z\":{z}}}",
+                "{{\"kind\":\"teki\",\"name\":{},\"game\":{},\"group\":\"cap\",\"falling\":{},\"carrying\":{},\"count\":{count},\"x\":{x},\"z\":{z}{angle}{}}}",
                 q(&info.internal_name),
                 q(&info.game),
                 info.is_falling(),
                 info.carrying.as_deref().map_or("null".into(), q),
+                if info.carrying.is_some() { path_json(pos) } else { String::new() },
             ),
             SpawnObject::Item(info) => {
                 let value = data.treasure(&info.game, &info.internal_name).map_or(0, |t| t.value);
                 format!(
-                    "{{\"kind\":\"treasure\",\"name\":{},\"game\":{},\"value\":{value},\"x\":{x},\"z\":{z}}}",
+                    "{{\"kind\":\"treasure\",\"name\":{},\"game\":{},\"value\":{value},\"x\":{x},\"z\":{z}{angle}{}}}",
                     q(&info.internal_name),
-                    q(&info.game)
+                    q(&info.game),
+                    path_json(pos),
                 )
             }
             SpawnObject::Gate(info, dir) => {
                 format!("{{\"kind\":\"gate\",\"health\":{},\"dir\":{dir},\"x\":{x},\"z\":{z}}}", f(info.health))
             }
-            SpawnObject::Hole(plugged) => format!("{{\"kind\":\"hole\",\"plugged\":{plugged},\"x\":{x},\"z\":{z}}}"),
-            SpawnObject::Geyser(_) => format!("{{\"kind\":\"geyser\",\"x\":{x},\"z\":{z}}}"),
-            SpawnObject::Ship => format!("{{\"kind\":\"ship\",\"x\":{x},\"z\":{z}}}"),
-            SpawnObject::Onion(color) => format!("{{\"kind\":\"onion\",\"color\":{color},\"x\":{x},\"z\":{z}}}"),
+            SpawnObject::Hole(plugged) => format!("{{\"kind\":\"hole\",\"plugged\":{plugged},\"x\":{x},\"z\":{z}{angle}}}"),
+            SpawnObject::Geyser(_) => format!("{{\"kind\":\"geyser\",\"x\":{x},\"z\":{z}{angle}}}"),
+            SpawnObject::Ship => format!("{{\"kind\":\"ship\",\"x\":{x},\"z\":{z}{angle}}}"),
+            SpawnObject::Onion(color) => format!("{{\"kind\":\"onion\",\"color\":{color},\"x\":{x},\"z\":{z}{angle}}}"),
         };
         objects.push(obj);
     }
 
+    let mut extra = String::new();
+    if details {
+        let spawnpoints: Vec<String> = layout
+            .spawnpoints
+            .iter()
+            .map(|sp| {
+                format!(
+                    "{{\"x\":{},\"z\":{},\"group\":{},\"r\":{},\"angle\":{},\"min\":{},\"max\":{},\"unit\":{},\"hole_score\":{},\"treasure_score\":{},\"used\":{}}}",
+                    f(sp.pos[0]),
+                    f(sp.pos[2]),
+                    sp.spawnpoint.group,
+                    f(sp.spawnpoint.radius),
+                    f(sp.angle),
+                    sp.spawnpoint.min_num,
+                    sp.spawnpoint.max_num,
+                    sp.unit,
+                    sp.hole_score,
+                    sp.treasure_score,
+                    !sp.contains.is_empty(),
+                )
+            })
+            .collect();
+        let doors: Vec<String> = layout
+            .doors
+            .iter()
+            .map(|d| {
+                let c = d.center();
+                let first = layout.units[d.unit as usize].first_door as usize;
+                let links: Vec<String> = d.door.door_links.iter().map(|l| (first + l.door_id).to_string()).collect();
+                format!(
+                    "{{\"x\":{},\"z\":{},\"dir\":{},\"unit\":{},\"adjacent\":{},\"score\":{},\"seam_score\":{},\"links\":[{}]}}",
+                    f(c[0]),
+                    f(c[2]),
+                    d.door.direction,
+                    d.unit,
+                    d.adjacent.map_or("null".into(), |a| a.to_string()),
+                    d.door_score,
+                    d.seam_teki_score,
+                    links.join(","),
+                )
+            })
+            .collect();
+        let waypoints: Vec<String> = graph.map_or_else(Vec::new, |g| {
+            g.iter()
+                .map(|wp| {
+                    format!(
+                        "{{\"x\":{},\"z\":{},\"r\":{},\"next\":{}}}",
+                        f(wp.pos[0]),
+                        f(wp.pos[2]),
+                        f(wp.r),
+                        g.backlink(wp).map_or("null".into(), |b| b.index().to_string())
+                    )
+                })
+                .collect()
+        });
+        extra = format!(
+            ",\"spawnpoints\":[{}],\"doors\":[{}],\"waypoints\":[{}]",
+            spawnpoints.join(","),
+            doors.join(","),
+            waypoints.join(",")
+        );
+    }
+
     format!(
-        "{{\"sublevel\":{},\"long_name\":{},\"game\":{},\"floor\":{},\"floors\":{num_floors},\"seed\":\"{:08X}\",\"width\":{width},\"height\":{height},\"final_floor\":{},\"units\":[{}],\"objects\":[{}]}}",
+        "{{\"sublevel\":{},\"long_name\":{},\"game\":{},\"floor\":{},\"floors\":{num_floors},\"seed\":\"{:08X}\",\"width\":{width},\"height\":{height},\"final_floor\":{},\"units\":[{}],\"objects\":[{}]{extra}}}",
         q(&sublevel.short_name()),
         q(&sublevel.long_name()),
         q(&sublevel.cfg.game),
@@ -273,7 +573,7 @@ pub unsafe extern "C" fn dealloc(ptr: *mut u8, len: usize) {
     drop(unsafe { Vec::from_raw_parts(ptr, 0, len) });
 }
 
-/// The length of the text the last `caves`, `generate` or `add_files` call returned.
+/// The length of the text the last `caves`, `generate`, `command` or `add_files` call returned.
 #[unsafe(no_mangle)]
 pub extern "C" fn result_len() -> usize {
     RESULT.lock().unwrap().len()
@@ -299,9 +599,19 @@ pub extern "C" fn caves() -> *const u8 {
 /// # Safety
 /// `ptr` must point to `len` readable bytes.
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn generate(ptr: *const u8, len: usize, seed: u32) -> *const u8 {
+pub unsafe extern "C" fn generate(ptr: *const u8, len: usize, seed: u32, flags: u32) -> *const u8 {
     let name = String::from_utf8_lossy(unsafe { std::slice::from_raw_parts(ptr, len) }).into_owned();
-    set_result(with_state(|w| w.generate_json(&name, seed)))
+    set_result(with_state(|w| w.generate_json(&name, seed, flags)))
+}
+
+/// Runs a tab-separated command (see [`Web::command`]) given as UTF-8 text at `ptr`.
+///
+/// # Safety
+/// `ptr` must point to `len` readable bytes.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn command(ptr: *const u8, len: usize) -> *const u8 {
+    let text = String::from_utf8_lossy(unsafe { std::slice::from_raw_parts(ptr, len) }).into_owned();
+    set_result(with_state(|w| w.command(&text)))
 }
 
 #[cfg(test)]
@@ -338,7 +648,7 @@ mod tests {
         let root = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/../../data"));
         let mut web = Web::default();
         web.add_files(&bundle(root, &["resources"])).unwrap();
-        assert!(web.generate_json("SCx6", 0).is_err(), "pikmin2 isn't loaded yet");
+        assert!(web.generate_json("SCx6", 0, 0).is_err(), "pikmin2 isn't loaded yet");
         web.add_files(&bundle(root, &["assets/pikmin2"])).unwrap();
         web.add_files(&bundle(root, &["assets/251"])).unwrap();
 
@@ -346,14 +656,46 @@ mod tests {
         let data = GameData::bundled().unwrap();
         let sub = data.sublevel("SCx6").unwrap();
         let expected = Layout::generate(0x1234, data.caveinfo(&sub).unwrap());
-        let json = web.generate_json("SCx6", 0x1234).unwrap();
+        let json = web.generate_json("SCx6", 0x1234, 0).unwrap();
         for u in expected.units.iter() {
             assert!(json.contains(&format!("\"name\":\"{}\",", u.unit.unit_folder_name)));
         }
         assert!(json.contains("\"seed\":\"00001234\""));
         assert!(json.contains("\"kind\":\"ship\""));
-        assert!(web.generate_json("251:AT1", 7).unwrap().contains("\"game\":\"251\""));
+        assert!(web.generate_json("251:AT1", 7, 0).unwrap().contains("\"game\":\"251\""));
         assert!(web.caves_json().unwrap().contains("\"name\":\"Colossal Caverns\""));
-        assert!(web.generate_json("not a cave", 0).is_err());
+        assert!(web.generate_json("not a cave", 0, 0).is_err());
+
+        // Details, judge, search and caveinfo.
+        let detailed = web.generate_json("SCx6", 0x1234, DETAILS).unwrap();
+        for key in ["\"spawnpoints\":[{", "\"doors\":[{", "\"waypoints\":[{", "\"path\":[", "\"angle\":", "\"score\":"] {
+            assert!(detailed.contains(key), "missing {key}");
+        }
+        let judge = JhawkJudge::new(JudgeType::Score, data.caveinfo(&sub).unwrap());
+        let score = judge.judge(&expected);
+        assert_eq!(web.command("judge\tSCx6\tscore\t4660").unwrap(), format!("{{\"score\":{}}}", fnum(score)));
+        let found = web.command("search\tSCx6\tscore\t-\t4660\t20\tc\t3").unwrap();
+        assert!(found.starts_with("{\"tested\":20,\"matched\":20,\"best\":[["), "{found}");
+        let found = web.command("search\tSCx6\t-\thole carry dist < 1500\t0\t50\tr\t5").unwrap();
+        assert!(found.starts_with("{\"tested\":50,"), "{found}");
+        assert!(web.command("caveinfo\tSCx6").unwrap().contains("\"teki\":[{\"name\":"));
+        assert!(web.command("search\tSCx6\t-\tnot a query ((\t0\t5\tc\t5").is_err());
+
+        // Every pikmin2 sublevel works with details on (the waypoint graph and paths can panic,
+        // which in the browser would stop the page).
+        web.add_files(&bundle(root, &["assets/newyear", "assets/colossal"])).unwrap();
+        for cave in data.caves().iter() {
+            // New Year's Timeless Realm is missing a unit file.
+            let Ok(floors) = data.floors(cave) else { continue };
+            for floor in 1..=floors.len() {
+                let name = format!("{}:{}-{floor}", cave.game, cave.short_name());
+                for seed in [0u32, 0x1234_5678, 0xFFFF_FFFF] {
+                    web.generate_json(&name, seed, DETAILS).unwrap();
+                }
+                for judge in JudgeType::ALL {
+                    web.command(&format!("judge\t{name}\t{judge}\t7")).unwrap();
+                }
+            }
+        }
     }
 }

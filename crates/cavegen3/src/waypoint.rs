@@ -192,6 +192,11 @@ pub struct WaypointGraphNode {
 }
 
 impl WaypointGraphNode {
+    /// This node's position in [`WaypointGraph::iter`].
+    pub fn index(&self) -> usize {
+        self.idx.index()
+    }
+
     pub fn p2_dist(&self, other: &Self) -> f32 {
         self.pos.p2_dist(&other.pos)
     }
