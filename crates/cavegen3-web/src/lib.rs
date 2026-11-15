@@ -20,7 +20,7 @@ use std::{
 };
 
 use cavegen3::{
-    GameData, Layout, SpawnObject,
+    GameData, Layout, Placement, SpawnObject,
     caveinfo::CaveInfo,
     data::FileSource,
     jhawk_judge::{JhawkJudge, JudgeType},
@@ -468,22 +468,24 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
     }
 
     // Every object with its position and facing, in the same order as Layout::spawn_objects.
-    let mut placed: Vec<(&SpawnObject, Point, f32)> = Vec::new();
-    for sp in layout.spawnpoints.iter() {
-        for so in sp.contains.iter() {
+    let mut placed: Vec<(&SpawnObject, Point, f32, Placement)> = Vec::new();
+    for (si, sp) in layout.spawnpoints.iter().enumerate() {
+        for (slot, so) in sp.contains.iter().enumerate() {
             let pos = match so {
                 SpawnObject::Teki(_, offset) => sp.pos + *offset,
                 _ => sp.pos,
             };
-            placed.push((so, pos, sp.angle));
+            placed.push((so, pos, sp.angle, Placement::SpawnPoint { index: si as u32, slot: slot as u32 }));
         }
     }
     for (i, door) in layout.doors.iter().enumerate() {
         let first = door.adjacent.is_none_or(|adj| i < adj as usize);
         if let Some(so) = door.seam.as_ref().filter(|_| first) {
-            placed.push((so, door.center(), 0.0));
+            placed.push((so, door.center(), 0.0, Placement::Seam { door: i as u32 }));
         }
     }
+    // When each object was placed (CaveGen's -drawSpawnOrder), counting after the map units.
+    let order_of = |p: Placement| layout.spawn_order.iter().position(|&o| o == p);
 
     // Carry paths back to the ship, as CaveGen draws them.
     let graph = (details && layout.ship.is_some()).then(|| layout.waypoint_graph());
@@ -495,11 +497,12 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
         if let Some(last) = path.last() {
             pts.push(format!("{},{}", f(last[0]), f(last[2])));
         }
-        format!(",\"path\":[{}]", pts.join(","))
+        // CaveGen's -drawPathDists: the path's length in tens of units, at most 999.
+        format!(",\"path\":[{}],\"path_dist\":{}", pts.join(","), (path.len() / 10).min(999))
     };
 
     let mut objects = Vec::new();
-    for (so, pos, angle) in placed {
+    for (so, pos, angle, placement) in placed {
         let (x, z) = (f(pos[0]), f(pos[2]));
         // The pod's facing is always included: the page's comedown view needs it.
         let ship_angle = format!(",\"angle\":{}", f(angle));
@@ -542,6 +545,11 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
             SpawnObject::Ship => format!("{{\"kind\":\"ship\",\"x\":{x},\"z\":{z}{ship_angle}}}"),
             SpawnObject::Onion(color) => format!("{{\"kind\":\"onion\",\"color\":{color},\"x\":{x},\"z\":{z}{angle}}}"),
         };
+        let mut obj = obj;
+        if let Some(n) = order_of(placement).filter(|_| details) {
+            obj.pop();
+            obj.push_str(&format!(",\"order\":{}}}", layout.units.len() + n));
+        }
         objects.push(obj);
     }
 

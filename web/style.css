@@ -87,6 +87,7 @@ a:hover { color: var(--leaf-dark); }
 .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .field > span:first-child { font-size: 0.8rem; color: var(--muted); }
 .field.grow { flex: 1 1 220px; }
+.check-row { display: flex; flex-wrap: wrap; gap: 4px 12px; min-height: 36px; align-items: center; }
 
 select, input, button {
   font: inherit;

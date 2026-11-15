@@ -165,28 +165,81 @@ impl CaveConfig {
     }
 }
 
+/// Colossal Caverns' generation options, as in CaveGen: `-ultraRandomizer` (shuffle the map
+/// unit queues far more), `-extraUnits` (Pikmin 251's units too) and `-5onion` (five Onions).
+/// In a sublevel name they're suffixes: "colossal+ultra+extra+5onion".
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+pub struct Variant {
+    pub ultra_randomizer: bool,
+    pub extra_units: bool,
+    pub five_onions: bool,
+}
+
+impl Variant {
+    pub fn is_default(self) -> bool {
+        self == Variant::default()
+    }
+
+    /// An index 0-7, for caching each combination.
+    fn index(self) -> usize {
+        self.ultra_randomizer as usize | (self.extra_units as usize) << 1 | (self.five_onions as usize) << 2
+    }
+
+    /// The name suffix, e.g. "+ultra+5onion", or "" for the default.
+    pub fn suffix(self) -> String {
+        let mut s = String::new();
+        if self.ultra_randomizer {
+            s.push_str("+ultra");
+        }
+        if self.extra_units {
+            s.push_str("+extra");
+        }
+        if self.five_onions {
+            s.push_str("+5onion");
+        }
+        s
+    }
+
+    /// Reads one suffix word; false if it isn't one.
+    fn set(&mut self, word: &str) -> bool {
+        match word.trim().to_ascii_lowercase().as_str() {
+            "ultra" | "ultrarandomizer" => self.ultra_randomizer = true,
+            "extra" | "extraunits" => self.extra_units = true,
+            "5onion" | "5onions" | "fiveonions" => self.five_onions = true,
+            _ => return false,
+        }
+        true
+    }
+}
+
 /// A specific floor of a specific cave.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Sublevel {
     pub cfg: CaveConfig,
     /// 1-indexed.
     pub floor: usize,
+    /// Colossal Caverns' options; always the default elsewhere.
+    pub variant: Variant,
 }
 
 impl Sublevel {
     /// The name in CaveGen's format, e.g. "SCx-3" or "CH12-1".
     pub fn normalized_name(&self) -> String {
-        format!("{}-{}", self.cfg.short_name(), self.floor)
+        format!("{}-{}{}", self.cfg.short_name(), self.floor, self.variant.suffix())
     }
 
     /// e.g. "SCx3"; challenge mode levels use the normalized name.
     pub fn short_name(&self) -> String {
-        if self.cfg.is_challenge_mode { self.normalized_name() } else { format!("{}{}", self.cfg.short_name(), self.floor) }
+        if self.cfg.is_challenge_mode {
+            self.normalized_name()
+        } else {
+            format!("{}{}{}", self.cfg.short_name(), self.floor, self.variant.suffix())
+        }
     }
 
     /// e.g. "Submerged Castle 3".
     pub fn long_name(&self) -> String {
-        format!("{} {}", self.cfg.full_name, self.floor)
+        format!("{} {}{}", self.cfg.full_name, self.floor, self.variant.suffix())
     }
 }
 
@@ -202,7 +255,8 @@ impl fmt::Display for Sublevel {
 pub struct GameData {
     source: Box<dyn FileSource>,
     caves: Vec<CaveConfig>,
-    parsed: Vec<OnceLock<Result<Vec<CaveInfo>>>>,
+    /// Per cave, per [`Variant`] combination.
+    parsed: Vec<[OnceLock<Result<Vec<CaveInfo>>>; 8]>,
     catalog: OnceLock<Catalog>,
 }
 
@@ -225,7 +279,7 @@ impl GameData {
             .read("resources/caveinfo_config.txt")
             .ok_or_else(|| Error::new("missing resources/caveinfo_config.txt"))?;
         let caves = CaveConfig::parse_list(&String::from_utf8_lossy(&list))?;
-        let parsed = caves.iter().map(|_| OnceLock::new()).collect();
+        let parsed = caves.iter().map(|_| std::array::from_fn(|_| OnceLock::new())).collect();
         Ok(GameData { source, caves, parsed, catalog: OnceLock::new() })
     }
 
@@ -313,20 +367,25 @@ impl GameData {
 
     /// All floors of a cave, parsed on first use.
     pub fn floors(&self, cfg: &CaveConfig) -> Result<&[CaveInfo]> {
+        self.floors_variant(cfg, Variant::default())
+    }
+
+    /// All floors of a cave with Colossal Caverns' options, parsed on first use.
+    pub fn floors_variant(&self, cfg: &CaveConfig, variant: Variant) -> Result<&[CaveInfo]> {
         let idx = self
             .caves
             .iter()
             .position(|c| c == cfg)
             .ok_or_else(|| Error::new(format!("unknown cave {}", cfg.full_name)))?;
-        self.parsed[idx]
-            .get_or_init(|| parse::parse_cave(cfg, self).map_err(|e| e.context(format!("{} ({})", cfg.full_name, cfg.game))))
+        self.parsed[idx][variant.index()]
+            .get_or_init(|| parse::parse_cave(cfg, self, variant).map_err(|e| e.context(format!("{} ({})", cfg.full_name, cfg.game))))
             .as_deref()
             .map_err(Clone::clone)
     }
 
     /// The caveinfo for one sublevel.
     pub fn caveinfo(&self, sublevel: &Sublevel) -> Result<&CaveInfo> {
-        self.floors(&sublevel.cfg)?
+        self.floors_variant(&sublevel.cfg, sublevel.variant)?
             .get(sublevel.floor.wrapping_sub(1))
             .ok_or_else(|| Error::new(format!("{} has no floor {}", sublevel.cfg.full_name, sublevel.floor)))
     }
@@ -341,6 +400,24 @@ impl GameData {
     /// Like [`GameData::sublevel`], but a name without a `game:` prefix belongs to
     /// `default_game` when one is given (vanilla otherwise).
     pub fn sublevel_in(&self, input: &str, default_game: Option<&str>) -> Result<Sublevel> {
+        // Colossal Caverns' options come after the name: "colossal+ultra+5onion".
+        let mut parts = input.split('+');
+        let name = parts.next().unwrap_or_default();
+        let mut variant = Variant::default();
+        for word in parts {
+            if !variant.set(word) {
+                return Err(Error::new(format!("unknown option \"+{word}\" in \"{input}\": the options are +ultra, +extra and +5onion")));
+            }
+        }
+        let mut sublevel = self.sublevel_plain(name, default_game)?;
+        if !variant.is_default() && !sublevel.cfg.is_colossal_caverns() {
+            return Err(Error::new(format!("\"{input}\": only Colossal Caverns has the +ultra, +extra and +5onion options")));
+        }
+        sublevel.variant = variant;
+        Ok(sublevel)
+    }
+
+    fn sublevel_plain(&self, input: &str, default_game: Option<&str>) -> Result<Sublevel> {
         let unknown = || Error::new(format!("unrecognized sublevel \"{input}\""));
         let (game, rest) = match input.split_once(':') {
             Some((game, rest)) => (Some(game.trim().to_ascii_lowercase()), rest.to_ascii_lowercase()),
@@ -349,7 +426,7 @@ impl GameData {
         let game = game.as_deref();
         let components: Vec<&str> = rest.split('-').map(str::trim).filter(|c| !c.is_empty()).collect();
         let lookup = |name: &str, challenge_only: bool, floor: usize| {
-            self.find_cave(name, game, challenge_only).map(|cfg| Sublevel { cfg: cfg.clone(), floor }).ok_or_else(unknown)
+            self.find_cave(name, game, challenge_only).map(|cfg| Sublevel { cfg: cfg.clone(), floor, variant: Variant::default() }).ok_or_else(unknown)
         };
         match components.as_slice() {
             [only] if only.eq_ignore_ascii_case("colossal") => lookup("colossal", false, 1),

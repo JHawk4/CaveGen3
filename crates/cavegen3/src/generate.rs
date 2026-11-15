@@ -11,7 +11,7 @@ use std::cmp::{max, min};
 
 use crate::{
     caveinfo::{CapInfo, CaveInfo, CaveUnit, ItemInfo, RoomType, TekiInfo},
-    layout::{Layout, PlacedDoor, PlacedSpawnPoint, PlacedUnit, SpawnObject},
+    layout::{Layout, PlacedDoor, PlacedSpawnPoint, PlacedUnit, Placement, SpawnObject},
     math,
     point::Point,
     rng::Rng,
@@ -49,6 +49,7 @@ pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
         ship: None,
         hole: None,
         geyser: None,
+        spawn_order: Vec::new(),
     };
     g.run();
     Layout {
@@ -57,6 +58,7 @@ pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
         units: g.units,
         doors: g.doors,
         spawnpoints: g.spawnpoints,
+        spawn_order: g.spawn_order,
         ship: g.ship,
         hole: g.hole,
         geyser: g.geyser,
@@ -93,6 +95,7 @@ struct Generator<'a> {
     ship: Option<u32>,
     hole: Option<u32>,
     geyser: Option<u32>,
+    spawn_order: Vec<Placement>,
 }
 
 /// A unit position that passed the placement checks.
@@ -104,6 +107,12 @@ struct Candidate {
 }
 
 impl<'a> Generator<'a> {
+    /// Notes that the last object in spawn point `si` was just placed.
+    fn record_spawnpoint(&mut self, si: usize) {
+        let slot = self.spawnpoints[si].contains.len() - 1;
+        self.spawn_order.push(Placement::SpawnPoint { index: si as u32, slot: slot as u32 });
+    }
+
     fn unit(&self, id: UnitId) -> &'a CaveUnit {
         &self.ci.cave_units[id as usize]
     }
@@ -146,9 +155,16 @@ impl<'a> Generator<'a> {
                 RoomType::Hallway => self.corridor_queue.push(i as UnitId),
             }
         }
-        self.rng.rand_backs(&mut self.cap_queue);
-        self.rng.rand_backs(&mut self.room_queue);
-        self.rng.rand_backs(&mut self.corridor_queue);
+        if self.ci.ultra_randomizer {
+            // CaveGen's Colossal Caverns ultra randomizer.
+            self.rng.rand_backs_n(&mut self.cap_queue, 0x5000);
+            self.rng.rand_backs_n(&mut self.room_queue, 0x5000);
+            self.rng.rand_backs_n(&mut self.corridor_queue, 0x5000);
+        } else {
+            self.rng.rand_backs(&mut self.cap_queue);
+            self.rng.rand_backs(&mut self.room_queue);
+            self.rng.rand_backs(&mut self.corridor_queue);
+        }
 
         // allocateEnemySlots
         let mut used_for_min = 0;
@@ -957,6 +973,7 @@ impl<'a> Generator<'a> {
         let candidates: Vec<u32> = self.units[0].spawnpoint_indices().filter(|&i| self.spawnpoints[i].group() == 7).map(|i| i as u32).collect();
         let chosen = candidates[self.rng.rand_int(candidates.len() as u32) as usize];
         self.spawnpoints[chosen as usize].contains.push(SpawnObject::Ship);
+        self.record_spawnpoint(chosen as usize as usize);
         self.ship = Some(chosen);
     }
 
@@ -1112,6 +1129,7 @@ impl<'a> Generator<'a> {
             _ => self.geyser = Some(chosen as u32),
         }
         self.spawnpoints[chosen].contains.push(to_place);
+        self.record_spawnpoint(chosen as usize);
     }
 
     /// Seam teki (group 5) on doors between units, preferring rooms 100 to 1 over hallways.
@@ -1140,6 +1158,7 @@ impl<'a> Generator<'a> {
                     self.doors[d].seam = Some(object);
                     let adj = self.doors[d].adjacent.expect("door isn't attached") as usize;
                     self.doors[adj].seam = Some(object);
+                    self.spawn_order.push(Placement::Seam { door: d.min(adj) as u32 });
                     self.placed_teki += 1;
                 }
                 _ => break,
@@ -1176,6 +1195,7 @@ impl<'a> Generator<'a> {
             match (chosen, teki) {
                 (Some(i), Some(teki)) => {
                     self.spawnpoints[i].contains.push(SpawnObject::Teki(teki, Point::ZERO));
+                    self.record_spawnpoint(i as usize);
                     self.placed_teki += 1;
                 }
                 _ => break,
@@ -1351,6 +1371,7 @@ impl<'a> Generator<'a> {
             // so no more RNG calls happen for the remaining treasures.
             let (Some(si), Some(item)) = (chosen, item) else { break };
             self.spawnpoints[si].contains.push(SpawnObject::Item(item));
+            self.record_spawnpoint(si as usize);
             let unit = self.spawnpoints[si].unit as usize;
             if self.units[unit].unit.room_type == RoomType::Room {
                 items_here[unit] += 1;
@@ -1376,6 +1397,7 @@ impl<'a> Generator<'a> {
             }
             if let Some((teki, n)) = choose_rand_cap_teki(&mut self.rng, self.ci, num_spawned, false) {
                 self.spawnpoints[si].contains.push(SpawnObject::CapTeki(teki, n));
+                self.record_spawnpoint(si as usize);
                 num_spawned += n;
             }
         }
@@ -1393,6 +1415,7 @@ impl<'a> Generator<'a> {
             }
             if let Some((teki, n)) = choose_rand_cap_teki(&mut self.rng, self.ci, num_spawned, true) {
                 self.spawnpoints[si].contains.push(SpawnObject::CapTeki(teki, n));
+                self.record_spawnpoint(si as usize);
                 num_spawned += n;
             }
         }
@@ -1409,6 +1432,7 @@ impl<'a> Generator<'a> {
             self.doors[d].seam = Some(object);
             let adj = self.doors[d].adjacent.expect("door isn't attached") as usize;
             self.doors[adj].seam = Some(object);
+            self.spawn_order.push(Placement::Seam { door: d.min(adj) as u32 });
         }
     }
 
@@ -1505,12 +1529,12 @@ impl<'a> Generator<'a> {
         None
     }
 
-    /// Colossal Caverns places three onions at evenly spaced rooms with a ship spot.
+    /// Colossal Caverns places three (or five) onions at evenly spaced rooms with a ship spot.
     fn place_onions(&mut self) {
-        const NUM_ONIONS: usize = 3;
+        let num_onions = self.ci.num_onions as usize;
         let has_ship_spot = |u: &PlacedUnit| u.unit.room_type == RoomType::Room && u.unit.spawnpoints.iter().any(|sp| sp.group == 7);
         let valid_rooms = self.units.iter().filter(|u| has_ship_spot(u)).count();
-        let interval = max(valid_rooms / NUM_ONIONS, 1);
+        let interval = max(valid_rooms / num_onions, 1);
         let mut color = 0;
         let mut room_num = 0;
         for ui in 0..self.units.len() {
@@ -1520,11 +1544,12 @@ impl<'a> Generator<'a> {
             if let Some(si) = self.units[ui].spawnpoint_indices().find(|&i| self.spawnpoints[i].group() == 7) {
                 room_num += 1;
                 if room_num == (color + 1) * interval {
-                    self.spawnpoints[si].contains.push(SpawnObject::Onion((NUM_ONIONS - 1 - color) as u32));
+                    self.spawnpoints[si].contains.push(SpawnObject::Onion((num_onions - 1 - color) as u32));
+                    self.record_spawnpoint(si as usize);
                     color += 1;
                 }
             }
-            if color >= NUM_ONIONS {
+            if color >= num_onions {
                 break;
             }
         }

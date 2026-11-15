@@ -242,6 +242,22 @@ fn matches_cavegen_colossal_output() {
     check_against_cavegen("colossal", &load_expected(EXPECTED_COLOSSAL_GZ), &[]);
 }
 
+/// CaveGen's Colossal Caverns options (`-ultraRandomizer`, `-extraUnits`, `-5onion`, and all
+/// three), 20 seeds each, made like `cavegen_expected_colossal.txt.gz` with the option added.
+#[test]
+fn matches_cavegen_colossal_options() {
+    for (file, options) in [("ultra", "+ultra"), ("extra", "+extra"), ("5onion", "+5onion"), ("all", "+ultra+extra+5onion")] {
+        let path = format!("{}/../../testdata/cavegen_expected_colossal_{file}.txt.gz", env!("CARGO_MANIFEST_DIR"));
+        COLOSSAL_OPTIONS.with(|o| *o.borrow_mut() = options.to_string());
+        check_against_cavegen("colossal", &load_expected(&path), &[]);
+    }
+}
+
+thread_local! {
+    /// Options appended to "colossal" by `check_against_cavegen` on this thread.
+    static COLOSSAL_OPTIONS: std::cell::RefCell<String> = const { std::cell::RefCell::new(String::new()) };
+}
+
 // Sublevels where CaveGen is wrong. CaveGen picks story or challenge mode from the first two
 // letters of the cave's short name, so New Year's Commodore House ("CH") is generated as a
 // challenge cave (normal-mode hole, treasure and gate rules). With CaveGen's `-storyMode` they
@@ -263,6 +279,7 @@ fn matches_cavegen_newyear_output() {
 fn check_against_cavegen(game: &str, expected: &[ExpectedLayout], skip: &[&str]) {
     let data = GameData::bundled().expect("Couldn't load the bundled game data");
     assert!(!expected.is_empty());
+    let options = COLOSSAL_OPTIONS.with(|o| o.borrow().clone());
 
     let failures: Mutex<Vec<(String, u32, String)>> = Mutex::new(Vec::new());
     let mut by_sublevel: BTreeMap<(String, usize), Vec<&ExpectedLayout>> = BTreeMap::new();
@@ -272,7 +289,7 @@ fn check_against_cavegen(game: &str, expected: &[ExpectedLayout], skip: &[&str])
 
     by_sublevel.par_iter().for_each(|((cave, floor), layouts)| {
         // Colossal Caverns has a single floor and is named just "colossal".
-        let name = if cave == "colossal" { cave.clone() } else { format!("{game}:{cave}-{floor}") };
+        let name = if cave == "colossal" { format!("{cave}{options}") } else { format!("{game}:{cave}-{floor}") };
         let sublevel = data.sublevel(&name).unwrap_or_else(|e| panic!("{name}: {e}"));
         let caveinfo = data.caveinfo(&sublevel).unwrap();
         for e in layouts {

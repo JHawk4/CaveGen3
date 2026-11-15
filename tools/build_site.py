@@ -68,10 +68,14 @@ def main():
     (out / "img/special").mkdir(parents=True)
     for png in (DATA / "resources/enemytex_special").iterdir():
         shutil.copyfile(png, out / "img/special" / png.name.lower())
+    # CaveGen's "pretty" pictures of the vanilla map units, and two floor backgrounds.
+    (out / "img/pretty").mkdir(parents=True)
+    for webp in (DATA / "resources/pretty").glob("*.webp"):
+        shutil.copyfile(webp, out / "img/pretty" / webp.name.lower())
     (out / "data/games.txt").write_text("\n".join(games) + "\n")
     # Every image path, so the page asks only for images that exist (Colossal Caverns alone has
     # hundreds of objects; trying a missing icon in each game's folder in turn was slow).
-    image_paths = sorted(p.relative_to(out).as_posix() for p in (out / "img").rglob("*.png"))
+    image_paths = sorted(p.relative_to(out).as_posix() for p in (out / "img").rglob("*") if p.suffix in (".png", ".webp"))
     (out / "data/images.json").write_text(json.dumps(image_paths, separators=(",", ":")))
     shutil.copyfile(DATA / "resources/names.json", out / "data/names.json")
 

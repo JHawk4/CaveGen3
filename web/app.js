@@ -56,6 +56,10 @@ const STRINGS = {
     navAggregator: "Aggregator",
     navSuggest: "Suggestion box",
     pageTitle: { generator: "CaveGen3", aggregator: "Aggregator · CaveGen3", suggest: "Suggestion box · CaveGen3" },
+    colossalOptions: "Colossal Caverns options",
+    colUltra: "Ultra randomizer",
+    colExtra: "Extra units",
+    col5: "5 Onions",
     comedown: "Comedown only",
     comedownScreen: "Screen (for the comedown)",
     seedStep: "‹ › buttons",
@@ -93,6 +97,9 @@ const STRINGS = {
       gateHealth: "Gate health",
       exits: "Pod and exits",
       spawnpoints: "Spawn points",
+      spawnOrder: "Spawn order",
+      pathDists: "Carry distances",
+      podAngle: "Pod facing",
       angles: "Facing directions",
       unitScores: "Unit scores",
       spawnScores: "Treasure and hole scores",
@@ -105,6 +112,8 @@ const STRINGS = {
       gauge: "Treasure gauge",
       grid: "Grid",
       comedownBox: "Comedown outline",
+      quickGlance: "QuickGlance",
+      pretty: "Pretty",
     },
     judge: "Judge",
     judgeNone: "None",
@@ -148,6 +157,9 @@ const STRINGS = {
     rank: (pct) => `top ${pct}%`,
     querySyntax: "syntax",
     tips: {
+      colUltra: "Shuffle the map unit lists much more before placing them (CaveGen's -ultraRandomizer)",
+      colExtra: "Also use Pikmin 251's map units (CaveGen's -extraUnits)",
+      col5: "Place five Onions instead of three (CaveGen's -5onion)",
       comedown: "Show only what's on screen when you land, turned so the camera faces up",
       water: "Shade the water",
       comedownScreen: "The game's screen setting. A 16:9 screen shows more to the sides when you land",
@@ -169,6 +181,9 @@ const STRINGS = {
         exits: "The pod, the hole or geyser, and Onions",
         spawnpoints: "Every spawn point, marked by what can spawn there as in Caveripper: pink rings for easy teki, red dots for hard teki, a duck for treasures, a hole for the exit, a leaf for plants, a star for special teki, the ship for the pod. Faded ones are empty",
         angles: "Arrows for the way each object and spawn point faces",
+        spawnOrder: "The order things were placed in: map units (outlined), then the pod, exits, teki, treasures, alcove teki and gates (CaveGen's -drawSpawnOrder)",
+        pathDists: "How far each treasure is carried to the pod, in tens of units along its path (CaveGen's -drawPathDists)",
+        podAngle: "An arrow for the way the pod faces, which is the way the camera looks when you land (CaveGen's -drawPodAngle)",
         unitScores: "Each map unit's score, which the generator uses to place the hole and treasures",
         spawnScores: "The scores used to pick the treasure spots (orange) and the hole (green)",
         tekiScores: "The teki score in each map unit (red)",
@@ -177,9 +192,11 @@ const STRINGS = {
         doorIds: "Each door's number within its map unit",
         waypoints: "The carry waypoints, with arrows toward the pod",
         paths: "The way each treasure is carried back to the pod",
-        gauge: "Shades the floor by how high the treasure gauge's needle would be there: pale yellow at the edge of its 900-unit range, deepening to red right next to a treasure. Each shade is one step of CaveGen's gauge marks (0.5, 1, 2 … 8 tenths)",
+        gauge: "Shades the floor by how high the treasure gauge's needle would be there: yellow while the needle is below 0.3, orange from 0.3 and red from 0.8, deeper each step inward (steps at 0.05, 0.1, 0.2 … 0.9)",
         grid: "The map's grid cells",
         comedownBox: "An outline of what the camera shows when you land",
+        quickGlance: "Colored discs behind what matters, to read a layout at a glance: the pod (red), treasures and teki carrying them (orange), the exit (green), Gatling Groinks (pink), Candypop Buds and Onions (CaveGen's QuickGlance)",
+        pretty: "Draws the vanilla map units as pictures of the actual floor instead of radar images (CaveGen's Pretty)",
       },
     },
     caveInfo: "CaveInfo",
@@ -283,6 +300,10 @@ const STRINGS = {
     navAggregator: "集計",
     navSuggest: "ご意見箱",
     pageTitle: { generator: "CaveGen3", aggregator: "集計 · CaveGen3", suggest: "ご意見箱 · CaveGen3" },
+    colossalOptions: "Colossal Caverns のオプション",
+    colUltra: "超ランダム",
+    colExtra: "追加ユニット",
+    col5: "オニヨン5個",
     comedown: "着地時の範囲だけ",
     comedownScreen: "画面（着地時の範囲用）",
     seedStep: "‹ › ボタン",
@@ -320,6 +341,9 @@ const STRINGS = {
       gateHealth: "ゲートの体力",
       exits: "ポッドと出口",
       spawnpoints: "出現ポイント",
+      spawnOrder: "生成順",
+      pathDists: "運搬距離",
+      podAngle: "ポッドの向き",
       angles: "向き",
       unitScores: "ユニットのスコア",
       spawnScores: "お宝と穴のスコア",
@@ -332,6 +356,8 @@ const STRINGS = {
       gauge: "お宝ゲージ",
       grid: "グリッド",
       comedownBox: "着地時の範囲の枠",
+      quickGlance: "クイックグランス",
+      pretty: "きれいな表示",
     },
     judge: "評価",
     judgeNone: "なし",
@@ -376,6 +402,9 @@ const STRINGS = {
     rank: (pct) => `上位 ${pct}%`,
     querySyntax: "書き方",
     tips: {
+      colUltra: "マップユニットの並びを配置前にもっと大きくかき混ぜます（CaveGenの -ultraRandomizer）",
+      colExtra: "Pikmin 251 のマップユニットも使います（CaveGenの -extraUnits）",
+      col5: "オニヨンを3個ではなく5個置きます（CaveGenの -5onion）",
       comedown: "着地したときに画面に映る範囲だけを、カメラが上を向くよう回転して表示します",
       water: "水の部分に色をつけます",
       comedownScreen: "ゲームの画面設定。16:9のほうが着地時に左右が広く映ります",
@@ -397,6 +426,9 @@ const STRINGS = {
         exits: "ポッド、穴か間欠泉、オニヨン",
         spawnpoints: "すべての出現ポイント（Caveripperと同じ記号：ピンクの輪は弱い原生生物、赤い点は強い原生生物、アヒルはお宝、穴は出口、葉は植物、星は特殊、船はポッド。薄いものは空）",
         angles: "各オブジェクトと出現ポイントの向きの矢印",
+        spawnOrder: "置かれた順番：マップユニット（枠）、ポッド、出口、原生生物、お宝、行き止まりの原生生物、ゲート（CaveGenの -drawSpawnOrder）",
+        pathDists: "各お宝がポッドまで運ばれる道のりの長さ（10単位ごと、CaveGenの -drawPathDists）",
+        podAngle: "ポッドの向きの矢印。着地したときにカメラが向く方向です（CaveGenの -drawPodAngle）",
         unitScores: "各マップユニットのスコア（穴とお宝の配置に使われます）",
         spawnScores: "お宝（オレンジ）と穴（緑）の場所選びに使われるスコア",
         tekiScores: "各マップユニットの原生生物スコア（赤）",
@@ -405,9 +437,11 @@ const STRINGS = {
         doorIds: "マップユニット内のドア番号",
         waypoints: "運搬のウェイポイントと、ポッドへ向かう矢印",
         paths: "各お宝がポッドまで運ばれる道すじ",
-        gauge: "その場所でお宝ゲージの針がどこまで上がるかで床を塗り分けます。範囲（900）の端は薄い黄色、お宝に近いほど濃い赤。1段がCaveGenのゲージの目盛り（0.5, 1, 2 … 8）1つ分です",
+        gauge: "その場所でお宝ゲージの針がどこまで上がるかで床を塗り分けます。針が0.3未満は黄色、0.3からオレンジ、0.8から赤で、内側ほど濃くなります（0.05, 0.1, 0.2 … 0.9 ごと）",
         grid: "マップのマス目",
         comedownBox: "着地したときにカメラに映る範囲の枠",
+        quickGlance: "大事なものの下に色の円を描いて、ひと目で読めるようにします：ポッド（赤）、お宝とお宝を持つ原生生物（オレンジ）、出口（緑）、ガトリングモドキ（ピンク）、ポンガシグサ、オニヨン（CaveGenの QuickGlance）",
+        pretty: "元のゲームのマップユニットを、レーダー画像ではなく実際の床の絵で描きます（CaveGenの Pretty）",
       },
     },
     caveInfo: "CaveInfo",
@@ -661,6 +695,10 @@ function treasureIconUrls(name, game) {
 function unitUrls(name, game) {
   const n = name.toLowerCase();
   return [`img/${game}/mapunits/${n}.png`, `img/pikmin2/mapunits/${n}.png`];
+}
+
+function prettyUrl(name) {
+  return `img/pretty/${name.toLowerCase()}.webp`;
 }
 
 function specialUrl(name) {
@@ -983,9 +1021,14 @@ const MAP_OPTIONS = [
   { key: "gateHealth", on: true, section: "objects" },
   { key: "exits", on: true, section: "objects" },
   { key: "comedownBox", section: "view" },
+  { key: "quickGlance", section: "view" },
+  { key: "pretty", section: "view" },
   { key: "grid", section: "view" },
   { key: "gauge", section: "view" },
   { key: "spawnpoints", details: true, section: "generation" },
+  { key: "spawnOrder", details: true, section: "generation" },
+  { key: "pathDists", details: true, section: "generation" },
+  { key: "podAngle", section: "generation" },
   { key: "angles", details: true, section: "generation" },
   { key: "doorIds", details: true, section: "generation" },
   { key: "doorLinks", details: true, section: "generation" },
@@ -1014,17 +1057,19 @@ const SPAWN_COLORS = ["#ff82dc", "#dc0000", "#dc7800", "#000", "#008c3c", "#5050
 // minus the treasure's bounding radius (Radar::Mgr::calcNearestTreasure). In tenths, as on
 // CaveGen's gauge rings, that's 0.5 + 9.5 (1 - d/900)^2. Each band is where the needle sits
 // between two of these marks: yellow far out, deep red-orange right next to a treasure.
-const GAUGE_TICKS = [0.5, 1, 2, 3, 4, 5, 6, 7, 8];
+const GAUGE_TICKS = [0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+// Yellow below 0.3 (3 tenths), orange from 0.3, red from 0.8; each a little stronger inward.
 const GAUGE_SHADES = [
-  [255, 236, 140, 0.16],
-  [255, 214, 90, 0.22],
-  [255, 190, 60, 0.28],
-  [255, 165, 40, 0.34],
-  [250, 135, 30, 0.40],
-  [240, 105, 30, 0.46],
-  [228, 75, 35, 0.52],
-  [210, 45, 40, 0.58],
-  [180, 20, 50, 0.64],
+  [255, 240, 150, 0.16],
+  [255, 228, 110, 0.22],
+  [255, 214, 70, 0.28],
+  [255, 170, 60, 0.30],
+  [252, 152, 45, 0.35],
+  [248, 134, 35, 0.40],
+  [242, 116, 30, 0.45],
+  [236, 98, 25, 0.50],
+  [220, 40, 40, 0.55],
+  [190, 15, 40, 0.62],
 ];
 /** The distance at which the gauge reaches `tick` tenths. */
 const gaugeDistance = (tick) => 900 * (1 - Math.sqrt((tick - 0.5) / 9.5));
@@ -1074,6 +1119,11 @@ function imagesFor(layout) {
     }
   }
   for (const s of ["pod_icon", "Cave_icon", "36px-Clog_icon", "Geyser_icon", "Gray_bramble_gate_icon", "duck", "cave_white", "leaf_icon", "ship", "star"]) urls.add(specialUrl(s));
+  if ($("opt-pretty")?.checked) {
+    for (const u of layout.units) urls.add(pickUrl([prettyUrl(u.name)]));
+    urls.add(pickUrl([prettyUrl("toy_bg")]));
+    urls.add(pickUrl([prettyUrl("kusachi_bg")]));
+  }
   for (let i = 0; i < 6; i++) urls.add(specialUrl(`onion${i}`));
   urls.delete(null);
   return [...urls];
@@ -1139,10 +1189,23 @@ function drawMap(layout, scale) {
     return { x: p.x / dpr, z: p.y / dpr };
   };
 
+  // Pretty: CaveGen's floor backdrop for toy and grassy caves, under rendered map units.
+  if (opts.pretty && layout.units.length) {
+    const first = layout.units[0].name.toLowerCase();
+    const bg = first.includes("toy") ? imageOf([prettyUrl("toy_bg")]) : first.includes("kusachi") ? imageOf([prettyUrl("kusachi_bg")]) : null;
+    if (bg) {
+      ctx.save();
+      ctx.fillStyle = ctx.createPattern(bg, "repeat");
+      ctx.fillRect(0, 0, layout.width * cell, layout.height * cell);
+      ctx.restore();
+    }
+  }
+
   // Map units, rotated clockwise in quarter turns like the game's radar images.
   ctx.imageSmoothingEnabled = false;
   for (const u of layout.units) {
-    const img = imageOf(unitUrls(u.name, u.game));
+    const pretty = opts.pretty ? imageOf([prettyUrl(u.name)]) : null;
+    const img = pretty || imageOf(unitUrls(u.name, u.game));
     const cx = (u.x + u.w / 2) * cell;
     const cz = (u.z + u.h / 2) * cell;
     ctx.save();
@@ -1150,9 +1213,16 @@ function drawMap(layout, scale) {
     if (img) {
       ctx.rotate((u.rot * Math.PI) / 2);
       const [w0, h0] = u.rot % 2 ? [u.h, u.w] : [u.w, u.h];
-      ctx.filter = "brightness(1.6)";
-      ctx.drawImage(unitImage(img), (-w0 * cell) / 2, (-h0 * cell) / 2, w0 * cell, h0 * cell);
-      ctx.filter = "none";
+      if (pretty) {
+        // A picture, not a radar image: smooth it, and draw it as it is.
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(pretty, (-w0 * cell) / 2, (-h0 * cell) / 2, w0 * cell + 1, h0 * cell + 1);
+        ctx.imageSmoothingEnabled = false;
+      } else {
+        ctx.filter = "brightness(1.6)";
+        ctx.drawImage(unitImage(img), (-w0 * cell) / 2, (-h0 * cell) / 2, w0 * cell, h0 * cell);
+        ctx.filter = "none";
+      }
     } else {
       ctx.fillStyle = "#333";
       ctx.fillRect((-u.w * cell) / 2, (-u.h * cell) / 2, u.w * cell, u.h * cell);
@@ -1233,6 +1303,22 @@ function drawMap(layout, scale) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.drawImage(layer, 0, 0);
     ctx.restore();
+  }
+
+  // QuickGlance (CaveGen's): translucent discs behind what matters, 1.25 cells across.
+  if (opts.quickGlance) {
+    const colossal = layout.sublevel.toLowerCase().startsWith("colossal");
+    const disc = (o, color) => {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(toPx(o.x), toPx(o.z), cell * 0.625, 0, Math.PI * 2);
+      ctx.fill();
+    };
+    for (const o of layout.objects) {
+      const name = (o.name || "").toLowerCase();
+      const c = quickGlanceColor(o, name, colossal);
+      if (c) disc(o, c);
+    }
   }
 
   const doors = layout.doors || [];
@@ -1426,7 +1512,30 @@ function drawMap(layout, scale) {
     if (hit.x >= 0 && hit.z >= 0 && hit.x <= w && hit.z <= h) hitTargets.push({ ...hit, r: Math.max(size / 2, 8), label: objectLabel(o) });
   }
 
+  // The pod's facing alone (CaveGen's -drawPodAngle); "Facing directions" already draws it.
+  if (opts.podAngle && !opts.angles) {
+    const ship = layout.objects.find((o) => o.kind === "ship");
+    if (ship && ship.angle !== undefined) facing(ctx, toPx(ship.x), toPx(ship.z), ship.angle, cell * 0.6, "#ffe14d");
+  }
+
   // Numbers on top of everything.
+  if (opts.spawnOrder) {
+    // Map units in placement order, outlined, numbered in their corner; then each object.
+    ctx.strokeStyle = "rgba(0, 225, 225, 0.6)";
+    ctx.lineWidth = thin;
+    layout.units.forEach((u, i) => {
+      ctx.strokeRect(u.x * cell, u.z * cell, u.w * cell, u.h * cell);
+      label(String(i), u.x * cell + cell * 0.08, (u.z + u.h) * cell - cell * 0.2, "#00ffff", undefined, "left");
+    });
+    for (const o of layout.objects) {
+      if (o.order !== undefined && objectShown(o, opts)) label(String(o.order), toPx(o.x) - cell * 0.38, toPx(o.z) + cell * 0.38, "#00ffff");
+    }
+  }
+  if (opts.pathDists) {
+    for (const o of carried) {
+      if (o.path_dist !== undefined && objectShown(o, opts)) label(String(o.path_dist), toPx(o.x) + cell * 0.1, toPx(o.z) - cell * 0.12, "#c79bff", undefined, "left");
+    }
+  }
   if (opts.unitScores || opts.tekiScores) {
     for (const u of layout.units) {
       const cx = (u.x + u.w / 2) * cell;
@@ -1473,6 +1582,43 @@ function drawMap(layout, scale) {
     });
   }
   return canvas;
+}
+
+// QuickGlance colors, CaveGen's at alpha 100/255.
+const QG = {
+  ship: "rgba(255, 30, 30, 0.39)",
+  treasure: "rgba(220, 120, 0, 0.39)",
+  groink: "rgba(255, 130, 220, 0.39)",
+  colossalGreen: "rgba(60, 255, 120, 0.39)",
+  violet: "rgba(160, 0, 255, 0.39)",
+  ivory: "rgba(60, 60, 60, 0.39)",
+  exit: "rgba(0, 140, 60, 0.39)",
+  onions: ["rgba(0, 0, 255, 0.39)", "rgba(255, 0, 0, 0.39)", "rgba(255, 255, 0, 0.39)", "rgba(160, 0, 255, 0.39)", "rgba(60, 60, 60, 0.39)"],
+};
+
+/** The QuickGlance disc color for an object, or null (CaveGen's Drawer, drawQuickGlance). */
+function quickGlanceColor(o, name, colossal) {
+  switch (o.kind) {
+    case "ship":
+      return QG.ship;
+    case "hole":
+    case "geyser":
+      return QG.exit;
+    case "onion":
+      return QG.onions[o.color] || null;
+    case "treasure":
+      // Colossal Caverns marks only its buried treasures, in green.
+      if (!colossal) return QG.treasure;
+      return o.buried ? QG.colossalGreen : null;
+    case "teki":
+      if ((o.carrying && (name !== "blackman" || colossal)) || name === "bigtreasure") return QG.treasure;
+      if (name === "minihoudai" || (colossal && name === "kumachappy")) return QG.groink;
+      if (colossal && name === "leafchappy") return QG.colossalGreen;
+      if (name === "blackpom") return QG.violet;
+      if (name === "whitepom") return QG.ivory;
+      return null;
+  }
+  return null;
 }
 
 /** A line with an arrowhead at its end. */
@@ -1636,8 +1782,28 @@ function cavesFor(game) {
 }
 
 function sublevelName(cave, floor) {
-  if (cave.name === "Colossal Caverns") return `${cave.game}:colossal`;
+  if (cave.name === "Colossal Caverns") return `${cave.game}:colossal${colossalSuffix()}`;
   return `${cave.game}:${cave.short}-${floor}`;
+}
+
+// Colossal Caverns' options (CaveGen's -ultraRandomizer, -extraUnits, -5onion), as the
+// "+ultra+extra+5onion" suffix the generator takes. The boxes only show for Colossal Caverns.
+const COLOSSAL_OPTIONS = [
+  ["col-ultra", "ultra"],
+  ["col-extra", "extra"],
+  ["col-5onion", "5onion"],
+];
+
+function colossalSuffix() {
+  return COLOSSAL_OPTIONS.map(([id, word]) => ($(id)?.checked ? `+${word}` : "")).join("");
+}
+
+/** Shows the Colossal Caverns options only while that cave is picked. */
+function showColossalOptions() {
+  const box = $("colossal-options");
+  if (!box) return;
+  const cave = caves[Number($("cave").value)];
+  box.hidden = !(cave && cave.name === "Colossal Caverns");
 }
 
 function parseSeed(text) {
@@ -1692,6 +1858,7 @@ function fillFloors(count, selected) {
   sel.replaceChildren();
   for (let i = 1; i <= count; i++) sel.append(el("option", { value: i }, String(i)));
   sel.value = String(Math.min(Math.max(1, selected), count));
+  showColossalOptions();
 }
 
 /** The cave and floor the controls show. */
@@ -1752,13 +1919,18 @@ async function showCurrent(refit = false) {
 
 function updateUrl(cave, floor, seed) {
   const p = new URLSearchParams(location.search);
-  p.set("sublevel", `${cave.game}:${cave.short}-${floor}`);
+  const suffix = cave.name === "Colossal Caverns" ? colossalSuffix() : "";
+  p.set("sublevel", `${cave.game}:${cave.short}-${floor}${suffix}`);
   p.set("seed", formatSeed(seed));
   history.replaceState(null, "", `?${p.toString()}`);
 }
 
 /** Selects the cave and floor named by a "game:short-floor" (or any "SCx6"-style) string. */
 function selectFromParam(text) {
+  // Colossal Caverns' options come as "+ultra+extra+5onion" after the name.
+  const [name, ...words] = text.split("+");
+  for (const [id, word] of COLOSSAL_OPTIONS) if ($(id)) $(id).checked = words.map((w) => w.toLowerCase()).includes(word);
+  text = name;
   let game = null;
   let rest = text;
   if (text.includes(":")) [game, rest] = text.split(":", 2);
@@ -2295,6 +2467,7 @@ async function init() {
   });
   $("cave").addEventListener("change", () => run({ newCave: true }));
   $("floor").addEventListener("change", () => run());
+  for (const [id] of COLOSSAL_OPTIONS) $(id).addEventListener("change", () => run());
   $("controls").addEventListener("submit", (e) => {
     e.preventDefault();
     run();

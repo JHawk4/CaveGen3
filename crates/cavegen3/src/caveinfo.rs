@@ -33,6 +33,10 @@ pub struct CaveInfo {
     pub is_final_floor: bool,
     /// Seconds until the Waterwraith falls; 0 = never.
     pub waterwraith_timer: f32,
+    /// Colossal Caverns: shuffle the map unit queues 0x5000 times (CaveGen's -ultraRandomizer).
+    pub ultra_randomizer: bool,
+    /// Colossal Caverns: how many Onions to place (3, or 5 with CaveGen's -5onion).
+    pub num_onions: u32,
 }
 
 impl CaveInfo {

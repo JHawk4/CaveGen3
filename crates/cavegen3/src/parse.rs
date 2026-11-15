@@ -9,7 +9,7 @@ use std::str::FromStr;
 
 use crate::{
     caveinfo::{CapInfo, CaveInfo, CaveUnit, DoorLink, DoorUnit, GateInfo, ItemInfo, RoomType, SpawnPoint, TekiInfo, Waterbox, Waypoint},
-    data::{CaveConfig, GameData},
+    data::{CaveConfig, GameData, Variant},
     error::{Error, Result},
     point::Point,
 };
@@ -76,6 +76,13 @@ fn read_section(text: &str, mut i: usize) -> (Section<'_>, usize) {
             b'}' => {
                 finish_line(&mut line, &mut section);
                 return (section, i + 1);
+            }
+            b'{' if line.is_empty() && bytes.get(i + 1).is_none_or(|&b| matches!(b, b'\n' | b'\r') || is_separator(b)) => {
+                // A bare `{` starts the next section: the previous one is missing its `}`, as
+                // two units in CaveGen's Colossal Caverns all_units251.txt are. Leave it for
+                // the caller to read.
+                finish_line(&mut line, &mut section);
+                return (section, i);
             }
             b'{' => {
                 // A tag such as {f000}.
@@ -145,7 +152,7 @@ impl Line<'_> {
 }
 
 /// Parses every floor of a cave.
-pub(crate) fn parse_cave(cfg: &CaveConfig, data: &GameData) -> Result<Vec<CaveInfo>> {
+pub(crate) fn parse_cave(cfg: &CaveConfig, data: &GameData, variant: Variant) -> Result<Vec<CaveInfo>> {
     let path = format!("assets/{}/caveinfo/{}", cfg.game, cfg.caveinfo_filename);
     let text = data.read_text(&path)?;
     let all = sections(&text);
@@ -156,15 +163,20 @@ pub(crate) fn parse_cave(cfg: &CaveConfig, data: &GameData) -> Result<Vec<CaveIn
     }
     let mut out = floors
         .chunks(5)
-        .map(|chunk| parse_floor(cfg, data, chunk).map_err(|e| e.context(&path)))
+        .map(|chunk| parse_floor(cfg, data, chunk, variant).map_err(|e| e.context(&path)))
         .collect::<Result<Vec<_>>>()?;
     out.last_mut().unwrap().is_final_floor = true;
     Ok(out)
 }
 
-fn parse_floor(cfg: &CaveConfig, data: &GameData, chunk: &[Section]) -> Result<CaveInfo> {
+fn parse_floor(cfg: &CaveConfig, data: &GameData, chunk: &[Section], variant: Variant) -> Result<CaveInfo> {
     let [header, teki, item, gate, cap] = chunk else { unreachable!() };
-    let unitfile = if cfg.is_colossal_caverns() { "all_units.txt".to_string() } else { header.tag::<String>("{f008}")? };
+    // Colossal Caverns uses every unit; CaveGen's -extraUnits adds Pikmin 251's.
+    let unitfile = match (cfg.is_colossal_caverns(), variant.extra_units) {
+        (true, true) => "all_units251.txt".to_string(),
+        (true, false) => "all_units.txt".to_string(),
+        _ => header.tag::<String>("{f008}")?,
+    };
     let units = parse_unitfile(&unitfile, cfg, data)?;
     Ok(CaveInfo {
         cave_cfg: cfg.clone(),
@@ -184,6 +196,8 @@ fn parse_floor(cfg: &CaveConfig, data: &GameData, chunk: &[Section]) -> Result<C
         cap_info: parse_capinfo(cap, &cfg.game)?,
         is_final_floor: false,
         waterwraith_timer: header.tag("{f016}").unwrap_or(0.0),
+        ultra_randomizer: variant.ultra_randomizer,
+        num_onions: if variant.five_onions { 5 } else { 3 },
     })
 }
 
@@ -234,7 +248,15 @@ fn parse_unitfile(unitfile: &str, cfg: &CaveConfig, data: &GameData) -> Result<V
     // The game reads only as many units as the count at the top of the file says
     // (RoomMapMgr::createRandomMap). A few romhack files list extra units after those.
     let count = leading_count(&text).unwrap_or(usize::MAX);
-    sections(&text).iter().take(count).map(|s| parse_caveunit(s, cfg, data).map_err(|e| e.context(&path))).collect()
+    sections(&text)
+        .iter()
+        .take(count)
+        .enumerate()
+        .map(|(i, s)| {
+            let name = s.lines.get(1).and_then(|l| l.items.first()).copied().unwrap_or("?");
+            parse_caveunit(s, cfg, data).map_err(|e| e.context(format!("{path}: unit {} ({name})", i + 1)))
+        })
+        .collect()
 }
 
 /// The number before a file's first section, skipping comments.

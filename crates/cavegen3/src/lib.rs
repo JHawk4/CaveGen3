@@ -16,6 +16,6 @@ pub mod query;
 pub mod rng;
 pub mod waypoint;
 
-pub use data::{CaveConfig, GameData, Sublevel};
+pub use data::{CaveConfig, GameData, Sublevel, Variant};
 pub use error::{Error, Result};
-pub use layout::{Layout, SpawnObject};
+pub use layout::{Layout, Placement, SpawnObject};

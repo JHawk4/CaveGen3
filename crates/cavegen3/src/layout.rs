@@ -126,8 +126,19 @@ pub struct Layout<'a> {
     pub ship: Option<u32>,
     pub hole: Option<u32>,
     pub geyser: Option<u32>,
+    /// Every object in the order it was placed (the ship, exits, teki, treasures, alcove teki,
+    /// gates, onions), as CaveGen's -drawSpawnOrder numbers them.
+    pub spawn_order: Vec<Placement>,
     /// Built on first use by [`Layout::waypoint_graph`].
     pub(crate) waypoints: OnceLock<WaypointGraph>,
+}
+
+/// Where a placed object is: an entry of a spawn point's `contains`, or a door seam (the lower
+/// of the two door indices, which both hold it).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Placement {
+    SpawnPoint { index: u32, slot: u32 },
+    Seam { door: u32 },
 }
 
 impl<'a> Layout<'a> {
