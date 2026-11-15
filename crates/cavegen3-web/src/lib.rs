@@ -108,6 +108,11 @@ impl Default for Web {
 }
 
 impl Web {
+    /// A generator over data already loaded, such as [`GameData::from_dir`] (for native tools).
+    pub fn from_data(data: GameData) -> Web {
+        Web { data: Some(data), ..Web::default() }
+    }
+
     /// Adds files from a bundle. Parsed caveinfo is cached per [`GameData`], so this starts a
     /// fresh one; that only costs re-reading the cave list.
     pub fn add_files(&mut self, bundle: &[u8]) -> Result<(), String> {
@@ -298,7 +303,7 @@ fn parse_query(text: &str, sublevel: &cavegen3::Sublevel, data: &GameData) -> Re
 /// The `i`th seed of a search or aggregation: `start + i` ("c"), the `i`th state of the game's
 /// RNG after `start` ("g", CaveGen's -consecutiveSeeds), or a spread-out seed numbered
 /// `start + i` ("r", for random seeds).
-fn seed_at(mode: &str, start: u64, i: u64) -> u32 {
+pub fn seed_at(mode: &str, start: u64, i: u64) -> u32 {
     match mode {
         "g" => {
             let mut rng = Rng::new(start as u32);

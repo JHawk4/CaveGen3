@@ -106,6 +106,34 @@ python -m http.server --directory site
 
 GitHub Actions publishes it on every push to `main` (`.github/workflows/pages.yml`).
 
+## Command line
+
+`cavegen3` generates layouts and saves them as PNG images, drawn the same way as the web
+page's map (same icons, overlays and comedown view). Build it once:
+
+```
+cargo build --release -p cavegen3-cli
+```
+
+Then run `target/release/cavegen3` (`cavegen3.exe` on Windows):
+
+```
+cavegen3 SCx-6 1234ABCD                      # one image: output/SCx6_1234ABCD.png
+cavegen3 BK-4 --count 100 --seeds r -o bk4   # 100 random seeds into bk4/
+cavegen3 SCx-6 1234ABCD --comedown           # only what you see when you land
+cavegen3 FC-3 0 --show spawnpoints,doorScores,grid --hide water
+cavegen3 251:AT-2 5                          # romhacks take a game prefix
+```
+
+- The seed is hex; leave it out for a random one. `--count` draws more: `--seeds c` counts up
+  by one, `g` steps the game's RNG (CaveGen's `-consecutiveSeeds`), `r` picks random seeds.
+  Images are drawn in parallel.
+- `--show` and `--hide` take the web page's map options (`cavegen3 --list-options`):
+  treasures, teki, plants, gates, exits and water are on by default.
+- `--scale 2` doubles the size (1 is 40 pixels per grid cell); `--screen 4:3` sets the
+  comedown's screen shape.
+- It reads the repository's `data` folder; set `CAVEGEN3_DATA` or `--data` to use another.
+
 ## In-game names
 
 `data/resources/names.json` maps internal names to the names the game shows, in English and
@@ -125,7 +153,7 @@ treasures and teki show their internal names.
 | 1. Repo, bundled data, RNG and math, Caveripper as a test reference | Done |
 | 2. New generator matching CaveGen and Caveripper | Done |
 | 3. Waypoints, judge, queries and parallel search (library) | Done |
-| 4. Rendering and the full CLI (generate, caveinfo, search, search-from, search-special, stats, filter, judge) | Next |
+| 4. Rendering and the full CLI (generate, caveinfo, search, search-from, search-special, stats, filter, judge) | In progress (PNG images done) |
 | 5. Web page | Done (layouts, map overlays, judges, seed search, CaveInfo, aggregator) |
 | 6. Discord bot | Planned |
 
@@ -135,6 +163,7 @@ treasures and teki show their internal names.
 |---|---|
 | `crates/cavegen3` | The core library. |
 | `crates/cavegen3-web` | The library compiled to WebAssembly for the web page. |
+| `crates/cavegen3-cli` | The `cavegen3` command, which saves layouts as PNG images. |
 | `crates/caveripper-ref` | Caveripper's library with our fixes, kept only as a test reference. |
 | `web/` | The web page. |
 | `data/assets/<game>` | Game data, one folder per game. |

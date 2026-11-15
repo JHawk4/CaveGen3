@@ -1,0 +1,1021 @@
+//! Draws a layout as a PNG, the same way as the web page's map (`drawMap` in `web/app.js`).
+//!
+//! The layout comes from the web crate's JSON, so the image shows exactly what the page does.
+
+use std::{
+    collections::HashMap,
+    f32::consts::PI,
+    path::{Path, PathBuf},
+    sync::{Arc, Mutex},
+};
+
+use serde::Deserialize;
+use tiny_skia::{
+    Color, FillRule, FilterQuality, LineCap, LineJoin, Mask, Paint, PathBuilder, Pixmap, PixmapPaint, Rect, Stroke, StrokeDash, Transform,
+};
+
+/// Pixels per map grid cell at scale 1.
+pub const CELL: f32 = 40.0;
+/// Game units per grid cell.
+const UNIT: f32 = 170.0;
+
+// ---- The layout, as the web crate describes it ----
+
+#[derive(Deserialize)]
+pub struct Layout {
+    pub sublevel: String,
+    pub seed: String,
+    pub width: f32,
+    pub height: f32,
+    pub units: Vec<Unit>,
+    pub objects: Vec<Object>,
+    #[serde(default)]
+    pub spawnpoints: Vec<Spawnpoint>,
+    #[serde(default)]
+    pub doors: Vec<Door>,
+    #[serde(default)]
+    pub waypoints: Vec<Waypoint>,
+}
+
+#[derive(Deserialize)]
+pub struct Unit {
+    pub name: String,
+    pub game: String,
+    pub x: f32,
+    pub z: f32,
+    pub w: f32,
+    pub h: f32,
+    pub rot: u32,
+    pub water: Vec<[f32; 4]>,
+    pub score: Option<i64>,
+    pub teki_score: Option<i64>,
+}
+
+#[derive(Deserialize)]
+pub struct Object {
+    pub kind: String,
+    pub name: Option<String>,
+    pub game: Option<String>,
+    /// A spawn group number, or "cap" for teki in a cap's spawn point.
+    pub group: Option<serde_json::Value>,
+    #[serde(default)]
+    pub falling: bool,
+    pub carrying: Option<String>,
+    pub count: Option<u32>,
+    pub x: f32,
+    pub z: f32,
+    pub angle: Option<f32>,
+    pub path: Option<Vec<f32>>,
+    pub health: Option<f32>,
+    pub dir: Option<u32>,
+    #[serde(default)]
+    pub plugged: bool,
+    pub color: Option<u32>,
+}
+
+impl Object {
+    fn group(&self) -> Option<i64> {
+        self.group.as_ref().and_then(|g| g.as_i64())
+    }
+
+    fn name(&self) -> &str {
+        self.name.as_deref().unwrap_or("")
+    }
+
+    fn game(&self) -> &str {
+        self.game.as_deref().unwrap_or("pikmin2")
+    }
+}
+
+#[derive(Deserialize)]
+pub struct Spawnpoint {
+    pub x: f32,
+    pub z: f32,
+    pub group: usize,
+    pub r: f32,
+    pub angle: f32,
+    pub hole_score: i64,
+    pub treasure_score: i64,
+    pub used: bool,
+}
+
+#[derive(Deserialize)]
+pub struct Door {
+    pub x: f32,
+    pub z: f32,
+    pub dir: usize,
+    pub unit: i64,
+    pub score: i64,
+    pub links: Vec<usize>,
+}
+
+#[derive(Deserialize)]
+pub struct Waypoint {
+    pub x: f32,
+    pub z: f32,
+    pub r: f32,
+    pub next: Option<usize>,
+}
+
+// ---- Options ----
+
+/// What to draw: the web page's "Show on the map" options, the Water box and the comedown.
+#[derive(Clone)]
+pub struct Options {
+    pub water: bool,
+    pub treasures: bool,
+    pub teki: bool,
+    pub plants: bool,
+    pub gates: bool,
+    pub exits: bool,
+    pub spawnpoints: bool,
+    pub angles: bool,
+    pub unit_scores: bool,
+    pub spawn_scores: bool,
+    pub teki_scores: bool,
+    pub door_scores: bool,
+    pub door_links: bool,
+    pub door_ids: bool,
+    pub waypoints: bool,
+    pub paths: bool,
+    pub gauge: bool,
+    pub grid: bool,
+    pub comedown_box: bool,
+    /// Draw only what the camera shows on landing, turned so the camera faces up.
+    pub comedown: bool,
+    /// The screen's width over its height, for the comedown.
+    pub aspect: f32,
+    /// 1 draws a grid cell as [`CELL`] pixels.
+    pub scale: f32,
+}
+
+impl Default for Options {
+    fn default() -> Self {
+        Options {
+            water: true,
+            treasures: true,
+            teki: true,
+            plants: true,
+            gates: true,
+            exits: true,
+            spawnpoints: false,
+            angles: false,
+            unit_scores: false,
+            spawn_scores: false,
+            teki_scores: false,
+            door_scores: false,
+            door_links: false,
+            door_ids: false,
+            waypoints: false,
+            paths: false,
+            gauge: false,
+            grid: false,
+            comedown_box: false,
+            comedown: false,
+            aspect: 16.0 / 9.0,
+            scale: 1.0,
+        }
+    }
+}
+
+/// The names `Options::set` takes, as the web page calls them.
+pub const OPTION_NAMES: &[&str] = &[
+    "water",
+    "treasures",
+    "teki",
+    "plants",
+    "gates",
+    "exits",
+    "spawnpoints",
+    "angles",
+    "unitScores",
+    "spawnScores",
+    "tekiScores",
+    "doorScores",
+    "doorLinks",
+    "doorIds",
+    "waypoints",
+    "paths",
+    "gauge",
+    "grid",
+    "comedownBox",
+];
+
+impl Options {
+    /// Turns one option on or off. Names ignore case, `-` and `_`: `doorScores`, `door-scores`.
+    pub fn set(&mut self, name: &str, on: bool) -> Result<(), String> {
+        let key: String = name
+            .chars()
+            .filter(|c| *c != '-' && *c != '_')
+            .collect::<String>()
+            .to_ascii_lowercase();
+        let field = match key.as_str() {
+            "water" => &mut self.water,
+            "treasures" => &mut self.treasures,
+            "teki" => &mut self.teki,
+            "plants" => &mut self.plants,
+            "gates" => &mut self.gates,
+            "exits" => &mut self.exits,
+            "spawnpoints" => &mut self.spawnpoints,
+            "angles" => &mut self.angles,
+            "unitscores" => &mut self.unit_scores,
+            "spawnscores" => &mut self.spawn_scores,
+            "tekiscores" => &mut self.teki_scores,
+            "doorscores" => &mut self.door_scores,
+            "doorlinks" => &mut self.door_links,
+            "doorids" => &mut self.door_ids,
+            "waypoints" => &mut self.waypoints,
+            "paths" => &mut self.paths,
+            "gauge" => &mut self.gauge,
+            "grid" => &mut self.grid,
+            "comedownbox" => &mut self.comedown_box,
+            _ => return Err(format!("unknown map option {name:?}; the options are {}", OPTION_NAMES.join(", "))),
+        };
+        *field = on;
+        Ok(())
+    }
+
+    /// Whether the layout needs the generator's details (spawn points, doors, scores, paths).
+    pub fn needs_details(&self) -> bool {
+        self.spawnpoints
+            || self.angles
+            || self.unit_scores
+            || self.spawn_scores
+            || self.teki_scores
+            || self.door_scores
+            || self.door_links
+            || self.door_ids
+            || self.waypoints
+            || self.paths
+    }
+
+    fn shows(&self, o: &Object) -> bool {
+        match o.kind.as_str() {
+            "treasure" => self.treasures,
+            "teki" if o.group() == Some(6) => self.plants,
+            "teki" => self.teki,
+            "gate" => self.gates,
+            _ => self.exits,
+        }
+    }
+}
+
+// ---- The comedown ----
+
+// The landing camera, from the game's caveCameraParms.txt; see `CAMERA` in web/app.js.
+const CAM_DIST: f32 = 600.0;
+const CAM_ANGLE: f32 = 21.0;
+const CAM_FOV: f32 = 23.0;
+const CAM_LIFT: f32 = 38.0;
+const CAM_LOOK_AHEAD: f32 = 75.0;
+
+/// The floor in view when you land: a trapezoid from `near` to `far` units ahead of the pod.
+#[derive(Clone, Copy)]
+pub struct Shape {
+    pub near: f32,
+    pub far: f32,
+    pub near_half: f32,
+    pub far_half: f32,
+}
+
+pub fn comedown_shape(aspect: f32) -> Shape {
+    let rad = PI / 180.0;
+    let height = CAM_DIST * (CAM_ANGLE * rad).sin() + CAM_LIFT;
+    let back = CAM_DIST * (CAM_ANGLE * rad).cos() - CAM_LOOK_AHEAD;
+    let half = CAM_FOV / 2.0 * rad;
+    let tan_side = half.tan() * aspect;
+    let edge = |pitch: f32| {
+        let ground = height / pitch.tan();
+        let depth = ground.hypot(height) * half.cos();
+        (ground - back, depth * tan_side)
+    };
+    let (near, near_half) = edge(CAM_ANGLE * rad + half);
+    let (far, far_half) = edge(CAM_ANGLE * rad - half);
+    Shape {
+        near,
+        far,
+        near_half,
+        far_half,
+    }
+}
+
+fn comedown_corners(x: f32, z: f32, degrees: f32, s: Shape) -> [(f32, f32); 4] {
+    let a = degrees.to_radians();
+    let f = (a.sin(), a.cos());
+    let r = (-f.1, f.0);
+    let at = |ahead: f32, side: f32| (x + f.0 * ahead + r.0 * side, z + f.1 * ahead + r.1 * side);
+    [
+        at(s.near, -s.near_half),
+        at(s.near, s.near_half),
+        at(s.far, s.far_half),
+        at(s.far, -s.far_half),
+    ]
+}
+
+// ---- Images and the font ----
+
+/// Icons and radar images from the data folder, loaded once each.
+pub struct Assets {
+    data: PathBuf,
+    font: fontdue::Font,
+    images: Mutex<HashMap<String, Option<Arc<Pixmap>>>>,
+    /// Folder listings, lowercase name -> file name, since file names' case varies.
+    dirs: Mutex<HashMap<PathBuf, HashMap<String, String>>>,
+}
+
+// Teki whose icons aren't in the game's enemy icon set (as on the web page).
+const SPECIAL_TEKI: &[(&str, &str)] = &[
+    ("gashiba", "Gas_pipe_icon"),
+    ("daiodogreen", "daiodogreen"),
+    ("ooinu_s", "ooinu_s"),
+    ("kareooinu_s", "kareooinu_s"),
+    ("kareooinu_l", "kareooinu"),
+    ("elechiba", "Electrical_wire_icon"),
+    ("hiba", "Fire_geyser_icon"),
+    ("bomb", "Bingo_Battle_Bomb_icon"),
+    ("egg", "36px-Egg_icon"),
+    ("wakame_s", "wakame_s"),
+    ("chiyogami", "chiyogami"),
+    ("rock", "Roulette_Wheel_boulder"),
+    ("panhouse", "ooinu_s"),
+];
+
+impl Assets {
+    /// Assets from a data folder holding `assets/<game>` and `resources`.
+    pub fn new(data: &Path) -> Result<Assets, String> {
+        let font_path = data.join("resources/BalooChettan2-ExtraBold.ttf");
+        let bytes = std::fs::read(&font_path).map_err(|e| format!("{}: {e}", font_path.display()))?;
+        let font = fontdue::Font::from_bytes(bytes, fontdue::FontSettings::default())?;
+        Ok(Assets {
+            data: data.to_path_buf(),
+            font,
+            images: Mutex::default(),
+            dirs: Mutex::default(),
+        })
+    }
+
+    /// The file `name` in `dir` (relative to the data folder), ignoring case.
+    fn find(&self, dir: &str, name: &str) -> Option<PathBuf> {
+        let dir = self.data.join(dir);
+        let mut dirs = self.dirs.lock().unwrap();
+        let listing = dirs.entry(dir.clone()).or_insert_with(|| {
+            std::fs::read_dir(&dir)
+                .map(|rd| {
+                    rd.flatten()
+                        .map(|e| {
+                            let n = e.file_name().to_string_lossy().into_owned();
+                            (n.to_ascii_lowercase(), n)
+                        })
+                        .collect()
+                })
+                .unwrap_or_default()
+        });
+        listing.get(&name.to_ascii_lowercase()).map(|n| dir.join(n))
+    }
+
+    /// The first of `candidates` (dir, file name) that exists, loaded and prepared by `prepare`.
+    fn image(&self, key: &str, candidates: &[(String, String)], prepare: fn(&mut Pixmap)) -> Option<Arc<Pixmap>> {
+        if let Some(img) = self.images.lock().unwrap().get(key) {
+            return img.clone();
+        }
+        let img = candidates
+            .iter()
+            .find_map(|(dir, name)| self.find(dir, name))
+            .and_then(|p| Pixmap::load_png(p).ok())
+            .map(|mut p| {
+                prepare(&mut p);
+                Arc::new(p)
+            });
+        self.images.lock().unwrap().insert(key.to_string(), img.clone());
+        img
+    }
+
+    pub fn unit(&self, name: &str, game: &str) -> Option<Arc<Pixmap>> {
+        let n = name.to_ascii_lowercase();
+        // The unit's folder name can differ in case from its name; find() handles both levels.
+        let candidates: Vec<(String, String)> = [game, "pikmin2"]
+            .iter()
+            .filter_map(|g| {
+                let folder = self.find(&format!("assets/{g}/mapunits"), &n)?;
+                let rel = folder.strip_prefix(&self.data).ok()?.to_string_lossy().replace('\\', "/");
+                Some((format!("{rel}/arc"), "texture.png".to_string()))
+            })
+            .collect();
+        self.image(&format!("unit/{game}/{n}"), &candidates, prepare_unit)
+    }
+
+    pub fn teki(&self, name: &str, game: &str) -> Option<Arc<Pixmap>> {
+        let mut n = name.to_ascii_lowercase();
+        if n == "fkabuto" {
+            n = "kabuto".into();
+        }
+        if n == "fminihoudai" {
+            n = "minihoudai".into();
+        }
+        if let Some((_, special)) = SPECIAL_TEKI.iter().find(|(k, _)| *k == n) {
+            return self.special(special);
+        }
+        let file = format!("{n}.png");
+        let candidates = [
+            (format!("assets/{game}/teki"), file.clone()),
+            ("assets/pikmin2/teki".to_string(), file),
+        ];
+        self.image(&format!("teki/{game}/{n}"), &candidates, |_| {})
+    }
+
+    pub fn treasure(&self, name: &str, game: &str) -> Option<Arc<Pixmap>> {
+        let n = name.to_ascii_lowercase();
+        let file = format!("{n}.png");
+        let candidates = [
+            (format!("assets/{game}/treasures"), file.clone()),
+            ("assets/pikmin2/treasures".to_string(), file),
+        ];
+        self.image(&format!("treasure/{game}/{n}"), &candidates, |_| {})
+    }
+
+    pub fn special(&self, name: &str) -> Option<Arc<Pixmap>> {
+        let candidates = [("resources/enemytex_special".to_string(), format!("{name}.png"))];
+        self.image(&format!("special/{}", name.to_ascii_lowercase()), &candidates, |_| {})
+    }
+}
+
+/// Radar images: opaque ones (CaveGen's, used for the romhacks) get their shading as alpha like
+/// Caveripper's, then everything is brightened 1.6× as on the web page.
+fn prepare_unit(p: &mut Pixmap) {
+    let opaque = p.pixels().iter().all(|c| c.alpha() == 255);
+    for px in p.pixels_mut() {
+        let c = px.demultiply();
+        let a = if opaque { c.red() } else { c.alpha() };
+        let b = |v: u8| (v as f32 * 1.6).min(255.0) as u8;
+        *px = tiny_skia::ColorU8::from_rgba(b(c.red()), b(c.green()), b(c.blue()), a).premultiply();
+    }
+}
+
+fn hex(s: &str) -> Color {
+    let s = s.trim_start_matches('#');
+    let v = |i: usize, n: usize| u8::from_str_radix(&s[i..i + n], 16).unwrap();
+    if s.len() == 3 {
+        Color::from_rgba8(v(0, 1) * 17, v(1, 1) * 17, v(2, 1) * 17, 255)
+    } else {
+        Color::from_rgba8(v(0, 2), v(2, 2), v(4, 2), 255)
+    }
+}
+
+fn rgba(r: u8, g: u8, b: u8, a: f32) -> Color {
+    Color::from_rgba8(r, g, b, (a * 255.0).round() as u8)
+}
+
+// CaveGen's colors for spawn point groups 0-9, and treasure gauge rings.
+const SPAWN_COLORS: [&str; 10] = [
+    "#ff82dc", "#dc0000", "#dc7800", "#000", "#008c3c", "#505050", "#8ce164", "#009696", "#a000a0", "#0000ff",
+];
+const GAUGE_TICKS: [f32; 9] = [0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0];
+const GAUGE_COLORS: [&str; 9] = [
+    "#a0ffff", "#ffffa0", "#b4b4ff", "#ffb4b4", "#dca0ff", "#ffdc8c", "#a0d296", "#be9678", "#0000ff",
+];
+
+// ---- Drawing ----
+
+struct Canvas<'a> {
+    pixmap: Pixmap,
+    /// Map pixels (game units / UNIT * cell) to image pixels.
+    base: Transform,
+    mask: Option<Mask>,
+    /// Degrees that turn icons and numbers upright again in the comedown view.
+    upright: f32,
+    assets: &'a Assets,
+}
+
+fn paint(color: Color) -> Paint<'static> {
+    let mut p = Paint::default();
+    p.set_color(color);
+    p.anti_alias = true;
+    p
+}
+
+fn stroke(width: f32) -> Stroke {
+    Stroke {
+        width,
+        line_cap: LineCap::Butt,
+        line_join: LineJoin::Miter,
+        ..Stroke::default()
+    }
+}
+
+impl Canvas<'_> {
+    fn fill_circle(&mut self, x: f32, z: f32, r: f32, color: Color) {
+        if let Some(path) = PathBuilder::from_circle(x, z, r) {
+            self.pixmap
+                .fill_path(&path, &paint(color), FillRule::Winding, self.base, self.mask.as_ref());
+        }
+    }
+
+    fn stroke_circle(&mut self, x: f32, z: f32, r: f32, color: Color, width: f32) {
+        if let Some(path) = PathBuilder::from_circle(x, z, r) {
+            self.pixmap
+                .stroke_path(&path, &paint(color), &stroke(width), self.base, self.mask.as_ref());
+        }
+    }
+
+    fn fill_rect(&mut self, x: f32, z: f32, w: f32, h: f32, color: Color) {
+        if let Some(rect) = Rect::from_xywh(x, z, w, h) {
+            self.pixmap.fill_rect(rect, &paint(color), self.base, self.mask.as_ref());
+        }
+    }
+
+    fn stroke_path(&mut self, pb: PathBuilder, color: Color, s: &Stroke) {
+        if let Some(path) = pb.finish() {
+            self.pixmap.stroke_path(&path, &paint(color), s, self.base, self.mask.as_ref());
+        }
+    }
+
+    /// Draws `img` centered at (x, z) in map pixels, fitted into a `size` square and turned
+    /// `rot` degrees (upright when None). Returns whether there was an image.
+    fn icon(&mut self, img: Option<Arc<Pixmap>>, x: f32, z: f32, size: f32, rot: Option<f32>) -> bool {
+        let Some(img) = img else { return false };
+        let r = (size / img.width() as f32).min(size / img.height() as f32);
+        let t = self
+            .base
+            .pre_translate(x, z)
+            .pre_concat(Transform::from_rotate(rot.unwrap_or(self.upright)))
+            .pre_scale(r, r)
+            .pre_translate(-(img.width() as f32) / 2.0, -(img.height() as f32) / 2.0);
+        let pp = PixmapPaint {
+            quality: FilterQuality::Bicubic,
+            ..PixmapPaint::default()
+        };
+        self.pixmap.draw_pixmap(0, 0, img.as_ref().as_ref(), &pp, t, self.mask.as_ref());
+        true
+    }
+
+    /// Text with a black outline at (x, z), centered vertically and either centered or (with
+    /// `left`) starting there, like the web page's labels.
+    fn label(&mut self, text: &str, x: f32, z: f32, color: Color, size: f32, left: bool) {
+        let outline = (size / 4.0).max(2.0);
+        if let Some((img, ax, ay)) = text_image(&self.assets.font, text, size, color, Some(outline)) {
+            self.draw_text(&img, x, z, ax, ay, left);
+        }
+    }
+
+    fn draw_text(&mut self, img: &Pixmap, x: f32, z: f32, (ax_left, ax_center): (f32, f32), ay: f32, left: bool) {
+        let ax = if left { ax_left } else { ax_center };
+        let t = self
+            .base
+            .pre_translate(x, z)
+            .pre_concat(Transform::from_rotate(self.upright))
+            .pre_translate(-ax, -ay);
+        let quality = if self.upright == 0.0 {
+            FilterQuality::Nearest
+        } else {
+            FilterQuality::Bilinear
+        };
+        // Whole pixels when upright, so the text stays sharp.
+        let t = if self.upright == 0.0 {
+            Transform::from_translate(t.tx.round(), t.ty.round())
+        } else {
+            t
+        };
+        let pp = PixmapPaint {
+            quality,
+            ..PixmapPaint::default()
+        };
+        self.pixmap.draw_pixmap(0, 0, img.as_ref(), &pp, t, self.mask.as_ref());
+    }
+
+    /// A colored disc with the start of `text` on it, for objects with no icon.
+    fn fallback(&mut self, text: &str, x: f32, z: f32, size: f32, color: Color) {
+        self.fill_circle(x, z, size / 2.5, color);
+        let short: String = text.chars().take(3).collect();
+        if let Some((img, ax, ay)) = text_image(&self.assets.font, &short, (size / 3.2).max(8.0), Color::WHITE, None) {
+            self.draw_text(&img, x, z, ax, ay, false);
+        }
+    }
+
+    fn arrow(&mut self, x1: f32, z1: f32, x2: f32, z2: f32, head: f32, color: Color, width: f32) {
+        let a = (z2 - z1).atan2(x2 - x1);
+        let mut pb = PathBuilder::new();
+        pb.move_to(x1, z1);
+        pb.line_to(x2, z2);
+        pb.move_to(x2, z2);
+        pb.line_to(x2 - head * (a - 0.4).cos(), z2 - head * (a - 0.4).sin());
+        pb.move_to(x2, z2);
+        pb.line_to(x2 - head * (a + 0.4).cos(), z2 - head * (a + 0.4).sin());
+        self.stroke_path(pb, color, &stroke(width));
+    }
+
+    /// An arrow for a facing angle in degrees (0 = +z, like the game).
+    fn facing(&mut self, x: f32, z: f32, degrees: f32, len: f32, color: Color) {
+        let a = degrees.to_radians();
+        let (x2, z2) = (x + len * a.sin(), z + len * a.cos());
+        self.arrow(x, z, x2, z2, len * 0.35, Color::BLACK, 3.0);
+        self.arrow(x, z, x2, z2, len * 0.35, color, 1.5);
+    }
+}
+
+/// Renders `text` with an optional black outline of total width `outline`. Returns the image
+/// and the anchor points: x for left-aligned and centered text, and y for the vertical middle.
+fn text_image(font: &fontdue::Font, text: &str, size: f32, color: Color, outline: Option<f32>) -> Option<(Pixmap, (f32, f32), f32)> {
+    let lm = font.horizontal_line_metrics(size)?;
+    let pad = outline.map_or(1.0, |o| (o / 2.0).ceil() + 1.0);
+    let glyphs: Vec<(fontdue::Metrics, Vec<u8>)> = text.chars().map(|c| font.rasterize(c, size)).collect();
+    let advance: f32 = glyphs.iter().map(|(m, _)| m.advance_width).sum();
+    let w = (advance + 2.0 * pad).ceil() as usize + 1;
+    let h = (lm.ascent - lm.descent + 2.0 * pad).ceil() as usize + 1;
+    let baseline = pad + lm.ascent;
+    let mut cover = vec![0f32; w * h];
+    let mut pen = pad;
+    for (m, bitmap) in &glyphs {
+        let gx = (pen + m.xmin as f32).round() as i64;
+        let gy = (baseline - m.height as f32 - m.ymin as f32).round() as i64;
+        for row in 0..m.height {
+            for col in 0..m.width {
+                let (px, py) = (gx + col as i64, gy + row as i64);
+                if px >= 0 && py >= 0 && (px as usize) < w && (py as usize) < h {
+                    let i = py as usize * w + px as usize;
+                    cover[i] = cover[i].max(bitmap[row * m.width + col] as f32 / 255.0);
+                }
+            }
+        }
+        pen += m.advance_width;
+    }
+    // The outline: the text's coverage spread by half the outline's width.
+    let halo = match outline {
+        Some(o) => {
+            let r = o / 2.0;
+            let ri = r.ceil() as i64;
+            let mut out = vec![0f32; w * h];
+            for y in 0..h as i64 {
+                for x in 0..w as i64 {
+                    let mut best = 0f32;
+                    for dy in -ri..=ri {
+                        for dx in -ri..=ri {
+                            let d = ((dx * dx + dy * dy) as f32).sqrt();
+                            if d > r + 0.5 {
+                                continue;
+                            }
+                            let (sx, sy) = (x + dx, y + dy);
+                            if sx < 0 || sy < 0 || sx >= w as i64 || sy >= h as i64 {
+                                continue;
+                            }
+                            let edge = (r + 0.5 - d).min(1.0);
+                            best = best.max(cover[sy as usize * w + sx as usize] * edge);
+                        }
+                    }
+                    out[y as usize * w + x as usize] = best;
+                }
+            }
+            out
+        }
+        None => vec![0f32; w * h],
+    };
+    let mut img = Pixmap::new(w as u32, h as u32)?;
+    let c = color.to_color_u8();
+    for (i, px) in img.pixels_mut().iter_mut().enumerate() {
+        // Text over its outline, both "source over".
+        let ta = cover[i];
+        let ha = halo[i] * (1.0 - ta);
+        let a = ta + ha;
+        if a <= 0.0 {
+            continue;
+        }
+        let ch = |v: u8| (v as f32 * ta / a).round() as u8;
+        let unpremul = tiny_skia::ColorU8::from_rgba(ch(c.red()), ch(c.green()), ch(c.blue()), (a * 255.0).round() as u8);
+        *px = unpremul.premultiply();
+    }
+    Some((img, (pad, pad + advance / 2.0), baseline - (lm.ascent + lm.descent) / 2.0))
+}
+
+/// Draws a layout. The image is the whole cave with a half-cell margin, or just the comedown.
+pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap, String> {
+    let cell = CELL * opts.scale;
+    let to_px = |v: f32| v / UNIT * cell;
+    let ship = layout.objects.iter().find(|o| o.kind == "ship");
+    let comedown = if opts.comedown {
+        let ship = ship.ok_or("this sublevel has no pod, so it has no comedown")?;
+        Some((ship, comedown_shape(opts.aspect)))
+    } else {
+        None
+    };
+    const MARGIN: f32 = 40.0; // game units around the comedown's trapezoid
+    let (w, h) = match comedown {
+        Some((_, s)) => (
+            (s.far_half * 2.0 + MARGIN * 2.0) / UNIT * cell,
+            (s.far - s.near + MARGIN * 2.0) / UNIT * cell,
+        ),
+        None => ((layout.width + 1.0) * cell, (layout.height + 1.0) * cell),
+    };
+    let mut pixmap = Pixmap::new(w.round().max(1.0) as u32, h.round().max(1.0) as u32).ok_or("the image would be too large")?;
+    pixmap.fill(hex("#0f0f0f"));
+
+    let (base, mask, upright) = match comedown {
+        Some((ship, s)) => {
+            // Turn so the pod (and the camera) faces up, and show only what's in view.
+            let a = ship.angle.unwrap_or(0.0).to_radians();
+            let turn = -PI / 2.0 - a.cos().atan2(a.sin());
+            let base = Transform::from_translate(w / 2.0, to_px(MARGIN + s.far))
+                .pre_concat(Transform::from_rotate(turn.to_degrees()))
+                .pre_translate(-to_px(ship.x), -to_px(ship.z));
+            let mut pb = PathBuilder::new();
+            for (i, (x, z)) in comedown_corners(ship.x, ship.z, ship.angle.unwrap_or(0.0), s)
+                .into_iter()
+                .enumerate()
+            {
+                if i == 0 {
+                    pb.move_to(to_px(x), to_px(z));
+                } else {
+                    pb.line_to(to_px(x), to_px(z));
+                }
+            }
+            pb.close();
+            let mut mask = Mask::new(pixmap.width(), pixmap.height()).ok_or("bad mask")?;
+            mask.fill_path(&pb.finish().ok_or("bad comedown shape")?, FillRule::Winding, true, base);
+            (base, Some(mask), -turn.to_degrees())
+        }
+        None => (Transform::from_translate(0.5 * cell, 0.5 * cell), None, 0.0),
+    };
+    let mut cv = Canvas {
+        pixmap,
+        base,
+        mask,
+        upright,
+        assets,
+    };
+
+    // Map units, turned clockwise in quarter turns like the game's radar images.
+    for u in &layout.units {
+        let (cx, cz) = ((u.x + u.w / 2.0) * cell, (u.z + u.h / 2.0) * cell);
+        match assets.unit(&u.name, &u.game) {
+            Some(img) => {
+                let (w0, h0) = if u.rot % 2 == 1 { (u.h, u.w) } else { (u.w, u.h) };
+                let t = cv
+                    .base
+                    .pre_translate(cx, cz)
+                    .pre_concat(Transform::from_rotate(u.rot as f32 * 90.0))
+                    .pre_translate(-w0 * cell / 2.0, -h0 * cell / 2.0)
+                    .pre_scale(w0 * cell / img.width() as f32, h0 * cell / img.height() as f32);
+                let pp = PixmapPaint {
+                    quality: FilterQuality::Nearest,
+                    ..PixmapPaint::default()
+                };
+                cv.pixmap.draw_pixmap(0, 0, img.as_ref().as_ref(), &pp, t, cv.mask.as_ref());
+            }
+            None => cv.fill_rect(cx - u.w * cell / 2.0, cz - u.h * cell / 2.0, u.w * cell, u.h * cell, hex("#333")),
+        }
+    }
+
+    if opts.water {
+        for u in &layout.units {
+            let (cx, cz) = ((u.x + u.w / 2.0) * cell, (u.z + u.h / 2.0) * cell);
+            for [x1, z1, x2, z2] in &u.water {
+                cv.fill_rect(
+                    cx + to_px(*x1),
+                    cz + to_px(*z1),
+                    to_px(x2 - x1),
+                    to_px(z2 - z1),
+                    rgba(0, 100, 230, 0.25),
+                );
+            }
+        }
+    }
+
+    if opts.grid {
+        let mut pb = PathBuilder::new();
+        for x in 0..=layout.width as i32 {
+            pb.move_to(x as f32 * cell, 0.0);
+            pb.line_to(x as f32 * cell, layout.height * cell);
+        }
+        for z in 0..=layout.height as i32 {
+            pb.move_to(0.0, z as f32 * cell);
+            pb.line_to(layout.width * cell, z as f32 * cell);
+        }
+        cv.stroke_path(pb, rgba(255, 255, 255, 0.12), &stroke(1.0));
+    }
+
+    let thin = (cell / 30.0).max(1.0);
+    let label_size = (cell * 0.28).max(9.0);
+    let carried: Vec<&Object> = layout
+        .objects
+        .iter()
+        .filter(|o| o.kind == "treasure" || (o.kind == "teki" && o.carrying.is_some()))
+        .collect();
+
+    if opts.gauge {
+        for o in &carried {
+            for (i, tick) in GAUGE_TICKS.iter().enumerate() {
+                let r = (1.0 - ((tick - 0.5) / 9.5).sqrt()) * 900.0;
+                cv.stroke_circle(to_px(o.x), to_px(o.z), to_px(r), hex(GAUGE_COLORS[i]), thin);
+            }
+        }
+    }
+
+    if opts.door_links {
+        let mut pb = PathBuilder::new();
+        for d in &layout.doors {
+            for &j in &d.links {
+                if let Some(other) = layout.doors.get(j) {
+                    pb.move_to(to_px(d.x), to_px(d.z));
+                    pb.line_to(to_px(other.x), to_px(other.z));
+                }
+            }
+        }
+        cv.stroke_path(pb, rgba(255, 0, 255, 0.45), &stroke(thin));
+    }
+
+    if opts.waypoints {
+        for wp in &layout.waypoints {
+            let r = to_px(wp.r).max(2.0);
+            cv.fill_circle(to_px(wp.x), to_px(wp.z), r, rgba(90, 170, 255, 0.15));
+            cv.stroke_circle(to_px(wp.x), to_px(wp.z), r, rgba(90, 170, 255, 0.8), thin);
+        }
+        for wp in &layout.waypoints {
+            if let Some(n) = wp.next.and_then(|n| layout.waypoints.get(n)) {
+                cv.arrow(
+                    to_px(wp.x),
+                    to_px(wp.z),
+                    to_px(n.x),
+                    to_px(n.z),
+                    (cell * 0.12).max(4.0),
+                    rgba(120, 200, 255, 0.95),
+                    thin,
+                );
+            }
+        }
+    }
+
+    if opts.paths {
+        let s = Stroke {
+            line_join: LineJoin::Round,
+            ..stroke((cell / 18.0).max(1.5))
+        };
+        for o in &carried {
+            let Some(path) = o.path.as_ref().filter(|p| p.len() >= 4) else {
+                continue;
+            };
+            let mut pb = PathBuilder::new();
+            pb.move_to(to_px(path[0]), to_px(path[1]));
+            for p in path[2..].as_chunks::<2>().0 {
+                pb.line_to(to_px(p[0]), to_px(p[1]));
+            }
+            cv.stroke_path(pb, rgba(255, 200, 40, 0.9), &s);
+        }
+    }
+
+    if opts.spawnpoints {
+        for sp in &layout.spawnpoints {
+            let (x, z) = (to_px(sp.x), to_px(sp.z));
+            let alpha = if sp.used { 1.0 } else { 0.7 };
+            let mut color = SPAWN_COLORS.get(sp.group).map_or(Color::WHITE, |c| hex(c));
+            color.apply_opacity(alpha);
+            if sp.group == 0 {
+                cv.stroke_circle(x, z, to_px(sp.r).max(3.0), color, thin);
+            }
+            let r = (cell * 0.09).max(2.5);
+            cv.fill_circle(x, z, r, color);
+            let mut white = Color::WHITE;
+            white.apply_opacity(alpha);
+            cv.stroke_circle(x, z, r, white, 1.0);
+            if opts.angles {
+                cv.facing(x, z, sp.angle, cell * 0.35, Color::WHITE);
+            }
+        }
+    }
+
+    // Exits and the ship first, then gates, treasures and teki on top.
+    let order = |k: &str| match k {
+        "hole" | "geyser" => 0,
+        "ship" | "onion" => 1,
+        "gate" => 2,
+        "treasure" => 3,
+        _ => 4,
+    };
+    let mut objects: Vec<&Object> = layout.objects.iter().filter(|o| opts.shows(o)).collect();
+    objects.sort_by_key(|o| order(&o.kind));
+    for o in objects {
+        let (x, z) = (to_px(o.x), to_px(o.z));
+        match o.kind.as_str() {
+            "ship" => {
+                let size = cell * 0.6;
+                if !cv.icon(assets.special("pod_icon"), x, z, size, None) {
+                    cv.fallback("Pod", x, z, size, hex("#c00"));
+                }
+            }
+            "hole" => {
+                let size = cell * 0.6;
+                cv.icon(assets.special("Cave_icon"), x, z, size, None);
+                if o.plugged {
+                    cv.icon(assets.special("36px-Clog_icon"), x, z, size, None);
+                }
+            }
+            "geyser" => {
+                cv.icon(assets.special("Geyser_icon"), x, z, cell * 0.7, None);
+            }
+            "onion" => {
+                cv.icon(assets.special(&format!("onion{}", o.color.unwrap_or(0))), x, z, cell * 0.45, None);
+            }
+            "gate" => {
+                let rot = if o.dir.unwrap_or(0) % 2 == 1 { 90.0 } else { 0.0 };
+                cv.icon(assets.special("Gray_bramble_gate_icon"), x, z, cell * 0.85, Some(rot));
+                // Zoomed far out (Colossal Caverns) the numbers would hide the map.
+                if cell >= 20.0 {
+                    let hp = o.health.unwrap_or(0.0).round().to_string();
+                    cv.label(&hp, x - cell * 0.3, z + cell * 0.38, Color::WHITE, (cell * 0.24).max(9.0), true);
+                }
+            }
+            "treasure" => {
+                let size = cell * 0.55;
+                if !cv.icon(assets.treasure(o.name(), o.game()), x, z, size, None) {
+                    cv.fallback(o.name(), x, z, size, hex("#c70"));
+                }
+            }
+            "teki" => {
+                let size = if o.group() == Some(0) { cell * 0.45 } else { cell * 0.6 };
+                if !cv.icon(assets.teki(o.name(), o.game()), x, z, size, None) {
+                    cv.fallback(o.name(), x, z, size, hex("#7a2a8a"));
+                }
+                if let Some(c) = &o.carrying {
+                    cv.icon(assets.treasure(c, o.game()), x + size * 0.35, z + size * 0.35, size * 0.6, None);
+                }
+                if o.falling {
+                    cv.icon(assets.special("falling_icon"), x - size * 0.4, z - size * 0.4, size * 0.4, None);
+                }
+                if let Some(n) = o.count.filter(|n| *n > 1) {
+                    cv.label(
+                        &format!("×{n}"),
+                        x + size * 0.3,
+                        z - size * 0.35,
+                        Color::WHITE,
+                        (size * 0.38).max(9.0),
+                        true,
+                    );
+                }
+            }
+            _ => {}
+        }
+        if opts.angles && o.kind != "gate"
+            && let Some(a) = o.angle {
+                cv.facing(x, z, a, cell * 0.4, hex("#ffe14d"));
+            }
+    }
+
+    // Numbers on top of everything.
+    if opts.unit_scores || opts.teki_scores {
+        for u in &layout.units {
+            let (cx, cz) = ((u.x + u.w / 2.0) * cell, (u.z + u.h / 2.0) * cell);
+            if let Some(s) = u.score.filter(|s| opts.unit_scores && *s >= 0) {
+                cv.label(&s.to_string(), cx, cz, Color::WHITE, label_size, false);
+            }
+            if let Some(s) = u.teki_score.filter(|s| opts.teki_scores && *s > 0) {
+                cv.label(&s.to_string(), cx, cz + cell * 0.3, hex("#ff5a5a"), label_size, false);
+            }
+        }
+    }
+    if opts.spawn_scores {
+        for sp in &layout.spawnpoints {
+            let (x, z) = (to_px(sp.x) + cell * 0.15, to_px(sp.z));
+            if (sp.group == 2 || sp.group == 9) && sp.treasure_score > -1 {
+                cv.label(&sp.treasure_score.to_string(), x, z + cell * 0.12, hex("#ffaa00"), label_size, true);
+            }
+            if (sp.group == 4 || sp.group == 9) && sp.hole_score > -1 {
+                cv.label(&sp.hole_score.to_string(), x, z - cell * 0.12, hex("#3cff3c"), label_size, true);
+            }
+        }
+    }
+    if opts.comedown_box && comedown.is_none()
+        && let Some(ship) = ship.filter(|s| s.angle.is_some()) {
+            let mut pb = PathBuilder::new();
+            for (i, (x, z)) in comedown_corners(ship.x, ship.z, ship.angle.unwrap(), comedown_shape(opts.aspect))
+                .into_iter()
+                .enumerate()
+            {
+                if i == 0 {
+                    pb.move_to(to_px(x), to_px(z));
+                } else {
+                    pb.line_to(to_px(x), to_px(z));
+                }
+            }
+            pb.close();
+            let mut s = stroke((cell / 16.0).max(1.5));
+            s.dash = StrokeDash::new(vec![cell / 4.0, cell / 6.0], 0.0);
+            cv.stroke_path(pb, hex("#ffe14d"), &s);
+        }
+    if opts.door_scores || opts.door_ids {
+        let (mut unit, mut first) = (-1, 0);
+        for (i, d) in layout.doors.iter().enumerate() {
+            if d.unit != unit {
+                unit = d.unit;
+                first = i;
+            }
+            // Nudge labels into the unit, away from the seam.
+            let (dx, dz) = [(0.0, 1.0), (-1.0, 0.0), (0.0, -1.0), (1.0, 0.0)][d.dir % 4];
+            let (x, z) = (to_px(d.x) + dx * cell * 0.22, to_px(d.z) + dz * cell * 0.22);
+            if opts.door_ids {
+                cv.label(&(i - first).to_string(), x, z, hex("#b48cff"), label_size, false);
+            }
+            if opts.door_scores && d.score >= 0 {
+                let dz2 = if opts.door_ids { cell * 0.25 } else { 0.0 };
+                cv.label(&d.score.to_string(), x, z + dz2, hex("#5ad2ff"), label_size, false);
+            }
+        }
+    }
+    Ok(cv.pixmap)
+}
