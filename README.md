@@ -45,6 +45,28 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 - **CaveInfo**, below the map: the sublevel's limits and the teki, treasures, gates, alcove teki
   and map units it generates from, with their weights.
 
+The map zooms with the mouse wheel, a pinch, the − / + buttons or a double-click, and drags to
+move. **Comedown only** crops it to the box around the pod you see when you land (its size is in
+Advanced options; `comedown=1` in a link turns it on), and **Comedown box outline** marks that
+box on the full map.
+
+### Aggregator
+
+`aggregator.html` recreates CaveGen's Aggregator: it generates many seeds of a sublevel, groups
+the ones that look alike, and draws each group with how often each treasure, teki, gate and exit
+spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's default), the rooms
+only, or the first room placed, as in CaveGen, or by **comedown**: what's in view around the pod
+when you land, either the map units alone or the map units and the objects in view. Find the
+group that matches your landing to see where the treasures probably are. Each group's map is
+turned so its anchor room (the first room, or the pod's room) faces the same way, and gray cells
+show how often other map units were there.
+
+### Suggestion box
+
+`suggest.html` sends suggestions to the same Google Form as the Pikmin WR mirror (the form's
+fields are in that page). Its hidden "page" field is `cavegen3/<lang>/<page the visitor came
+from>`, so CaveGen3's entries can be told apart in the shared responses sheet.
+
 To embed it in another site, add `embed=1` for a compact version with just the controls and
 the map:
 
@@ -84,7 +106,7 @@ treasures and teki show their internal names.
 | 2. New generator matching CaveGen and Caveripper | Done |
 | 3. Waypoints, judge, queries and parallel search (library) | Done |
 | 4. Rendering and the full CLI (generate, caveinfo, search, search-from, search-special, stats, filter, judge) | Next |
-| 5. Web page | Done (layouts, map overlays, judges, seed search, CaveInfo) |
+| 5. Web page | Done (layouts, map overlays, judges, seed search, CaveInfo, aggregator) |
 | 6. Discord bot | Planned |
 
 ## Layout

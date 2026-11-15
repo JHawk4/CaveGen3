@@ -12,6 +12,8 @@
 //!
 //! The same functions are plain Rust underneath (see [`Web`]), so they're tested natively.
 
+mod aggregate;
+
 use std::{
     collections::{BTreeMap, BTreeSet},
     sync::{Mutex, RwLock},
@@ -94,11 +96,13 @@ pub fn parse_bundle(mut bytes: &[u8]) -> Result<Vec<(String, Vec<u8>)>, String> 
 pub struct Web {
     source: &'static MemSource,
     data: Option<GameData>,
+    /// The aggregation in progress (see `agg_start`).
+    agg: Option<aggregate::Aggregator>,
 }
 
 impl Default for Web {
     fn default() -> Self {
-        Web { source: Box::leak(Box::default()), data: None }
+        Web { source: Box::leak(Box::default()), data: None, agg: None }
     }
 }
 
@@ -157,8 +161,14 @@ impl Web {
     ///   otherwise the first `keep` matches. `{"tested", "matched", "best": [[seed, score]],
     ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
     /// - `caveinfo <sublevel>`: the sublevel's generation parameters (see [`caveinfo_json`]).
-    pub fn command(&self, text: &str) -> Result<String, String> {
+    /// - `agg_start <sublevel> <grouping> <comedown cells>`, then `agg_run <start> <count> <c|r>`
+    ///   any number of times, then `agg_result <max groups>`: CaveGen's Aggregator (see
+    ///   [`aggregate`]).
+    pub fn command(&mut self, text: &str) -> Result<String, String> {
         let args: Vec<&str> = text.split('\t').collect();
+        if let Some(out) = self.agg_command(&args) {
+            return out;
+        }
         let data = self.data()?;
         let arg = |i: usize| args.get(i).copied().ok_or_else(|| format!("{}: missing argument {i}", args[0]));
         let num = |i: usize| -> Result<u64, String> { arg(i)?.trim().parse().map_err(|_| format!("bad number {:?}", args[i])) };
@@ -219,6 +229,48 @@ impl Web {
             }
             "caveinfo" => Ok(caveinfo_json(caveinfo(1)?.1, data)),
             other => Err(format!("unknown command {other:?}")),
+        }
+    }
+}
+
+impl Web {
+    fn agg_command(&mut self, args: &[&str]) -> Option<Result<String, String>> {
+        let arg = |i: usize| args.get(i).copied().ok_or_else(|| format!("{}: missing argument {i}", args[0]));
+        let mut run = || -> Result<String, String> {
+            Ok(match args[0] {
+                "agg_start" => {
+                    let data = self.data()?;
+                    let sublevel = data.sublevel(arg(1)?).map_err(|e| e.to_string())?;
+                    data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
+                    let cells: f32 = arg(3)?.trim().parse().map_err(|_| "bad comedown size".to_string())?;
+                    let grouping = aggregate::Grouping::parse(arg(2)?)?;
+                    self.agg = Some(aggregate::Aggregator::new(arg(1)?.to_string(), grouping, cells));
+                    "{}".into()
+                }
+                "agg_run" => {
+                    let data = self.data.as_ref().ok_or("no data loaded")?;
+                    let agg = self.agg.as_mut().ok_or("agg_run before agg_start")?;
+                    let sublevel = data.sublevel(&agg.sublevel).map_err(|e| e.to_string())?;
+                    let ci = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
+                    let start: u64 = arg(1)?.trim().parse().map_err(|_| "bad start".to_string())?;
+                    let count: u64 = arg(2)?.trim().parse().map_err(|_| "bad count".to_string())?;
+                    let random = arg(3)? == "r";
+                    for i in 0..count {
+                        let seed = if random { mix32(start.wrapping_add(i)) } else { start.wrapping_add(i) as u32 };
+                        agg.add(seed, &Layout::generate(seed, ci));
+                    }
+                    "{}".into()
+                }
+                "agg_result" => {
+                    let max: usize = arg(1)?.trim().parse().map_err(|_| "bad count".to_string())?;
+                    self.agg.as_ref().ok_or("agg_result before agg_start")?.result_json(max)
+                }
+                _ => return Err(String::new()),
+            })
+        };
+        match run() {
+            Err(e) if e.is_empty() => None,
+            r => Some(r),
         }
     }
 }
@@ -680,6 +732,29 @@ mod tests {
         assert!(found.starts_with("{\"tested\":50,"), "{found}");
         assert!(web.command("caveinfo\tSCx6").unwrap().contains("\"teki\":[{\"name\":"));
         assert!(web.command("search\tSCx6\t-\tnot a query ((\t0\t5\tc\t5").is_err());
+
+        // The aggregator: every seed lands in exactly one group, and each group's spots count
+        // one pod per layout.
+        for grouping in ["layout", "rooms", "first", "comedown-units", "comedown"] {
+            web.command(&format!("agg_start\tBK1\t{grouping}\t5")).unwrap();
+            web.command("agg_run\t0\t150\tc").unwrap();
+            web.command("agg_run\t150\t50\tr").unwrap();
+            let r = web.command("agg_result\t1000").unwrap();
+            assert!(r.starts_with("{\"total\":200,"), "{grouping}: {}", &r[..80]);
+            let counts: u64 = r
+                .split("{\"count\":")
+                .skip(1)
+                .map(|s| s.split(',').next().unwrap().parse::<u64>().unwrap())
+                .sum();
+            assert_eq!(counts, 200, "{grouping}");
+            assert_eq!(r.matches("[\"s\",").count() > 0, true, "{grouping}");
+        }
+        // BK1 has one start room; its comedown units-only groups are few.
+        web.command("agg_start\tBK1\tfirst\t5").unwrap();
+        web.command("agg_run\t0\t100\tc").unwrap();
+        let first = web.command("agg_result\t1000").unwrap();
+        assert!(first.contains("\"groups_total\":"), "{first}");
+        assert!(web.command("agg_start\tBK1\tnonsense\t5").is_err());
 
         // Every pikmin2 sublevel works with details on (the waypoint graph and paths can panic,
         // which in the browser would stop the page).

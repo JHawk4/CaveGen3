@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suggestion box · CaveGen3</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="suggest">
+<header class="site-header">
+  <div class="title-row">
+    <h1>CaveGen3</h1>
+    <nav class="site-nav">
+      <a href="./" data-i18n="navGenerator">Generator</a>
+      <a href="aggregator.html" data-i18n="navAggregator">Aggregator</a>
+      <a href="suggest.html" class="nav-suggest" aria-current="page" data-i18n="navSuggest">Suggestion box</a>
+    </nav>
+    <button type="button" id="lang-toggle" class="lang-toggle">日本語</button>
+  </div>
+</header>
+
+<main class="narrow">
+  <h2 data-i18n="suggestTitle">Suggestion box</h2>
+  <p data-i18n="suggestIntro"></p>
+  <!-- The same Google Form as the other Pikmin sites; "page" tells them apart. -->
+  <form id="suggest" class="suggest"
+        action="https://docs.google.com/forms/d/e/1FAIpQLSepPb6F7_Y6DlLoHn-nqpy2KG3BqaMLfDLAdArL9B5iyEt_LA/formResponse"
+        method="POST">
+    <label class="field"><span data-i18n="suggestName">Name (optional)</span>
+      <input name="entry.1125475916" maxlength="80" data-i18n-placeholder="suggestNamePlaceholder">
+    </label>
+    <label class="field"><span data-i18n="suggestMessage">Suggestion</span>
+      <textarea name="entry.1148029577" rows="7" maxlength="4000" required></textarea>
+    </label>
+    <label class="field"><span data-i18n="suggestContact">Contact (optional)</span>
+      <input name="entry.303778019" maxlength="120" data-i18n-placeholder="suggestContactPlaceholder">
+    </label>
+    <input type="hidden" name="entry.1626566187" id="suggest-page">
+    <div class="buttons">
+      <button type="submit" class="primary" data-i18n="suggestSend">Send</button>
+      <span id="suggest-status" class="status" role="status" aria-live="polite"></span>
+    </div>
+  </form>
+</main>
+
+<footer class="site-footer">
+  <p id="footer-text"></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

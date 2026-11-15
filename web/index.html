@@ -7,10 +7,15 @@
 <meta name="description" content="Generate Pikmin 2 cave layouts from a seed, in your browser. ピクミン2の洞窟レイアウトをシードから生成します。">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page="generator">
 <header class="site-header">
   <div class="title-row">
     <h1>CaveGen3</h1>
+    <nav class="site-nav">
+      <a href="./" aria-current="page" data-i18n="navGenerator">Generator</a>
+      <a href="aggregator.html" data-i18n="navAggregator">Aggregator</a>
+      <a href="suggest.html" class="nav-suggest" data-i18n="navSuggest">Suggestion box</a>
+    </nav>
     <button type="button" id="lang-toggle" class="lang-toggle">日本語</button>
   </div>
   <p data-i18n="subtitle">Pikmin 2 cave layouts for any seed, generated in your browser.</p>
@@ -50,6 +55,16 @@
       <fieldset>
         <legend data-i18n="showOnMap">Show on the map</legend>
         <div id="map-options" class="map-options"></div>
+        <label class="field inline"><span data-i18n="comedownSize">Comedown size (cells)</span>
+          <select id="comedown-size">
+            <option value="3">3 × 3</option>
+            <option value="4">4 × 4</option>
+            <option value="5" selected>5 × 5</option>
+            <option value="6">6 × 6</option>
+            <option value="7">7 × 7</option>
+            <option value="9">9 × 9</option>
+          </select>
+        </label>
       </fieldset>
       <fieldset>
         <legend data-i18n="judge">Judge</legend>
@@ -91,16 +106,13 @@
       <div class="map-toolbar">
         <span id="title" class="map-title"></span>
         <span class="spacer"></span>
+        <label class="check" data-i18n-title="comedownTitle"><input type="checkbox" id="comedown"> <span data-i18n="comedown">Comedown only</span></label>
         <label class="check"><input type="checkbox" id="water" checked> <span data-i18n="water">Water</span></label>
-        <label class="zoom"><span data-i18n="zoom">Zoom</span>
-          <select id="zoom">
-            <option value="fit" selected data-i18n="fit">Fit</option>
-            <option value="0.5">50%</option>
-            <option value="1">100%</option>
-            <option value="1.5">150%</option>
-            <option value="2">200%</option>
-          </select>
-        </label>
+        <span class="zoom-buttons" role="group">
+          <button type="button" id="zoom-out" data-i18n-title="zoomOut" title="Zoom out">−</button>
+          <button type="button" id="zoom-fit" data-i18n-title="zoomFit" title="Fit"><span id="zoom-label">100%</span></button>
+          <button type="button" id="zoom-in" data-i18n-title="zoomIn" title="Zoom in">+</button>
+        </span>
         <button type="button" id="copy-link" data-i18n="copyLink">Copy link</button>
         <button type="button" id="download" data-i18n="saveImage">Save image</button>
       </div>
@@ -108,6 +120,7 @@
         <canvas id="map" aria-label="Cave layout"></canvas>
         <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
       </div>
+      <p class="map-help" data-i18n="zoomHelp"></p>
     </div>
     <aside class="summary" id="summary"></aside>
   </section>

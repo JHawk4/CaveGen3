@@ -53,6 +53,29 @@ const STRINGS = {
     falling: "falls when approached",
     carrying: (t) => `carries ${t}`,
     crashed: "the generator hit a bug and was restarted (please report this sublevel and seed)",
+    navGenerator: "Generator",
+    navAggregator: "Aggregator",
+    navSuggest: "Suggestion box",
+    pageTitle: { generator: "CaveGen3", aggregator: "Aggregator · CaveGen3", suggest: "Suggestion box · CaveGen3" },
+    comedown: "Comedown only",
+    comedownTitle: "Show only what's around the pod when you land",
+    comedownSize: "Comedown size (cells)",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    zoomFit: "Fit the map to the window",
+    zoomHelp: "Scroll or pinch to zoom, drag to move, double-click to zoom in.",
+    suggestTitle: "Suggestion box",
+    suggestIntro: "Found a wrong layout, a missing romhack, or have an idea for CaveGen3? Leave a note. Your name is optional.",
+    suggestName: "Name (optional)",
+    suggestNamePlaceholder: "e.g. your Discord or speedrun.com name",
+    suggestMessage: "Suggestion",
+    suggestContact: "Contact (optional)",
+    suggestContactPlaceholder: "Discord username, so we can follow up",
+    suggestSend: "Send",
+    suggestSending: "Sending…",
+    suggestSent: "Thanks! Your suggestion was sent.",
+    suggestFail: "Sorry, it couldn't be sent. Please try again later.",
+    suggestBack: "Back to CaveGen3",
     advanced: "Advanced options",
     showOnMap: "Show on the map",
     opt: {
@@ -73,6 +96,7 @@ const STRINGS = {
       paths: "Carry paths",
       gauge: "Treasure gauge rings",
       grid: "Grid",
+      comedownBox: "Comedown box outline",
     },
     judge: "Judge",
     judgeNone: "None",
@@ -205,6 +229,29 @@ const STRINGS = {
     falling: "近づくと落ちてくる",
     carrying: (t) => `${t}を持っている`,
     crashed: "生成プログラムの不具合で再起動しました（この階とシードを報告してください）",
+    navGenerator: "生成",
+    navAggregator: "集計",
+    navSuggest: "ご意見箱",
+    pageTitle: { generator: "CaveGen3", aggregator: "集計 · CaveGen3", suggest: "ご意見箱 · CaveGen3" },
+    comedown: "着地時の範囲だけ",
+    comedownTitle: "着地したときにポッドの周りに見える範囲だけを表示します",
+    comedownSize: "着地時の範囲の広さ（マス）",
+    zoomIn: "拡大",
+    zoomOut: "縮小",
+    zoomFit: "ウィンドウに合わせる",
+    zoomHelp: "ホイールかピンチで拡大・縮小、ドラッグで移動、ダブルクリックで拡大。",
+    suggestTitle: "ご意見箱",
+    suggestIntro: "レイアウトの誤り、未対応の改造版、CaveGen3への要望などがあればお知らせください。名前は任意です。",
+    suggestName: "名前（任意）",
+    suggestNamePlaceholder: "例：Discordやspeedrun.comの名前",
+    suggestMessage: "ご意見",
+    suggestContact: "連絡先（任意）",
+    suggestContactPlaceholder: "Discordのユーザー名など（返信用）",
+    suggestSend: "送信",
+    suggestSending: "送信中…",
+    suggestSent: "ありがとうございます。送信しました。",
+    suggestFail: "送信できませんでした。時間をおいて再度お試しください。",
+    suggestBack: "CaveGen3に戻る",
     advanced: "詳細オプション",
     showOnMap: "マップに表示",
     opt: {
@@ -225,6 +272,7 @@ const STRINGS = {
       paths: "運搬ルート",
       gauge: "お宝ゲージの範囲",
       grid: "グリッド",
+      comedownBox: "着地時の範囲の枠",
     },
     judge: "評価",
     judgeNone: "なし",
@@ -345,7 +393,10 @@ let wasm = null;
 let caves = [];
 const loadedGames = new Set();
 let current = null; // the last generated layout
-let hitTargets = []; // icons on the map, for tooltips: {x, z, r, label}
+let hitTargets = [];
+let mapDragged = () => false; // set by attachZoom
+let languageHook = null; // a page's own redraw after the language changes
+const page = document.body.dataset.page || "generator"; // icons on the map, for tooltips: {x, z, r, label}
 
 function pickLanguage() {
   const fromUrl = params.get("lang");
@@ -546,15 +597,150 @@ function unitImage(img) {
   return unitCanvases.get(img);
 }
 
-function zoomScale(layout) {
-  const z = $("zoom").value;
-  if (z !== "fit") return Number(z);
-  const box = $("map-scroll").getBoundingClientRect();
+// ---- Zoom and the part of the map shown ----
+
+let zoom = "fit"; // "fit", or a scale (1 = CELL pixels per grid cell)
+let shownScale = 1; // the scale the map was last drawn at
+
+/** The comedown box's width in cells: what you see around the pod when you land. */
+function comedownCells() {
+  return Number($("comedown-size")?.value) || 5;
+}
+
+/** The rectangle of the map to draw, in grid cells: the whole cave, or the comedown box. */
+function mapView(layout) {
+  const ship = layout.objects.find((o) => o.kind === "ship");
+  if ($("comedown")?.checked && ship) {
+    const half = comedownCells() / 2;
+    return { x0: ship.x / UNIT - half, z0: ship.z / UNIT - half, w: half * 2, h: half * 2, comedown: true };
+  }
+  // A half-cell margin on each side.
+  return { x0: -0.5, z0: -0.5, w: layout.width + 1, h: layout.height + 1, comedown: false };
+}
+
+/** The largest scale whose canvas the browser can still draw. */
+function maxScale(view) {
+  const dpr = window.devicePixelRatio || 1;
+  return Math.min(6, 8000 / (Math.max(view.w, view.h) * CELL * dpr));
+}
+
+function fitScale(view, el) {
+  const box = el.getBoundingClientRect();
   const availW = Math.max(200, box.width - 16);
   const availH = Math.max(200, window.innerHeight * 0.78);
-  // +1 for the half-cell margin on each side.
-  const s = Math.min(availW / ((layout.width + 1) * CELL), availH / ((layout.height + 1) * CELL), 1.5);
-  return Math.max(0.25, s);
+  const s = Math.min(availW / (view.w * CELL), availH / (view.h * CELL), view.comedown ? 4 : 1.5);
+  return Math.max(0.05, s);
+}
+
+function zoomScale(view) {
+  const s = zoom === "fit" ? fitScale(view, $("map-scroll")) : zoom;
+  return Math.min(s, maxScale(view));
+}
+
+/**
+ * Mouse wheel, drag, double-click and pinch zoom for a scrolling map. `scale()` is the scale
+ * last drawn at; `zoomTo(scale)` draws at a new one (returning a promise). The point under the
+ * cursor (or between the fingers) stays put. Returns a function that tells whether the pointer
+ * just dragged, so a click at the end of a drag can be ignored.
+ */
+function attachZoom(scroller, canvas, scale, zoomTo) {
+  let busy = false;
+  let pending = 1; // zoom factor waiting while a redraw runs
+  let anchor = null;
+  const zoomAt = async (factor, clientX, clientY) => {
+    pending *= factor;
+    anchor = { clientX, clientY };
+    if (busy) return;
+    busy = true;
+    try {
+      while (pending !== 1) {
+        const f = pending;
+        const at = anchor;
+        pending = 1;
+        const before = canvas.getBoundingClientRect();
+        const old = scale();
+        const px = (at.clientX - before.left) / old;
+        const pz = (at.clientY - before.top) / old;
+        await zoomTo(old * f);
+        const now = scale();
+        const after = canvas.getBoundingClientRect();
+        scroller.scrollLeft += after.left + px * now - at.clientX;
+        scroller.scrollTop += after.top + pz * now - at.clientY;
+      }
+    } finally {
+      busy = false;
+    }
+  };
+  scroller.addEventListener(
+    "wheel",
+    (e) => {
+      if (e.ctrlKey && !e.deltaY) return;
+      e.preventDefault();
+      const unit = e.deltaMode === 1 ? 0.05 : e.deltaMode === 2 ? 1 : 0.0015;
+      zoomAt(Math.exp(-e.deltaY * unit), e.clientX, e.clientY);
+    },
+    { passive: false },
+  );
+  canvas.addEventListener("dblclick", (e) => {
+    e.preventDefault();
+    zoomAt(e.shiftKey ? 0.5 : 2, e.clientX, e.clientY);
+  });
+
+  // Dragging pans; two fingers pinch-zoom.
+  const pointers = new Map();
+  let dragged = false;
+  let start = null;
+  let pinch = null;
+  canvas.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    canvas.setPointerCapture(e.pointerId);
+    dragged = false;
+    start = { x: e.clientX, y: e.clientY, left: scroller.scrollLeft, top: scroller.scrollTop };
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      pinch = Math.hypot(a.x - b.x, a.y - b.y);
+    }
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2 && pinch) {
+      const [a, b] = [...pointers.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d > 0 && Math.abs(d / pinch - 1) > 0.04) {
+        zoomAt(d / pinch, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinch = d;
+      }
+      dragged = true;
+      return;
+    }
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) dragged = true;
+    if (dragged) {
+      scroller.scrollLeft = start.left - dx;
+      scroller.scrollTop = start.top - dy;
+      canvas.classList.add("dragging");
+    }
+  });
+  const end = (e) => {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinch = null;
+    if (!pointers.size) start = null;
+    canvas.classList.remove("dragging");
+  };
+  canvas.addEventListener("pointerup", end);
+  canvas.addEventListener("pointercancel", end);
+  return () => dragged;
+}
+
+/** The zoom buttons' label. */
+function showZoomLabel() {
+  const label = $("zoom-label");
+  if (label) label.textContent = `${Math.round(shownScale * 100)}%`;
+  $("zoom-fit")?.classList.toggle("on", zoom === "fit");
 }
 
 /** Tooltip text for an object on the map. */
@@ -604,6 +790,7 @@ const MAP_OPTIONS = [
   { key: "paths", details: true },
   { key: "gauge" },
   { key: "grid" },
+  { key: "comedownBox" },
 ];
 
 function mapOptions() {
@@ -664,23 +851,28 @@ async function render(layout) {
   else await Promise.all(layout.units.map((u) => firstImage(unitUrls(u.name, u.game))));
 
   const canvas = $("map");
-  const scale = zoomScale(layout);
+  const view = mapView(layout);
+  const scale = zoomScale(view);
+  shownScale = scale;
+  showZoomLabel();
   const cell = CELL * scale;
   const dpr = window.devicePixelRatio || 1;
-  const pad = cell * 0.5;
-  const w = layout.width * cell + pad * 2;
-  const h = layout.height * cell + pad * 2;
+  const w = view.w * cell;
+  const h = view.h * cell;
   canvas.width = Math.round(w * dpr);
   canvas.height = Math.round(h * dpr);
   canvas.style.width = `${Math.round(w)}px`;
   canvas.style.height = `${Math.round(h)}px`;
   hitTargets = [];
+  const offX = -view.x0 * cell;
+  const offZ = -view.z0 * cell;
 
   const ctx = canvas.getContext("2d");
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.fillStyle = "#0f0f0f";
   ctx.fillRect(0, 0, w, h);
-  ctx.translate(pad, pad);
+  ctx.translate(offX, offZ);
+  $("result").classList.toggle("comedown-view", view.comedown);
 
   const toPx = (v) => (v / UNIT) * cell;
 
@@ -899,7 +1091,9 @@ async function render(layout) {
       }
     }
     if (opts.angles && o.angle !== undefined && o.kind !== "gate") facing(ctx, x, z, o.angle, cell * 0.4, "#ffe14d");
-    hitTargets.push({ x: x + pad, z: z + pad, r: Math.max(size / 2, 8), label: objectLabel(o) });
+    const hx = x + offX;
+    const hz = z + offZ;
+    if (hx >= 0 && hz >= 0 && hx <= w && hz <= h) hitTargets.push({ x: hx, z: hz, r: Math.max(size / 2, 8), label: objectLabel(o) });
   }
 
   // Numbers on top of everything.
@@ -917,6 +1111,17 @@ async function render(layout) {
       const z = toPx(sp.z);
       if ((sp.group === 2 || sp.group === 9) && sp.treasure_score > -1) label(String(sp.treasure_score), x, z + cell * 0.12, "#ffaa00", undefined, "left");
       if ((sp.group === 4 || sp.group === 9) && sp.hole_score > -1) label(String(sp.hole_score), x, z - cell * 0.12, "#3cff3c", undefined, "left");
+    }
+  }
+  if (opts.comedownBox && !view.comedown) {
+    const ship = layout.objects.find((o) => o.kind === "ship");
+    if (ship) {
+      const half = (comedownCells() / 2) * cell;
+      ctx.strokeStyle = "#ffe14d";
+      ctx.lineWidth = Math.max(1.5, cell / 16);
+      ctx.setLineDash([cell / 4, cell / 6]);
+      ctx.strokeRect(toPx(ship.x) - half, toPx(ship.z) - half, half * 2, half * 2);
+      ctx.setLineDash([]);
     }
   }
   if (opts.doorScores || opts.doorIds) {
@@ -992,7 +1197,7 @@ function setupTooltips() {
   };
   canvas.addEventListener("mousemove", (e) => show(e.clientX, e.clientY));
   canvas.addEventListener("mouseleave", () => ($("tooltip").hidden = true));
-  canvas.addEventListener("click", (e) => show(e.clientX, e.clientY));
+  canvas.addEventListener("click", (e) => !mapDragged() && show(e.clientX, e.clientY));
 }
 
 // ---- Summary ----
@@ -1230,6 +1435,8 @@ function buildAdvanced() {
     const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
     for (const { key } of MAP_OPTIONS) if (key in (saved.map || {})) $(`opt-${key}`).checked = !!saved.map[key];
     if (JUDGES.includes(saved.judge)) $("judge").value = saved.judge;
+    if (saved.comedown) $("comedown").checked = true;
+    if (saved.comedownSize) $("comedown-size").value = String(saved.comedownSize);
     if (saved.open) $("advanced").open = true;
   } catch {
     // Nothing saved, or storage is unavailable.
@@ -1240,7 +1447,13 @@ function saveSettings() {
   const map = {};
   for (const { key } of MAP_OPTIONS) map[key] = $(`opt-${key}`).checked;
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ map, judge: $("judge").value, open: $("advanced").open }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+        map,
+        judge: $("judge").value,
+        open: $("advanced").open,
+        comedown: $("comedown").checked,
+        comedownSize: comedownCells(),
+      }));
   } catch {
     // Not saved; the choices still apply to this page.
   }
@@ -1252,6 +1465,18 @@ function fillJudges() {
   sel.replaceChildren(el("option", { value: "" }, T.judgeNone));
   for (const j of JUDGES) sel.append(el("option", { value: j }, T.judgeNames[j]));
   sel.value = value;
+}
+
+/**
+ * Lets the browser draw and handle input between slices of a long job. A message is used rather
+ * than setTimeout, which browsers slow to once a second or less in background tabs.
+ */
+function yieldToBrowser() {
+  return new Promise((resolve) => {
+    const ch = new MessageChannel();
+    ch.port1.onmessage = () => resolve();
+    ch.port2.postMessage(0);
+  });
 }
 
 // Seed search runs a slice of seeds at a time so the page stays responsive.
@@ -1325,7 +1550,7 @@ async function startSearch() {
       chunk = Math.max(10, Math.min(200000, Math.round((n * 60) / Math.max(1, performance.now() - t))));
       status.textContent = T.searching(s.tested, total);
       showSearchResults(s, false);
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await yieldToBrowser();
     }
     const secs = ((performance.now() - s.t0) / 1000).toFixed(1);
     status.textContent = s.stopped ? T.searchStopped(s.tested) : T.searchDone(s.tested, query ? s.matched : null, secs);
@@ -1489,11 +1714,12 @@ function applyLanguage() {
     node.title = T[node.dataset.i18nTitle];
     node.setAttribute("aria-label", T[node.dataset.i18nTitle]);
   }
-  $("seed").title = T.seedTitle;
-  $("query").placeholder = T.queryPlaceholder;
-  $("footer-text").innerHTML = T.footer;
-  $("search-go").textContent = search && !search.done ? T.stop : T.searchButton;
-  fillJudges();
+  for (const node of document.querySelectorAll("[data-i18n-placeholder]")) node.placeholder = T[node.dataset.i18nPlaceholder];
+  if ($("seed")) $("seed").title = T.seedTitle;
+  if ($("footer-text")) $("footer-text").innerHTML = T.footer;
+  if ($("search-go")) $("search-go").textContent = search && !search.done ? T.stop : T.searchButton;
+  if ($("judge")) fillJudges();
+  if (T.pageTitle[page]) document.title = T.pageTitle[page];
   const toggle = $("lang-toggle");
   toggle.textContent = T.otherLang;
   toggle.setAttribute("aria-label", T.otherLangLabel);
@@ -1518,44 +1744,98 @@ async function setLanguage(next) {
   }
   await showCurrent();
   if (search) showSearchResults(search, search.done);
-  if ($("caveinfo-box").open) await showCaveInfo();
+  if ($("caveinfo-box")?.open) await showCaveInfo();
+  if (languageHook) await languageHook();
+}
+
+/** Language switching and the suggestion-box link, on every page. */
+function setupHeader() {
+  $("lang-toggle").addEventListener("click", () => setLanguage(lang === "ja" ? "en" : "ja"));
+  // The suggestion box records which page a suggestion came from.
+  for (const a of document.querySelectorAll("a.nav-suggest")) {
+    a.addEventListener("click", () => {
+      const here = (location.pathname.split("/").pop() || "index.html") + location.search;
+      a.href = `suggest.html?from=${encodeURIComponent(here)}`;
+    });
+  }
+}
+
+// ---- Suggestion box ----
+
+// Suggestions from all of the Pikmin sites go to one Google Form; its hidden "page" field says
+// which site and page each came from (here "cavegen3/<lang>/<page>"). The form's fields are
+// named in suggest.html.
+function initSuggest() {
+  applyLanguage();
+  setupHeader();
+  const form = $("suggest");
+  const status = $("suggest-status");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const from = new URLSearchParams(location.search).get("from") || "";
+    $("suggest-page").value = `cavegen3/${lang}/${from}`;
+    const button = form.querySelector("button");
+    button.disabled = true;
+    status.textContent = T.suggestSending;
+    try {
+      // Google Forms doesn't allow reading the reply, so a sent request counts as success.
+      await fetch(form.action, { method: "POST", body: new FormData(form), mode: "no-cors" });
+      form.reset();
+      status.textContent = T.suggestSent;
+    } catch {
+      status.textContent = T.suggestFail;
+    } finally {
+      button.disabled = false;
+    }
+  });
+}
+
+/** Loads the generator, the cave list, in-game names and the image list, and fills the game menu. */
+async function startCommon() {
+  const [, resources, gamesText, namesJson, imageList] = await Promise.all([
+    startWasm(),
+    fetchGz("data/resources.bin.gz"),
+    fetch("data/games.txt").then((r) => r.text()),
+    fetch("data/names.json").then((r) => (r.ok ? r.json() : null)),
+    fetch("data/images.json").then((r) => (r.ok ? r.json() : null)),
+  ]);
+  if (namesJson) names = namesJson;
+  if (imageList) available = new Set(imageList);
+  addBundle(resources);
+  bundles.push(resources);
+  caves = readResult(wasm.caves());
+  const games = gamesText.split(/\s+/).filter(Boolean);
+  games.sort((a, b) => GAME_ORDER.indexOf(a) - GAME_ORDER.indexOf(b));
+  caves = caves.filter((c) => games.includes(c.game));
+  fillGames(games);
+}
+
+/** Selects the cave and floor from the link (`?sublevel=`), or the first cave. */
+function selectStart() {
+  const fromUrl = params.get("sublevel") && selectFromParam(params.get("sublevel"));
+  const start = fromUrl || { cave: caves[0], floor: 1 };
+  $("game").value = start.cave.game;
+  fillCaves(start.cave.game);
+  $("cave").value = String(caves.indexOf(start.cave));
+  fillFloors(start.floor, start.floor);
 }
 
 async function init() {
   buildAdvanced();
   applyLanguage();
-  $("lang-toggle").addEventListener("click", () => setLanguage(lang === "ja" ? "en" : "ja"));
+  setupHeader();
   setStatus(T.loading);
   try {
-    const [, resources, gamesText, namesJson, imageList] = await Promise.all([
-      startWasm(),
-      fetchGz("data/resources.bin.gz"),
-      fetch("data/games.txt").then((r) => r.text()),
-      fetch("data/names.json").then((r) => (r.ok ? r.json() : null)),
-      fetch("data/images.json").then((r) => (r.ok ? r.json() : null)),
-    ]);
-    if (namesJson) names = namesJson;
-    if (imageList) available = new Set(imageList);
-    addBundle(resources);
-    bundles.push(resources);
-    caves = readResult(wasm.caves());
-    const games = gamesText.split(/\s+/).filter(Boolean);
-    games.sort((a, b) => GAME_ORDER.indexOf(a) - GAME_ORDER.indexOf(b));
-    caves = caves.filter((c) => games.includes(c.game));
-    fillGames(games);
+    await startCommon();
   } catch (e) {
     console.error(e);
     setStatus(T.cantStart(e.message), true);
     return;
   }
 
-  const fromUrl = params.get("sublevel") && selectFromParam(params.get("sublevel"));
+  selectStart();
   const seed = params.get("seed") && parseSeed(params.get("seed"));
-  const start = fromUrl || { cave: caves[0], floor: 1 };
-  $("game").value = start.cave.game;
-  fillCaves(start.cave.game);
-  $("cave").value = String(caves.indexOf(start.cave));
-  fillFloors(start.floor, start.floor);
+  if (params.get("comedown") === "1") $("comedown").checked = true;
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -1582,7 +1862,37 @@ async function init() {
   $("prev").addEventListener("click", () => step(-1));
   $("next").addEventListener("click", () => step(1));
   $("water").addEventListener("change", () => current && render(current.layout));
-  $("zoom").addEventListener("change", () => current && render(current.layout));
+  const redraw = () => current && render(current.layout);
+  const zoomTo = (s) => {
+    zoom = Math.max(0.05, s);
+    return current ? render(current.layout) : Promise.resolve();
+  };
+  mapDragged = attachZoom($("map-scroll"), $("map"), () => shownScale, zoomTo);
+  const center = () => {
+    const r = $("map-scroll").getBoundingClientRect();
+    return [r.left + r.width / 2, r.top + r.height / 2];
+  };
+  // The buttons zoom about the middle of what's shown, like the wheel does about the cursor.
+  const zoomStep = (f) => $("map-scroll").dispatchEvent(new WheelEvent("wheel", { deltaY: -Math.log(f) / 0.0015, clientX: center()[0], clientY: center()[1], cancelable: true }));
+  $("zoom-in").addEventListener("click", () => zoomStep(1.5));
+  $("zoom-out").addEventListener("click", () => zoomStep(1 / 1.5));
+  $("zoom-fit").addEventListener("click", () => {
+    zoom = "fit";
+    redraw();
+  });
+  $("comedown").addEventListener("change", () => {
+    zoom = "fit";
+    saveSettings();
+    const p = new URLSearchParams(location.search);
+    if ($("comedown").checked) p.set("comedown", "1");
+    else p.delete("comedown");
+    history.replaceState(null, "", `?${p.toString()}`);
+    redraw();
+  });
+  $("comedown-size").addEventListener("change", () => {
+    saveSettings();
+    redraw();
+  });
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {
       saveSettings();
@@ -1608,7 +1918,7 @@ async function init() {
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => current && $("zoom").value === "fit" && render(current.layout), 150);
+    resizeTimer = setTimeout(() => current && zoom === "fit" && render(current.layout), 150);
   });
   $("download").addEventListener("click", () => {
     if (!current) return;
@@ -1631,4 +1941,9 @@ async function init() {
   await run();
 }
 
-init();
+// Each page's own setup; the aggregator's is in aggregator.js, loaded after this file.
+window.addEventListener("DOMContentLoaded", () => {
+  if (page === "aggregator") initAggregator();
+  else if (page === "suggest") initSuggest();
+  else init();
+});

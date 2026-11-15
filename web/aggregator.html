@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aggregator · CaveGen3</title>
+<meta name="description" content="Where treasures, teki and exits spawn in a Pikmin 2 sublevel, over many seeds, grouped by layout or by what you see when you land.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="aggregator">
+<header class="site-header">
+  <div class="title-row">
+    <h1>CaveGen3</h1>
+    <nav class="site-nav">
+      <a href="./" data-i18n="navGenerator">Generator</a>
+      <a href="aggregator.html" aria-current="page" data-i18n="navAggregator">Aggregator</a>
+      <a href="suggest.html" class="nav-suggest" data-i18n="navSuggest">Suggestion box</a>
+    </nav>
+    <button type="button" id="lang-toggle" class="lang-toggle">日本語</button>
+  </div>
+  <p data-i18n="aggIntro"></p>
+</header>
+
+<main>
+  <form id="controls" class="controls" autocomplete="off">
+    <label class="field">
+      <span data-i18n="game">Game</span>
+      <select id="game"></select>
+    </label>
+    <label class="field grow">
+      <span data-i18n="cave">Cave</span>
+      <select id="cave"></select>
+    </label>
+    <label class="field">
+      <span data-i18n="sublevel">Sublevel</span>
+      <select id="floor"></select>
+    </label>
+    <label class="field grow">
+      <span data-i18n="aggGroupBy">Group seeds by</span>
+      <select id="agg-group">
+        <option value="comedown" data-i18n="aggGroupComedown"></option>
+        <option value="comedown-units" data-i18n="aggGroupComedownUnits"></option>
+        <option value="layout" data-i18n="aggGroupLayout"></option>
+        <option value="rooms" data-i18n="aggGroupRooms"></option>
+        <option value="first" data-i18n="aggGroupFirst"></option>
+      </select>
+    </label>
+    <label class="field" id="comedown-size-field">
+      <span data-i18n="comedownSize">Comedown size (cells)</span>
+      <select id="comedown-size">
+        <option value="3">3 × 3</option>
+        <option value="4">4 × 4</option>
+        <option value="5" selected>5 × 5</option>
+        <option value="6">6 × 6</option>
+        <option value="7">7 × 7</option>
+        <option value="9">9 × 9</option>
+      </select>
+    </label>
+    <label class="field">
+      <span data-i18n="searchCount">Seeds to test</span>
+      <input id="agg-count" type="number" min="1" max="10000000" step="1000" value="10000">
+    </label>
+    <label class="field">
+      <span data-i18n="searchMode">Seeds</span>
+      <select id="agg-mode">
+        <option value="r" data-i18n="randomSeeds">Random</option>
+        <option value="c" data-i18n="aggConsecutive">Counting up from</option>
+      </select>
+    </label>
+    <label class="field" id="seed-field" hidden>
+      <span data-i18n="seed">Seed</span>
+      <input id="seed" spellcheck="false" maxlength="10" value="00000000">
+    </label>
+    <div class="buttons">
+      <button type="submit" id="agg-go" class="primary" data-i18n="aggRun">Aggregate</button>
+    </div>
+  </form>
+
+  <div class="agg-show">
+    <span data-i18n="aggShow">Show</span>
+    <label class="check"><input type="checkbox" id="show-treasures" checked> <span data-i18n-opt="treasures"></span></label>
+    <label class="check"><input type="checkbox" id="show-teki" checked> <span data-i18n-opt="teki"></span></label>
+    <label class="check"><input type="checkbox" id="show-gates" checked> <span data-i18n-opt="gates"></span></label>
+    <label class="check"><input type="checkbox" id="show-exits" checked> <span data-i18n-opt="exits"></span></label>
+    <label class="field inline"><span data-i18n="aggMinPct">Hide below</span>
+      <select id="agg-min">
+        <option value="0.5">0.5%</option>
+        <option value="2" selected>2%</option>
+        <option value="5">5%</option>
+        <option value="10">10%</option>
+        <option value="25">25%</option>
+      </select>
+    </label>
+    <label class="field inline"><span data-i18n="aggMaxGroups">Groups shown</span>
+      <select id="agg-max">
+        <option value="10">10</option>
+        <option value="20" selected>20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="status" class="status" role="status" aria-live="polite"></div>
+  <p class="map-help" data-i18n="aggHelp"></p>
+  <div id="agg-results" class="agg-results"></div>
+  <div id="tooltip" class="tooltip floating" role="tooltip" hidden></div>
+</main>
+
+<footer class="site-footer">
+  <p id="footer-text"></p>
+</footer>
+
+<script src="app.js"></script>
+<script src="aggregator.js"></script>
+</body>
+</html>
