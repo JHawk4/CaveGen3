@@ -94,10 +94,8 @@ The seed buttons can step through the game's RNG instead of counting by one (Cav
 the ones that look alike, and draws each group with how often each treasure, teki, gate and exit
 spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's default), the rooms
 only, or the first room placed, as in CaveGen, or by **comedown**: what the camera shows when you
-land, either the map units alone (the default) or the map units and the objects in view. Find
-the group that matches your landing to see where the treasures probably are. The landing view is
-large (about 1,400 by 1,200 units), so grouping by the objects in view too makes almost every
-seed its own group; the map units alone give a few dozen groups per floor. Gray cells show how often other map
+land: the map units in view (the default). Find the group that matches your landing to see where
+the treasures probably are; a floor usually has a few dozen of these groups. Gray cells show how often other map
 units were there.
 
 Rotations don't split groups: the same arrangement turned any way is one group (CaveGen only
@@ -161,7 +159,7 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
 | `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
 | `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
 | `count SCx-7 minihoudai` | How many of something each seed has, as a distribution (CaveGen's `-count`). |
-| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group comedown-units`, `comedown`, `layout`, `rooms`, `first`), with what spawned at each spot and how often. |
+| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group comedown`, `layout`, `rooms` or `first`), with what spawned at each spot and how often. |
 | `options` | Lists the map options for `--show` and `--hide`. |
 
 - Seeds are hex; leave the seed out for a random one. `--seeds c` counts up by one, `g` steps

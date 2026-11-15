@@ -255,9 +255,9 @@ struct AggArgs {
     #[arg(help = SUBLEVEL_HELP)]
     sublevel: String,
 
-    /// How to group seeds: comedown-units (the map units in view when you land), comedown (map
-    /// units and objects in view; very specific), layout (CaveGen's default), rooms or first.
-    #[arg(long, default_value = "comedown-units", value_parser = ["comedown", "comedown-units", "layout", "rooms", "first"])]
+    /// How to group seeds: comedown (the map units in view when you land), layout (CaveGen's
+    /// default), rooms, or first (the first room placed).
+    #[arg(long, default_value = "comedown", value_parser = ["comedown", "layout", "rooms", "first"])]
     group: String,
 
     #[command(flatten)]

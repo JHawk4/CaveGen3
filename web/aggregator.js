@@ -6,8 +6,7 @@ Object.assign(STRINGS.en, {
   aggIntro:
     "Generates many seeds of a sublevel, groups the ones that look alike, and shows how often each thing spawned at each spot.",
   aggGroupBy: "Group seeds by",
-  aggGroupComedown: "Comedown: map units and objects in view",
-  aggGroupComedownUnits: "Comedown: map units in view",
+  aggGroupComedown: "Comedown: map units in view when you land",
   aggGroupLayout: "Whole layout (CaveGen's default)",
   aggGroupRooms: "Rooms only",
   aggGroupFirst: "First room placed",
@@ -33,8 +32,7 @@ Object.assign(STRINGS.en, {
 Object.assign(STRINGS.ja, {
   aggIntro: "ある階のシードをたくさん生成し、見た目が同じものをまとめて、各地点に何がどれくらいの割合で出たかを表示します。",
   aggGroupBy: "まとめ方",
-  aggGroupComedown: "着地時の範囲：見えるマップユニットと物",
-  aggGroupComedownUnits: "着地時の範囲：見えるマップユニットのみ",
+  aggGroupComedown: "着地時の範囲：見えるマップユニット",
   aggGroupLayout: "レイアウト全体（CaveGenの標準）",
   aggGroupRooms: "部屋のみ",
   aggGroupFirst: "最初に置かれた部屋",
@@ -490,7 +488,8 @@ function loadAggSettings() {
       const node = $(id);
       if (!node) continue;
       if (typeof v === "boolean") node.checked = v;
-      else node.value = v;
+      // "comedown-units" was the old name of the comedown grouping.
+      else node.value = id === "agg-group" && v === "comedown-units" ? "comedown" : v;
     }
     const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
     if (shared.comedownScreen) $("comedown-screen").value = shared.comedownScreen;

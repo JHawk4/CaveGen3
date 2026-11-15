@@ -30,8 +30,6 @@ pub enum Grouping {
     /// Only the first room placed (CaveGen's -aggFirst).
     First,
     /// What you see when you land: the map units in view of the camera.
-    ComedownUnits,
-    /// The comedown's map units plus the objects in view.
     Comedown,
 }
 
@@ -41,14 +39,14 @@ impl Grouping {
             "layout" => Grouping::Layout,
             "rooms" => Grouping::Rooms,
             "first" => Grouping::First,
-            "comedown-units" => Grouping::ComedownUnits,
-            "comedown" => Grouping::Comedown,
+            // "comedown-units" is the old name, from links and saved settings.
+            "comedown" | "comedown-units" => Grouping::Comedown,
             _ => return Err(format!("unknown grouping {s:?}")),
         })
     }
 
     fn is_comedown(self) -> bool {
-        matches!(self, Grouping::ComedownUnits | Grouping::Comedown)
+        self == Grouping::Comedown
     }
 }
 
@@ -70,17 +68,6 @@ impl View {
         let r = (-f.1, f.0);
         let at = |ahead: f32, side: f32| (p.0 + f.0 * ahead + r.0 * side, p.1 + f.1 * ahead + r.1 * side);
         [at(self.near, -self.near_half), at(self.near, self.near_half), at(self.far, self.far_half), at(self.far, -self.far_half)]
-    }
-
-    fn contains(&self, p: (f32, f32), f: (f32, f32), q: (f32, f32)) -> bool {
-        let (dx, dz) = (q.0 - p.0, q.1 - p.1);
-        let ahead = dx * f.0 + dz * f.1;
-        let side = -dx * f.1 + dz * f.0;
-        if ahead < self.near || ahead > self.far {
-            return false;
-        }
-        let t = (ahead - self.near) / (self.far - self.near);
-        side.abs() <= self.near_half + (self.far_half - self.near_half) * t
     }
 }
 
@@ -301,13 +288,11 @@ impl Aggregator {
             let a = sp.angle.to_radians();
             ((sp.pos[0], sp.pos[2]), (a.sin(), a.cos()))
         });
-        let (anchor, unit_ids, in_view): (usize, Vec<usize>, Vec<usize>) = match self.grouping {
-            Grouping::Layout => (0, (0..layout.units.len()).collect(), vec![]),
-            Grouping::Rooms => {
-                (0, (0..layout.units.len()).filter(|&i| layout.units[i].unit.room_type == RoomType::Room).collect(), vec![])
-            }
-            Grouping::First => (0, vec![0], vec![]),
-            Grouping::ComedownUnits | Grouping::Comedown => {
+        let (anchor, unit_ids): (usize, Vec<usize>) = match self.grouping {
+            Grouping::Layout => (0, (0..layout.units.len()).collect()),
+            Grouping::Rooms => (0, (0..layout.units.len()).filter(|&i| layout.units[i].unit.room_type == RoomType::Room).collect()),
+            Grouping::First => (0, vec![0]),
+            Grouping::Comedown => {
                 let (p, f) = pod.expect("checked above");
                 let view = self.view.corners(p, f);
                 let ids = (0..layout.units.len())
@@ -318,14 +303,7 @@ impl Aggregator {
                         polygons_overlap(&view, &[(x0, z0), (x1, z0), (x1, z1), (x0, z1)])
                     })
                     .collect();
-                let objs = if self.grouping == Grouping::Comedown {
-                    (0..placed.len())
-                        .filter(|&i| placed[i].0 != "s" && self.view.contains(p, f, (placed[i].2[0], placed[i].2[2])))
-                        .collect()
-                } else {
-                    vec![]
-                };
-                (ship.expect("checked above").unit as usize, ids, objs)
+                (ship.expect("checked above").unit as usize, ids)
             }
         };
         let periods: Vec<u16> = unit_ids.iter().map(|&i| self.period(layout, layout.units[i].unit)).collect();
@@ -338,10 +316,6 @@ impl Aggregator {
                     format!("{} {} {} {}", u.name, u.rot % period, u.x.round() as i32, u.z.round() as i32)
                 })
                 .collect();
-            for &i in in_view.iter() {
-                let (x, z) = frame.apply(placed[i].1[0], placed[i].1[2]);
-                parts.push(format!("{}@{},{}", placed[i].0, x.round() as i32, z.round() as i32));
-            }
             parts.sort();
             parts.join("|")
         };
@@ -533,7 +507,7 @@ mod rotation_tests {
     fn comedown_groups_are_fewer_than_layouts() {
         let data = GameData::bundled().unwrap();
         let ci = data.caveinfo(&data.sublevel("HoB2").unwrap()).unwrap();
-        let mut by_view = Aggregator::new("HoB2".into(), Grouping::ComedownUnits, view(), "");
+        let mut by_view = Aggregator::new("HoB2".into(), Grouping::Comedown, view(), "");
         let mut by_layout = Aggregator::new("HoB2".into(), Grouping::Layout, view(), "");
         for seed in 0..2000u32 {
             let layout = Layout::generate(seed.wrapping_mul(2_654_435_761), ci);

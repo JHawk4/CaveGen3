@@ -810,7 +810,7 @@ mod tests {
 
         // The aggregator: every seed lands in exactly one group, and each group's spots count
         // one pod per layout.
-        for grouping in ["layout", "rooms", "first", "comedown-units", "comedown"] {
+        for grouping in ["layout", "rooms", "first", "comedown", "comedown-units"] {
             web.command(&format!("agg_start\tBK1\t{grouping}\t-90\t1030\t165\t545")).unwrap();
             web.command("agg_run\t0\t150\tc").unwrap();
             web.command("agg_run\t150\t50\tr").unwrap();
