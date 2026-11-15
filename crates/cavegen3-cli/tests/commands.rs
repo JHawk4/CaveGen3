@@ -31,19 +31,22 @@ fn judge_scores_match_the_search() {
 
 #[test]
 fn stats_and_count_add_up() {
+    // Rows: how many, seeds with that many, "seeds", share.
     let text = cavegen3(&["count", "SCx-7", "minihoudai", "-n", "5000", "--seeds", "c", "--start", "0"]);
-    let shares: f64 = text
+    let rows: Vec<(u64, u64)> = text
         .lines()
-        .filter_map(|l| l.split_whitespace().nth(1)?.strip_suffix('%')?.parse::<f64>().ok())
-        .sum();
-    assert!((shares - 100.0).abs() < 0.1, "{text}");
-    // Seeds with fewer than two Gatling Groinks are the "1" row of the count.
+        .filter_map(|l| {
+            let mut w = l.split_whitespace();
+            let (k, n, unit) = (w.next()?.parse().ok()?, w.next()?.parse().ok()?, w.next()?);
+            (unit == "seeds").then_some((k, n))
+        })
+        .collect();
+    assert_eq!(rows.iter().map(|(_, n)| n).sum::<u64>(), 5000, "{text}");
+    // Seeds with fewer than two Gatling Groinks are exactly the "1" row of the count.
     let stats = cavegen3(&["stats", "SCx-7", "minihoudai < 2", "-n", "5000", "--seeds", "c", "--start", "0"]);
     let matched: u64 = stats.lines().nth(1).unwrap().split_whitespace().next().unwrap().parse().unwrap();
-    let one_row = text.lines().find(|l| l.split_whitespace().next() == Some("1")).map_or(0.0, |l| {
-        l.split_whitespace().nth(1).unwrap().trim_end_matches('%').parse::<f64>().unwrap()
-    });
-    assert!((matched as f64 / 50.0 - one_row).abs() < 0.02, "{stats}\n{text}");
+    let ones = rows.iter().filter(|(k, _)| *k < 2).map(|(_, n)| n).sum::<u64>();
+    assert_eq!(matched, ones, "{stats}\n{text}");
 }
 
 #[test]

@@ -1224,7 +1224,8 @@ function drawMap(layout, scale) {
       if (pretty) {
         // A picture, not a radar image: smooth it, and draw it as it is.
         ctx.imageSmoothingEnabled = true;
-        ctx.drawImage(pretty, (-w0 * cell) / 2, (-h0 * cell) / 2, w0 * cell + 1, h0 * cell + 1);
+        // A pixel larger on every side, so neighbors overlap instead of leaving a hairline.
+        ctx.drawImage(pretty, (-w0 * cell) / 2 - 1, (-h0 * cell) / 2 - 1, w0 * cell + 2, h0 * cell + 2);
         ctx.imageSmoothingEnabled = false;
       } else {
         ctx.filter = "brightness(1.6)";
@@ -2162,7 +2163,8 @@ function showCounts(s) {
         { class: "count-row" },
         el("span", { class: "count-k" }, String(k)),
         el("span", { class: "count-bar" }, el("span", { style: `width: ${(100 * n) / most}%` })),
-        el("span", { class: "count-pct" }, `${((100 * n) / tested).toFixed(1)}%`),
+        el("span", { class: "count-n" }, n.toLocaleString()),
+        el("span", { class: "count-pct" }, `${((100 * n) / tested).toFixed(2)}%`),
       ),
     ),
   );

@@ -687,7 +687,7 @@ fn search_command(painter: &Painter, args: &SearchArgs) -> Result<(), String> {
             println!("\nHow many {what}, over {tested} seeds:");
             for (k, n) in &r.counts {
                 let bar = "#".repeat(((40 * n) / most.max(1)) as usize);
-                println!("  {k:>3}  {:>6.2}%  {bar}", 100.0 * *n as f64 / tested.max(1) as f64);
+                println!("  {k:>3}  {n:>9} seeds  {:>6.2}%  {bar}", 100.0 * *n as f64 / tested.max(1) as f64);
             }
         }
     }

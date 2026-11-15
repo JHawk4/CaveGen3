@@ -931,14 +931,15 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
         match pretty.or_else(|| assets.unit(&u.name, &u.game)) {
             Some(img) => {
                 let (w0, h0) = if u.rot % 2 == 1 { (u.h, u.w) } else { (u.w, u.h) };
-                // A picture is drawn a pixel larger so neighbors meet, and smoothed.
+                // A picture is drawn a pixel larger on every side, so neighbors overlap rather than
+                // leave a hairline where the smoothed edges fade.
                 let extra = if is_pretty { 1.0 } else { 0.0 };
                 let t = cv
                     .base
                     .pre_translate(cx, cz)
                     .pre_concat(Transform::from_rotate(u.rot as f32 * 90.0))
-                    .pre_translate(-w0 * cell / 2.0, -h0 * cell / 2.0)
-                    .pre_scale((w0 * cell + extra) / img.width() as f32, (h0 * cell + extra) / img.height() as f32);
+                    .pre_translate(-w0 * cell / 2.0 - extra, -h0 * cell / 2.0 - extra)
+                    .pre_scale((w0 * cell + 2.0 * extra) / img.width() as f32, (h0 * cell + 2.0 * extra) / img.height() as f32);
                 let pp = PixmapPaint {
                     quality: if is_pretty {
                         FilterQuality::Bilinear

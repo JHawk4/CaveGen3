@@ -44,7 +44,11 @@ their in-game names in either language. Hover over or tap an icon on the map to 
   carry paths.
 - **QuickGlance** puts CaveGen's colored discs behind what matters (the pod, treasures, the exit,
   Gatling Groinks, Candypop Buds, Onions); **Pretty** draws the vanilla map units as CaveGen's
-  pictures of the real floor (`data/resources/pretty`, converted to WebP) instead of radar images.
+  pictures of the real floor instead of radar images. CaveGen took those as screenshots against a
+  purple background with the game's spotlight, so `cargo run -p cavegen3-cli --example
+  clean_pretty` cleans them before they're converted to WebP in `data/resources/pretty`: it
+  removes the purple that shows through, evens out the lighting and each tile set's color, and
+  fixes the dark band along each picture's edge, so neighboring tiles blend together.
 - **Colossal Caverns options** (shown only for Colossal Caverns): CaveGen's `-ultraRandomizer`,
   `-extraUnits` (Pikmin 251's units too) and `-5onion`. In links and on the command line they're
   suffixes on the name: `colossal+ultra+extra+5onion`. They're checked against CaveGen for 20
