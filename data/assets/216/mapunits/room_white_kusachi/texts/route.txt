@@ -1,0 +1,54 @@
+9 # waypoint count 
+{
+	0 # index 
+	0
+	0.0 0.0 -650.0 50.0 
+}
+{
+	1 # index 
+	1 # numLinks 
+	2 # link 0 
+	0.0 0.0 -250.0 50.0 
+}
+{
+	2 # index 
+	1 # numLinks 
+	0 # link 0 
+	0.0 0.0 -450.0 50.0 
+}
+{
+	3 # index 
+	1 # numLinks 
+	1 # link 0 
+	-0.799999999999045 12.883058547973633 6.099999999996953 150.0 
+}
+{
+	4 # index 
+	1 # numLinks 
+	5 # link 0 
+	0.0 0.0 410.0 50.0 
+}
+{
+	5 # index 
+	1 # numLinks 
+	3 # link 0 
+	0.0 0.0 235.0 50.0 
+}
+{
+	6 # index 
+	1 # numLinks 
+	7 # link 0 
+	-330.0 0.0 645.0 50.0 
+}
+{
+	7 # index 
+	1 # numLinks 
+	4 # link 0 
+	0.0 0.0 645.0 50.0 
+}
+{
+	8 # index 
+	1 # numLinks 
+	7 # link 0 
+	300.0 0.0 645.0 50.0 
+}

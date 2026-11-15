@@ -1,0 +1,233 @@
+30 # waypoint count 
+{
+	0 # index 
+	1 # numLinks 
+	9 # link 0 
+	0.0 0.0 -595.0 85.0 
+}
+{
+	1 # index 
+	1 # numLinks 
+	10 # link 0 
+	510.0 0.0 -595.0 85.0 
+}
+{
+	2 # index 
+	1 # numLinks 
+	10 # link 0 
+	595.0 0.0 -340.0 85.0 
+}
+{
+	3 # index 
+	1 # numLinks 
+	11 # link 0 
+	595.0 0.0 0.0 85.0 
+}
+{
+	4 # index 
+	1 # numLinks 
+	12 # link 0 
+	595.0 0.0 340.0 85.0 
+}
+{
+	5 # index 
+	1 # numLinks 
+	13 # link 0 
+	0.0 0.0 595.0 85.0 
+}
+{
+	6 # index 
+	1 # numLinks 
+	14 # link 0 
+	-595.0 0.0 510.0 85.0 
+}
+{
+	7 # index 
+	1 # numLinks 
+	16 # link 0 
+	-595.0 0.0 170.0 85.0 
+}
+{
+	8 # index 
+	1 # numLinks 
+	17 # link 0 
+	-595.0 0.0 -510.0 85.0 
+}
+{
+	9 # index 
+	2 # numLinks 
+	0 # link 0 
+	29 # link 1 
+	0.0 0.0 -340.0 85.0 
+}
+{
+	10 # index 
+	3 # numLinks 
+	1 # link 0 
+	2 # link 1 
+	20 # link 2 
+	510.0 0.0 -340.0 85.0 
+}
+{
+	11 # index 
+	4 # numLinks 
+	3 # link 0 
+	20 # link 1 
+	12 # link 2 
+	26 # link 3 
+	425.0 0.0 0.0 85.0 
+}
+{
+	12 # index 
+	3 # numLinks 
+	4 # link 0 
+	11 # link 1 
+	25 # link 2 
+	400.0 0.0 230.0 60.0 
+}
+{
+	13 # index 
+	3 # numLinks 
+	5 # link 0 
+	15 # link 1 
+	24 # link 2 
+	0.0 0.0 425.0 85.0 
+}
+{
+	14 # index 
+	2 # numLinks 
+	6 # link 0 
+	15 # link 1 
+	-400.0 0.0 535.0 60.0 
+}
+{
+	15 # index 
+	4 # numLinks 
+	14 # link 0 
+	16 # link 1 
+	13 # link 2 
+	23 # link 3 
+	-285.0 0.0 375.0 60.0 
+}
+{
+	16 # index 
+	3 # numLinks 
+	7 # link 0 
+	15 # link 1 
+	22 # link 2 
+	-400.0 0.0 170.0 85.0 
+}
+{
+	17 # index 
+	2 # numLinks 
+	8 # link 0 
+	18 # link 1 
+	-415.0 0.0 -485.0 60.0 
+}
+{
+	18 # index 
+	2 # numLinks 
+	17 # link 0 
+	19 # link 1 
+	-415.0 0.0 -300.0 60.0 
+}
+{
+	19 # index 
+	2 # numLinks 
+	18 # link 0 
+	28 # link 1 
+	-240.0 0.0 -175.0 85.0 
+}
+{
+	20 # index 
+	3 # numLinks 
+	10 # link 0 
+	11 # link 1 
+	27 # link 2 
+	340.0 0.0 -315.0 60.0 
+}
+{
+	21 # index 
+	8 # numLinks 
+	22 # link 0 
+	23 # link 1 
+	24 # link 2 
+	25 # link 3 
+	26 # link 4 
+	27 # link 5 
+	29 # link 6 
+	28 # link 7 
+	0.0 0.0 0.0 170.0 
+}
+{
+	22 # index 
+	4 # numLinks 
+	21 # link 0 
+	16 # link 1 
+	23 # link 2 
+	28 # link 3 
+	-247.1590607734808 18.25894210986735 112.63053735255431 50.0 
+}
+{
+	23 # index 
+	4 # numLinks 
+	21 # link 0 
+	15 # link 1 
+	24 # link 2 
+	22 # link 3 
+	-156.1822651933703 22.63172976965143 193.20615989514926 50.0 
+}
+{
+	24 # index 
+	4 # numLinks 
+	21 # link 0 
+	13 # link 1 
+	25 # link 2 
+	23 # link 3 
+	-26.215414364640992 25.42720728708082 245.19043250327508 50.0 
+}
+{
+	25 # index 
+	4 # numLinks 
+	21 # link 0 
+	12 # link 1 
+	26 # link 2 
+	24 # link 3 
+	242.82624309392247 20.721932078682585 91.81245085189869 50.0 
+}
+{
+	26 # index 
+	4 # numLinks 
+	21 # link 0 
+	11 # link 1 
+	27 # link 2 
+	25 # link 3 
+	246.72524861878435 22.387558326561702 -40.74744429882219 50.0 
+}
+{
+	27 # index 
+	4 # numLinks 
+	21 # link 0 
+	20 # link 1 
+	29 # link 2 
+	26 # link 3 
+	197.3378453038672 21.930228266704944 -157.71205766710528 50.0 
+}
+{
+	28 # index 
+	4 # numLinks 
+	19 # link 0 
+	22 # link 1 
+	29 # link 2 
+	21 # link 3 
+	-173.08558011049718 30.004471554493648 -108.34154652686993 50.0 
+}
+{
+	29 # index 
+	4 # numLinks 
+	21 # link 0 
+	9 # link 1 
+	28 # link 2 
+	27 # link 3 
+	-4.128674033149196 30.177971512035583 -203.21284403669955 50.0 
+}

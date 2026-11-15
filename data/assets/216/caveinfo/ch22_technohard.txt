@@ -1,0 +1,211 @@
+# CaveInfo
+{
+	{c000} 4 3 	# 階層
+	{_eof} 
+}
+3 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 99 	# 敵最大数
+	{f003} 4 7 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 8 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 ch22_1.txt 	# 使用ユニット
+	{f009} -1 techno_light.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	19 	# num
+	Fuefuki_key 10 	# weight
+	1 	# type
+	Fuefuki_whistle 10 	# weight
+	1 	# type
+	Rkabuto_be_dama_red_l 10 	# weight
+	1 	# type
+	Rkabuto_be_dama_red_l 10 	# weight
+	1 	# type
+	Kabuto_be_dama_yellow_l 10 	# weight
+	1 	# type
+	Rkabuto_be_dama_red_l 10 	# weight
+	1 	# type
+	Kabuto_be_dama_yellow_l 10 	# weight
+	1 	# type
+	Demon_be_dama_red 10 	# weight
+	1 	# type
+	ElecOtakara_juji_key 20	# weight
+	1	# type
+	ElecBug_be_dama_blue 20	# weight
+	0	# type
+	ElecBug_be_dama_blue 20	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 20	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 20	# weight
+	0	# type
+	Daiodogreen 1 	# weight
+	1 	# type
+	Daiodogreen 1 	# weight
+	0 	# type
+	Daiodogreen 1 	# weight
+	5 	# type
+}
+# ItemInfo
+{
+	6 	# num
+	donutsichigo_s 10 	# weight
+	radar_a 10 	# weight
+	donutswhite 10 	# weight
+	gamecube 10 	# weight
+	disc_mario 10	# weight
+	disc_zelda 10	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 32 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 ch22_2.txt 	# 使用ユニット
+	{f009} -1 techno_bright.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	15 	# num
+	MiniHoudai_key 10 	# weight
+	8 	# type
+	MiniHoudai_doll 10	# weight
+	1	# type
+	BombSarai_juji_key 20	# weight
+	1	# type
+	BombSarai_enigma 20	# weight
+	1	# type
+	Hanachirashi_mahjong 10	# weight
+	1	# type
+	Hiba 50	# weight
+	1	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	DaiodoRed 15 	# weight
+	6 	# type
+	DaiodoGreen 15 	# weight
+	6 	# type
+	Hiba 20 	# weight
+	5 	# type
+}
+# ItemInfo
+{
+	3 	# num
+	disc_pikmin 10 	# weight
+	disc_luigi 10 	# weight
+	console_3ds 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 30 	# 敵最大数
+	{f003} 4 6 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch22_3.txt 	# 使用ユニット
+	{f009} -1 techno_boss.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	Houdai_key 10 	# weight
+	6 	# type
+	DaiodoGreen 1 	# weight
+	0 	# type
+	DaiodoGreen 1 	# weight
+	1 	# type
+}
+# ItemInfo
+{
+	6 	# num
+	robot_head 10 	# weight
+	j_block_green 10 	# weight
+	j_block_red 10 	# weight
+	j_block_yellow 10 	# weight
+	j_block_blue 10 	# weight
+	j_block_white 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

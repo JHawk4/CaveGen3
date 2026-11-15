@@ -1,0 +1,98 @@
+# CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 50 	# 敵最大数
+	{f003} 4 6 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch24.txt 	# 使用ユニット
+	{f009} -1 space_light.ini 	# 使用ライト
+	{f00A} -1 space 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 5 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	24 	# num
+	OoPanModoki_key 10 	# weight
+	1 	# type
+	PanModoki_diamond_crystal 10 	# weight
+	1 	# type
+	PanModoki_superstar 10 	# weight
+	1 	# type
+	PanModoki_rainbowstar 10 	# weight
+	1 	# type
+	Kurage_diamond_purple 10	# weight
+	1	# type
+	Kurage_diamond_blue_l 10	# weight
+	1	# type
+	Tank_j_block_red 20	# weight
+	1	# type
+	Wtank_be_dama_red_l 10	# weight
+	1	# type
+	OniKurage_diamond_red_l 20	# weight
+	1	# type
+	Kochappy_be_dama_red 30	# weight
+	0	# type
+	Kochappy_be_dama_red 30	# weight
+	0	# type
+	Kochappy_be_dama_red 30	# weight
+	0	# type
+	YellowKochappy_be_dama_yellow 30	# weight
+	0	# type
+	YellowKochappy_be_dama_yellow 30	# weight
+	0	# type
+	YellowKochappy_be_dama_yellow 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	Qurione 10	# weight
+	0	# type
+	ElecHiba 30	# weight
+	5	# type
+	Hiba 30	# weight
+	5	# type
+	GasHiba 30	# weight
+	5	# type
+	Daiodored 20	# weight
+	6	# type
+	Daiodogreen 20	# weight
+	6	# type
+}
+# ItemInfo
+{
+	6 	# num
+	star_rod 10	# weight
+	pokeball_moon 10	# weight
+	pokeball_dream 10	# weight
+	kouseki_suisyou 10	# weight
+	flask 10	# weight
+	castanets 10	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

@@ -38,6 +38,17 @@ Pick one of these:
 - **From Caveripper.** `caveripper extract <romhack.iso> <game>` writes exactly this layout
   to `~/.config/caveripper/assets/<game>` (Caveripper's README covers installation). Copy
   that folder to `data/assets/<game>`.
+- **From the game's own files.** If you have the romhack's files unpacked (an ISO extracted
+  with Dolphin, or a romhack that ships replacement files, like Pikmin 216's
+  `installer/patch` folder), point this at the folder that holds `user/`:
+
+  ```
+  python tools/import_game_files.py <folder> <game> [--base pikmin2]
+  ```
+
+  It unpacks the `.szs` archives and decodes the textures with Wiimms SZS Tools (`wszst` and
+  `wimgt`, which must be on PATH). `--base pikmin2` copies in vanilla map units the romhack
+  uses but doesn't include.
 - **From a CaveGen folder.** If the romhack is already set up for JHawk's CaveGen (see its
   `Adding_New_Romhacks.md`, which covers extracting an ISO with Dolphin and Wiimms SZS Tools),
   convert CaveGen's folder:

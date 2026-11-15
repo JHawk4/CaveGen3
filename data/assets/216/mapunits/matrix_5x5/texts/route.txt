@@ -1,0 +1,184 @@
+21 # waypoint count 
+{
+	0 # index 
+	1 # numLinks 
+	5 # link 0 
+	0.0 0.0 -425.0 60.0 
+}
+{
+	1 # index 
+	1 # numLinks 
+	7 # link 0 
+	425.0 0.0 170.0 60.0 
+}
+{
+	2 # index 
+	1 # numLinks 
+	9 # link 0 
+	-170.0 0.0 425.0 60.0 
+}
+{
+	3 # index 
+	1 # numLinks 
+	11 # link 0 
+	-425.0 0.0 170.0 60.0 
+}
+{
+	4 # index 
+	1 # numLinks 
+	12 # link 0 
+	-425.0 0.0 -340.0 60.0 
+}
+{
+	5 # index 
+	6 # numLinks 
+	0 # link 0 
+	6 # link 1 
+	12 # link 2 
+	14 # link 3 
+	13 # link 4 
+	15 # link 5 
+	0.0 0.0 -340.0 60.0 
+}
+{
+	6 # index 
+	3 # numLinks 
+	5 # link 0 
+	7 # link 1 
+	13 # link 2 
+	340.0 0.0 -340.0 60.0 
+}
+{
+	7 # index 
+	4 # numLinks 
+	6 # link 0 
+	1 # link 1 
+	8 # link 2 
+	20 # link 3 
+	340.0 0.0 170.0 60.0 
+}
+{
+	8 # index 
+	5 # numLinks 
+	7 # link 0 
+	9 # link 1 
+	20 # link 2 
+	18 # link 3 
+	19 # link 4 
+	122.06033149171304 0.0 249.25131061599075 60.0 
+}
+{
+	9 # index 
+	4 # numLinks 
+	8 # link 0 
+	2 # link 1 
+	11 # link 2 
+	19 # link 3 
+	-170.0 0.0 340.0 60.0 
+}
+{
+	10 # index 
+	3 # numLinks 
+	7 # link 0 
+	8 # link 1 
+	9 # link 2 
+	301.43447513812185 0.0 318.23951507208506 60.0 
+}
+{
+	11 # index 
+	5 # numLinks 
+	3 # link 0 
+	12 # link 1 
+	9 # link 2 
+	19 # link 3 
+	16 # link 4 
+	-340.0 0.0 170.0 60.0 
+}
+{
+	12 # index 
+	5 # numLinks 
+	11 # link 0 
+	4 # link 1 
+	5 # link 2 
+	14 # link 3 
+	16 # link 4 
+	-340.0 0.0 -340.0 60.0 
+}
+{
+	13 # index 
+	4 # numLinks 
+	5 # link 0 
+	15 # link 1 
+	18 # link 2 
+	20 # link 3 
+	211.73149171270722 0.0 -185.4028833551739 75.0 
+}
+{
+	14 # index 
+	4 # numLinks 
+	15 # link 0 
+	5 # link 1 
+	16 # link 2 
+	18 # link 3 
+	-193.01016574585628 0.0 -209.54875491480692 70.0 
+}
+{
+	15 # index 
+	6 # numLinks 
+	14 # link 0 
+	5 # link 1 
+	13 # link 2 
+	18 # link 3 
+	16 # link 4 
+	20 # link 5 
+	5.911160220994475 0.0 -181.9534731323692 70.0 
+}
+{
+	16 # index 
+	6 # numLinks 
+	14 # link 0 
+	12 # link 1 
+	18 # link 2 
+	19 # link 3 
+	11 # link 4 
+	15 # link 5 
+	-225.20552486187836 0.0 -34.77863695936787 70.0 
+}
+{
+	17 # index 
+	2 # numLinks 
+	11 # link 0 
+	9 # link 1 
+	-321.79011049723755 0.0 325.1375491480991 60.0 
+}
+{
+	18 # index 
+	7 # numLinks 
+	15 # link 0 
+	13 # link 1 
+	20 # link 2 
+	19 # link 3 
+	8 # link 4 
+	16 # link 5 
+	14 # link 6 
+	1.3118232044199658 0.0 7.764089121890265 65.0 
+}
+{
+	19 # index 
+	4 # numLinks 
+	9 # link 0 
+	11 # link 1 
+	16 # link 2 
+	18 # link 3 
+	-127.46961325966845 0.0 123.89423328964915 70.0 
+}
+{
+	20 # index 
+	5 # numLinks 
+	18 # link 0 
+	13 # link 1 
+	7 # link 2 
+	8 # link 3 
+	15 # link 4 
+	200.23314917127072 0.0 3.164875491483997 70.0 
+}

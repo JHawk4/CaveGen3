@@ -1,0 +1,83 @@
+# BaseGen file
+9 	 # num gens
+# basegen 3
+{
+	7 	# type [Start]
+	-400.000000 0.230 360.000000 	# pos
+	90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 3
+{
+	4 	# type [geyser]
+	413.000000 0.230 -410.000000 	# pos
+	90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 4
+{
+	6 	# type [spooder]
+	0.000000 0.230 -90.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 20
+{
+	1 	# type [glowy]
+	150.000000 0.230 235.000000 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 20
+{
+	1 	# type [glowy]
+	120.000000 0.230 -360.000000 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 20
+{
+	1 	# type [glowy]
+	-320.000000 0.230 -340.000000 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 20
+{
+	1 	# type [glowy]
+	-280.000000 0.230 10.000000 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 20
+{
+	1 	# type [glowy]
+	370.000000 0.230 -40.000000 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 20
+{
+	0 	# type [egg]
+	360.000000 0.230 380.000000 	# pos
+	180.000000 	# ang
+	40.000000 	# radius
+	2 	# min num
+	3 	# max num
+}

@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# room_5x5a_2_kusachi
+{
+	1 	# version
+	room_snakewhole_kusachi 	# foldername
+	5 10 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

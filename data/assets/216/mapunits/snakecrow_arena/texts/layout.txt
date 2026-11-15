@@ -1,0 +1,128 @@
+# BaseGen file
+14 	 # num gens
+# basegen 1
+{
+	7 	# type [Start]
+	155.000000 -5.000000 -670.000000 	# pos
+	-90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen hole
+{
+	4 	# type [Geyser]
+	-155.000000 -4.89 -670.000000 	# pos
+	150.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 14
+{
+	1 	# type [Teki B]
+	-150.000000 43.62 80.000000 	# pos
+	150.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 15
+{
+	1 	# type [Teki B]
+	85.000000 43.62 -20.000000 	# pos
+	-50.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 23
+{
+	6 	# type [Plant]
+	-20.000000 -4.89000000 -760.000000 	# pos
+	270.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen quesiton mark
+{
+	6 	# type [Plant]
+	90.000000 -4.89000000 -500.000000 	# pos
+	270.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 25
+{
+	6 	# type [Plant]
+	0.00 43.62 235.00 	# pos
+	60.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 25
+{
+	6 	# type [Plant]
+	30.00 43.62 -205.00 	# pos
+	60.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 27
+{
+	6 	# type [Plant]
+	170.000000 43.6200000 40.000000 	# pos
+	300.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 28
+{
+	6 	# type [Plant]
+	-175.000000 43.620000 -140.000000 	# pos
+	90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 29
+{
+	6 	# type [Plant]
+	-80.000000 43.620000 10.00 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 30
+{
+	6 	# type [Plant]
+	60.000000 43.620000 -85.00 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 31
+{
+	6 	# type [Plant]
+	-245.000000 -4.890000 -550.00 	# pos
+	125.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 32
+{
+	6 	# type [Plant]
+	-195.000000 43.620000 -30.00 	# pos
+	240.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

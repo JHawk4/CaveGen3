@@ -797,7 +797,7 @@ mod tests {
 
         // Every pikmin2 sublevel works with details on (the waypoint graph and paths can panic,
         // which in the browser would stop the page).
-        web.add_files(&bundle(root, &["assets/newyear", "assets/colossal"])).unwrap();
+        web.add_files(&bundle(root, &["assets/newyear", "assets/colossal", "assets/216"])).unwrap();
         for cave in data.caves().iter() {
             // New Year's Timeless Realm is missing a unit file.
             let Ok(floors) = data.floors(cave) else { continue };

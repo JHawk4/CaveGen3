@@ -1,0 +1,72 @@
+# CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 14 	# 敵最大数
+	{f003} 4 10 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch5.txt 	# 使用ユニット
+	{f009} -1 cursed_breadbug.ini 	# 使用ライト
+	{f00A} -1 techno 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 3 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	OoPanModoki_key 10 	# weight
+	8 	# type
+	PanModoki_cookie_m_l 10 	# weight
+	1 	# type
+	PanModoki_cookie_u_l 10 	# weight
+	1 	# type
+	PanModoki_cookie_s_l 10 	# weight
+	1 	# type
+	UjiA_bird_hane 20	# weight
+	0	# type
+	UjiA_bird_hane 20	# weight
+	0	# type
+	UjiA_bird_hane 20	# weight
+	0	# type
+	UjiB_sakura 20	# weight
+	0	# type
+	UjiB_sakura 20	# weight
+	0	# type
+}
+# ItemInfo
+{
+	7 	# num
+	cookie 20 	# weight
+	cookie_u 20 	# weight
+	cookie_s 20 	# weight
+	donutsichigo 10	# weight
+	donutschoco 10	# weight
+	dia_b_green 10	
+	medama_yaki 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0	# captype
+	Egg 21	# weight
+	1	# type
+}

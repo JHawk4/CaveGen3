@@ -1,0 +1,144 @@
+# CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 17 	# 敵最大数
+	{f003} 4 4 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 ch7_1.txt 	# 使用ユニット
+	{f009} -1 dark_forest.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	15 	# num
+	RandPom 30 	# weight
+	1 	# type
+	YellowKochappy_chocoichigo 10 	# weight
+	1 	# type
+	Kochappy_be_dama_red 10 	# weight
+	1 	# type
+	BlueKochappy_donguri 10 	# weight
+	1 	# type
+	KumaKochappy_cookie 10 	# weight
+	1 	# type
+	YellowKochappy_cookie_s 10 	# weight
+	1 	# type
+	Kochappy_cookie_u 10 	# weight
+	1 	# type
+	BlueKochappy_flower_red 10 	# weight
+	1 	# type
+	KumaKochappy_seed 10 	# weight
+	1 	# type
+	Egg 30 	# weight
+	0 	# type
+	Sokkuri_sakura 10	# weight
+	0	# type
+	Sokkuri_sakura 10	# weight
+	0	# type
+	Sokkuri_sakura 10	# weight
+	0	# type
+	Wakame_s 2 	# weight
+	6 	# type
+	Ooinu_s 11 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	4 	# num
+	key 10 	# weight
+	matu_bokkuri 10	# weight
+	momiji_red 10 	# weight
+	kinoko_tubu 10	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	RandPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 11 	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch7_2.txt 	# 使用ユニット
+	{f009} -1 furnace_lv0.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	FireChappy_key 10 	# weight
+	1 	# type
+	RandPom 10 	# weight
+	1 	# type
+	Tank_silver_medal 10 	# weight
+	1 	# type
+	Wtank_wadou_kaichin 10 	# weight
+	1 	# type
+	Armor_ichigo 10	# weight
+	1	# type
+	ElecHiba 30 	# weight
+	5 	# type
+	Hiba 30 	# weight
+	5 	# type
+	Ooinu_s 12 	# weight
+	6 	# type
+	Tukushi 7 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	5 	# num
+	kinoko 10 	# weight
+	ichigo_l 10 	# weight
+	dia_a_red 10 	# weight
+	dia_a_green 10 	# weight
+	leaf_kare 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0	# captype
+	Egg 40	# weight
+	1	# type
+}

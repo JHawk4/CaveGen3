@@ -180,8 +180,8 @@ const STRINGS = {
       "251": "Pikmin 251",
       newyear: "Pikmin 2: New Year",
       colossal: "Colossal Caverns",
-      "216": "Pikmin 2: 216",
-      bikmin: "Bikmin",
+      "216": "Pikmin 216",
+      bikmin: "Bikmin 269",
     },
   },
   ja: {
@@ -361,8 +361,8 @@ const STRINGS = {
       "251": "Pikmin 251",
       newyear: "Pikmin 2: New Year",
       colossal: "Colossal Caverns",
-      "216": "Pikmin 2: 216",
-      bikmin: "Bikmin",
+      "216": "Pikmin 216",
+      bikmin: "Bikmin 269",
     },
   },
 };

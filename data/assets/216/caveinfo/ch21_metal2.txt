@@ -1,0 +1,162 @@
+# CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 25 	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 ch21_1.txt 	# 使用ユニット
+	{f009} -1 ice_fog.ini 	# 使用ライト
+	{f00A} -1 build 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	OniKurage_key 10 	# weight
+	1 	# type
+	Kurage_diamond_crystal 10 	# weight
+	1 	# type
+	Kurage_diamond_red 10 	# weight
+	1 	# type
+	Kurage_diamond_purple 10 	# weight
+	1 	# type
+	MaroFrog_diamond_green 10 	# weight
+	1 	# type
+	MaroFrog_diamond_green 10 	# weight
+	1 	# type
+	WaterOtakara_dia_b_red 30 	# weight
+	1 	# type
+	Demon_be_dama_red 20	# weight
+	1	# type
+	YellowKochappy_be_dama_yellow 30 	# weight
+	0 	# type
+	YellowKochappy_be_dama_yellow 20 	# weight
+	0 	# type
+	YellowKochappy_be_dama_yellow 20 	# weight
+	0 	# type
+	YellowKochappy_be_dama_yellow 30 	# weight
+	0 	# type
+	YellowKochappy_be_dama_yellow 20 	# weight
+	0 	# type
+	Hikarikinoko 40 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	5 	# num
+	kan 10 	# weight
+	gearsilver 10 	# weight
+	chocowhite_l 10 	# weight
+	channel 10 	# weight
+	sinkukan_c 10	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 11 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 45 	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch21_2.txt 	# 使用ユニット
+	{f009} -1 infected_metal.ini 	# 使用ライト
+	{f00A} -1 build	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	19 	# num
+	FireChappy_key 10 	# weight
+	8 	# type
+	BombSarai_nut 10 	# weight
+	1 	# type
+	BombSarai_bolt 10 	# weight
+	1 	# type
+	Tank_j_block_red 20 	# weight
+	1 	# type
+	Hanachirashi_mahjong 10 	# weight
+	1 	# type
+	Hanachirashi_donutschoco_s 10 	# weight
+	1 	# type
+	Hiba 30	# weight
+	1	# type
+	BombOtakara 20	# weight
+	1	# type
+	Hiba 30	# weight
+	1	# type
+	BombOtakara 20	# weight
+	1	# type
+	Hiba 20 	# weight
+	0 	# type
+	Hiba 10 	# weight
+	0 	# type
+	Hiba 20 	# weight
+	0 	# type
+	Hiba 10 	# weight
+	0 	# type
+	Hiba 20 	# weight
+	0 	# type
+	Hiba 2 	# weight
+	0 	# type
+	Bomb 5 	# weight
+	0 	# type
+	Hiba 50 	# weight
+	5 	# type
+	Daiodored 99 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	5 	# num
+	pokeball_ultra 10 	# weight
+	gum_tape_s 10 	# weight
+	sinkukan_b 10 	# weight
+	sinkukan 10 	# weight
+	bane 10	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

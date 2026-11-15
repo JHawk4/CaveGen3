@@ -1,0 +1,88 @@
+# CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 99 	# 敵最大数
+	{f003} 4 12 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch28.txt 	# 使用ユニット
+	{f009} -1 city_sunset.ini 	# 使用ライト
+	{f00A} -1 skysunset 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 5 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	16 	# num
+	FminiHoudai_key 10 	# weight
+	8	# type
+	FminiHoudai_gold_medal 20 	# weight
+	8 	# type
+	OniKurage_superstar 20	# weight
+	1	# type
+	BombSarai_juji_key 50 	# weight
+	1 	# type
+	Kabuto_wadou_kaichin 50 	# weight
+	1 	# type
+	Rkabuto_silver_medal 50 	# weight
+	1 	# type
+	Kochappy_be_dama_red 30	# weight
+	0	# type
+	Kochappy_be_dama_red 30	# weight
+	0	# type
+	Kochappy_be_dama_red 30	# weight
+	0	# type
+	Kochappy_be_dama_red 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 20	# weight
+	0	# type
+	ElecBug_be_dama_blue 30	# weight
+	0	# type
+	ElecBug_be_dama_blue 20	# weight
+	0	# type
+	Daiodored 50 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	12 	# num
+	bane 10
+	gearsilver 10
+	flask 10
+	star_rod 10
+	haniwa 10
+	kouseki_suisyou 10
+	whistle 10
+	castanets 10
+	bell_red 10
+	timegear 10
+	donutswhite_s 10
+	toy_teala 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

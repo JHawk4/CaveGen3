@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# damagumo_crystal
+{
+	1 	# version
+	dangomushi_castle 	# foldername
+	10 10 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

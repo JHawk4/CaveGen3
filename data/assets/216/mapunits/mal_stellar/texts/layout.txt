@@ -1,0 +1,56 @@
+# BaseGen file
+6 	 # num gens
+# basegen 0
+{
+	7 	# type [Start]
+	-500.000000 0.000000 650.000000 	# pos
+	120.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 1
+{
+	4 	# type [FixObj]
+	500.000000 0.000000 680.000000 	# pos
+	-45.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 2
+{
+	1 	# type [Item]
+	-800.000000 0.000000 -250.000000 	# pos
+	348.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 3
+{
+	1 	# type [Item]
+	800.000000 0.000000 -250.000000 	# pos
+	-348.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 4
+{
+	1 	# type [Item]
+	0.000000 0.000000 -800.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 5
+{
+	8 	# type [Teki F]
+	0.000000 0.000000 0.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

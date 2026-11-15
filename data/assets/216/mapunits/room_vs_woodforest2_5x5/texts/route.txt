@@ -1,0 +1,138 @@
+20 # waypoint count 
+{
+	0 # index 
+	1 # numLinks 
+	2 # link 0 
+	425.0 0.0 -340.0 60.0 
+}
+{
+	1 # index 
+	1 # numLinks 
+	7 # link 0 
+	-170.0 0.0 425.0 60.0 
+}
+{
+	2 # index 
+	2 # numLinks 
+	0 # link 0 
+	3 # link 1 
+	215.0 0.0 -300.0 60.0 
+}
+{
+	3 # index 
+	4 # numLinks 
+	2 # link 0 
+	4 # link 1 
+	10 # link 2 
+	13 # link 3 
+	105.0 0.0 -200.0 60.0 
+}
+{
+	4 # index 
+	2 # numLinks 
+	3 # link 0 
+	5 # link 1 
+	225.0 0.0 0.0 60.0 
+}
+{
+	5 # index 
+	2 # numLinks 
+	4 # link 0 
+	6 # link 1 
+	170.0 0.0 170.0 60.0 
+}
+{
+	6 # index 
+	2 # numLinks 
+	5 # link 0 
+	7 # link 1 
+	-0.0 0.0 255.0 60.0 
+}
+{
+	7 # index 
+	3 # numLinks 
+	6 # link 0 
+	1 # link 1 
+	8 # link 2 
+	-170.0 0.0 255.0 60.0 
+}
+{
+	8 # index 
+	2 # numLinks 
+	7 # link 0 
+	9 # link 1 
+	-255.0 0.0 85.0 60.0 
+}
+{
+	9 # index 
+	2 # numLinks 
+	8 # link 0 
+	10 # link 1 
+	-255.0 0.0 -85.0 60.0 
+}
+{
+	10 # index 
+	3 # numLinks 
+	9 # link 0 
+	3 # link 1 
+	13 # link 2 
+	-140.0 0.0 -220.0 90.0 
+}
+{
+	11 # index 
+	1 # numLinks 
+	12 # link 0 
+	-20.0 0.0 30.0 50.0 
+}
+{
+	12 # index 
+	2 # numLinks 
+	13 # link 0 
+	11 # link 1 
+	-39.84999999999991 0.0 -89.60000000000093 20.0 
+}
+{
+	13 # index 
+	3 # numLinks 
+	10 # link 0 
+	3 # link 1 
+	12 # link 2 
+	0.15000000000009095 0.0 -209.60000000000093 20.0 
+}
+{
+	14 # index 
+	1 # numLinks 
+	4 # link 0 
+	355.0 0.0 -40.0 30.0 
+}
+{
+	15 # index 
+	2 # numLinks 
+	5 # link 0 
+	6 # link 1 
+	198.39359116022092 0.0 338.27614678898874 30.0 
+}
+{
+	16 # index 
+	1 # numLinks 
+	15 # link 0 
+	315.0 0.0 340.0 60.0 
+}
+{
+	17 # index 
+	1 # numLinks 
+	14 # link 0 
+	340.0 0.0 -150.0 60.0 
+}
+{
+	18 # index 
+	1 # numLinks 
+	19 # link 0 
+	-375.0 0.0 -340.0 50.0 
+}
+{
+	19 # index 
+	1 # numLinks 
+	10 # link 0 
+	-382.77651933701634 0.0 -221.2001310616019 20.0 
+}

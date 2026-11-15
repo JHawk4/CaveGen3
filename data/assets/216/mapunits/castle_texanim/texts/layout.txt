@@ -1,0 +1,38 @@
+# BaseGen file
+4 	 # num gens
+# basegen 0
+{
+	7 	# type [Start]
+	-180.000000 308.755219 -760.000000 	# pos
+	30.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 4
+{
+	1 	# type [Teki B]
+	220.000000 266.000000 -97.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 4
+{
+	1 	# type [Teki B]
+	-184.000000 217.22 80.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 0
+{
+	4 	# type [hole]
+	235.000000 121.93 670.000000 	# pos
+	305.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

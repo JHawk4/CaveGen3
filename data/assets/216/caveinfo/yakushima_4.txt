@@ -1,0 +1,365 @@
+# CaveInfo
+{
+	{c000} 4 5 	# 階層
+	{_eof} 
+}
+5 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 28 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 spooky_1.txt 	# 使用ユニット
+	{f009} -1 cursed_light.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 180.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	BlackMan_fue_pullout 10 	# weight
+	1 	# type
+	FireChappy_be_dama_red_l 10 	# weight
+	1 	# type
+	Tank 20 	# weight
+	1 	# type
+	LeafChappy 20	# weight
+	1	# type
+	FireOtakara 30	# weight
+	1	# type
+	Bomb 20	# weight
+	1	# type
+	$4FireOtakara 10	# weight
+	1	# type
+	Hiba 10 	# weight
+	0 	# type
+	Hiba 10 	# weight
+	0 	# type
+	Hiba 10 	# weight
+	0 	# type
+	Bomb 60	# weight
+	0	# type
+	Hiba 70 	# weight
+	5 	# type
+	Zenmai 15 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	timer 10 	# weight
+	majora 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Egg 11 	# weight
+	1 	# type
+	0 	# captype
+	$1FireOtakara 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 27 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 80 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.050000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 spooky_2.txt 	# 使用ユニット
+	{f009} -1 cursed_light.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 180.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	BlackMan_fue_pullout 10 	# weight
+	8 	# type
+	Mar 10 	# weight
+	1 	# type
+	LeafChappy 10	# weight
+	1	# type
+	Mar_medama_yaki  10 	# weight
+	8 	# type
+	Wtank 20 	# weight
+	1 	# type
+	Kabuto 30 	# weight
+	1 	# type
+	GasOtakara 20 	# weight
+	1 	# type
+	GasHiba 30 	# weight
+	1 	# type
+	BlueKochappy 30 	# weight
+	0 	# type
+	BlueKochappy 30 	# weight
+	0 	# type
+	BlueKochappy 20 	# weight
+	0 	# type
+	GasHiba 40	# weight
+	5	# type
+	Tadpole 4 	# weight
+	6 	# type
+	Zenmai 13 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	spadekey 10 	# weight
+	chocowhite_l 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	3 	# num
+	0	# captype
+	Egg 21	# weight
+	0	# type
+	1	# captype
+	BlueKochappy 20	# weight
+	0	# type
+	0	# captype
+	$4GasOtakara 20	# weight
+	1	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 34 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 2 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.200000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 spooky_3.txt 	# 使用ユニット
+	{f009} -1 cursed_light.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 180.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	BlackMan_fue_pullout 10 	# weight
+	1 	# type
+	$1OniKurage_be_dama_blue_l 10 	# weight
+	1 	# type
+	LeafChappy 10 	# weight
+	1 	# type
+	Kurage 30 	# weight
+	1 	# type
+	Fuefuki 10	# weight
+	1	# type
+	BombOtakara 30 	# weight
+	1 	# type
+	Bomb 60 	# weight
+	0 	# type
+	$4Frog 20 	# weight
+	1 	# type
+	$4Kurage 30 	# weight
+	5 	# type
+	$4Egg 80 	# weight
+	1 	# type
+	$4BombSarai 20 	# weight
+	5 	# type
+	Zenmai 23 	# weight
+	6 	# type
+	Tadpole 6 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	halloween 10 	# weight
+	questionblock 10 	# weight
+}
+# GateInfo
+{
+	1 	# num
+	gate 3000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	3 	# num
+	0 	# captype
+	Egg 11 	# weight
+	1 	# type
+	0 	# captype
+	$1BombSarai 10 	# weight
+	1 	# type
+	0 	# captype
+	$4Bomb 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 45 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 4 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.00000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 spooky_4.txt 	# 使用ユニット
+	{f009} -1 cursed_light.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 180.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	15 	# num
+	BlackMan_fue_pullout 10 	# weight
+	8 	# type
+	UmiMushiBlind_be_dama_yellow_l 10 	# weight
+	1 	# type
+	UmiMushiBlind 10 	# weight
+	8 	# type
+	Mar 20 	# weight
+	1 	# type
+	Catfish 20	# weight
+	1	# type
+	Rock 30	# weight
+	1	# type
+	ElecBug 20	# weight
+	0	# type
+	ElecBug 20	# weight
+	0	# type
+	ElecBug 20	# weight
+	0	# type
+	ElecBug 30	# weight
+	0	# type
+	$ElecBug 30	# weight
+	0	# type
+	Rock 2	# weight
+	5	# type
+	ElecHiba 2 	# weight
+	5 	# type
+	Zenmai 26 	# weight
+	6 	# type
+	Tanpopo 6 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	pokeball_beast 10 	# weight
+	dangersign 10 	# weight
+}
+# GateInfo
+{
+	1 	# num
+	gate 3000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	4 	# num
+	0 	# captype
+	Egg 11 	# weight
+	1 	# type
+	0 	# captype
+	Miulin 10 	# weight
+	0 	# type
+	0 	# captype
+	ElecBug 20 	# weight
+	0 	# type
+	0 	# captype
+	$4ElecOtakara 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 7 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 9 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 spooky_5.txt 	# 使用ユニット
+	{f009} -1 cursed_light.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 15.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	BlackMan_light_a 10 	# weight
+	8 	# type
+	WhitePom 30	# weight
+	1	# type
+	BlackPom 30	# weight
+	0	# type
+	Zenmai 10	# weight
+	6	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num

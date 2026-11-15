@@ -1,0 +1,73 @@
+# CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 25 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 3 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch2.txt 	# 使用ユニット
+	{f009} -1 tutorial_1_light.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	YellowKochappy_be_dama_yellow 80 	# weight
+	1 	# type
+	Fart_wadou_kaichin 10 	# weight
+	8 	# type
+	Fart_silver_medal 10 	# weight
+	8 	# type
+	GasOtakara_cookie_s 10 	# weight
+	0 	# type
+	GasOtakara_chocoichigo 10 	# weight
+	0 	# type
+	GasOtakara_cookie 10 	# weight
+	0 	# type
+	PanModoki_cookie_u 10 	# weight
+	1 	# type
+	GasHiba 30	# weight
+	1	# type
+	UjiA_bird_hane 40 	# weight
+	0 	# type
+	KareOoinu_s 6 	# weight
+	6 	# type
+	Hikarikinoko 5 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	3 	# num
+	flask 10 	# weight
+	kouseki_suisyou 10 	# weight
+	toy_ring_c_green 10 	# weight
+}
+# GateInfo
+{
+	1 	# num
+	gate 1000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	1 	# num
+	0	# captype
+	YellowChappy_key 10	# weight
+	1	# type
+}

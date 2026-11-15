@@ -1,0 +1,129 @@
+# CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 99 	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.200000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 ch17_1.txt 	# 使用ユニット
+	{f009} -1 very_dark_forest_out.ini 	# 使用ライト
+	{f00A} -1 forest 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	18 	# num
+	Miulin_key 10 	# weight
+	8 	# type
+	Hana_ichigo_l 10 	# weight
+	1 	# type
+	Hana_dia_a_red 10 	# weight
+	1 	# type
+	Armor_ichigo 10 	# weight
+	1 	# type
+	Armor_momiji_red 10 	# weight
+	1 	# type
+	Armor_seed 10 	# weight
+	1 	# type
+	Wealthy_gold_medal 10 	# weight
+	1 	# type
+	Sokkuri_momiji_normal 20	# weight
+	1	# type
+	Magaret 40 	# weight
+	1 	# type
+	UjiA_bird_hane 31 	# weight
+	0 	# type
+	UjiB_sakura 31 	# weight
+	0 	# type
+	Tobi_flower_blue 31 	# weight
+	0 	# type
+	Magaret 8 	# weight
+	6 	# type
+	Wakame_l 3 	# weight
+	6 	# type
+	Wakame_s 5 	# weight
+	6 	# type
+	Ooinu_s 15 	# weight
+	6 	# type
+	Ooinu_l 10 	# weight
+	6 	# type
+	Clover 30 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	5 	# num
+	leaf_kare 10 	# weight
+	pineapple 10 	# weight
+	kinoko_tubu 10 	# weight
+	bulb 10 	# weight
+	donguri 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0	# captype
+	TamagoMushi 10	# weight
+	1	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 1 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch17_2.txt 	# 使用ユニット
+	{f009} -1 very_dark_forest_out.ini 	# 使用ライト
+	{f00A} -1 forest 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	2 	# num
+	SnakeWhole_key 10 	# weight
+	1 	# type
+	Ooinu_l 10 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

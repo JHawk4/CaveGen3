@@ -1,0 +1,218 @@
+# BaseGen file
+24 	 # num gens
+# basegen 0
+{
+	7 	# type [Start]
+	0.000000 00.000000 -157.000000 	# pos
+	90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 1
+{
+	2 	# type [Item]
+	550.000000 0.000000 -1025.000000 	# pos
+	270.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 2
+{
+	2 	# type [Item]
+	570.000000 0.000000 70.000000 	# pos
+	300.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 3
+{
+	2 	# type [Item]
+	-550.000000 0.000000 560.000000 	# pos
+	215.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 4
+{
+	2 	# type [Item]
+	-400.000000 0.000000 -575.000000 	# pos
+	300.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 5
+{
+	2 	# type [Item]
+	-540.000000 0.000000 -1030.000000 	# pos
+	90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 6
+{
+	4 	# type [Geyser]
+	870.000000 0.000000 710.000000 	# pos
+	60.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 7
+{
+	4 	# type [Geyser]
+	-865.000000 0.000000 720.000000 	# pos
+	75.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 8
+{
+	1 	# type [breadboi]
+	-875.000000 0.000000 70.000000 	# pos
+	115.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 9
+{
+	1 	# type [breadboi]
+	-75.000000 0.000000 240.000000 	# pos
+	70.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 10
+{
+	1 	# type [breadboi]
+	-90.000000 0.000000 -720.000000 	# pos
+	295.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 11
+{
+	1 	# type [breadboi]
+	720.000000 0.000000 -1025.000000 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 12
+{
+	1 	# type [breadboi]
+	880.000000 0.000000 -1030.000000 	# pos
+	30.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 13
+{
+	1 	# type [breadboi]
+	715.000000 0.000000 -240.000000 	# pos
+	185.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 14
+{
+	1 	# type [breadboi]
+	-710.000000 0.000000 -240.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 18
+{
+	0 	# type [Teki A]
+	75.000000 0.000000 -725.000000 	# pos
+	0.000000 	# ang
+	65.000000 	# radius
+	2 	# min num
+	3 	# max num
+}
+# basegen 19
+{
+	0 	# type [Teki A]
+	565.000000 0.000000 -555.000000 	# pos
+	0.000000 	# ang
+	65.000000 	# radius
+	1 	# min num
+	3 	# max num
+}
+# basegen 20
+{
+	0 	# type [Teki A]
+	400.000000 0.000000 70.000000 	# pos
+	0.000000 	# ang
+	75.000000 	# radius
+	1 	# min num
+	3 	# max num
+}
+# basegen 21
+{
+	0 	# type [Teki A]
+	865.000000 0.000000 -90.000000 	# pos
+	0.000000 	# ang
+	75.000000 	# radius
+	2 	# min num
+	4 	# max num
+}
+# basegen 22
+{
+	0 	# type [Teki A]
+	400.000000 0.000000 560.000000 	# pos
+	0.000000 	# ang
+	55.000000 	# radius
+	1 	# min num
+	3 	# max num
+}
+# basegen 23
+{
+	0 	# type [Teki A]
+	-400.000000 0.000000 250.000000 	# pos
+	0.000000 	# ang
+	75.000000 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 24
+{
+	0 	# type [Teki A]
+	-860.000000 0.000000 -720.000000 	# pos
+	0.000000 	# ang
+	75.000000 	# radius
+	1 	# min num
+	3 	# max num
+}
+# basegen 25
+{
+	0 	# type [Teki A]
+	-395.000000 0 -400	# pos
+	0.000000 	# ang
+	60.000000 	# radius
+	1 	# min num
+	3 	# max num
+}
+# basegen 26
+{
+	0 	# type [Teki A]
+	235.000000 0 400 	# pos
+	275.000000 	# ang
+	70.000000 	# radius
+	2 	# min num
+	3 	# max num
+}

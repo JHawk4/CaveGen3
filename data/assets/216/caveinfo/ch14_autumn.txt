@@ -1,0 +1,103 @@
+# CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 41 	# 敵最大数
+	{f003} 4 6 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 ch14.txt 	# 使用ユニット
+	{f009} -1 dark_forest_out.ini 	# 使用ライト
+	{f00A} -1 autumn 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 3 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	24 	# num
+	KumaChappy_key 10 	# weight
+	8 	# type
+	Armor_ichigo 10 	# weight
+	1 	# type
+	Armor_seed 10 	# weight
+	1 	# type
+	Hana_ichigo_l 10	# weight
+	1	# type
+	Hana_greenapple 10	# weight
+	1	# type
+	Hana_dia_a_red 10	# weight
+	1	# type
+	Hana_momiji_red 10	# weight
+	1	# type
+	Magaret 30	# weight
+	1	# type
+	Magaret 20	# weight
+	1	# type
+	Magaret 30	# weight
+	1	# type
+	KumaKochappy_be_dama_red 30 	# weight
+	0 	# type
+	KumaKochappy_be_dama_red 20 	# weight
+	0 	# type
+	UjiA_bird_hane 20	# weight
+	0	# type
+	KumaKochappy_be_dama_red 30 	# weight
+	0 	# type
+	KumaKochappy_be_dama_red 20 	# weight
+	0 	# type
+	KumaKochappy_be_dama_red 30 	# weight
+	0 	# type
+	UjiA_bird_hane 20	# weight
+	0	# type
+	KumaKochappy_be_dama_red 20 	# weight
+	0 	# type
+	KumaKochappy_be_dama_red 30 	# weight
+	0 	# type
+	UjiA_bird_hane 20	# weight
+	0	# type
+	KumaKochappy_be_dama_red 20 	# weight
+	0 	# type
+	Nekojarashi 12	# weight
+	6	# type
+	KareOoinu_l 12	# weight
+	6	# type
+	KareOoinu_l 22	# weight
+	6	# type
+}
+# ItemInfo
+{
+	6 	# num
+	kinoko 10 	# weight
+	kinoko_tubu 10 	# weight
+	leaf_kare 10 	# weight
+	dia_a_green 10 	# weight
+	matu_bokkuri 10 	# weight
+	sakura 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0	# captype
+	Qurione 30	# weight
+	1	# type
+	0	# captype
+	KareOoinu_l 30	# weight
+	1	# type
+}
