@@ -12,15 +12,16 @@ Object.assign(STRINGS.en, {
   aggGroupRooms: "Rooms only",
   aggGroupFirst: "First room placed",
   aggConsecutive: "Counting up from",
+  aggGameRng: "Game RNG steps from (CaveGen's -consecutiveSeeds)",
   aggRun: "Aggregate",
   aggShow: "Show",
   aggMinPct: "Hide below",
   aggMaxGroups: "Groups shown",
   aggHelp:
-    "Each map is one group of seeds that look alike, turned so its anchor room faces the same way. " +
+    "Each map is one group of seeds that look alike, in any rotation: rooms that look the same turned (like four-way rooms) count as the same. " +
     "Icons show what spawned at each spot and how often; gray is how often other map units covered a cell. " +
-    "With comedown grouping, find the group that matches your landing to see where treasures probably are. " +
-    "Scroll to zoom a map, drag to move it, hover for details.",
+    "With comedown grouping, the dashed outline is what the camera shows when you land, turned so the camera faces up; find the group that matches your landing to see where treasures probably are. " +
+    "Scroll or pinch to zoom a map, drag to move it, hover for details.",
   aggRunning: (done, total) => `Aggregating… ${done.toLocaleString()} of ${total.toLocaleString()} seeds`,
   aggDone: (total, groups, s) => `${total.toLocaleString()} seeds in ${s} s, ${groups.toLocaleString()} groups.`,
   aggStopped: (total) => `Stopped after ${total.toLocaleString()} seeds.`,
@@ -40,15 +41,16 @@ Object.assign(STRINGS.ja, {
   aggGroupRooms: "部屋のみ",
   aggGroupFirst: "最初に置かれた部屋",
   aggConsecutive: "このシードから順に",
+  aggGameRng: "このシードから乱数を進める（CaveGenの -consecutiveSeeds）",
   aggRun: "集計",
   aggShow: "表示",
   aggMinPct: "これ未満は非表示",
   aggMaxGroups: "表示するグループ数",
   aggHelp:
-    "各マップは見た目が同じシードのグループで、基準の部屋が同じ向きになるよう回転してあります。" +
+    "各マップは見た目が同じシードのグループです。向きが違うだけのものや、回転しても同じに見える部屋（四方向の部屋など）は同じとみなします。" +
     "アイコンは各地点に出たものとその割合、灰色はほかのマップユニットがそのマスにあった頻度です。" +
-    "着地時の範囲でまとめた場合は、自分の着地と同じグループを探すと、お宝がありそうな場所がわかります。" +
-    "ホイールで拡大・縮小、ドラッグで移動、カーソルを合わせると詳細が出ます。",
+    "着地時の範囲でまとめた場合、点線は着地直後にカメラに映る範囲で、カメラが上を向くよう回転してあります。自分の着地と同じグループを探すと、お宝がありそうな場所がわかります。" +
+    "ホイールかピンチで拡大・縮小、ドラッグで移動、カーソルを合わせると詳細が出ます。",
   aggRunning: (done, total) => `集計中… ${done.toLocaleString()} / ${total.toLocaleString()} シード`,
   aggDone: (total, groups, s) => `${total.toLocaleString()} シードを${s}秒で集計、${groups.toLocaleString()} グループ。`,
   aggStopped: (total) => `${total.toLocaleString()} シードで停止しました。`,
@@ -120,13 +122,10 @@ function pct(n, total) {
   return p >= 10 ? Math.round(p).toString() : p >= 1 ? p.toFixed(1) : p.toPrecision(1);
 }
 
-/** Draws one group's map into its card. */
-async function drawGroup(card) {
-  const { group, canvas } = card;
+/** What to draw at each spot of a group: objects shown, common enough, likeliest first. */
+function groupSpots(group) {
   const game = agg.game;
   const minShare = Number($("agg-min").value) / 100;
-
-  // What to draw at each spot: objects shown, common enough, most common first.
   const spots = [];
   for (const [x, z, objs] of group.spots) {
     const items = objs
@@ -136,6 +135,43 @@ async function drawGroup(card) {
   }
   // Likeliest last, so it ends up on top where spots crowd together.
   spots.sort((a, b) => a.items[0].n - b.items[0].n);
+  return spots;
+}
+
+/** The comedown trapezoid's corners in a group's frame. */
+function groupComedown(group) {
+  if (!group.pod) return null;
+  const [x, z, fx, fz] = group.pod;
+  const [near, far, nearHalf, farHalf] = agg.result.view;
+  const r = [-fz, fx];
+  const at = (ahead, side) => [x + fx * ahead + r[0] * side, z + fz * ahead + r[1] * side];
+  return [at(near, -nearHalf), at(near, nearHalf), at(far, farHalf), at(far, -farHalf)];
+}
+
+/** A group's extent in game units: its units, the cells others covered, its spots and view. */
+function groupBounds(group) {
+  let [x0, z0, x1, z1] = [Infinity, Infinity, -Infinity, -Infinity];
+  const grow = (x, z, r = 0) => {
+    x0 = Math.min(x0, x - r);
+    z0 = Math.min(z0, z - r);
+    x1 = Math.max(x1, x + r);
+    z1 = Math.max(z1, z + r);
+  };
+  for (const u of group.units) {
+    grow(u.x - u.w * 85, u.z - u.h * 85);
+    grow(u.x + u.w * 85, u.z + u.h * 85);
+  }
+  for (const [cx, cz] of group.cells) grow(cx * 85, cz * 85, 85);
+  for (const [x, z] of group.spots) grow(x, z, 85);
+  for (const [x, z] of groupComedown(group) || []) grow(x, z);
+  return { x0: x0 - 85, z0: z0 - 85, x1: x1 + 85, z1: z1 + 85 };
+}
+
+/** Draws one group's map into its own canvas at `scale`, for the card's viewer. */
+async function drawGroupContent(card, scale) {
+  const { group } = card;
+  const game = agg.game;
+  const spots = groupSpots(group);
   const urls = new Set();
   for (const u of group.units) urls.add(pickUrl(unitUrls(u.name, u.game)));
   for (const s of spots) {
@@ -147,44 +183,22 @@ async function drawGroup(card) {
   urls.delete(null);
   await Promise.all([...urls].map(loadImage));
 
-  // Bounds in game units, around everything drawn.
-  let [x0, z0, x1, z1] = [Infinity, Infinity, -Infinity, -Infinity];
-  const grow = (x, z, r) => {
-    x0 = Math.min(x0, x - r);
-    z0 = Math.min(z0, z - r);
-    x1 = Math.max(x1, x + r);
-    z1 = Math.max(z1, z + r);
-  };
-  for (const u of group.units) {
-    grow(u.x - u.w * 85, u.z - u.h * 85, 0);
-    grow(u.x + u.w * 85, u.z + u.h * 85, 0);
-  }
-  for (const [cx, cz] of group.cells) grow(cx * 85, cz * 85, 85);
-  for (const s of spots) grow(s.x, s.z, 85);
-  if (group.pod) grow(group.pod[0], group.pod[1], agg.result.half);
-  x0 -= 85;
-  z0 -= 85;
-  x1 += 85;
-  z1 += 85;
-  const view = { w: (x1 - x0) / UNIT, h: (z1 - z0) / UNIT, comedown: false };
-
-  const fit = Math.min((card.scroller.clientWidth - 4) / (view.w * CELL), 1.2);
-  const scale = Math.max(0.1, Math.min(card.zoom === "fit" ? fit : card.zoom, maxScale(view)));
-  card.scale = scale;
+  const b = groupBounds(group);
   const cell = CELL * scale;
   const dpr = window.devicePixelRatio || 1;
-  const w = view.w * cell;
-  const h = view.h * cell;
+  const px = (v) => (v / UNIT) * cell;
+  const w = px(b.x1 - b.x0);
+  const h = px(b.z1 - b.z0);
+  const canvas = card.content;
   canvas.width = Math.round(w * dpr);
   canvas.height = Math.round(h * dpr);
-  canvas.style.width = `${Math.round(w)}px`;
-  canvas.style.height = `${Math.round(h)}px`;
+  canvas.cssW = w;
+  canvas.cssH = h;
   const ctx = canvas.getContext("2d");
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.fillStyle = "#0f0f0f";
   ctx.fillRect(0, 0, w, h);
-  const px = (v) => (v / UNIT) * cell;
-  ctx.translate(px(-x0), px(-z0));
+  ctx.translate(px(-b.x0), px(-b.z0));
 
   // How often other units covered each cell.
   for (const [cx, cz, n] of group.cells) {
@@ -211,12 +225,16 @@ async function drawGroup(card) {
     ctx.restore();
   }
 
-  if (group.pod) {
-    const half = px(agg.result.half);
+  // What the camera sees when you land.
+  const view = groupComedown(group);
+  if (view) {
     ctx.strokeStyle = "#ffe14d";
     ctx.lineWidth = Math.max(1.5, cell / 16);
     ctx.setLineDash([cell / 4, cell / 6]);
-    ctx.strokeRect(px(group.pod[0]) - half, px(group.pod[1]) - half, half * 2, half * 2);
+    ctx.beginPath();
+    for (const [x, z] of view) ctx.lineTo(px(x), px(z));
+    ctx.closePath();
+    ctx.stroke();
     ctx.setLineDash([]);
   }
 
@@ -226,7 +244,7 @@ async function drawGroup(card) {
   card.hits = [];
   for (const s of spots) {
     const sizes = s.items.map(({ n }) => cell * 0.55 * (0.5 + 0.5 * (n / group.count)));
-    let y = px(s.z) - sizes.reduce((a, b) => a + b, 0) / 2;
+    let y = px(s.z) - sizes.reduce((a, c) => a + c, 0) / 2;
     const x = px(s.x);
     s.items.forEach(({ o, n }, i) => {
       const size = sizes[i];
@@ -269,38 +287,43 @@ async function drawGroup(card) {
       .filter(({ o }) => objectShownAgg(o))
       .map(({ o, n }) => `${objectName(o)}: ${pct(n, group.count)}%`)
       .join("\n");
-    card.hits.push({ x: x + px(-x0), z: px(s.z) + px(-z0), r: Math.max(cell * 0.4, 10), label });
+    card.hits.push({ x: x + px(-b.x0), z: px(s.z) + px(-b.z0), r: Math.max(cell * 0.4, 10), label });
   }
+  return canvas;
 }
 
 function groupCard(group, index) {
   const total = agg.result.total;
   const canvas = el("canvas", { class: "agg-map" });
-  const scroller = el("div", { class: "agg-scroll" }, canvas);
+  const pane = el("div", { class: "agg-pane" }, canvas);
   const examples = el("span", { class: "agg-examples" }, T.aggExamples);
   for (const seed of group.seeds) {
     const p = new URLSearchParams({ sublevel: agg.sublevelParam, seed: formatSeed(seed) });
     if (agg.grouping.startsWith("comedown")) p.set("comedown", "1");
     examples.append(" ", el("a", { href: `./?${p}`, class: "seed-link" }, formatSeed(seed)));
   }
-  const card = { group, canvas, scroller, zoom: "fit", scale: 1, hits: [] };
-  const box = el(
+  const card = { group, content: document.createElement("canvas"), hits: [] };
+  card.box = el(
     "section",
     { class: "agg-card" },
     el("h3", {}, T.aggGroup(index + 1, pct(group.count, total), group.count)),
     examples,
-    scroller,
+    pane,
   );
-  attachZoom(scroller, canvas, () => card.scale, (s) => {
-    card.zoom = s;
-    return drawGroup(card);
+  card.viewer = createViewer(pane, canvas, {
+    size: () => {
+      const b = groupBounds(group);
+      const view = { w: (b.x1 - b.x0) / UNIT, h: (b.z1 - b.z0) / UNIT };
+      return { w: view.w * CELL, h: view.h * CELL, max: maxScale(view), maxFit: 1.5 };
+    },
+    draw: (scale) => drawGroupContent(card, scale),
+    onChange: () => ($("tooltip").hidden = true),
   });
   const tip = $("tooltip");
-  canvas.addEventListener("mousemove", (e) => {
-    const r = canvas.getBoundingClientRect();
-    const mx = e.clientX - r.left;
-    const mz = e.clientY - r.top;
-    const hit = card.hits.findLast((t) => Math.hypot(t.x - mx, t.z - mz) <= t.r);
+  pane.addEventListener("mousemove", (e) => {
+    const at = card.viewer.toContent(e.clientX, e.clientY);
+    const k = card.viewer.cscale / card.viewer.scale;
+    const hit = card.hits.findLast((t) => Math.hypot(t.x - at.x, t.z - at.y) <= Math.max(t.r, 8 * k));
     if (!hit) {
       tip.hidden = true;
       return;
@@ -310,8 +333,7 @@ function groupCard(group, index) {
     tip.style.left = `${Math.min(e.pageX + 12, document.documentElement.scrollWidth - tip.offsetWidth - 8)}px`;
     tip.style.top = `${e.pageY + 14}px`;
   });
-  canvas.addEventListener("mouseleave", () => (tip.hidden = true));
-  card.box = box;
+  pane.addEventListener("mouseleave", () => (tip.hidden = true));
   return card;
 }
 
@@ -319,17 +341,52 @@ let cards = [];
 async function showResults() {
   const box = $("agg-results");
   if (!agg || !agg.result) return;
+  for (const c of cards) c.viewer.destroy();
   if (!agg.result.groups.length) {
+    cards = [];
     box.replaceChildren(el("p", { class: "muted" }, T.aggNoGroups));
     return;
   }
   cards = agg.result.groups.map((g, i) => groupCard(g, i));
   box.replaceChildren(...cards.map((c) => c.box));
-  for (const c of cards) await drawGroup(c);
+  for (const c of cards) await c.viewer.refresh(true);
 }
 
 async function redrawCards() {
-  for (const c of cards) await drawGroup(c);
+  for (const c of cards) await c.viewer.refresh();
+}
+
+/**
+ * Which map units look the same turned (period 1: a quarter turn, 2: a half turn, 4: never),
+ * judged from their radar images, as "name=period;...". The aggregator also checks their shape.
+ */
+async function imagePeriods(sublevel) {
+  const ci = await command("caveinfo", sublevel);
+  const out = [];
+  const imgs = await Promise.all(ci.units.map((u) => loadImage(pickUrl(unitUrls(u.name, u.game)))));
+  ci.units.forEach((u, i) => {
+    const img = imgs[i];
+    if (!img) return;
+    const c = unitImage(img);
+    const d = c.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, c.width, c.height).data;
+    const [W, H] = [c.width, c.height];
+    const v = (x, y) => d[(y * W + x) * 4 + 3];
+    const mismatch = (map) => {
+      let bad = 0;
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
+          const [x2, y2] = map(x, y);
+          if (Math.abs(v(x, y) - v(x2, y2)) > 40) bad++;
+        }
+      }
+      return bad / (W * H);
+    };
+    let period = 4;
+    if (W === H && mismatch((x, y) => [y, W - 1 - x]) < 0.03) period = 1;
+    else if (mismatch((x, y) => [W - 1 - x, H - 1 - y]) < 0.03) period = 2;
+    out.push(`${u.name}=${period}`);
+  });
+  return out.join(";");
 }
 
 function stopAgg() {
@@ -347,7 +404,7 @@ async function runAgg() {
   const grouping = $("agg-group").value;
   const total = Math.max(1, Math.min(1e7, Math.floor(Number($("agg-count").value) || 0)));
   const mode = $("agg-mode").value;
-  const startAt = mode === "c" ? parseSeed($("seed").value) ?? 0 : randomSeed();
+  const startAt = mode === "r" ? randomSeed() : (parseSeed($("seed").value) ?? 0);
   const sublevel = sublevelName(sel.cave, sel.floor);
   const run = {
     sublevel,
@@ -363,7 +420,9 @@ async function runAgg() {
   const t0 = performance.now();
   try {
     await loadGame(sel.cave.game);
-    await command("agg_start", sublevel, grouping, comedownCells());
+    const shape = comedownShape();
+    const periods = await imagePeriods(sublevel);
+    await command("agg_start", sublevel, grouping, shape.near, shape.far, shape.nearHalf, shape.farHalf, periods);
     let doneSeeds = 0;
     let chunk = 50;
     let lastShown = performance.now();
@@ -419,7 +478,7 @@ function saveAggSettings() {
     for (const id of ["show-treasures", "show-teki", "show-gates", "show-exits"]) s[id] = $(id).checked;
     localStorage.setItem(AGG_SETTINGS_KEY, JSON.stringify(s));
     const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    shared.comedownSize = comedownCells();
+    shared.comedownScreen = $("comedown-screen").value;
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(shared));
   } catch {
     // Not saved; the choices still apply to this page.
@@ -436,7 +495,7 @@ function loadAggSettings() {
       else node.value = v;
     }
     const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    if (shared.comedownSize) $("comedown-size").value = String(shared.comedownSize);
+    if (shared.comedownScreen) $("comedown-screen").value = shared.comedownScreen;
   } catch {
     // Nothing saved, or storage is unavailable.
   }
@@ -444,7 +503,7 @@ function loadAggSettings() {
 
 function updateFieldVisibility() {
   $("comedown-size-field").hidden = !$("agg-group").value.startsWith("comedown");
-  $("seed-field").hidden = $("agg-mode").value !== "c";
+  $("seed-field").hidden = $("agg-mode").value === "r";
 }
 
 async function initAggregator() {
@@ -477,7 +536,7 @@ async function initAggregator() {
     e.preventDefault();
     runAgg();
   });
-  for (const id of ["agg-group", "agg-count", "agg-mode", "comedown-size", "agg-max"]) {
+  for (const id of ["agg-group", "agg-count", "agg-mode", "comedown-screen", "agg-max"]) {
     $(id).addEventListener("change", () => {
       saveAggSettings();
       updateFieldVisibility();
@@ -489,9 +548,4 @@ async function initAggregator() {
       redrawCards();
     });
   }
-  let resizeTimer;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(redrawCards, 200);
-  });
 }

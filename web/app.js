@@ -58,12 +58,16 @@ const STRINGS = {
     navSuggest: "Suggestion box",
     pageTitle: { generator: "CaveGen3", aggregator: "Aggregator · CaveGen3", suggest: "Suggestion box · CaveGen3" },
     comedown: "Comedown only",
-    comedownTitle: "Show only what's around the pod when you land",
-    comedownSize: "Comedown size (cells)",
+    comedownTitle: "Show only what's on screen when you land, turned the way the camera faces",
+    comedownScreen: "Screen (for the comedown)",
+    seedStep: "Seed buttons step",
+    seedStepPlus: "+1 / −1",
+    seedStepGame: "Game RNG (CaveGen's -consecutiveSeeds)",
+    gameRngSeeds: "Game RNG steps from the seed (CaveGen's -consecutiveSeeds)",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
     zoomFit: "Fit the map to the window",
-    zoomHelp: "Scroll or pinch to zoom, drag to move, double-click to zoom in.",
+    zoomHelp: "Scroll or pinch to zoom, drag to move, double-click to zoom in. The comedown is what the landing camera sees (from the game's camera settings).",
     suggestTitle: "Suggestion box",
     suggestIntro: "Found a wrong layout, a missing romhack, or have an idea for CaveGen3? Leave a note. Your name is optional.",
     suggestName: "Name (optional)",
@@ -96,7 +100,7 @@ const STRINGS = {
       paths: "Carry paths",
       gauge: "Treasure gauge rings",
       grid: "Grid",
-      comedownBox: "Comedown box outline",
+      comedownBox: "Comedown outline",
     },
     judge: "Judge",
     judgeNone: "None",
@@ -234,12 +238,16 @@ const STRINGS = {
     navSuggest: "ご意見箱",
     pageTitle: { generator: "CaveGen3", aggregator: "集計 · CaveGen3", suggest: "ご意見箱 · CaveGen3" },
     comedown: "着地時の範囲だけ",
-    comedownTitle: "着地したときにポッドの周りに見える範囲だけを表示します",
-    comedownSize: "着地時の範囲の広さ（マス）",
+    comedownTitle: "着地したときに画面に映る範囲だけを、カメラの向きに合わせて表示します",
+    comedownScreen: "画面（着地時の範囲用）",
+    seedStep: "シードボタンの進め方",
+    seedStepPlus: "+1 / −1",
+    seedStepGame: "ゲームの乱数（CaveGenの -consecutiveSeeds）",
+    gameRngSeeds: "このシードから乱数を進める（CaveGenの -consecutiveSeeds）",
     zoomIn: "拡大",
     zoomOut: "縮小",
     zoomFit: "ウィンドウに合わせる",
-    zoomHelp: "ホイールかピンチで拡大・縮小、ドラッグで移動、ダブルクリックで拡大。",
+    zoomHelp: "ホイールかピンチで拡大・縮小、ドラッグで移動、ダブルクリックで拡大。着地時の範囲は、ゲームのカメラ設定から求めた着地直後の画面です。",
     suggestTitle: "ご意見箱",
     suggestIntro: "レイアウトの誤り、未対応の改造版、CaveGen3への要望などがあればお知らせください。名前は任意です。",
     suggestName: "名前（任意）",
@@ -394,7 +402,6 @@ let caves = [];
 const loadedGames = new Set();
 let current = null; // the last generated layout
 let hitTargets = [];
-let mapDragged = () => false; // set by attachZoom
 let languageHook = null; // a page's own redraw after the language changes
 const page = document.body.dataset.page || "generator"; // icons on the map, for tooltips: {x, z, r, label}
 
@@ -597,151 +604,251 @@ function unitImage(img) {
   return unitCanvases.get(img);
 }
 
-// ---- Zoom and the part of the map shown ----
+// ---- The comedown: what you see when you land ----
 
-let zoom = "fit"; // "fit", or a scale (1 = CELL pixels per grid cell)
-let shownScale = 1; // the scale the map was last drawn at
+// The landing camera, from the game's /user/Nishimura/Camera/caveCameraParms.txt (the
+// "Mid(Low)" settings PlayCamera::init starts with): it looks the way the pod faces, from
+// `dist` units behind the captain and `angle` degrees above, with a vertical field of view of
+// `fov` degrees, aimed `lift` units above the captain. `lookAhead` is how far ahead of the pod
+// the camera's target is when you get control; it's measured from a run video, since the
+// captain and Pikmin step out in front of the pod.
+const CAMERA = { dist: 600, angle: 21, fov: 23, lift: 38, lookAhead: 75 };
 
-/** The comedown box's width in cells: what you see around the pod when you land. */
-function comedownCells() {
-  return Number($("comedown-size")?.value) || 5;
+/** The screen's width over its height: 16:9 or 4:3 (the game's Screen setting). */
+function screenAspect() {
+  return $("comedown-screen")?.value === "4:3" ? 4 / 3 : 16 / 9;
 }
 
-/** The rectangle of the map to draw, in grid cells: the whole cave, or the comedown box. */
+/**
+ * The floor in view when you land: a trapezoid ahead of the pod. `near` and `far` are
+ * distances ahead of the pod in game units (near is a little behind it), with the half-widths
+ * of the view there.
+ */
+function comedownShape(aspect = screenAspect()) {
+  const rad = Math.PI / 180;
+  const height = CAMERA.dist * Math.sin(CAMERA.angle * rad) + CAMERA.lift;
+  const back = CAMERA.dist * Math.cos(CAMERA.angle * rad) - CAMERA.lookAhead;
+  const half = (CAMERA.fov / 2) * rad;
+  const tanSide = Math.tan(half) * aspect;
+  // Where the screen's bottom and top edges meet the floor.
+  const edge = (pitch) => {
+    const ground = height / Math.tan(pitch);
+    const depth = Math.hypot(ground, height) * Math.cos(half);
+    return { ahead: ground - back, half: depth * tanSide };
+  };
+  const near = edge(CAMERA.angle * rad + half);
+  const far = edge(CAMERA.angle * rad - half);
+  return { near: near.ahead, far: far.ahead, nearHalf: near.half, farHalf: far.half };
+}
+
+/** The trapezoid's corners in game units around a pod at (x, z) facing `degrees`. */
+function comedownCorners(x, z, degrees, shape = comedownShape()) {
+  const a = (degrees * Math.PI) / 180;
+  const f = [Math.sin(a), Math.cos(a)];
+  const r = [-f[1], f[0]];
+  const at = (ahead, side) => [x + f[0] * ahead + r[0] * side, z + f[1] * ahead + r[1] * side];
+  return [at(shape.near, -shape.nearHalf), at(shape.near, shape.nearHalf), at(shape.far, shape.farHalf), at(shape.far, -shape.farHalf)];
+}
+
+/** The part of the map to draw, in grid cells: the whole cave, or the comedown. */
 function mapView(layout) {
   const ship = layout.objects.find((o) => o.kind === "ship");
   if ($("comedown")?.checked && ship) {
-    const half = comedownCells() / 2;
-    return { x0: ship.x / UNIT - half, z0: ship.z / UNIT - half, w: half * 2, h: half * 2, comedown: true };
+    const shape = comedownShape();
+    const margin = 40; // game units around the trapezoid
+    return {
+      comedown: true,
+      ship,
+      shape,
+      margin,
+      w: (shape.farHalf * 2 + margin * 2) / UNIT,
+      h: (shape.far - shape.near + margin * 2) / UNIT,
+    };
   }
   // A half-cell margin on each side.
   return { x0: -0.5, z0: -0.5, w: layout.width + 1, h: layout.height + 1, comedown: false };
 }
 
-/** The largest scale whose canvas the browser can still draw. */
+/** The largest scale whose canvas the browser can still draw comfortably. */
 function maxScale(view) {
   const dpr = window.devicePixelRatio || 1;
-  return Math.min(6, 8000 / (Math.max(view.w, view.h) * CELL * dpr));
-}
-
-function fitScale(view, el) {
-  const box = el.getBoundingClientRect();
-  const availW = Math.max(200, box.width - 16);
-  const availH = Math.max(200, window.innerHeight * 0.78);
-  const s = Math.min(availW / (view.w * CELL), availH / (view.h * CELL), view.comedown ? 4 : 1.5);
-  return Math.max(0.05, s);
-}
-
-function zoomScale(view) {
-  const s = zoom === "fit" ? fitScale(view, $("map-scroll")) : zoom;
-  return Math.min(s, maxScale(view));
+  return Math.min(6, 6000 / (Math.max(view.w, view.h) * CELL * dpr));
 }
 
 /**
- * Mouse wheel, drag, double-click and pinch zoom for a scrolling map. `scale()` is the scale
- * last drawn at; `zoomTo(scale)` draws at a new one (returning a promise). The point under the
- * cursor (or between the fingers) stays put. Returns a function that tells whether the pointer
- * just dragged, so a click at the end of a drag can be ignored.
+ * A map pane of fixed size: the map is drawn at some scale into its own canvas (`draw(scale)`
+ * returns it, with its size in CSS pixels as `cssW`/`cssH`), and the pane shows it at any zoom
+ * and position over a dark background. The wheel, a trackpad pinch, two fingers, the buttons
+ * and double-click zoom about the pointer; dragging moves the map, past the edges if you like.
+ * While zooming the drawn map is stretched, then drawn again sharp once you stop.
+ *
+ * `size()` gives the map's size at scale 1 and its largest drawable scale (`max`) and fit
+ * scale (`maxFit`). `onChange(viewer)` runs after each redraw.
  */
-function attachZoom(scroller, canvas, scale, zoomTo) {
-  let busy = false;
-  let pending = 1; // zoom factor waiting while a redraw runs
-  let anchor = null;
-  const zoomAt = async (factor, clientX, clientY) => {
-    pending *= factor;
-    anchor = { clientX, clientY };
-    if (busy) return;
-    busy = true;
-    try {
-      while (pending !== 1) {
-        const f = pending;
-        const at = anchor;
-        pending = 1;
-        const before = canvas.getBoundingClientRect();
-        const old = scale();
-        const px = (at.clientX - before.left) / old;
-        const pz = (at.clientY - before.top) / old;
-        await zoomTo(old * f);
-        const now = scale();
-        const after = canvas.getBoundingClientRect();
-        scroller.scrollLeft += after.left + px * now - at.clientX;
-        scroller.scrollTop += after.top + pz * now - at.clientY;
-      }
-    } finally {
-      busy = false;
-    }
+function createViewer(pane, canvas, { size, draw, onChange }) {
+  const v = { scale: 1, ox: 0, oy: 0, fitted: true, content: null, cscale: 1, dragged: false };
+  const paneSize = () => ({ w: pane.clientWidth, h: pane.clientHeight });
+
+  v.fitScale = () => {
+    const s = size();
+    const p = paneSize();
+    return Math.max(0.02, Math.min((p.w - 16) / s.w, (p.h - 16) / s.h, s.maxFit || 1.5));
   };
-  scroller.addEventListener(
+
+  v.present = () => {
+    const dpr = window.devicePixelRatio || 1;
+    const p = paneSize();
+    if (canvas.width !== Math.round(p.w * dpr) || canvas.height !== Math.round(p.h * dpr)) {
+      canvas.width = Math.round(p.w * dpr);
+      canvas.height = Math.round(p.h * dpr);
+      canvas.style.width = `${p.w}px`;
+      canvas.style.height = `${p.h}px`;
+    }
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = "#0f0f0f";
+    ctx.fillRect(0, 0, p.w, p.h);
+    if (v.content) {
+      const r = v.scale / v.cscale;
+      ctx.imageSmoothingEnabled = r < 1;
+      ctx.drawImage(v.content, v.ox, v.oy, v.content.cssW * r, v.content.cssH * r);
+    }
+    if (onChange) onChange(v);
+  };
+
+  let drawing = null;
+  /** Draws the map again at the current scale (and fits it first if it should be fitted). */
+  v.refresh = async (refit = false) => {
+    if (refit) v.fitted = true;
+    if (v.fitted) {
+      const s = size();
+      const p = paneSize();
+      v.scale = v.fitScale();
+      v.ox = (p.w - s.w * v.scale) / 2;
+      v.oy = (p.h - s.h * v.scale) / 2;
+    }
+    const target = Math.min(v.scale, size().max);
+    const job = draw(target);
+    drawing = job;
+    const content = await job;
+    if (drawing !== job) return; // a newer redraw replaced this one
+    v.content = content;
+    v.cscale = target;
+    v.present();
+  };
+
+  let settle = null;
+  v.zoomAt = (factor, clientX, clientY) => {
+    const r = pane.getBoundingClientRect();
+    const x = clientX - r.left;
+    const y = clientY - r.top;
+    const next = Math.max(0.02, Math.min(40, v.scale * factor));
+    v.ox = x - ((x - v.ox) * next) / v.scale;
+    v.oy = y - ((y - v.oy) * next) / v.scale;
+    v.scale = next;
+    v.fitted = false;
+    v.present();
+    clearTimeout(settle);
+    settle = setTimeout(() => {
+      if (Math.abs(Math.min(v.scale, size().max) - v.cscale) > 1e-3) v.refresh();
+    }, 150);
+  };
+  v.zoomCenter = (factor) => {
+    const r = pane.getBoundingClientRect();
+    v.zoomAt(factor, r.left + r.width / 2, r.top + r.height / 2);
+  };
+
+  /** A point in the pane, in the drawn map's CSS pixels. */
+  v.toContent = (clientX, clientY) => {
+    const r = pane.getBoundingClientRect();
+    const k = v.cscale / v.scale;
+    return { x: (clientX - r.left - v.ox) * k, y: (clientY - r.top - v.oy) * k };
+  };
+
+  pane.addEventListener(
     "wheel",
     (e) => {
-      if (e.ctrlKey && !e.deltaY) return;
       e.preventDefault();
-      const unit = e.deltaMode === 1 ? 0.05 : e.deltaMode === 2 ? 1 : 0.0015;
-      zoomAt(Math.exp(-e.deltaY * unit), e.clientX, e.clientY);
+      const unit = e.deltaMode === 1 ? 0.05 : e.deltaMode === 2 ? 1 : e.ctrlKey ? 0.01 : 0.0015;
+      v.zoomAt(Math.exp(-e.deltaY * unit), e.clientX, e.clientY);
     },
     { passive: false },
   );
-  canvas.addEventListener("dblclick", (e) => {
+  pane.addEventListener("dblclick", (e) => {
     e.preventDefault();
-    zoomAt(e.shiftKey ? 0.5 : 2, e.clientX, e.clientY);
+    v.zoomAt(e.shiftKey ? 0.5 : 2, e.clientX, e.clientY);
   });
-
-  // Dragging pans; two fingers pinch-zoom.
   const pointers = new Map();
-  let dragged = false;
   let start = null;
   let pinch = null;
-  canvas.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;
+  pane.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0 || e.target.closest("button, a, input, select")) return;
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    canvas.setPointerCapture(e.pointerId);
-    dragged = false;
-    start = { x: e.clientX, y: e.clientY, left: scroller.scrollLeft, top: scroller.scrollTop };
+    pane.setPointerCapture(e.pointerId);
+    v.dragged = false;
+    start = { x: e.clientX, y: e.clientY, ox: v.ox, oy: v.oy };
     if (pointers.size === 2) {
       const [a, b] = [...pointers.values()];
       pinch = Math.hypot(a.x - b.x, a.y - b.y);
     }
   });
-  canvas.addEventListener("pointermove", (e) => {
+  pane.addEventListener("pointermove", (e) => {
     if (!pointers.has(e.pointerId)) return;
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.size === 2 && pinch) {
       const [a, b] = [...pointers.values()];
       const d = Math.hypot(a.x - b.x, a.y - b.y);
-      if (d > 0 && Math.abs(d / pinch - 1) > 0.04) {
-        zoomAt(d / pinch, (a.x + b.x) / 2, (a.y + b.y) / 2);
+      if (d > 0 && Math.abs(d / pinch - 1) > 0.02) {
+        v.zoomAt(d / pinch, (a.x + b.x) / 2, (a.y + b.y) / 2);
         pinch = d;
       }
-      dragged = true;
+      v.dragged = true;
       return;
     }
     if (!start) return;
     const dx = e.clientX - start.x;
     const dy = e.clientY - start.y;
-    if (Math.abs(dx) + Math.abs(dy) > 4) dragged = true;
-    if (dragged) {
-      scroller.scrollLeft = start.left - dx;
-      scroller.scrollTop = start.top - dy;
-      canvas.classList.add("dragging");
+    if (Math.abs(dx) + Math.abs(dy) > 4) v.dragged = true;
+    if (v.dragged) {
+      v.ox = start.ox + dx;
+      v.oy = start.oy + dy;
+      v.fitted = false;
+      v.present();
+      pane.classList.add("dragging");
     }
   });
   const end = (e) => {
     pointers.delete(e.pointerId);
     if (pointers.size < 2) pinch = null;
+    if (pointers.size === 1) {
+      const [p] = [...pointers.values()];
+      start = { x: p.x, y: p.y, ox: v.ox, oy: v.oy };
+    }
     if (!pointers.size) start = null;
-    canvas.classList.remove("dragging");
+    pane.classList.remove("dragging");
   };
-  canvas.addEventListener("pointerup", end);
-  canvas.addEventListener("pointercancel", end);
-  return () => dragged;
+  pane.addEventListener("pointerup", end);
+  pane.addEventListener("pointercancel", end);
+  // Redraw when the pane changes size (the window, or the page's layout).
+  let lastSize = "";
+  const ro = new ResizeObserver(() => {
+    const p = paneSize();
+    const now = `${p.w}x${p.h}`;
+    if (now === lastSize || !v.content) {
+      lastSize = now;
+      return;
+    }
+    lastSize = now;
+    clearTimeout(v.resizeTimer);
+    v.resizeTimer = setTimeout(() => (v.fitted ? v.refresh() : v.present()), 150);
+  });
+  ro.observe(pane);
+  v.destroy = () => ro.disconnect();
+  return v;
 }
 
-/** The zoom buttons' label. */
-function showZoomLabel() {
-  const label = $("zoom-label");
-  if (label) label.textContent = `${Math.round(shownScale * 100)}%`;
-  $("zoom-fit")?.classList.toggle("on", zoom === "fit");
-}
+let mainViewer = null;
+const mapContent = document.createElement("canvas"); // the generator's map, drawn at one scale
 
 /** Tooltip text for an object on the map. */
 function objectLabel(o) {
@@ -845,36 +952,58 @@ function imageOf(urls) {
   return null;
 }
 
-async function render(layout) {
-  const opts = mapOptions();
+/** Shows a layout in the map pane, fitting it to the pane if `refit` (a new sublevel or view). */
+async function render(layout, refit = false) {
   if (available) await Promise.all(imagesFor(layout).map(loadImage));
   else await Promise.all(layout.units.map((u) => firstImage(unitUrls(u.name, u.game))));
+  $("result").classList.toggle("comedown-view", mapView(layout).comedown);
+  await mainViewer.refresh(refit);
+}
 
-  const canvas = $("map");
+/** Draws a layout into the map's own canvas at `scale` (1 = CELL pixels per grid cell). */
+function drawMap(layout, scale) {
+  const opts = mapOptions();
+  const canvas = mapContent;
   const view = mapView(layout);
-  const scale = zoomScale(view);
-  shownScale = scale;
-  showZoomLabel();
   const cell = CELL * scale;
   const dpr = window.devicePixelRatio || 1;
   const w = view.w * cell;
   const h = view.h * cell;
   canvas.width = Math.round(w * dpr);
   canvas.height = Math.round(h * dpr);
-  canvas.style.width = `${Math.round(w)}px`;
-  canvas.style.height = `${Math.round(h)}px`;
+  canvas.cssW = w;
+  canvas.cssH = h;
   hitTargets = [];
-  const offX = -view.x0 * cell;
-  const offZ = -view.z0 * cell;
 
   const ctx = canvas.getContext("2d");
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.fillStyle = "#0f0f0f";
   ctx.fillRect(0, 0, w, h);
-  ctx.translate(offX, offZ);
-  $("result").classList.toggle("comedown-view", view.comedown);
 
   const toPx = (v) => (v / UNIT) * cell;
+
+  // Icons and numbers stay upright when the comedown view turns the map.
+  let upright = 0;
+  if (view.comedown) {
+    // Turn so the pod (and the camera) faces up, as on screen, and show only what's in view.
+    const a = (view.ship.angle * Math.PI) / 180;
+    const turn = -Math.PI / 2 - Math.atan2(Math.cos(a), Math.sin(a));
+    ctx.translate(w / 2, toPx(view.margin + view.shape.far));
+    ctx.rotate(turn);
+    ctx.translate(-toPx(view.ship.x), -toPx(view.ship.z));
+    upright = -turn;
+    ctx.beginPath();
+    for (const [x, z] of comedownCorners(view.ship.x, view.ship.z, view.ship.angle, view.shape)) ctx.lineTo(toPx(x), toPx(z));
+    ctx.closePath();
+    ctx.clip();
+  } else {
+    ctx.translate(-view.x0 * cell, -view.z0 * cell);
+  }
+  // Where a map point lands in this canvas, for tooltips.
+  const toCanvas = (x, z) => {
+    const p = ctx.getTransform().transformPoint(new DOMPoint(x, z));
+    return { x: p.x / dpr, z: p.y / dpr };
+  };
 
   // Map units, rotated clockwise in quarter turns like the game's radar images.
   ctx.imageSmoothingEnabled = false;
@@ -924,15 +1053,19 @@ async function render(layout) {
   }
 
   const label = (text, x, z, color, size = Math.max(9, cell * 0.28), align = "center") => {
+    ctx.save();
+    ctx.translate(x, z);
+    ctx.rotate(upright);
     ctx.font = `bold ${size}px system-ui, sans-serif`;
     ctx.textAlign = align;
     ctx.textBaseline = "middle";
     ctx.lineJoin = "round";
     ctx.lineWidth = Math.max(2, size / 4);
     ctx.strokeStyle = "#000";
-    ctx.strokeText(text, x, z);
+    ctx.strokeText(text, 0, 0);
     ctx.fillStyle = color;
-    ctx.fillText(text, x, z);
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
   };
   const thin = Math.max(1, cell / 30);
 
@@ -1023,26 +1156,31 @@ async function render(layout) {
   // Exits and the ship first, then gates, treasures and teki on top.
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
-  const drawIcon = (img, x, z, size, rot = 0) => {
+  // `rot` turns an icon with the map (gates); others stay upright.
+  const drawIcon = (img, x, z, size, rot = null) => {
     if (!img) return false;
     ctx.save();
     ctx.translate(x, z);
-    if (rot) ctx.rotate(rot);
+    ctx.rotate(rot === null ? upright : rot);
     const r = Math.min(size / img.width, size / img.height);
     ctx.drawImage(img, (-img.width * r) / 2, (-img.height * r) / 2, img.width * r, img.height * r);
     ctx.restore();
     return true;
   };
   const drawFallback = (text, x, z, size, color) => {
+    ctx.save();
+    ctx.translate(x, z);
+    ctx.rotate(upright);
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.arc(x, z, size / 2.5, 0, Math.PI * 2);
+    ctx.arc(0, 0, size / 2.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = "#fff";
     ctx.font = `bold ${Math.max(8, size / 3.2)}px system-ui, sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(text.slice(0, 3), x, z);
+    ctx.fillText(text.slice(0, 3), 0, 0);
+    ctx.restore();
   };
   const special = (name) => loaded.get(specialUrl(name)) || null;
 
@@ -1091,9 +1229,8 @@ async function render(layout) {
       }
     }
     if (opts.angles && o.angle !== undefined && o.kind !== "gate") facing(ctx, x, z, o.angle, cell * 0.4, "#ffe14d");
-    const hx = x + offX;
-    const hz = z + offZ;
-    if (hx >= 0 && hz >= 0 && hx <= w && hz <= h) hitTargets.push({ x: hx, z: hz, r: Math.max(size / 2, 8), label: objectLabel(o) });
+    const hit = toCanvas(x, z);
+    if (hit.x >= 0 && hit.z >= 0 && hit.x <= w && hit.z <= h) hitTargets.push({ ...hit, r: Math.max(size / 2, 8), label: objectLabel(o) });
   }
 
   // Numbers on top of everything.
@@ -1115,12 +1252,14 @@ async function render(layout) {
   }
   if (opts.comedownBox && !view.comedown) {
     const ship = layout.objects.find((o) => o.kind === "ship");
-    if (ship) {
-      const half = (comedownCells() / 2) * cell;
+    if (ship && ship.angle !== undefined) {
       ctx.strokeStyle = "#ffe14d";
       ctx.lineWidth = Math.max(1.5, cell / 16);
       ctx.setLineDash([cell / 4, cell / 6]);
-      ctx.strokeRect(toPx(ship.x) - half, toPx(ship.z) - half, half * 2, half * 2);
+      ctx.beginPath();
+      for (const [x, z] of comedownCorners(ship.x, ship.z, ship.angle)) ctx.lineTo(toPx(x), toPx(z));
+      ctx.closePath();
+      ctx.stroke();
       ctx.setLineDash([]);
     }
   }
@@ -1140,6 +1279,7 @@ async function render(layout) {
       if (opts.doorScores && d.score >= 0) label(String(d.score), x, z + (opts.doorIds ? cell * 0.25 : 0), "#5ad2ff");
     });
   }
+  return canvas;
 }
 
 /** A line with an arrowhead at its end. */
@@ -1172,14 +1312,15 @@ function setupTooltips() {
   const canvas = $("map");
   const tip = $("tooltip");
   const show = (clientX, clientY) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const z = clientY - rect.top;
+    const at = mainViewer.toContent(clientX, clientY);
+    const k = mainViewer.cscale / mainViewer.scale;
+    const x = at.x;
+    const z = at.y;
     let best = null;
     let bestDist = Infinity;
     for (const t of hitTargets) {
       const d = Math.hypot(t.x - x, t.z - z);
-      if (d <= t.r && d < bestDist) {
+      if (d <= Math.max(t.r, 8 * k) && d < bestDist) {
         best = t;
         bestDist = d;
       }
@@ -1192,12 +1333,12 @@ function setupTooltips() {
     tip.hidden = false;
     const wrap = $("map-scroll").getBoundingClientRect();
     const left = Math.min(clientX - wrap.left + 12, wrap.width - tip.offsetWidth - 4);
-    tip.style.left = `${Math.max(4, left) + $("map-scroll").scrollLeft}px`;
-    tip.style.top = `${clientY - wrap.top + 14 + $("map-scroll").scrollTop}px`;
+    tip.style.left = `${Math.max(4, left)}px`;
+    tip.style.top = `${Math.min(clientY - wrap.top + 14, wrap.height - tip.offsetHeight - 4)}px`;
   };
   canvas.addEventListener("mousemove", (e) => show(e.clientX, e.clientY));
   canvas.addEventListener("mouseleave", () => ($("tooltip").hidden = true));
-  canvas.addEventListener("click", (e) => !mapDragged() && show(e.clientX, e.clientY));
+  canvas.addEventListener("click", (e) => !mainViewer.dragged && show(e.clientX, e.clientY));
 }
 
 // ---- Summary ----
@@ -1307,6 +1448,15 @@ function formatSeed(seed) {
   return (seed >>> 0).toString(16).toUpperCase().padStart(8, "0");
 }
 
+/** The game RNG's state `n` steps after (or before, if negative) `seed`. */
+function rngStep(seed, n) {
+  let s = seed >>> 0;
+  for (let i = 0; i < Math.abs(n); i++) {
+    s = n > 0 ? (Math.imul(s, 0x41c64e6d) + 0x3039) >>> 0 : Math.imul((s - 0x3039) >>> 0, 0xeeb9eb65) >>> 0;
+  }
+  return s;
+}
+
 function randomSeed() {
   return crypto.getRandomValues(new Uint32Array(1))[0];
 }
@@ -1370,10 +1520,11 @@ async function run({ newCave = false } = {}) {
     if (newCave || $("floor").options.length !== layout.floors) fillFloors(layout.floors, floor);
     const judgeType = $("judge").value;
     const judge = judgeType ? { type: judgeType, score: (await command("judge", sublevel, judgeType, seed)).score } : null;
+    const refit = !current || current.sublevel !== sublevel;
     current = { layout, cave, floor, ms, sublevel, judge };
     $("result").hidden = false;
     $("tooltip").hidden = true;
-    await showCurrent();
+    await showCurrent(refit);
     updateUrl(cave, floor, seed);
     if ($("caveinfo-box").open) await showCaveInfo();
   } catch (e) {
@@ -1383,12 +1534,12 @@ async function run({ newCave = false } = {}) {
 }
 
 /** Draws the current layout and its text in the current language. */
-async function showCurrent() {
+async function showCurrent(refit = false) {
   if (!current) return;
   const { layout, cave, floor, ms } = current;
   const title = layout.floors > 1 || cave.name !== "Colossal Caverns" ? T.floorName(caveName(cave), floor) : caveName(cave);
   $("title").textContent = `${title} · ${layout.seed}`;
-  await render(layout);
+  await render(layout, refit);
   await renderSummary(layout);
   setStatus(T.generated(layout.sublevel, layout.seed, ms.toFixed(1)));
 }
@@ -1436,7 +1587,8 @@ function buildAdvanced() {
     for (const { key } of MAP_OPTIONS) if (key in (saved.map || {})) $(`opt-${key}`).checked = !!saved.map[key];
     if (JUDGES.includes(saved.judge)) $("judge").value = saved.judge;
     if (saved.comedown) $("comedown").checked = true;
-    if (saved.comedownSize) $("comedown-size").value = String(saved.comedownSize);
+    if (saved.comedownScreen) $("comedown-screen").value = saved.comedownScreen;
+    if (saved.seedStep) $("seed-step").value = saved.seedStep;
     if (saved.open) $("advanced").open = true;
   } catch {
     // Nothing saved, or storage is unavailable.
@@ -1452,7 +1604,8 @@ function saveSettings() {
         judge: $("judge").value,
         open: $("advanced").open,
         comedown: $("comedown").checked,
-        comedownSize: comedownCells(),
+        comedownScreen: $("comedown-screen").value,
+        seedStep: $("seed-step").value,
       }));
   } catch {
     // Not saved; the choices still apply to this page.
@@ -1512,7 +1665,7 @@ async function startSearch() {
   const keep = Math.max(1, Math.min(500, Math.floor(Number($("search-keep").value) || 20)));
   const mode = $("search-mode").value;
   const seed = parseSeed($("seed").value) ?? 0;
-  const startAt = mode === "c" ? seed : randomSeed();
+  const startAt = mode === "r" ? randomSeed() : seed;
   const s = {
     sublevel: sublevelName(sel.cave, sel.floor),
     sel,
@@ -1856,42 +2009,40 @@ async function init() {
   const step = (d) => {
     const s = parseSeed($("seed").value);
     if (s === null) return;
-    $("seed").value = formatSeed(s + d);
+    $("seed").value = formatSeed($("seed-step").value === "g" ? rngStep(s, d) : s + d);
     run();
   };
+  $("seed-step").addEventListener("change", saveSettings);
   $("prev").addEventListener("click", () => step(-1));
   $("next").addEventListener("click", () => step(1));
   $("water").addEventListener("change", () => current && render(current.layout));
-  const redraw = () => current && render(current.layout);
-  const zoomTo = (s) => {
-    zoom = Math.max(0.05, s);
-    return current ? render(current.layout) : Promise.resolve();
-  };
-  mapDragged = attachZoom($("map-scroll"), $("map"), () => shownScale, zoomTo);
-  const center = () => {
-    const r = $("map-scroll").getBoundingClientRect();
-    return [r.left + r.width / 2, r.top + r.height / 2];
-  };
-  // The buttons zoom about the middle of what's shown, like the wheel does about the cursor.
-  const zoomStep = (f) => $("map-scroll").dispatchEvent(new WheelEvent("wheel", { deltaY: -Math.log(f) / 0.0015, clientX: center()[0], clientY: center()[1], cancelable: true }));
-  $("zoom-in").addEventListener("click", () => zoomStep(1.5));
-  $("zoom-out").addEventListener("click", () => zoomStep(1 / 1.5));
-  $("zoom-fit").addEventListener("click", () => {
-    zoom = "fit";
-    redraw();
+  const redraw = (refit = false) => current && render(current.layout, refit);
+  mainViewer = createViewer($("map-scroll"), $("map"), {
+    size: () => {
+      const view = current ? mapView(current.layout) : { w: 10, h: 10, comedown: false };
+      return { w: view.w * CELL, h: view.h * CELL, max: maxScale(view), maxFit: view.comedown ? 4 : 1.5 };
+    },
+    draw: async (scale) => drawMap(current.layout, scale),
+    onChange: (v) => {
+      $("zoom-label").textContent = `${Math.round(v.scale * 100)}%`;
+      $("zoom-fit").classList.toggle("on", v.fitted);
+      $("tooltip").hidden = true;
+    },
   });
+  $("zoom-in").addEventListener("click", () => mainViewer.zoomCenter(1.5));
+  $("zoom-out").addEventListener("click", () => mainViewer.zoomCenter(1 / 1.5));
+  $("zoom-fit").addEventListener("click", () => redraw(true));
   $("comedown").addEventListener("change", () => {
-    zoom = "fit";
     saveSettings();
     const p = new URLSearchParams(location.search);
     if ($("comedown").checked) p.set("comedown", "1");
     else p.delete("comedown");
     history.replaceState(null, "", `?${p.toString()}`);
-    redraw();
+    redraw(true);
   });
-  $("comedown-size").addEventListener("change", () => {
+  $("comedown-screen").addEventListener("change", () => {
     saveSettings();
-    redraw();
+    redraw($("comedown").checked);
   });
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {
@@ -1899,7 +2050,7 @@ async function init() {
       if (!current) return;
       // Turning on an option that needs the extra layout data generates the layout again.
       if (details && !current.layout.spawnpoints && $(`opt-${key}`).checked) run();
-      else render(current.layout);
+      else redraw();
     });
   }
   $("judge").addEventListener("change", () => {
@@ -1915,14 +2066,10 @@ async function init() {
     }
   });
   $("caveinfo-box").addEventListener("toggle", () => $("caveinfo-box").open && showCaveInfo());
-  let resizeTimer;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => current && zoom === "fit" && render(current.layout), 150);
-  });
   $("download").addEventListener("click", () => {
     if (!current) return;
-    $("map").toBlob((blob) => {
+    // The whole map (or the whole comedown), whatever part of it the pane shows.
+    mapContent.toBlob((blob) => {
       const a = el("a", { href: URL.createObjectURL(blob), download: `${current.layout.sublevel}_${current.layout.seed}.png` });
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);

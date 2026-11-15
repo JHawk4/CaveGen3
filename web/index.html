@@ -55,14 +55,16 @@
       <fieldset>
         <legend data-i18n="showOnMap">Show on the map</legend>
         <div id="map-options" class="map-options"></div>
-        <label class="field inline"><span data-i18n="comedownSize">Comedown size (cells)</span>
-          <select id="comedown-size">
-            <option value="3">3 × 3</option>
-            <option value="4">4 × 4</option>
-            <option value="5" selected>5 × 5</option>
-            <option value="6">6 × 6</option>
-            <option value="7">7 × 7</option>
-            <option value="9">9 × 9</option>
+        <label class="field inline"><span data-i18n="comedownScreen">Screen (for the comedown)</span>
+          <select id="comedown-screen">
+            <option value="16:9" selected>16:9</option>
+            <option value="4:3">4:3</option>
+          </select>
+        </label>
+        <label class="field inline"><span data-i18n="seedStep">Seed buttons step</span>
+          <select id="seed-step">
+            <option value="c" data-i18n="seedStepPlus">+1 / −1</option>
+            <option value="g" data-i18n="seedStepGame">Game RNG</option>
           </select>
         </label>
       </fieldset>
@@ -82,6 +84,7 @@
             <select id="search-mode">
               <option value="c" data-i18n="consecutive">Counting up from the seed</option>
               <option value="r" data-i18n="randomSeeds">Random</option>
+              <option value="g" data-i18n="gameRngSeeds">Game RNG steps from the seed</option>
             </select>
           </label>
           <label class="field"><span data-i18n="keep">Results</span>

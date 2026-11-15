@@ -46,14 +46,10 @@
       </select>
     </label>
     <label class="field" id="comedown-size-field">
-      <span data-i18n="comedownSize">Comedown size (cells)</span>
-      <select id="comedown-size">
-        <option value="3">3 × 3</option>
-        <option value="4">4 × 4</option>
-        <option value="5" selected>5 × 5</option>
-        <option value="6">6 × 6</option>
-        <option value="7">7 × 7</option>
-        <option value="9">9 × 9</option>
+      <span data-i18n="comedownScreen">Screen (for the comedown)</span>
+      <select id="comedown-screen">
+        <option value="16:9" selected>16:9</option>
+        <option value="4:3">4:3</option>
       </select>
     </label>
     <label class="field">
@@ -65,6 +61,7 @@
       <select id="agg-mode">
         <option value="r" data-i18n="randomSeeds">Random</option>
         <option value="c" data-i18n="aggConsecutive">Counting up from</option>
+        <option value="g" data-i18n="aggGameRng">Game RNG steps from</option>
       </select>
     </label>
     <label class="field" id="seed-field" hidden>

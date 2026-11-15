@@ -26,6 +26,7 @@ use cavegen3::{
     jhawk_judge::{JhawkJudge, JudgeType},
     point::Point,
     query::{Query, StructuralQuery},
+    rng::Rng,
     waypoint::get_path_to_goal,
 };
 
@@ -155,13 +156,14 @@ impl Web {
     /// Runs one tab-separated command and returns JSON:
     ///
     /// - `judge <sublevel> <type> <seed>`: `{"score": n}`
-    /// - `search <sublevel> <type or -> <query or -> <start> <count> <c|r> <keep>`: tests `count`
-    ///   seeds, consecutive from `start` (`c`) or `count` random ones numbered from `start` (`r`).
+    /// - `search <sublevel> <type or -> <query or -> <start> <count> <c|g|r> <keep>`: tests `count`
+    ///   seeds from `start` (see [`seed_at`] for the modes).
     ///   Seeds must match the query; with a judge type the `keep` lowest scores are returned,
     ///   otherwise the first `keep` matches. `{"tested", "matched", "best": [[seed, score]],
     ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
     /// - `caveinfo <sublevel>`: the sublevel's generation parameters (see [`caveinfo_json`]).
-    /// - `agg_start <sublevel> <grouping> <comedown cells>`, then `agg_run <start> <count> <c|r>`
+    /// - `agg_start <sublevel> <grouping> <near> <far> <near half> <far half> [image periods]`
+    ///   (the comedown view, see [`aggregate::View`]; image periods are "unit=period;..."), then `agg_run <start> <count> <c|g|r>`
     ///   any number of times, then `agg_result <max groups>`: CaveGen's Aggregator (see
     ///   [`aggregate`]).
     pub fn command(&mut self, text: &str) -> Result<String, String> {
@@ -194,11 +196,11 @@ impl Web {
                     "" | "-" => None,
                     q => Some(parse_query(q, &sublevel, data)?),
                 };
-                let (start, count, random, keep) = (num(4)?, num(5)?, arg(6)? == "r", num(7)? as usize);
+                let (start, count, mode, keep) = (num(4)?, num(5)?, arg(6)?, num(7)? as usize);
                 let mut best: Vec<(u32, f64)> = Vec::new();
                 let mut scores = Vec::new();
                 for i in 0..count {
-                    let seed = if random { mix32(start.wrapping_add(i)) } else { start.wrapping_add(i) as u32 };
+                    let seed = seed_at(mode, start, i);
                     if let Some(q) = &query
                         && !q.matches(seed, data)
                     {
@@ -242,9 +244,13 @@ impl Web {
                     let data = self.data()?;
                     let sublevel = data.sublevel(arg(1)?).map_err(|e| e.to_string())?;
                     data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
-                    let cells: f32 = arg(3)?.trim().parse().map_err(|_| "bad comedown size".to_string())?;
+                    let nums: Vec<f32> = (3..7)
+                        .map(|i| arg(i)?.trim().parse::<f32>().map_err(|_| "bad comedown view".to_string()))
+                        .collect::<Result<_, _>>()?;
+                    let view = aggregate::View { near: nums[0], far: nums[1], near_half: nums[2], far_half: nums[3] };
                     let grouping = aggregate::Grouping::parse(arg(2)?)?;
-                    self.agg = Some(aggregate::Aggregator::new(arg(1)?.to_string(), grouping, cells));
+                    let image_periods = args.get(7).copied().unwrap_or("");
+                    self.agg = Some(aggregate::Aggregator::new(arg(1)?.to_string(), grouping, view, image_periods));
                     "{}".into()
                 }
                 "agg_run" => {
@@ -254,9 +260,9 @@ impl Web {
                     let ci = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
                     let start: u64 = arg(1)?.trim().parse().map_err(|_| "bad start".to_string())?;
                     let count: u64 = arg(2)?.trim().parse().map_err(|_| "bad count".to_string())?;
-                    let random = arg(3)? == "r";
+                    let mode = arg(3)?;
                     for i in 0..count {
-                        let seed = if random { mix32(start.wrapping_add(i)) } else { start.wrapping_add(i) as u32 };
+                        let seed = seed_at(mode, start, i);
                         agg.add(seed, &Layout::generate(seed, ci));
                     }
                     "{}".into()
@@ -286,6 +292,21 @@ fn parse_query(text: &str, sublevel: &cavegen3::Sublevel, data: &GameData) -> Re
             StructuralQuery::try_parse_in(&format!("{} {text}", sublevel.short_name()), data, game).map_err(|e| e.to_string())
         }
         Err(e) => Err(e.to_string()),
+    }
+}
+
+/// The `i`th seed of a search or aggregation: `start + i` ("c"), the `i`th state of the game's
+/// RNG after `start` ("g", CaveGen's -consecutiveSeeds), or a spread-out seed numbered
+/// `start + i` ("r", for random seeds).
+fn seed_at(mode: &str, start: u64, i: u64) -> u32 {
+    match mode {
+        "g" => {
+            let mut rng = Rng::new(start as u32);
+            rng.advance(i as u32);
+            rng.seed()
+        }
+        "r" => mix32(start.wrapping_add(i)),
+        _ => start.wrapping_add(i) as u32,
     }
 }
 
@@ -475,7 +496,9 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
     let mut objects = Vec::new();
     for (so, pos, angle) in placed {
         let (x, z) = (f(pos[0]), f(pos[2]));
-        let angle = if details { format!(",\"angle\":{}", f(angle)) } else { String::new() };
+        // The pod's facing is always included: the page's comedown view needs it.
+        let ship_angle = format!(",\"angle\":{}", f(angle));
+        let angle = if details { ship_angle.clone() } else { String::new() };
         let obj = match so {
             SpawnObject::Teki(info, _) => format!(
                 "{{\"kind\":\"teki\",\"name\":{},\"game\":{},\"group\":{},\"falling\":{},\"carrying\":{},\"x\":{x},\"z\":{z}{angle}{}}}",
@@ -508,7 +531,7 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
             }
             SpawnObject::Hole(plugged) => format!("{{\"kind\":\"hole\",\"plugged\":{plugged},\"x\":{x},\"z\":{z}{angle}}}"),
             SpawnObject::Geyser(_) => format!("{{\"kind\":\"geyser\",\"x\":{x},\"z\":{z}{angle}}}"),
-            SpawnObject::Ship => format!("{{\"kind\":\"ship\",\"x\":{x},\"z\":{z}{angle}}}"),
+            SpawnObject::Ship => format!("{{\"kind\":\"ship\",\"x\":{x},\"z\":{z}{ship_angle}}}"),
             SpawnObject::Onion(color) => format!("{{\"kind\":\"onion\",\"color\":{color},\"x\":{x},\"z\":{z}{angle}}}"),
         };
         objects.push(obj);
@@ -743,7 +766,7 @@ mod tests {
         // The aggregator: every seed lands in exactly one group, and each group's spots count
         // one pod per layout.
         for grouping in ["layout", "rooms", "first", "comedown-units", "comedown"] {
-            web.command(&format!("agg_start\tBK1\t{grouping}\t5")).unwrap();
+            web.command(&format!("agg_start\tBK1\t{grouping}\t-90\t1030\t165\t545")).unwrap();
             web.command("agg_run\t0\t150\tc").unwrap();
             web.command("agg_run\t150\t50\tr").unwrap();
             let r = web.command("agg_result\t1000").unwrap();
@@ -757,11 +780,20 @@ mod tests {
             assert_eq!(r.matches("[\"s\",").count() > 0, true, "{grouping}");
         }
         // BK1 has one start room; its comedown units-only groups are few.
-        web.command("agg_start\tBK1\tfirst\t5").unwrap();
+        web.command("agg_start\tBK1\tfirst\t-90\t1030\t165\t545").unwrap();
         web.command("agg_run\t0\t100\tc").unwrap();
         let first = web.command("agg_result\t1000").unwrap();
         assert!(first.contains("\"groups_total\":"), "{first}");
-        assert!(web.command("agg_start\tBK1\tnonsense\t5").is_err());
+        assert!(web.command("agg_start\tBK1\tnonsense\t-90\t1030\t165\t545").is_err());
+
+        // Game-RNG stepping: seed i is the RNG state i steps after the start.
+        let mut rng = Rng::new(0x1234);
+        rng.rand_raw();
+        rng.rand_raw();
+        assert_eq!(seed_at("g", 0x1234, 2), rng.seed());
+        assert_eq!(seed_at("c", 0x1234, 2), 0x1236);
+        let found = web.command("search\tSCx6\tscore\t-\t4660\t20\tg\t3").unwrap();
+        assert!(found.starts_with("{\"tested\":20,"), "{found}");
 
         // Every pikmin2 sublevel works with details on (the waypoint graph and paths can panic,
         // which in the browser would stop the page).
