@@ -1701,7 +1701,11 @@ function selected() {
 }
 
 /** Generates from the controls. The floor list is refilled when the cave changes. */
-async function run({ newCave = false } = {}) {
+function run(options) {
+  return withSearchPaused(() => generateAndShow(options));
+}
+
+async function generateAndShow({ newCave = false } = {}) {
   const cave = caves[Number($("cave").value)];
   if (!cave) return;
   const seed = parseSeed($("seed").value);
@@ -1837,6 +1841,20 @@ function yieldToBrowser() {
 // Seed search runs a slice of seeds at a time so the page stays responsive.
 let search = null; // {token, sublevel, best, scores, ...} while running or after
 
+// Showing a layout (a search result, Generate, the ‹ › buttons) pauses a running search, so the
+// map appears right away instead of sharing time with it; the search resumes when it's drawn.
+let searchHold = 0;
+let searchWaiters = [];
+async function withSearchPaused(fn) {
+  searchHold++;
+  try {
+    return await fn();
+  } finally {
+    searchHold--;
+    if (!searchHold) for (const resume of searchWaiters.splice(0)) resume();
+  }
+}
+
 function stopSearch(clear = false) {
   if (search) search.stopped = true;
   if (clear) {
@@ -1889,6 +1907,10 @@ async function startSearch() {
     await loadGame(sel.cave.game);
     let chunk = 50;
     while (s.tested < total && !s.stopped) {
+      if (searchHold) {
+        await new Promise((resume) => searchWaiters.push(resume));
+        if (s.stopped) break;
+      }
       const n = Math.min(chunk, total - s.tested);
       const t = performance.now();
       const r = await command("search", s.sublevel, judge || "-", query || "-", startAt + s.tested, n, mode, keep);
