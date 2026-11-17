@@ -60,8 +60,8 @@ const STRINGS = {
     colUltra: "Ultra randomizer",
     colExtra: "Extra units",
     col5: "5 Onions",
-    comedown: "Comedown only",
-    comedownScreen: "Screen (for the comedown)",
+    landing: "Landing view only",
+    screen: "Screen",
     seedStep: "‹ › buttons",
     seedStepPlus: "±1",
     seedStepGame: "Game RNG",
@@ -111,6 +111,7 @@ const STRINGS = {
       paths: "Carry paths",
       gauge: "Treasure gauge",
       grid: "Grid",
+      landingBox: "Landing outline",
       comedownBox: "Comedown outline",
       quickGlance: "QuickGlance",
       pretty: "Pretty",
@@ -163,9 +164,9 @@ const STRINGS = {
       colUltra: "Shuffle the map unit lists much more before placing them (CaveGen's -ultraRandomizer)",
       colExtra: "Also use Pikmin 251's map units (CaveGen's -extraUnits)",
       col5: "Place five Onions instead of three (CaveGen's -5onion)",
-      comedown: "Show only what's on screen when you land, turned so the camera faces up",
+      landing: "Show only what's on screen when you land, turned so the camera faces up",
       water: "Shade the water",
-      comedownScreen: "The game's screen setting. A 16:9 screen shows more to the sides when you land",
+      screen: "The game's screen setting, for the landing and comedown views. A 16:9 screen shows more to the sides",
       seedStep: "±1, or the seed before/after it in the game's RNG (CaveGen's -consecutiveSeeds)",
       judge: "Rate each layout with one of CaveGen's judges. Lower is better; most estimate the seconds a kind of run takes",
       search: "Test many seeds of this sublevel, then list the best by the judge, or the ones matching the query",
@@ -198,7 +199,8 @@ const STRINGS = {
         paths: "The way each treasure is carried back to the pod",
         gauge: "Shades the floor by how high the treasure gauge's needle would be there: yellow while the needle is below 0.3, orange from 0.3 and red from 0.8, deeper each step inward (steps at 0.05, 0.1, 0.2 … 0.9)",
         grid: "The map's grid cells",
-        comedownBox: "An outline of what the camera shows when you land",
+        landingBox: "An outline of what the camera shows when you land",
+        comedownBox: "An outline of what the camera shows as the pod comes down, while the sublevel's name is on screen",
         quickGlance: "Colored discs behind what matters, to read a layout at a glance: the pod (red), treasures and teki carrying them (orange), the exit (green), Gatling Groinks (pink), Candypop Buds and Onions (CaveGen's QuickGlance)",
         pretty: "Draws the vanilla map units as pictures of the actual floor instead of radar images (CaveGen's Pretty)",
       },
@@ -308,8 +310,8 @@ const STRINGS = {
     colUltra: "超ランダム",
     colExtra: "追加ユニット",
     col5: "オニヨン5個",
-    comedown: "着地時の範囲だけ",
-    comedownScreen: "画面（着地時の範囲用）",
+    landing: "着地時の範囲だけ",
+    screen: "画面",
     seedStep: "‹ › ボタン",
     seedStepPlus: "±1",
     seedStepGame: "ゲームの乱数",
@@ -359,7 +361,8 @@ const STRINGS = {
       paths: "運搬ルート",
       gauge: "お宝ゲージ",
       grid: "グリッド",
-      comedownBox: "着地時の範囲の枠",
+      landingBox: "着地時の範囲の枠",
+      comedownBox: "降下中の範囲の枠",
       quickGlance: "クイックグランス",
       pretty: "きれいな表示",
     },
@@ -412,9 +415,9 @@ const STRINGS = {
       colUltra: "マップユニットの並びを配置前にもっと大きくかき混ぜます（CaveGenの -ultraRandomizer）",
       colExtra: "Pikmin 251 のマップユニットも使います（CaveGenの -extraUnits）",
       col5: "オニヨンを3個ではなく5個置きます（CaveGenの -5onion）",
-      comedown: "着地したときに画面に映る範囲だけを、カメラが上を向くよう回転して表示します",
+      landing: "着地したときに画面に映る範囲だけを、カメラが上を向くよう回転して表示します",
       water: "水の部分に色をつけます",
-      comedownScreen: "ゲームの画面設定。16:9のほうが着地時に左右が広く映ります",
+      screen: "ゲームの画面設定（着地時と降下中の範囲用）。16:9のほうが左右が広く映ります",
       seedStep: "±1、またはゲームの乱数で前後のシード（CaveGenの -consecutiveSeeds）",
       judge: "CaveGenの評価で各レイアウトを採点します。小さいほど良く、多くは走り方ごとの秒数の見積もりです",
       search: "この階のシードをたくさん試して、評価の良いものや条件に合うものを一覧にします",
@@ -447,7 +450,8 @@ const STRINGS = {
         paths: "各お宝がポッドまで運ばれる道すじ",
         gauge: "その場所でお宝ゲージの針がどこまで上がるかで床を塗り分けます。針が0.3未満は黄色、0.3からオレンジ、0.8から赤で、内側ほど濃くなります（0.05, 0.1, 0.2 … 0.9 ごと）",
         grid: "マップのマス目",
-        comedownBox: "着地したときにカメラに映る範囲の枠",
+        landingBox: "着地したときにカメラに映る範囲の枠",
+        comedownBox: "ポッドが降りてくる間（階層名が表示されている間）にカメラに映る範囲の枠",
         quickGlance: "大事なものの下に色の円を描いて、ひと目で読めるようにします：ポッド（赤）、お宝とお宝を持つ原生生物（オレンジ）、出口（緑）、ガトリングモドキ（ピンク）、ポンガシグサ、オニヨン（CaveGenの QuickGlance）",
         pretty: "元のゲームのマップユニットを、レーダー画像ではなく実際の床の絵で描きます（CaveGenの Pretty）",
       },
@@ -744,31 +748,43 @@ function unitImage(img) {
   return unitCanvases.get(img);
 }
 
-// ---- The comedown: what you see when you land ----
+// ---- The landing and comedown views ----
 
-// The landing camera: the game's "Far(Low)" settings in /user/Nishimura/Camera/caveCameraParms.txt
-// (`dist` units back, `angle` degrees down, a vertical field of view of `fov` degrees, aimed
-// `lift` units above the target), looking the way the pod faces. The target is `lookAhead` units
-// ahead of the pod: negative, since the captain lands just behind it. These were fitted to
-// speedrun videos whose seeds were recovered (Emergence Cave 1 and Hole of Beasts 1 in three
-// runs): the screen shows from about 330 units behind the pod to about 1,100 ahead.
-const CAMERA = { dist: 900, angle: 25, fov: 26, lift: 40, lookAhead: -55 };
+// Each camera looks the way the pod faces: `dist` units back from its target, `angle` degrees
+// down, with a vertical field of view of `fov` degrees, aimed `lift` units above the target,
+// which is `lookAhead` units ahead of the pod.
+//
+// The landing view, what you see when you land: the game's "Far(Low)" settings in
+// /user/Nishimura/Camera/caveCameraParms.txt. The target is behind the pod, since the captain
+// lands just behind it. These were fitted to speedrun videos whose seeds were recovered
+// (Emergence Cave 1 and Hole of Beasts 1 in three runs): the screen shows from about 330 units
+// behind the pod to about 1,100 ahead.
+//
+const LANDING_CAMERA = { dist: 900, angle: 25, fov: 26, lift: 40, lookAhead: -55 };
+
+// The comedown, while the sublevel's name is on screen as the pod comes down: frame 0 of the
+// cutscene s0B_cv_coursein (/user/Mukki/movie/s0B_cv_coursein/demo.szs), which holds still until
+// the name fades. The cutscene is placed at the pod with its +Z along the pod's facing (x to the
+// pod's left, y up from the floor). The camera looks almost straight down from 1,321 units up
+// with a 74° vertical field of view, turned by its roll (JStudio: RotZ(-roll) * LookAt).
+const COMEDOWN_CAMERA = { eye: [-0.286, 1320.99, -3.17], target: [4.737, 6.729, -1.692], fovy: 74.11, roll: 87.82 };
+const LANDING_COLOR = "#ffe14d";
+const COMEDOWN_COLOR = "#4dd2ff";
 
 /** The screen's width over its height: 16:9 or 4:3 (the game's Screen setting). */
 function screenAspect() {
-  return $("comedown-screen")?.value === "4:3" ? 4 / 3 : 16 / 9;
+  return $("screen-shape")?.value === "4:3" ? 4 / 3 : 16 / 9;
 }
 
 /**
- * The floor in view when you land: a trapezoid ahead of the pod. `near` and `far` are
- * distances ahead of the pod in game units (near is a little behind it), with the half-widths
- * of the view there.
+ * The floor a camera sees: a trapezoid ahead of the pod. `near` and `far` are distances ahead
+ * of the pod in game units (negative is behind it), with the half-widths of the view there.
  */
-function comedownShape(aspect = screenAspect()) {
+function viewShape(camera, aspect = screenAspect()) {
   const rad = Math.PI / 180;
-  const height = CAMERA.dist * Math.sin(CAMERA.angle * rad) + CAMERA.lift;
-  const back = CAMERA.dist * Math.cos(CAMERA.angle * rad) - CAMERA.lookAhead;
-  const half = (CAMERA.fov / 2) * rad;
+  const height = camera.dist * Math.sin(camera.angle * rad) + camera.lift;
+  const back = camera.dist * Math.cos(camera.angle * rad) - camera.lookAhead;
+  const half = (camera.fov / 2) * rad;
   const tanSide = Math.tan(half) * aspect;
   // Where the screen's bottom and top edges meet the floor.
   const edge = (pitch) => {
@@ -776,28 +792,61 @@ function comedownShape(aspect = screenAspect()) {
     const depth = Math.hypot(ground, height) * Math.cos(half);
     return { ahead: ground - back, half: depth * tanSide };
   };
-  const near = edge(CAMERA.angle * rad + half);
-  const far = edge(CAMERA.angle * rad - half);
+  const near = edge(camera.angle * rad + half);
+  const far = edge(camera.angle * rad - half);
   return { near: near.ahead, far: far.ahead, nearHalf: near.half, farHalf: far.half };
 }
 
-/** The trapezoid's corners in game units around a pod at (x, z) facing `degrees`. */
-function comedownCorners(x, z, degrees, shape = comedownShape()) {
+/** What the camera shows when you land. */
+function landingShape(aspect = screenAspect()) {
+  return viewShape(LANDING_CAMERA, aspect);
+}
+
+/** A trapezoid's corners as [ahead, side] from the pod; side is to its right. */
+function shapeCorners(s) {
+  return [[s.near, -s.nearHalf], [s.near, s.nearHalf], [s.far, s.farHalf], [s.far, -s.farHalf]];
+}
+
+/**
+ * What the camera shows while the sublevel's name is on screen: where the rays through the
+ * screen's corners meet the floor, as [ahead, side] from the pod.
+ */
+function comedownCorners(aspect = screenAspect()) {
+  const cam = COMEDOWN_CAMERA;
+  const norm = (a) => a.map((v) => v / Math.hypot(...a));
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  // The view's axes (C_MTXLookAt): back, right and up.
+  const back = norm(cam.eye.map((v, i) => v - cam.target[i]));
+  const right = norm(cross([0, 1, 0], back));
+  const up = cross(back, right);
+  const t = Math.tan(((cam.fovy / 2) * Math.PI) / 180);
+  const [sin, cos] = [Math.sin((cam.roll * Math.PI) / 180), Math.cos((cam.roll * Math.PI) / 180)];
+  return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([sx, sy]) => {
+    // A screen corner's ray, turned back by the roll into the look-at frame.
+    const [x0, y0] = [sx * t * aspect, sy * t];
+    const [x, y] = [x0 * cos - y0 * sin, x0 * sin + y0 * cos];
+    const d = [0, 1, 2].map((i) => right[i] * x + up[i] * y - back[i]);
+    const k = -cam.eye[1] / d[1];
+    return [cam.eye[2] + k * d[2], -(cam.eye[0] + k * d[0])];
+  });
+}
+
+/** Corners given as [ahead, side] from a pod at (x, z) facing `degrees`, in game units. */
+function placeCorners(x, z, degrees, corners) {
   const a = (degrees * Math.PI) / 180;
   const f = [Math.sin(a), Math.cos(a)];
   const r = [-f[1], f[0]];
-  const at = (ahead, side) => [x + f[0] * ahead + r[0] * side, z + f[1] * ahead + r[1] * side];
-  return [at(shape.near, -shape.nearHalf), at(shape.near, shape.nearHalf), at(shape.far, shape.farHalf), at(shape.far, -shape.farHalf)];
+  return corners.map(([ahead, side]) => [x + f[0] * ahead + r[0] * side, z + f[1] * ahead + r[1] * side]);
 }
 
-/** The part of the map to draw, in grid cells: the whole cave, or the comedown. */
+/** The part of the map to draw, in grid cells: the whole cave, or the landing view. */
 function mapView(layout) {
   const ship = layout.objects.find((o) => o.kind === "ship");
-  if ($("comedown")?.checked && ship) {
-    const shape = comedownShape();
+  if ($("landing")?.checked && ship) {
+    const shape = landingShape();
     const margin = 40; // game units around the trapezoid
     return {
-      comedown: true,
+      landing: true,
       ship,
       shape,
       margin,
@@ -805,8 +854,30 @@ function mapView(layout) {
       h: (shape.far - shape.near + margin * 2) / UNIT,
     };
   }
-  // A half-cell margin on each side.
-  return { x0: -0.5, z0: -0.5, w: layout.width + 1, h: layout.height + 1, comedown: false };
+  // The cave with a half-cell margin on each side, grown to fit the landing and comedown outlines.
+  let [x0, z0, x1, z1] = [-0.5, -0.5, layout.width + 0.5, layout.height + 0.5];
+  for (const corners of viewOutlines(layout)) {
+    for (const [x, z] of corners) {
+      x0 = Math.min(x0, x / UNIT - 0.25);
+      z0 = Math.min(z0, z / UNIT - 0.25);
+      x1 = Math.max(x1, x / UNIT + 0.25);
+      z1 = Math.max(z1, z / UNIT + 0.25);
+    }
+  }
+  return { x0, z0, w: x1 - x0, h: z1 - z0, landing: false };
+}
+
+/** The landing and comedown outlines that are turned on, in game units: [corners, color]. */
+function viewOutlines(layout, withColors = false) {
+  const ship = layout.objects.find((o) => o.kind === "ship");
+  if (!ship || ship.angle === undefined) return [];
+  const out = [];
+  if ($("opt-comedownBox")?.checked) out.push([comedownCorners(), COMEDOWN_COLOR]);
+  if ($("opt-landingBox")?.checked) out.push([shapeCorners(landingShape()), LANDING_COLOR]);
+  return out.map(([c, color]) => {
+    const placed = placeCorners(ship.x, ship.z, ship.angle, c);
+    return withColors ? [placed, color] : placed;
+  });
 }
 
 /** The largest scale whose canvas the browser can still draw comfortably. */
@@ -1028,6 +1099,7 @@ const MAP_OPTIONS = [
   { key: "gates", on: true, section: "objects" },
   { key: "gateHealth", on: true, section: "objects" },
   { key: "exits", on: true, section: "objects" },
+  { key: "landingBox", section: "view" },
   { key: "comedownBox", section: "view" },
   { key: "quickGlance", section: "view" },
   { key: "pretty", section: "view" },
@@ -1148,7 +1220,7 @@ function imageOf(urls) {
 async function render(layout, refit = false) {
   if (available) await Promise.all(imagesFor(layout).map(loadImage));
   else await Promise.all(layout.units.map((u) => firstImage(unitUrls(u.name, u.game))));
-  $("result").classList.toggle("comedown-view", mapView(layout).comedown);
+  $("result").classList.toggle("landing-view", mapView(layout).landing);
   await mainViewer.refresh(refit);
 }
 
@@ -1174,9 +1246,9 @@ function drawMap(layout, scale) {
 
   const toPx = (v) => (v / UNIT) * cell;
 
-  // Icons and numbers stay upright when the comedown view turns the map.
+  // Icons and numbers stay upright when the landing view turns the map.
   let upright = 0;
-  if (view.comedown) {
+  if (view.landing) {
     // Turn so the pod (and the camera) faces up, as on screen, and show only what's in view.
     const a = (view.ship.angle * Math.PI) / 180;
     const turn = -Math.PI / 2 - Math.atan2(Math.cos(a), Math.sin(a));
@@ -1185,7 +1257,7 @@ function drawMap(layout, scale) {
     ctx.translate(-toPx(view.ship.x), -toPx(view.ship.z));
     upright = -turn;
     ctx.beginPath();
-    for (const [x, z] of comedownCorners(view.ship.x, view.ship.z, view.ship.angle, view.shape)) ctx.lineTo(toPx(x), toPx(z));
+    for (const [x, z] of placeCorners(view.ship.x, view.ship.z, view.ship.angle, shapeCorners(view.shape))) ctx.lineTo(toPx(x), toPx(z));
     ctx.closePath();
     ctx.clip();
   } else {
@@ -1564,14 +1636,14 @@ function drawMap(layout, scale) {
       if ((sp.group === 4 || sp.group === 9) && sp.hole_score > -1) label(String(sp.hole_score), x, z - cell * 0.12, "#3cff3c", undefined, "left");
     }
   }
-  if (opts.comedownBox && !view.comedown) {
-    const ship = layout.objects.find((o) => o.kind === "ship");
-    if (ship && ship.angle !== undefined) {
-      ctx.strokeStyle = "#ffe14d";
+  // The comedown and landing outlines.
+  if (!view.landing) {
+    for (const [corners, color] of viewOutlines(layout, true)) {
+      ctx.strokeStyle = color;
       ctx.lineWidth = Math.max(1.5, cell / 16);
       ctx.setLineDash([cell / 4, cell / 6]);
       ctx.beginPath();
-      for (const [x, z] of comedownCorners(ship.x, ship.z, ship.angle)) ctx.lineTo(toPx(x), toPx(z));
+      for (const [x, z] of corners) ctx.lineTo(toPx(x), toPx(z));
       ctx.closePath();
       ctx.stroke();
       ctx.setLineDash([]);
@@ -1983,10 +2055,17 @@ function buildAdvanced() {
   // Saved choices (map options and judge) from last time.
   try {
     const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    for (const { key } of MAP_OPTIONS) if (key in (saved.map || {})) $(`opt-${key}`).checked = !!saved.map[key];
+    const map = { ...saved.map };
+    // Before the landing outline had its own name, "comedownBox" was the landing outline.
+    if (map.comedownBox !== undefined && map.landingBox === undefined) {
+      map.landingBox = map.comedownBox;
+      delete map.comedownBox;
+    }
+    for (const { key } of MAP_OPTIONS) if (key in map) $(`opt-${key}`).checked = !!map[key];
     if (JUDGES.includes(saved.judge)) $("judge").value = saved.judge;
-    if (saved.comedown) $("comedown").checked = true;
-    if (saved.comedownScreen) $("comedown-screen").value = saved.comedownScreen;
+    // "comedown" and "comedownScreen" are the old names.
+    if (saved.landing ?? saved.comedown) $("landing").checked = true;
+    if (saved.screen || saved.comedownScreen) $("screen-shape").value = saved.screen || saved.comedownScreen;
     if (saved.seedStep) $("seed-step").value = saved.seedStep;
     if (saved.open) $("advanced").open = true;
   } catch {
@@ -2002,8 +2081,8 @@ function saveSettings() {
         map,
         judge: $("judge").value,
         open: $("advanced").open,
-        comedown: $("comedown").checked,
-        comedownScreen: $("comedown-screen").value,
+        landing: $("landing").checked,
+        screen: $("screen-shape").value,
         seedStep: $("seed-step").value,
       }));
   } catch {
@@ -2513,7 +2592,8 @@ async function init() {
 
   selectStart();
   const seed = params.get("seed") && parseSeed(params.get("seed"));
-  if (params.get("comedown") === "1") $("comedown").checked = true;
+  // "comedown=1" is the old name.
+  if (params.get("landing") === "1" || params.get("comedown") === "1") $("landing").checked = true;
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -2545,8 +2625,8 @@ async function init() {
   const redraw = (refit = false) => current && render(current.layout, refit);
   mainViewer = createViewer($("map-scroll"), $("map"), {
     size: () => {
-      const view = current ? mapView(current.layout) : { w: 10, h: 10, comedown: false };
-      return { w: view.w * CELL, h: view.h * CELL, max: maxScale(view), maxFit: view.comedown ? 4 : 1.5 };
+      const view = current ? mapView(current.layout) : { w: 10, h: 10, landing: false };
+      return { w: view.w * CELL, h: view.h * CELL, max: maxScale(view), maxFit: view.landing ? 4 : 1.5 };
     },
     draw: async (scale) => drawMap(current.layout, scale),
     onChange: (v) => {
@@ -2558,17 +2638,19 @@ async function init() {
   $("zoom-in").addEventListener("click", () => mainViewer.zoomCenter(1.5));
   $("zoom-out").addEventListener("click", () => mainViewer.zoomCenter(1 / 1.5));
   $("zoom-fit").addEventListener("click", () => redraw(true));
-  $("comedown").addEventListener("change", () => {
+  $("landing").addEventListener("change", () => {
     saveSettings();
     const p = new URLSearchParams(location.search);
-    if ($("comedown").checked) p.set("comedown", "1");
-    else p.delete("comedown");
+    p.delete("comedown");
+    if ($("landing").checked) p.set("landing", "1");
+    else p.delete("landing");
     history.replaceState(null, "", `?${p.toString()}`);
     redraw(true);
   });
-  $("comedown-screen").addEventListener("change", () => {
+  $("screen-shape").addEventListener("change", () => {
     saveSettings();
-    redraw($("comedown").checked);
+    // The landing view and the outlines change size with the screen.
+    redraw($("landing").checked || $("opt-landingBox").checked || $("opt-comedownBox").checked);
   });
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {
@@ -2576,7 +2658,8 @@ async function init() {
       if (!current) return;
       // Turning on an option that needs the extra layout data generates the layout again.
       if (details && !current.layout.spawnpoints && $(`opt-${key}`).checked) run();
-      else redraw();
+      // The outlines can grow the map.
+      else redraw(key === "landingBox" || key === "comedownBox");
     });
   }
   $("judge").addEventListener("change", () => {
@@ -2594,7 +2677,7 @@ async function init() {
   $("caveinfo-box").addEventListener("toggle", () => $("caveinfo-box").open && showCaveInfo());
   $("download").addEventListener("click", () => {
     if (!current) return;
-    // The whole map (or the whole comedown), whatever part of it the pane shows.
+    // The whole map (or the whole landing view), whatever part of it the pane shows.
     mapContent.toBlob((blob) => {
       const a = el("a", { href: URL.createObjectURL(blob), download: `${current.layout.sublevel}_${current.layout.seed}.png` });
       a.click();

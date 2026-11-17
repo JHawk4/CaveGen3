@@ -1,12 +1,12 @@
-// CaveGen3 aggregator page: CaveGen's Aggregator, plus grouping by comedown (what you see when
-// you land). Uses the helpers in app.js, which is loaded first.
+// CaveGen3 aggregator page: CaveGen's Aggregator, plus grouping by the landing view (what you
+// see when you land). Uses the helpers in app.js, which is loaded first.
 "use strict";
 
 Object.assign(STRINGS.en, {
   aggIntro:
     "Generates many seeds of a sublevel, groups the ones that look alike, and shows how often each thing spawned at each spot.",
   aggGroupBy: "Group seeds by",
-  aggGroupComedown: "Comedown: map units in view when you land",
+  aggGroupLanding: "Landing view: map units in view when you land",
   aggGroupLayout: "Whole layout (CaveGen's default)",
   aggGroupRooms: "Rooms only",
   aggGroupFirst: "First room placed",
@@ -32,7 +32,7 @@ Object.assign(STRINGS.en, {
 Object.assign(STRINGS.ja, {
   aggIntro: "ある階のシードをたくさん生成し、見た目が同じものをまとめて、各地点に何がどれくらいの割合で出たかを表示します。",
   aggGroupBy: "まとめ方",
-  aggGroupComedown: "着地時の範囲：見えるマップユニット",
+  aggGroupLanding: "着地時の範囲：見えるマップユニット",
   aggGroupLayout: "レイアウト全体（CaveGenの標準）",
   aggGroupRooms: "部屋のみ",
   aggGroupFirst: "最初に置かれた部屋",
@@ -132,8 +132,8 @@ function groupSpots(group) {
   return spots;
 }
 
-/** The comedown trapezoid's corners in a group's frame. */
-function groupComedown(group) {
+/** The landing view's corners in a group's frame. */
+function groupLanding(group) {
   if (!group.pod) return null;
   const [x, z, fx, fz] = group.pod;
   const [near, far, nearHalf, farHalf] = agg.result.view;
@@ -157,7 +157,7 @@ function groupBounds(group) {
   }
   for (const [cx, cz] of group.cells) grow(cx * 85, cz * 85, 85);
   for (const [x, z] of group.spots) grow(x, z, 85);
-  for (const [x, z] of groupComedown(group) || []) grow(x, z);
+  for (const [x, z] of groupLanding(group) || []) grow(x, z);
   return { x0: x0 - 85, z0: z0 - 85, x1: x1 + 85, z1: z1 + 85 };
 }
 
@@ -220,9 +220,9 @@ async function drawGroupContent(card, scale) {
   }
 
   // What the camera sees when you land.
-  const view = groupComedown(group);
+  const view = groupLanding(group);
   if (view) {
-    ctx.strokeStyle = "#ffe14d";
+    ctx.strokeStyle = LANDING_COLOR;
     ctx.lineWidth = Math.max(1.5, cell / 16);
     ctx.setLineDash([cell / 4, cell / 6]);
     ctx.beginPath();
@@ -293,7 +293,7 @@ function groupCard(group, index) {
   const examples = el("span", { class: "agg-examples" }, T.aggExamples);
   for (const seed of group.seeds) {
     const p = new URLSearchParams({ sublevel: agg.sublevelParam, seed: formatSeed(seed) });
-    if (agg.grouping.startsWith("comedown")) p.set("comedown", "1");
+    if (agg.grouping === "landing") p.set("landing", "1");
     examples.append(" ", el("a", { href: `./?${p}`, class: "seed-link" }, formatSeed(seed)));
   }
   const card = { group, content: document.createElement("canvas"), hits: [] };
@@ -414,7 +414,7 @@ async function runAgg() {
   const t0 = performance.now();
   try {
     await loadGame(sel.cave.game);
-    const shape = comedownShape();
+    const shape = landingShape();
     const periods = await imagePeriods(sublevel);
     await command("agg_start", sublevel, grouping, shape.near, shape.far, shape.nearHalf, shape.farHalf, periods);
     let doneSeeds = 0;
@@ -474,7 +474,8 @@ function saveAggSettings() {
     for (const id of ["show-treasures", "show-teki", "show-gates", "show-exits"]) s[id] = $(id).checked;
     localStorage.setItem(AGG_SETTINGS_KEY, JSON.stringify(s));
     const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    shared.comedownScreen = $("comedown-screen").value;
+    shared.screen = $("screen-shape").value;
+    delete shared.comedownScreen;
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(shared));
   } catch {
     // Not saved; the choices still apply to this page.
@@ -488,18 +489,18 @@ function loadAggSettings() {
       const node = $(id);
       if (!node) continue;
       if (typeof v === "boolean") node.checked = v;
-      // "comedown-units" was the old name of the comedown grouping.
-      else node.value = id === "agg-group" && v === "comedown-units" ? "comedown" : v;
+      // "comedown" and "comedown-units" were old names of the landing grouping.
+      else node.value = id === "agg-group" && v.startsWith("comedown") ? "landing" : v;
     }
     const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    if (shared.comedownScreen) $("comedown-screen").value = shared.comedownScreen;
+    if (shared.screen || shared.comedownScreen) $("screen-shape").value = shared.screen || shared.comedownScreen;
   } catch {
     // Nothing saved, or storage is unavailable.
   }
 }
 
 function updateFieldVisibility() {
-  $("comedown-size-field").hidden = !$("agg-group").value.startsWith("comedown");
+  $("screen-field").hidden = $("agg-group").value !== "landing";
   $("seed-field").hidden = $("agg-mode").value === "r";
 }
 
@@ -533,7 +534,7 @@ async function initAggregator() {
     e.preventDefault();
     runAgg();
   });
-  for (const id of ["agg-group", "agg-count", "agg-mode", "comedown-screen", "agg-max"]) {
+  for (const id of ["agg-group", "agg-count", "agg-mode", "screen-shape", "agg-max"]) {
     $(id).addEventListener("change", () => {
       saveAggSettings();
       updateFieldVisibility();

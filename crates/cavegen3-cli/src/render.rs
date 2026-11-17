@@ -130,7 +130,7 @@ pub struct Waypoint {
 
 // ---- Options ----
 
-/// What to draw: the web page's "Show on the map" options, the Water box and the comedown.
+/// What to draw: the web page's "Show on the map" options, the Water box and the landing view.
 #[derive(Clone)]
 pub struct Options {
     pub water: bool,
@@ -155,6 +155,9 @@ pub struct Options {
     pub paths: bool,
     pub gauge: bool,
     pub grid: bool,
+    /// An outline of what the camera shows when you land.
+    pub landing_box: bool,
+    /// An outline of what the camera shows while the sublevel's name is on screen, as the pod comes down.
     pub comedown_box: bool,
     /// CaveGen's -drawSpawnOrder: map units and objects numbered in placement order.
     pub spawn_order: bool,
@@ -167,8 +170,8 @@ pub struct Options {
     /// CaveGen's Pretty: rendered floor pictures for the vanilla map units.
     pub pretty: bool,
     /// Draw only what the camera shows on landing, turned so the camera faces up.
-    pub comedown: bool,
-    /// The screen's width over its height, for the comedown.
+    pub landing: bool,
+    /// The screen's width over its height, for the landing and comedown views.
     pub aspect: f32,
     /// 1 draws a grid cell as [`CELL`] pixels.
     pub scale: f32,
@@ -197,13 +200,14 @@ impl Default for Options {
             paths: false,
             gauge: false,
             grid: false,
+            landing_box: false,
             comedown_box: false,
             spawn_order: false,
             path_dists: false,
             pod_angle: false,
             quick_glance: false,
             pretty: false,
-            comedown: false,
+            landing: false,
             aspect: 16.0 / 9.0,
             scale: 1.0,
         }
@@ -232,6 +236,7 @@ pub const OPTION_NAMES: &[&str] = &[
     "paths",
     "gauge",
     "grid",
+    "landingBox",
     "comedownBox",
     "spawnOrder",
     "pathDists",
@@ -269,6 +274,7 @@ impl Options {
             "paths" => &mut self.paths,
             "gauge" => &mut self.gauge,
             "grid" => &mut self.grid,
+            "landingbox" => &mut self.landing_box,
             "comedownbox" => &mut self.comedown_box,
             "spawnorder" => &mut self.spawn_order,
             "pathdists" => &mut self.path_dists,
@@ -308,16 +314,54 @@ impl Options {
     }
 }
 
-// ---- The comedown ----
+// ---- The landing and comedown views ----
 
-// The landing camera (the game's Far(Low) settings, fitted to run videos); see `CAMERA` in web/app.js.
-const CAM_DIST: f32 = 900.0;
-const CAM_ANGLE: f32 = 25.0;
-const CAM_FOV: f32 = 26.0;
-const CAM_LIFT: f32 = 40.0;
-const CAM_LOOK_AHEAD: f32 = -55.0;
+/// A camera looking the way the pod faces: `dist` units back from its target, `angle` degrees
+/// down, with a vertical field of view of `fov` degrees, aimed `lift` units above the target,
+/// which is `look_ahead` units ahead of the pod. See `LANDING_CAMERA` in web/app.js.
+#[derive(Clone, Copy)]
+pub struct Camera {
+    pub dist: f32,
+    pub angle: f32,
+    pub fov: f32,
+    pub lift: f32,
+    pub look_ahead: f32,
+}
 
-/// The floor in view when you land: a trapezoid from `near` to `far` units ahead of the pod.
+/// The landing view: the game's Far(Low) settings, fitted to run videos.
+pub const LANDING_CAMERA: Camera = Camera {
+    dist: 900.0,
+    angle: 25.0,
+    fov: 26.0,
+    lift: 40.0,
+    look_ahead: -55.0,
+};
+
+/// The comedown camera, while the sublevel's name is on screen as the pod comes down: frame 0
+/// of the cutscene s0B_cv_coursein (`/user/Mukki/movie/s0B_cv_coursein/demo.szs`), which holds
+/// still until the name fades. The cutscene is placed at the pod with its +Z along the pod's
+/// facing; the camera looks almost straight down from 1,321 units up, turned by its roll.
+pub struct CutsceneCamera {
+    /// Eye and target, in the cutscene's frame: x to the pod's left, y up from the floor, z ahead.
+    pub eye: [f32; 3],
+    pub target: [f32; 3],
+    /// Vertical field of view, degrees.
+    pub fovy: f32,
+    /// Degrees, as JStudio's camera applies it: `RotZ(-roll) * LookAt(eye, +Y, target)`.
+    pub roll: f32,
+}
+
+pub const COMEDOWN_CAMERA: CutsceneCamera = CutsceneCamera {
+    eye: [-0.286, 1320.99, -3.170],
+    target: [4.737, 6.729, -1.692],
+    fovy: 74.11,
+    roll: 87.82,
+};
+
+pub const LANDING_COLOR: &str = "#ffe14d";
+pub const COMEDOWN_COLOR: &str = "#4dd2ff";
+
+/// The floor a camera sees: a trapezoid from `near` to `far` units ahead of the pod.
 #[derive(Clone, Copy)]
 pub struct Shape {
     pub near: f32,
@@ -326,19 +370,21 @@ pub struct Shape {
     pub far_half: f32,
 }
 
-pub fn comedown_shape(aspect: f32) -> Shape {
+/// The floor in view, for a screen `aspect` wide over its height.
+pub fn view_shape(cam: Camera, aspect: f32) -> Shape {
     let rad = PI / 180.0;
-    let height = CAM_DIST * (CAM_ANGLE * rad).sin() + CAM_LIFT;
-    let back = CAM_DIST * (CAM_ANGLE * rad).cos() - CAM_LOOK_AHEAD;
-    let half = CAM_FOV / 2.0 * rad;
+    let height = cam.dist * (cam.angle * rad).sin() + cam.lift;
+    let back = cam.dist * (cam.angle * rad).cos() - cam.look_ahead;
+    let half = cam.fov / 2.0 * rad;
     let tan_side = half.tan() * aspect;
+    // Where the screen's bottom and top edges meet the floor.
     let edge = |pitch: f32| {
         let ground = height / pitch.tan();
         let depth = ground.hypot(height) * half.cos();
         (ground - back, depth * tan_side)
     };
-    let (near, near_half) = edge(CAM_ANGLE * rad + half);
-    let (far, far_half) = edge(CAM_ANGLE * rad - half);
+    let (near, near_half) = edge(cam.angle * rad + half);
+    let (far, far_half) = edge(cam.angle * rad - half);
     Shape {
         near,
         far,
@@ -347,17 +393,59 @@ pub fn comedown_shape(aspect: f32) -> Shape {
     }
 }
 
-fn comedown_corners(x: f32, z: f32, degrees: f32, s: Shape) -> [(f32, f32); 4] {
+/// What the camera shows when you land.
+pub fn landing_shape(aspect: f32) -> Shape {
+    view_shape(LANDING_CAMERA, aspect)
+}
+
+impl Shape {
+    /// The trapezoid's corners as (ahead, side) from the pod; side is to its right.
+    pub fn corners(&self) -> [(f32, f32); 4] {
+        [
+            (self.near, -self.near_half),
+            (self.near, self.near_half),
+            (self.far, self.far_half),
+            (self.far, -self.far_half),
+        ]
+    }
+}
+
+/// The floor a cutscene camera sees: where the rays through the screen's corners meet the floor,
+/// as (ahead, side) from the pod; side is to its right.
+pub fn cutscene_corners(cam: &CutsceneCamera, aspect: f32) -> [(f32, f32); 4] {
+    let sub = |a: [f32; 3], b: [f32; 3]| [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+    let norm = |a: [f32; 3]| {
+        let l = (a[0] * a[0] + a[1] * a[1] + a[2] * a[2]).sqrt();
+        [a[0] / l, a[1] / l, a[2] / l]
+    };
+    let cross = |a: [f32; 3], b: [f32; 3]| [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+    // The view's axes (C_MTXLookAt): back, right and up.
+    let back = norm(sub(cam.eye, cam.target));
+    let right = norm(cross([0.0, 1.0, 0.0], back));
+    let up = cross(back, right);
+    let t = (cam.fovy / 2.0).to_radians().tan();
+    let (sin, cos) = cam.roll.to_radians().sin_cos();
+    [(-1.0, -1.0), (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0)].map(|(sx, sy): (f32, f32)| {
+        // A screen corner's ray, turned back by the roll into the look-at frame.
+        let (x, y) = (sx * t * aspect, sy * t);
+        let (x, y) = (x * cos - y * sin, x * sin + y * cos);
+        let d: [f32; 3] = std::array::from_fn(|i| right[i] * x + up[i] * y - back[i]);
+        let k = -cam.eye[1] / d[1];
+        (cam.eye[2] + k * d[2], -(cam.eye[0] + k * d[0]))
+    })
+}
+
+/// What the camera shows while the sublevel's name is on screen, as (ahead, side) corners.
+pub fn comedown_corners(aspect: f32) -> [(f32, f32); 4] {
+    cutscene_corners(&COMEDOWN_CAMERA, aspect)
+}
+
+/// Corners given as (ahead, side) from a pod at (x, z) facing `degrees`, in game units.
+fn place_corners(x: f32, z: f32, degrees: f32, corners: [(f32, f32); 4]) -> [(f32, f32); 4] {
     let a = degrees.to_radians();
     let f = (a.sin(), a.cos());
     let r = (-f.1, f.0);
-    let at = |ahead: f32, side: f32| (x + f.0 * ahead + r.0 * side, z + f.1 * ahead + r.1 * side);
-    [
-        at(s.near, -s.near_half),
-        at(s.near, s.near_half),
-        at(s.far, s.far_half),
-        at(s.far, -s.far_half),
-    ]
+    corners.map(|(ahead, side)| (x + f.0 * ahead + r.0 * side, z + f.1 * ahead + r.1 * side))
 }
 
 // ---- Images and the font ----
@@ -631,7 +719,7 @@ struct Canvas<'a> {
     /// Map pixels (game units / UNIT * cell) to image pixels.
     base: Transform,
     mask: Option<Mask>,
-    /// Degrees that turn icons and numbers upright again in the comedown view.
+    /// Degrees that turn icons and numbers upright again in the landing view.
     upright: f32,
     /// Opacity for icons (empty spawn points are faded).
     alpha: f32,
@@ -838,29 +926,49 @@ fn text_image(font: &fontdue::Font, text: &str, size: f32, color: Color, outline
     Some((img, (pad, pad + advance / 2.0), baseline - (lm.ascent + lm.descent) / 2.0))
 }
 
-/// Draws a layout. The image is the whole cave with a half-cell margin, or just the comedown.
+/// Draws a layout. The image is the whole cave with a half-cell margin, or just the landing view.
 pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap, String> {
     let cell = CELL * opts.scale;
     let to_px = |v: f32| v / UNIT * cell;
     let ship = layout.objects.iter().find(|o| o.kind == "ship");
-    let comedown = if opts.comedown {
-        let ship = ship.ok_or("this sublevel has no pod, so it has no comedown")?;
-        Some((ship, comedown_shape(opts.aspect)))
+    let landing = if opts.landing {
+        let ship = ship.ok_or("this sublevel has no pod, so it has no landing view")?;
+        Some((ship, landing_shape(opts.aspect)))
     } else {
         None
     };
-    const MARGIN: f32 = 40.0; // game units around the comedown's trapezoid
-    let (w, h) = match comedown {
+    // The landing and comedown outlines that are on, in game units.
+    let outlines: Vec<([(f32, f32); 4], &str)> = match ship.filter(|s| s.angle.is_some() && landing.is_none()) {
+        Some(ship) => [
+            (opts.comedown_box, comedown_corners(opts.aspect), COMEDOWN_COLOR),
+            (opts.landing_box, landing_shape(opts.aspect).corners(), LANDING_COLOR),
+        ]
+        .into_iter()
+        .filter(|b| b.0)
+        .map(|(_, c, color)| (place_corners(ship.x, ship.z, ship.angle.unwrap(), c), color))
+        .collect(),
+        None => vec![],
+    };
+    // The cave with a half-cell margin, grown to fit the outlines (in grid cells).
+    let (mut x0, mut z0, mut x1, mut z1) = (-0.5f32, -0.5f32, layout.width + 0.5, layout.height + 0.5);
+    for (x, z) in outlines.iter().flat_map(|o| o.0) {
+        x0 = x0.min(x / UNIT - 0.25);
+        z0 = z0.min(z / UNIT - 0.25);
+        x1 = x1.max(x / UNIT + 0.25);
+        z1 = z1.max(z / UNIT + 0.25);
+    }
+    const MARGIN: f32 = 40.0; // game units around the landing view's trapezoid
+    let (w, h) = match landing {
         Some((_, s)) => (
             (s.far_half * 2.0 + MARGIN * 2.0) / UNIT * cell,
             (s.far - s.near + MARGIN * 2.0) / UNIT * cell,
         ),
-        None => ((layout.width + 1.0) * cell, (layout.height + 1.0) * cell),
+        None => ((x1 - x0) * cell, (z1 - z0) * cell),
     };
     let mut pixmap = Pixmap::new(w.round().max(1.0) as u32, h.round().max(1.0) as u32).ok_or("the image would be too large")?;
     pixmap.fill(hex("#0f0f0f"));
 
-    let (base, mask, upright) = match comedown {
+    let (base, mask, upright) = match landing {
         Some((ship, s)) => {
             // Turn so the pod (and the camera) faces up, and show only what's in view.
             let a = ship.angle.unwrap_or(0.0).to_radians();
@@ -869,7 +977,7 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
                 .pre_concat(Transform::from_rotate(turn.to_degrees()))
                 .pre_translate(-to_px(ship.x), -to_px(ship.z));
             let mut pb = PathBuilder::new();
-            for (i, (x, z)) in comedown_corners(ship.x, ship.z, ship.angle.unwrap_or(0.0), s)
+            for (i, (x, z)) in place_corners(ship.x, ship.z, ship.angle.unwrap_or(0.0), s.corners())
                 .into_iter()
                 .enumerate()
             {
@@ -881,10 +989,10 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
             }
             pb.close();
             let mut mask = Mask::new(pixmap.width(), pixmap.height()).ok_or("bad mask")?;
-            mask.fill_path(&pb.finish().ok_or("bad comedown shape")?, FillRule::Winding, true, base);
+            mask.fill_path(&pb.finish().ok_or("bad landing view shape")?, FillRule::Winding, true, base);
             (base, Some(mask), -turn.to_degrees())
         }
-        None => (Transform::from_translate(0.5 * cell, 0.5 * cell), None, 0.0),
+        None => (Transform::from_translate(-x0 * cell, -z0 * cell), None, 0.0),
     };
     let mut cv = Canvas {
         pixmap,
@@ -1286,25 +1394,20 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
             }
         }
     }
-    if opts.comedown_box
-        && comedown.is_none()
-        && let Some(ship) = ship.filter(|s| s.angle.is_some())
-    {
+    // The landing and comedown outlines.
+    for (corners, color) in &outlines {
         let mut pb = PathBuilder::new();
-        for (i, (x, z)) in comedown_corners(ship.x, ship.z, ship.angle.unwrap(), comedown_shape(opts.aspect))
-            .into_iter()
-            .enumerate()
-        {
+        for (i, (x, z)) in corners.iter().enumerate() {
             if i == 0 {
-                pb.move_to(to_px(x), to_px(z));
+                pb.move_to(to_px(*x), to_px(*z));
             } else {
-                pb.line_to(to_px(x), to_px(z));
+                pb.line_to(to_px(*x), to_px(*z));
             }
         }
         pb.close();
         let mut s = stroke((cell / 16.0).max(1.5));
         s.dash = StrokeDash::new(vec![cell / 4.0, cell / 6.0], 0.0);
-        cv.stroke_path(pb, hex("#ffe14d"), &s);
+        cv.stroke_path(pb, hex(color), &s);
     }
     if opts.door_scores || opts.door_ids {
         let (mut unit, mut first) = (-1, 0);
@@ -1336,7 +1439,7 @@ pub struct AggResult {
     pub total: u64,
     pub groups_total: u64,
     pub dropped: u64,
-    /// The comedown view: near, far, near half-width, far half-width.
+    /// The landing view: near, far, near half-width, far half-width.
     pub view: [f32; 4],
     pub groups: Vec<AggGroup>,
 }
@@ -1345,7 +1448,7 @@ pub struct AggResult {
 pub struct AggGroup {
     pub count: u64,
     pub seeds: Vec<u32>,
-    /// The pod's position and facing in the group's frame, for comedown groupings.
+    /// The pod's position and facing in the group's frame, for landing groupings.
     pub pod: Option<[f32; 4]>,
     pub units: Vec<AggUnit>,
     /// Spots: position and (object id, how many seeds had it there).
@@ -1439,8 +1542,8 @@ pub fn pct(n: u64, total: u64) -> String {
 pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, assets: &Assets) -> Result<Pixmap, String> {
     let cell = CELL * opts.scale;
     let px = |v: f32| v / UNIT * cell;
-    // The comedown trapezoid in the group's frame.
-    let comedown = group.pod.map(|[x, z, fx, fz]| {
+    // The landing view's trapezoid in the group's frame.
+    let landing = group.pod.map(|[x, z, fx, fz]| {
         let [near, far, near_half, far_half] = view;
         let r = (-fz, fx);
         let at = |ahead: f32, side: f32| (x + fx * ahead + r.0 * side, z + fz * ahead + r.1 * side);
@@ -1464,7 +1567,7 @@ pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, ass
     for (x, z, _) in &group.spots {
         grow(*x, *z, 85.0);
     }
-    for (x, z) in comedown.into_iter().flatten() {
+    for (x, z) in landing.into_iter().flatten() {
         grow(x, z, 0.0);
     }
     if !x0.is_finite() {
@@ -1515,7 +1618,7 @@ pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, ass
         }
     }
     // What the camera sees when you land.
-    if let Some(corners) = comedown {
+    if let Some(corners) = landing {
         let mut pb = PathBuilder::new();
         for (i, (x, z)) in corners.into_iter().enumerate() {
             if i == 0 {
@@ -1527,7 +1630,7 @@ pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, ass
         pb.close();
         let mut s = stroke((cell / 16.0).max(1.5));
         s.dash = StrokeDash::new(vec![cell / 4.0, cell / 6.0], 0.0);
-        cv.stroke_path(pb, hex("#ffe14d"), &s);
+        cv.stroke_path(pb, hex(LANDING_COLOR), &s);
     }
     // Each spot's objects, stacked, sized by how often they spawned there; likeliest on top.
     let mut spots: Vec<(f32, f32, Vec<(AggObject, u64)>)> = group

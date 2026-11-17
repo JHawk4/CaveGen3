@@ -1,11 +1,11 @@
 //! CaveGen's Aggregator: generate many seeds of a sublevel, group the layouts that look alike,
 //! and count what spawns at each spot in each group.
 //!
-//! Positions are taken relative to an anchor unit (the first unit placed, or for comedown
+//! Positions are taken relative to an anchor unit (the first unit placed, or for landing
 //! grouping the unit the pod is in) and turned by quarter turns, so the same arrangement in any
 //! rotation lands in one group:
 //!
-//! - Comedown groups are turned so the pod (and the camera when you land) faces as close to up
+//! - Landing groups are turned so the pod (and the camera when you land) faces as close to up
 //!   as a quarter turn allows.
 //! - Other groups try all four turns and keep the one whose description sorts first.
 //!
@@ -30,7 +30,7 @@ pub enum Grouping {
     /// Only the first room placed (CaveGen's -aggFirst).
     First,
     /// What you see when you land: the map units in view of the camera.
-    Comedown,
+    Landing,
 }
 
 impl Grouping {
@@ -39,14 +39,14 @@ impl Grouping {
             "layout" => Grouping::Layout,
             "rooms" => Grouping::Rooms,
             "first" => Grouping::First,
-            // "comedown-units" is the old name, from links and saved settings.
-            "comedown" | "comedown-units" => Grouping::Comedown,
+            // "comedown" and "comedown-units" are old names, from links and saved settings.
+            "landing" | "comedown" | "comedown-units" => Grouping::Landing,
             _ => return Err(format!("unknown grouping {s:?}")),
         })
     }
 
-    fn is_comedown(self) -> bool {
-        self == Grouping::Comedown
+    fn is_landing(self) -> bool {
+        self == Grouping::Landing
     }
 }
 
@@ -116,7 +116,7 @@ struct Group {
     seeds: Vec<u32>,
     /// The units that define the group (from its first layout).
     units: Vec<GroupUnit>,
-    /// The pod, for comedown groups.
+    /// The pod, for landing groups.
     pod: Option<Pod>,
     /// What spawned at each spot: spot -> object -> count.
     spots: HashMap<(i32, i32), HashMap<String, u64>>,
@@ -257,7 +257,7 @@ impl Aggregator {
     pub fn add(&mut self, seed: u32, layout: &Layout) {
         self.total += 1;
         let ship = layout.ship.map(|i| &layout.spawnpoints[i as usize]);
-        if self.grouping.is_comedown() && ship.is_none() {
+        if self.grouping.is_landing() && ship.is_none() {
             self.dropped += 1;
             return;
         }
@@ -283,7 +283,7 @@ impl Aggregator {
             }
         }
 
-        // The units (and, for comedown, objects) that define the group.
+        // The units (and, for landing, objects) that define the group.
         let pod: Option<Pod> = ship.map(|sp| {
             let a = sp.angle.to_radians();
             ((sp.pos[0], sp.pos[2]), (a.sin(), a.cos()))
@@ -292,7 +292,7 @@ impl Aggregator {
             Grouping::Layout => (0, (0..layout.units.len()).collect()),
             Grouping::Rooms => (0, (0..layout.units.len()).filter(|&i| layout.units[i].unit.room_type == RoomType::Room).collect()),
             Grouping::First => (0, vec![0]),
-            Grouping::Comedown => {
+            Grouping::Landing => {
                 let (p, f) = pod.expect("checked above");
                 let view = self.view.corners(p, f);
                 let ids = (0..layout.units.len())
@@ -319,7 +319,7 @@ impl Aggregator {
             parts.sort();
             parts.join("|")
         };
-        let frame = if self.grouping.is_comedown() {
+        let frame = if self.grouping.is_landing() {
             // Turn so the pod faces as close to up (-z) as possible.
             let (_, f) = pod.expect("checked above");
             (0..4u16)
@@ -335,12 +335,12 @@ impl Aggregator {
             self.dropped += 1;
             return;
         }
-        let is_comedown = self.grouping.is_comedown();
+        let is_landing = self.grouping.is_landing();
         let grouping = self.grouping;
         let group = self.groups.entry(key).or_default();
         if group.count == 0 {
             group.units = unit_ids.iter().map(|&i| frame.unit(layout, i)).collect();
-            group.pod = pod.filter(|_| is_comedown).map(|(p, f)| (frame.apply(p.0, p.1), frame.turn(f)));
+            group.pod = pod.filter(|_| is_landing).map(|(p, f)| (frame.apply(p.0, p.1), frame.turn(f)));
         }
         group.count += 1;
         if group.seeds.len() < EXAMPLE_SEEDS {
@@ -501,13 +501,13 @@ mod rotation_tests {
         }
     }
 
-    /// Comedown groups don't depend on how the whole layout is turned: the same landing seen
+    /// Landing groups don't depend on how the whole layout is turned: the same landing seen
     /// from the pod is one group.
     #[test]
-    fn comedown_groups_are_fewer_than_layouts() {
+    fn landing_groups_are_fewer_than_layouts() {
         let data = GameData::bundled().unwrap();
         let ci = data.caveinfo(&data.sublevel("HoB2").unwrap()).unwrap();
-        let mut by_view = Aggregator::new("HoB2".into(), Grouping::Comedown, view(), "");
+        let mut by_view = Aggregator::new("HoB2".into(), Grouping::Landing, view(), "");
         let mut by_layout = Aggregator::new("HoB2".into(), Grouping::Layout, view(), "");
         for seed in 0..2000u32 {
             let layout = Layout::generate(seed.wrapping_mul(2_654_435_761), ci);
