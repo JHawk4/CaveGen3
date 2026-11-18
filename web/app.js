@@ -61,6 +61,7 @@ const STRINGS = {
     colExtra: "Extra units",
     col5: "5 Onions",
     landing: "Landing view only",
+    comedownView: "Comedown view only",
     screen: "Screen",
     seedStep: "‹ › buttons",
     seedStepPlus: "±1",
@@ -165,6 +166,7 @@ const STRINGS = {
       colExtra: "Also use Pikmin 251's map units (CaveGen's -extraUnits)",
       col5: "Place five Onions instead of three (CaveGen's -5onion)",
       landing: "Show only what's on screen when you land, turned so the camera faces up",
+      comedownView: "Show only what's on screen as the pod comes down, while the sublevel's name is up, turned as on screen",
       water: "Shade the water",
       screen: "The game's screen setting, for the landing and comedown views. A 16:9 screen shows more to the sides",
       seedStep: "±1, or the seed before/after it in the game's RNG (CaveGen's -consecutiveSeeds)",
@@ -311,6 +313,7 @@ const STRINGS = {
     colExtra: "追加ユニット",
     col5: "オニヨン5個",
     landing: "着地時の範囲だけ",
+    comedownView: "降下中の範囲だけ",
     screen: "画面",
     seedStep: "‹ › ボタン",
     seedStepPlus: "±1",
@@ -416,6 +419,7 @@ const STRINGS = {
       colExtra: "Pikmin 251 のマップユニットも使います（CaveGenの -extraUnits）",
       col5: "オニヨンを3個ではなく5個置きます（CaveGenの -5onion）",
       landing: "着地したときに画面に映る範囲だけを、カメラが上を向くよう回転して表示します",
+      comedownView: "ポッドが降りてくる間（階層名が表示されている間）に画面に映る範囲だけを、画面と同じ向きで表示します",
       water: "水の部分に色をつけます",
       screen: "ゲームの画面設定（着地時と降下中の範囲用）。16:9のほうが左右が広く映ります",
       seedStep: "±1、またはゲームの乱数で前後のシード（CaveGenの -consecutiveSeeds）",
@@ -842,16 +846,30 @@ function placeCorners(x, z, degrees, corners) {
 /** The part of the map to draw, in grid cells: the whole cave, or the landing view. */
 function mapView(layout) {
   const ship = layout.objects.find((o) => o.kind === "ship");
-  if ($("landing")?.checked && ship) {
-    const shape = landingShape();
-    const margin = 40; // game units around the trapezoid
+  const landing = $("landing")?.checked;
+  if ((landing || $("comedown-view")?.checked) && ship) {
+    // One view alone: the floor in view, turned as the screen shows it. Corners go bottom-left,
+    // bottom-right, top-right, top-left of the screen.
+    const corners = placeCorners(ship.x, ship.z, ship.angle ?? 0, landing ? shapeCorners(landingShape()) : comedownCorners());
+    const [tr, tl] = [corners[2], corners[3]];
+    const turn = -Math.atan2(tr[1] - tl[1], tr[0] - tl[0]);
+    const center = [0, 1].map((i) => corners.reduce((s, c) => s + c[i], 0) / 4);
+    const turned = corners.map(([x, z]) => {
+      const [dx, dz] = [x - center[0], z - center[1]];
+      return [dx * Math.cos(turn) - dz * Math.sin(turn), dx * Math.sin(turn) + dz * Math.cos(turn)];
+    });
+    const margin = 40; // game units around the view
+    const left = Math.min(...turned.map((c) => c[0])) - margin;
+    const top = Math.min(...turned.map((c) => c[1])) - margin;
     return {
-      landing: true,
-      ship,
-      shape,
-      margin,
-      w: (shape.farHalf * 2 + margin * 2) / UNIT,
-      h: (shape.far - shape.near + margin * 2) / UNIT,
+      single: true,
+      corners,
+      center,
+      turn,
+      left,
+      top,
+      w: (Math.max(...turned.map((c) => c[0])) + margin - left) / UNIT,
+      h: (Math.max(...turned.map((c) => c[1])) + margin - top) / UNIT,
     };
   }
   // The cave with a half-cell margin on each side, grown to fit the landing and comedown outlines.
@@ -864,7 +882,7 @@ function mapView(layout) {
       z1 = Math.max(z1, z / UNIT + 0.25);
     }
   }
-  return { x0, z0, w: x1 - x0, h: z1 - z0, landing: false };
+  return { x0, z0, w: x1 - x0, h: z1 - z0, single: false };
 }
 
 /** The landing and comedown outlines that are turned on, in game units: [corners, color]. */
@@ -1220,7 +1238,7 @@ function imageOf(urls) {
 async function render(layout, refit = false) {
   if (available) await Promise.all(imagesFor(layout).map(loadImage));
   else await Promise.all(layout.units.map((u) => firstImage(unitUrls(u.name, u.game))));
-  $("result").classList.toggle("landing-view", mapView(layout).landing);
+  $("result").classList.toggle("single-view", mapView(layout).single);
   await mainViewer.refresh(refit);
 }
 
@@ -1246,18 +1264,16 @@ function drawMap(layout, scale) {
 
   const toPx = (v) => (v / UNIT) * cell;
 
-  // Icons and numbers stay upright when the landing view turns the map.
+  // Icons and numbers stay upright when the landing or comedown view turns the map.
   let upright = 0;
-  if (view.landing) {
-    // Turn so the pod (and the camera) faces up, as on screen, and show only what's in view.
-    const a = (view.ship.angle * Math.PI) / 180;
-    const turn = -Math.PI / 2 - Math.atan2(Math.cos(a), Math.sin(a));
-    ctx.translate(w / 2, toPx(view.margin + view.shape.far));
-    ctx.rotate(turn);
-    ctx.translate(-toPx(view.ship.x), -toPx(view.ship.z));
-    upright = -turn;
+  if (view.single) {
+    // Turn as the screen shows it, and show only what's in view.
+    ctx.translate(-toPx(view.left), -toPx(view.top));
+    ctx.rotate(view.turn);
+    ctx.translate(-toPx(view.center[0]), -toPx(view.center[1]));
+    upright = -view.turn;
     ctx.beginPath();
-    for (const [x, z] of placeCorners(view.ship.x, view.ship.z, view.ship.angle, shapeCorners(view.shape))) ctx.lineTo(toPx(x), toPx(z));
+    for (const [x, z] of view.corners) ctx.lineTo(toPx(x), toPx(z));
     ctx.closePath();
     ctx.clip();
   } else {
@@ -1637,7 +1653,7 @@ function drawMap(layout, scale) {
     }
   }
   // The comedown and landing outlines.
-  if (!view.landing) {
+  if (!view.single) {
     for (const [corners, color] of viewOutlines(layout, true)) {
       ctx.strokeStyle = color;
       ctx.lineWidth = Math.max(1.5, cell / 16);
@@ -2065,6 +2081,7 @@ function buildAdvanced() {
     if (JUDGES.includes(saved.judge)) $("judge").value = saved.judge;
     // "comedown" and "comedownScreen" are the old names.
     if (saved.landing ?? saved.comedown) $("landing").checked = true;
+    else if (saved.comedownView) $("comedown-view").checked = true;
     if (saved.screen || saved.comedownScreen) $("screen-shape").value = saved.screen || saved.comedownScreen;
     if (saved.seedStep) $("seed-step").value = saved.seedStep;
     if (saved.open) $("advanced").open = true;
@@ -2082,6 +2099,7 @@ function saveSettings() {
         judge: $("judge").value,
         open: $("advanced").open,
         landing: $("landing").checked,
+        comedownView: $("comedown-view").checked,
         screen: $("screen-shape").value,
         seedStep: $("seed-step").value,
       }));
@@ -2593,7 +2611,13 @@ async function init() {
   selectStart();
   const seed = params.get("seed") && parseSeed(params.get("seed"));
   // "comedown=1" is the old name.
-  if (params.get("landing") === "1" || params.get("comedown") === "1") $("landing").checked = true;
+  if (params.get("landing") === "1" || params.get("comedown") === "1") {
+    $("landing").checked = true;
+    $("comedown-view").checked = false;
+  } else if (params.get("comedownView") === "1") {
+    $("comedown-view").checked = true;
+    $("landing").checked = false;
+  }
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -2625,8 +2649,8 @@ async function init() {
   const redraw = (refit = false) => current && render(current.layout, refit);
   mainViewer = createViewer($("map-scroll"), $("map"), {
     size: () => {
-      const view = current ? mapView(current.layout) : { w: 10, h: 10, landing: false };
-      return { w: view.w * CELL, h: view.h * CELL, max: maxScale(view), maxFit: view.landing ? 4 : 1.5 };
+      const view = current ? mapView(current.layout) : { w: 10, h: 10, single: false };
+      return { w: view.w * CELL, h: view.h * CELL, max: maxScale(view), maxFit: view.single ? 4 : 1.5 };
     },
     draw: async (scale) => drawMap(current.layout, scale),
     onChange: (v) => {
@@ -2638,19 +2662,25 @@ async function init() {
   $("zoom-in").addEventListener("click", () => mainViewer.zoomCenter(1.5));
   $("zoom-out").addEventListener("click", () => mainViewer.zoomCenter(1 / 1.5));
   $("zoom-fit").addEventListener("click", () => redraw(true));
-  $("landing").addEventListener("change", () => {
-    saveSettings();
-    const p = new URLSearchParams(location.search);
-    p.delete("comedown");
-    if ($("landing").checked) p.set("landing", "1");
-    else p.delete("landing");
-    history.replaceState(null, "", `?${p.toString()}`);
-    redraw(true);
-  });
+  // Landing view only and Comedown view only: at most one at a time.
+  for (const [id, other] of [["landing", "comedown-view"], ["comedown-view", "landing"]]) {
+    $(id).addEventListener("change", () => {
+      if ($(id).checked) $(other).checked = false;
+      saveSettings();
+      const p = new URLSearchParams(location.search);
+      p.delete("comedown");
+      p.delete("landing");
+      p.delete("comedownView");
+      if ($("landing").checked) p.set("landing", "1");
+      if ($("comedown-view").checked) p.set("comedownView", "1");
+      history.replaceState(null, "", `?${p.toString()}`);
+      redraw(true);
+    });
+  }
   $("screen-shape").addEventListener("change", () => {
     saveSettings();
     // The landing view and the outlines change size with the screen.
-    redraw($("landing").checked || $("opt-landingBox").checked || $("opt-comedownBox").checked);
+    redraw($("landing").checked || $("comedown-view").checked || $("opt-landingBox").checked || $("opt-comedownBox").checked);
   });
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {

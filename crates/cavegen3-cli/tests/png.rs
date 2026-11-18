@@ -72,6 +72,24 @@ fn comedown_outline() {
 }
 
 #[test]
+fn comedown_view() {
+    // The comedown alone, turned as on screen: a 4:3 rectangle of floor plus a small margin.
+    let p = painter();
+    let opts = Options {
+        comedown_view: true,
+        aspect: 4.0 / 3.0,
+        ..Options::default()
+    };
+    let (_, png) = p.png("EC-1", 0x63452B1B, &opts).unwrap();
+    let img = Pixmap::decode_png(&png).unwrap();
+    let ratio = img.width() as f32 / img.height() as f32;
+    assert!((ratio - 4.0 / 3.0).abs() < 0.05, "{}x{}", img.width(), img.height());
+    // The pod is in the middle of the screen; its room's floor is there.
+    let mid = img.pixel(img.width() / 2, img.height() / 2 + 8).unwrap();
+    assert!(mid.red() > 150, "{mid:?}");
+}
+
+#[test]
 fn every_option_draws() {
     let p = painter();
     let mut opts = Options::default();

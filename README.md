@@ -36,8 +36,8 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 
 - **Objects**, **View**, **Generation details** and **Scores**: hide treasures (or only the
   fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants,
-  gates, gate HP (written on each gate) or exits; show only the landing view, the landing and
-  comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
+  gates, gate HP (written on each gate) or exits; show only the landing or comedown view, the
+  landing and comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
   for plants, rings for easy teki), spawn order (CaveGen's `-drawSpawnOrder`), carry distances
   (`-drawPathDists`), the pod's facing (`-drawPodAngle`), facing directions, the game's unit,
   door, treasure and hole scores, teki scores, door links and numbers, waypoints and treasure
@@ -101,6 +101,18 @@ the cutscene cuts to a low shot of the Pikmin and the pod lands. On the floor th
 about 2,000 units tall and 2,660 wide on 4:3 (3,560 on 16:9), centered on the pod and turned
 about 19° from its facing. Checked against Emergence Cave 1 in two runs: treasures in view land
 within a pixel or two of where this camera puts them. The map grows to fit the outlines.
+**Comedown view only** shows just that part of the floor, turned as it is on screen
+(`comedownView=1` in a link).
+
+Which way the camera faces when you land: in the game's code (`BaseGameSection::setupFloatMemory`)
+each floor starts the camera at a fixed angle, `camera_angle` in `/user/Kando/aiConstants.txt`
+(290°) plus the area's start angle, which caves don't have; nothing there turns it toward the pod.
+Pressing L (`PlayCamera::setTargetThetaToWhistle`) swings it behind the captain, toward the
+cursor, which starts straight ahead of the captain. Control comes back before the screen fades
+in, so a player who presses L then sees the pod-facing view from the first frame. That's what
+every speedrun checked shows (Emergence Cave 1 in two runs, Bulblax Kingdom 2 and White Flower
+Garden 2, within about 8°), and it's what **Landing view** draws. Without L, the view would face
+the same way on every floor, whichever way the pod faces; no footage here shows that.
 
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.
@@ -163,6 +175,7 @@ Then run `target/release/cavegen3` (`cavegen3.exe` on Windows). With no command 
 cavegen3 SCx-6 1234ABCD                      # one image: output/SCx6_1234ABCD.png
 cavegen3 BK-4 -n 100 --seeds r -o bk4        # 100 random seeds into bk4/
 cavegen3 SCx-6 1234ABCD --landing            # only what you see when you land
+cavegen3 SCx-6 1234ABCD --comedown-view      # only what you see under the sublevel's name
 cavegen3 EC-1 63452B1B --show landingBox,comedownBox,podAngle --screen 4:3
 cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 cavegen3 251:AT-2 5                          # romhacks take a game prefix

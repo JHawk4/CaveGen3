@@ -171,6 +171,8 @@ pub struct Options {
     pub pretty: bool,
     /// Draw only what the camera shows on landing, turned so the camera faces up.
     pub landing: bool,
+    /// Draw only what the camera shows while the sublevel's name is on screen, turned as on screen.
+    pub comedown_view: bool,
     /// The screen's width over its height, for the landing and comedown views.
     pub aspect: f32,
     /// 1 draws a grid cell as [`CELL`] pixels.
@@ -208,6 +210,7 @@ impl Default for Options {
             quick_glance: false,
             pretty: false,
             landing: false,
+            comedown_view: false,
             aspect: 16.0 / 9.0,
             scale: 1.0,
         }
@@ -446,6 +449,52 @@ fn place_corners(x: f32, z: f32, degrees: f32, corners: [(f32, f32); 4]) -> [(f3
     let f = (a.sin(), a.cos());
     let r = (-f.1, f.0);
     corners.map(|(ahead, side)| (x + f.0 * ahead + r.0 * side, z + f.1 * ahead + r.1 * side))
+}
+
+/// A view drawn alone: its corners on the floor (bottom-left, bottom-right, top-right, top-left
+/// of the screen), turned so the screen's top edge is level.
+#[derive(Clone, Copy)]
+struct ScreenView {
+    corners: [(f32, f32); 4],
+    center: (f32, f32),
+    /// Radians that turn the floor as the screen shows it.
+    turn: f32,
+    /// Where the turned view's top-left corner is, from `center`, and its size, in game units,
+    /// with a margin.
+    left: f32,
+    top: f32,
+    w: f32,
+    h: f32,
+}
+
+impl ScreenView {
+    const MARGIN: f32 = 40.0;
+
+    fn new(corners: [(f32, f32); 4]) -> Self {
+        let (tl, tr) = (corners[3], corners[2]);
+        let turn = -(tr.1 - tl.1).atan2(tr.0 - tl.0);
+        let center = (
+            corners.iter().map(|c| c.0).sum::<f32>() / 4.0,
+            corners.iter().map(|c| c.1).sum::<f32>() / 4.0,
+        );
+        let (sin, cos) = turn.sin_cos();
+        let turned = corners.map(|(x, z)| {
+            let (dx, dz) = (x - center.0, z - center.1);
+            (dx * cos - dz * sin, dx * sin + dz * cos)
+        });
+        let min = |f: fn(&(f32, f32)) -> f32| turned.iter().map(f).fold(f32::INFINITY, f32::min);
+        let max = |f: fn(&(f32, f32)) -> f32| turned.iter().map(f).fold(f32::NEG_INFINITY, f32::max);
+        let (left, top) = (min(|c| c.0) - Self::MARGIN, min(|c| c.1) - Self::MARGIN);
+        ScreenView {
+            corners,
+            center,
+            turn,
+            left,
+            top,
+            w: max(|c| c.0) + Self::MARGIN - left,
+            h: max(|c| c.1) + Self::MARGIN - top,
+        }
+    }
 }
 
 // ---- Images and the font ----
@@ -931,14 +980,20 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
     let cell = CELL * opts.scale;
     let to_px = |v: f32| v / UNIT * cell;
     let ship = layout.objects.iter().find(|o| o.kind == "ship");
-    let landing = if opts.landing {
-        let ship = ship.ok_or("this sublevel has no pod, so it has no landing view")?;
-        Some((ship, landing_shape(opts.aspect)))
+    // The landing or comedown view alone: the floor in view, turned as it is on screen.
+    let single = if opts.landing || opts.comedown_view {
+        let ship = ship.ok_or("this sublevel has no pod, so it has no landing or comedown view")?;
+        let local = if opts.landing {
+            landing_shape(opts.aspect).corners()
+        } else {
+            comedown_corners(opts.aspect)
+        };
+        Some(place_corners(ship.x, ship.z, ship.angle.unwrap_or(0.0), local))
     } else {
         None
     };
     // The landing and comedown outlines that are on, in game units.
-    let outlines: Vec<([(f32, f32); 4], &str)> = match ship.filter(|s| s.angle.is_some() && landing.is_none()) {
+    let outlines: Vec<([(f32, f32); 4], &str)> = match ship.filter(|s| s.angle.is_some() && single.is_none()) {
         Some(ship) => [
             (opts.comedown_box, comedown_corners(opts.aspect), COMEDOWN_COLOR),
             (opts.landing_box, landing_shape(opts.aspect).corners(), LANDING_COLOR),
@@ -957,30 +1012,22 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
         x1 = x1.max(x / UNIT + 0.25);
         z1 = z1.max(z / UNIT + 0.25);
     }
-    const MARGIN: f32 = 40.0; // game units around the landing view's trapezoid
-    let (w, h) = match landing {
-        Some((_, s)) => (
-            (s.far_half * 2.0 + MARGIN * 2.0) / UNIT * cell,
-            (s.far - s.near + MARGIN * 2.0) / UNIT * cell,
-        ),
+    let view = single.map(ScreenView::new);
+    let (w, h) = match view {
+        Some(v) => (to_px(v.w), to_px(v.h)),
         None => ((x1 - x0) * cell, (z1 - z0) * cell),
     };
     let mut pixmap = Pixmap::new(w.round().max(1.0) as u32, h.round().max(1.0) as u32).ok_or("the image would be too large")?;
     pixmap.fill(hex("#0f0f0f"));
 
-    let (base, mask, upright) = match landing {
-        Some((ship, s)) => {
-            // Turn so the pod (and the camera) faces up, and show only what's in view.
-            let a = ship.angle.unwrap_or(0.0).to_radians();
-            let turn = -PI / 2.0 - a.cos().atan2(a.sin());
-            let base = Transform::from_translate(w / 2.0, to_px(MARGIN + s.far))
-                .pre_concat(Transform::from_rotate(turn.to_degrees()))
-                .pre_translate(-to_px(ship.x), -to_px(ship.z));
+    let (base, mask, upright) = match view {
+        Some(v) => {
+            // Turn as the screen is, and show only what's in view.
+            let base = Transform::from_translate(-to_px(v.left), -to_px(v.top))
+                .pre_concat(Transform::from_rotate(v.turn.to_degrees()))
+                .pre_translate(-to_px(v.center.0), -to_px(v.center.1));
             let mut pb = PathBuilder::new();
-            for (i, (x, z)) in place_corners(ship.x, ship.z, ship.angle.unwrap_or(0.0), s.corners())
-                .into_iter()
-                .enumerate()
-            {
+            for (i, (x, z)) in v.corners.into_iter().enumerate() {
                 if i == 0 {
                     pb.move_to(to_px(x), to_px(z));
                 } else {
@@ -989,8 +1036,8 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
             }
             pb.close();
             let mut mask = Mask::new(pixmap.width(), pixmap.height()).ok_or("bad mask")?;
-            mask.fill_path(&pb.finish().ok_or("bad landing view shape")?, FillRule::Winding, true, base);
-            (base, Some(mask), -turn.to_degrees())
+            mask.fill_path(&pb.finish().ok_or("bad view shape")?, FillRule::Winding, true, base);
+            (base, Some(mask), -v.turn.to_degrees())
         }
         None => (Transform::from_translate(-x0 * cell, -z0 * cell), None, 0.0),
     };
