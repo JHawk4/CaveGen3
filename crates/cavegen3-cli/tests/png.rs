@@ -2,7 +2,7 @@
 
 use cavegen3_cli::{
     Painter, default_data_dir,
-    render::{CELL, OPTION_NAMES, Options},
+    render::{CELL, OPTION_NAMES, Options, comedown_corners},
 };
 use tiny_skia::Pixmap;
 
@@ -25,10 +25,10 @@ fn whole_map_png() {
 }
 
 #[test]
-fn comedown_and_scale() {
+fn landing_and_scale() {
     let p = painter();
     let opts = Options {
-        comedown: true,
+        landing: true,
         scale: 2.0,
         ..Options::default()
     };
@@ -43,6 +43,32 @@ fn comedown_and_scale() {
     );
     let corner = img.pixel(1, 1).unwrap();
     assert_eq!((corner.red(), corner.green(), corner.blue()), (15, 15, 15));
+}
+
+#[test]
+fn comedown_outline() {
+    // Frame 0 of s0B_cv_coursein: about 2,000 units of floor top to bottom, centered on the pod,
+    // with the pod's front down the screen and a little to the right.
+    let c = comedown_corners(4.0 / 3.0);
+    let (ahead, side): (Vec<f32>, Vec<f32>) = c.iter().copied().unzip();
+    let center = (ahead.iter().sum::<f32>() / 4.0, side.iter().sum::<f32>() / 4.0);
+    assert!(center.0.abs() < 40.0 && center.1.abs() < 40.0, "{center:?}");
+    let diag = |a: (f32, f32), b: (f32, f32)| (a.0 - b.0).hypot(a.1 - b.1);
+    let d = diag(c[0], c[2]);
+    assert!((d - 2.0 * 1000.0f32.hypot(1333.0)).abs() < 60.0, "{d}");
+
+    // The image grows to fit it: EC-1 is smaller than the comedown.
+    let p = painter();
+    let mut opts = Options::default();
+    let (layout, png) = p.png("EC-1", 0x63452B1B, &opts).unwrap();
+    let plain = Pixmap::decode_png(&png).unwrap();
+    assert_eq!(plain.width(), ((layout.width + 1.0) * CELL) as u32);
+    opts.set("comedownBox", true).unwrap();
+    opts.set("landingBox", true).unwrap();
+    opts.aspect = 4.0 / 3.0;
+    let (_, png) = p.png("EC-1", 0x63452B1B, &opts).unwrap();
+    let grown = Pixmap::decode_png(&png).unwrap();
+    assert!(grown.width() as f32 > 2.0 * 1333.0 / 170.0 * CELL && grown.height() > plain.height() / 2, "{}x{}", grown.width(), grown.height());
 }
 
 #[test]

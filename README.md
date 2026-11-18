@@ -36,8 +36,8 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 
 - **Objects**, **View**, **Generation details** and **Scores**: hide treasures (or only the
   fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants,
-  gates, gate HP (written on each gate) or exits; show only the comedown, water, a grid and the
-  treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
+  gates, gate HP (written on each gate) or exits; show only the landing view, the landing and
+  comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
   for plants, rings for easy teki), spawn order (CaveGen's `-drawSpawnOrder`), carry distances
   (`-drawPathDists`), the pod's facing (`-drawPodAngle`), facing directions, the game's unit,
   door, treasure and hole scores, teki scores, door links and numbers, waypoints and treasure
@@ -81,9 +81,9 @@ The map pane keeps its size: the mouse wheel, a trackpad pinch, two fingers, the
 or a double-click zoom about the pointer, zooming out shrinks the map against a dark background,
 and dragging moves it anywhere, past the edges too. **Save image** saves the whole map.
 
-**Comedown only** shows just what's on screen when you land, turned so the camera faces up as
-in the game (`comedown=1` in a link turns it on), and **Comedown outline** marks it on the full
-map. It uses the game's "Far(Low)" camera settings
+**Landing view only** shows just what's on screen when you land, turned so the camera faces up as
+in the game (`landing=1` in a link turns it on; the old `comedown=1` still works), and **Landing
+outline** marks it on the full map in yellow. It uses the game's "Far(Low)" camera settings
 (`/user/Nishimura/Camera/caveCameraParms.txt`: 900 units back, 25° down, a 26° field of view),
 looking the way the pod faces from just behind it, where the captain lands. The floor in view is
 a trapezoid from about 330 units behind the pod to about 1,100 ahead, about 1,200 wide at the far
@@ -91,6 +91,16 @@ edge on a 4:3 screen (1,600 on 16:9; pick the screen in Advanced options). These
 fitted to speedrun videos whose seeds were recovered from the video (Emergence Cave 1 and Hole of
 Beasts 1, three runners): there the pod sits a little above the middle of the screen while the
 Pikmin pour out. It's accurate to roughly a tenth of the screen, not to the pixel.
+
+**Comedown outline** (blue) marks what's on screen earlier, while the sublevel's name is up and
+the pod comes down: the camera of the cutscene that starts each floor, `s0B_cv_coursein`
+(`/user/Mukki/movie/s0B_cv_coursein/demo.szs`). Its first frame looks almost straight down from
+1,321 units above the pod, with a 74° vertical field of view and the picture turned so the pod
+faces down the screen, a little to the right. The view holds still until the name fades, then
+the cutscene cuts to a low shot of the Pikmin and the pod lands. On the floor that's a rectangle
+about 2,000 units tall and 2,660 wide on 4:3 (3,560 on 16:9), centered on the pod and turned
+about 19° from its facing. Checked against Emergence Cave 1 in two runs: treasures in view land
+within a pixel or two of where this camera puts them. The map grows to fit the outlines.
 
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.
@@ -100,13 +110,13 @@ The seed buttons can step through the game's RNG instead of counting by one (Cav
 `aggregator.html` recreates CaveGen's Aggregator: it generates many seeds of a sublevel, groups
 the ones that look alike, and draws each group with how often each treasure, teki, gate and exit
 spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's default), the rooms
-only, or the first room placed, as in CaveGen, or by **comedown**: what the camera shows when you
-land: the map units in view (the default). Find the group that matches your landing to see where
+only, or the first room placed, as in CaveGen, or by **landing view**: what the camera shows when
+you land: the map units in view (the default). Find the group that matches your landing to see where
 the treasures probably are; a floor usually has a few dozen of these groups. Gray cells show how often other map
 units were there.
 
 Rotations don't split groups: the same arrangement turned any way is one group (CaveGen only
-lined up the first room's rotation). Comedown groups are turned so the camera faces up. Map
+lined up the first room's rotation). Landing groups are turned so the camera faces up. Map
 units that look the same after a quarter or half turn count as the same in any of those
 rotations: the aggregator checks each unit's shape, doors and water, and the page checks its
 radar image. In vanilla Pikmin 2 these include the four-way junctions, the cross rooms (like
@@ -152,7 +162,8 @@ Then run `target/release/cavegen3` (`cavegen3.exe` on Windows). With no command 
 ```
 cavegen3 SCx-6 1234ABCD                      # one image: output/SCx6_1234ABCD.png
 cavegen3 BK-4 -n 100 --seeds r -o bk4        # 100 random seeds into bk4/
-cavegen3 SCx-6 1234ABCD --comedown           # only what you see when you land
+cavegen3 SCx-6 1234ABCD --landing            # only what you see when you land
+cavegen3 EC-1 63452B1B --show landingBox,comedownBox,podAngle --screen 4:3
 cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 cavegen3 251:AT-2 5                          # romhacks take a game prefix
 cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
@@ -166,7 +177,7 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
 | `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
 | `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
 | `count SCx-7 minihoudai` | How many of something each seed has, as a distribution (CaveGen's `-count`). |
-| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group comedown`, `layout`, `rooms` or `first`), with what spawned at each spot and how often. |
+| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group landing`, `layout`, `rooms` or `first`; `comedown` is the old name for `landing`), with what spawned at each spot and how often. |
 | `options` | Lists the map options for `--show` and `--hide`. |
 
 - Seeds are hex; leave the seed out for a random one. `--seeds c` counts up by one, `g` steps
@@ -174,7 +185,9 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
   `c` and `g` begin. Searches use every CPU core (about 60,000 judged layouts a second).
 - `--show` and `--hide` take the web page's map options; treasures, teki, plants, gates, gate
   HP, exits and water are on by default. `--scale 2` doubles the size (1 is 40 pixels per grid
-  cell); `--screen 4:3` sets the comedown's screen shape.
+  cell); `--screen 4:3` sets the screen shape for the landing view and both outlines.
+  `--comedown` is the old name of `--landing`; `comedownBox` now means the comedown outline,
+  and the landing outline is `landingBox`.
 - It reads the repository's `data` folder; set `CAVEGEN3_DATA` or `--data` to use another.
 
 ## In-game names

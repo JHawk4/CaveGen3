@@ -21,7 +21,8 @@ use serde_json::Value;
 /// With no command, the arguments are for `generate`:
 ///   cavegen3 SCx-6 1234ABCD
 ///   cavegen3 BK-4 -n 100 --seeds r -o bk4
-///   cavegen3 SCx-6 1234ABCD --comedown --screen 4:3
+///   cavegen3 SCx-6 1234ABCD --landing --screen 4:3
+///   cavegen3 EC-1 1234ABCD --show landingBox,comedownBox,podAngle --screen 4:3
 ///   cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 ///   cavegen3 colossal+ultra+5onion 0
 ///
@@ -148,11 +149,12 @@ struct LookArgs {
     #[arg(long, default_value_t = 1.0)]
     scale: f32,
 
-    /// Draw only what you see when you land, turned so the camera faces up.
-    #[arg(long)]
-    comedown: bool,
+    /// Draw only what you see when you land, turned so the camera faces up. (--comedown is its
+    /// old name.)
+    #[arg(long, alias = "comedown")]
+    landing: bool,
 
-    /// The game's screen shape, for the comedown: 16:9 or 4:3.
+    /// The game's screen shape, for the landing and comedown views: 16:9 or 4:3.
     #[arg(long, default_value = "16:9", value_parser = ["16:9", "4:3"])]
     screen: String,
 
@@ -171,7 +173,7 @@ impl LookArgs {
             return Err("--scale must be between 0.05 and 20".into());
         }
         let mut opts = Options {
-            comedown: self.comedown,
+            landing: self.landing,
             scale: self.scale,
             ..Options::default()
         };
@@ -255,15 +257,15 @@ struct AggArgs {
     #[arg(help = SUBLEVEL_HELP)]
     sublevel: String,
 
-    /// How to group seeds: comedown (the map units in view when you land), layout (CaveGen's
-    /// default), rooms, or first (the first room placed).
-    #[arg(long, default_value = "comedown", value_parser = ["comedown", "layout", "rooms", "first"])]
+    /// How to group seeds: landing (the map units in view when you land; "comedown" is its old
+    /// name), layout (CaveGen's default), rooms, or first (the first room placed).
+    #[arg(long, default_value = "landing", value_parser = ["landing", "comedown", "layout", "rooms", "first"])]
     group: String,
 
     #[command(flatten)]
     range: Range,
 
-    /// The game's screen shape, for the comedown: 16:9 or 4:3.
+    /// The game's screen shape, for the landing view: 16:9 or 4:3.
     #[arg(long, default_value = "16:9", value_parser = ["16:9", "4:3"])]
     screen: String,
 
@@ -376,7 +378,7 @@ fn run(cli: Cli) -> Result<(), String> {
                 images: None,
                 look: LookArgs {
                     scale: 1.0,
-                    comedown: false,
+                    landing: false,
                     screen: "16:9".into(),
                     show: vec![],
                     hide: vec![],
@@ -396,7 +398,7 @@ fn run(cli: Cli) -> Result<(), String> {
                 images: None,
                 look: LookArgs {
                     scale: 1.0,
-                    comedown: false,
+                    landing: false,
                     screen: "16:9".into(),
                     show: vec![],
                     hide: vec![],
@@ -704,7 +706,7 @@ fn search_command(painter: &Painter, args: &SearchArgs) -> Result<(), String> {
 
 fn aggregate(painter: &mut Painter, args: &AggArgs) -> Result<(), String> {
     let aspect = if args.screen == "4:3" { 4.0 / 3.0 } else { 16.0 / 9.0 };
-    let shape = render::comedown_shape(aspect);
+    let shape = render::landing_shape(aspect);
     let periods = painter.image_periods(&args.sublevel)?;
     let game = painter.layout(&args.sublevel, 0, false)?.game.clone();
     painter.web.command(

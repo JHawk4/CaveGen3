@@ -168,7 +168,7 @@ impl Web {
     ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
     /// - `caveinfo <sublevel>`: the sublevel's generation parameters (see [`caveinfo_json`]).
     /// - `agg_start <sublevel> <grouping> <near> <far> <near half> <far half> [image periods]`
-    ///   (the comedown view, see [`aggregate::View`]; image periods are "unit=period;..."), then `agg_run <start> <count> <c|g|r>`
+    ///   (the landing view, see [`aggregate::View`]; image periods are "unit=period;..."), then `agg_run <start> <count> <c|g|r>`
     ///   any number of times, then `agg_result <max groups>`: CaveGen's Aggregator (see
     ///   [`aggregate`]).
     pub fn command(&mut self, text: &str) -> Result<String, String> {
@@ -265,7 +265,7 @@ impl Web {
                     let sublevel = data.sublevel(arg(1)?).map_err(|e| e.to_string())?;
                     data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
                     let nums: Vec<f32> = (3..7)
-                        .map(|i| arg(i)?.trim().parse::<f32>().map_err(|_| "bad comedown view".to_string()))
+                        .map(|i| arg(i)?.trim().parse::<f32>().map_err(|_| "bad landing view".to_string()))
                         .collect::<Result<_, _>>()?;
                     let view = aggregate::View { near: nums[0], far: nums[1], near_half: nums[2], far_half: nums[3] };
                     let grouping = aggregate::Grouping::parse(arg(2)?)?;
@@ -519,7 +519,7 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
     let mut objects = Vec::new();
     for (so, pos, angle, placement) in placed {
         let (x, z) = (f(pos[0]), f(pos[2]));
-        // The pod's facing is always included: the page's comedown view needs it.
+        // The pod's facing is always included: the page's landing and comedown views need it.
         let ship_angle = format!(",\"angle\":{}", f(angle));
         let angle = if details { ship_angle.clone() } else { String::new() };
         let obj = match so {
@@ -810,7 +810,7 @@ mod tests {
 
         // The aggregator: every seed lands in exactly one group, and each group's spots count
         // one pod per layout.
-        for grouping in ["layout", "rooms", "first", "comedown", "comedown-units"] {
+        for grouping in ["layout", "rooms", "first", "landing", "comedown", "comedown-units"] {
             web.command(&format!("agg_start\tBK1\t{grouping}\t-90\t1030\t165\t545")).unwrap();
             web.command("agg_run\t0\t150\tc").unwrap();
             web.command("agg_run\t150\t50\tr").unwrap();
@@ -824,7 +824,7 @@ mod tests {
             assert_eq!(counts, 200, "{grouping}");
             assert_eq!(r.matches("[\"s\",").count() > 0, true, "{grouping}");
         }
-        // BK1 has one start room; its comedown units-only groups are few.
+        // BK1 has one start room; its landing units-only groups are few.
         web.command("agg_start\tBK1\tfirst\t-90\t1030\t165\t545").unwrap();
         web.command("agg_run\t0\t100\tc").unwrap();
         let first = web.command("agg_result\t1000").unwrap();
