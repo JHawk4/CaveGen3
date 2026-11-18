@@ -60,8 +60,10 @@ const STRINGS = {
     colUltra: "Ultra randomizer",
     colExtra: "Extra units",
     col5: "5 Onions",
-    landing: "Landing view only",
-    comedownView: "Comedown view only",
+    viewPod: "Landing view only (pod)",
+    viewOlimar: "Landing view only (Olimar)",
+    viewLouie: "Landing view only (Louie)",
+    viewComedown: "Comedown view only",
     screen: "Screen",
     seedStep: "‹ › buttons",
     seedStepPlus: "±1",
@@ -112,7 +114,9 @@ const STRINGS = {
       paths: "Carry paths",
       gauge: "Treasure gauge",
       grid: "Grid",
-      landingBox: "Landing outline",
+      landingBox: "Landing outline (pod)",
+      landingBoxOlimar: "Landing outline (Olimar)",
+      landingBoxLouie: "Landing outline (Louie)",
       comedownBox: "Comedown outline",
       quickGlance: "QuickGlance",
       pretty: "Pretty",
@@ -165,8 +169,10 @@ const STRINGS = {
       colUltra: "Shuffle the map unit lists much more before placing them (CaveGen's -ultraRandomizer)",
       colExtra: "Also use Pikmin 251's map units (CaveGen's -extraUnits)",
       col5: "Place five Onions instead of three (CaveGen's -5onion)",
-      landing: "Show only what's on screen when you land, turned so the camera faces up",
-      comedownView: "Show only what's on screen as the pod comes down, while the sublevel's name is up, turned as on screen",
+      viewPod: "Show only what's on screen when you land after pressing L, which turns the camera the way the pod faces. Turned as on screen",
+      viewOlimar: "Show only what's on screen when you land as Olimar without pressing L: the camera faces the same way on every floor. Turned as on screen",
+      viewLouie: "Show only what's on screen when you land as Louie without pressing L: the camera faces the same way on every floor. Turned as on screen",
+      viewComedown: "Show only what's on screen as the pod comes down, while the sublevel's name is up, turned as on screen",
       water: "Shade the water",
       screen: "The game's screen setting, for the landing and comedown views. A 16:9 screen shows more to the sides",
       seedStep: "±1, or the seed before/after it in the game's RNG (CaveGen's -consecutiveSeeds)",
@@ -201,8 +207,10 @@ const STRINGS = {
         paths: "The way each treasure is carried back to the pod",
         gauge: "Shades the floor by how high the treasure gauge's needle would be there: yellow while the needle is below 0.3, orange from 0.3 and red from 0.8, deeper each step inward (steps at 0.05, 0.1, 0.2 … 0.9)",
         grid: "The map's grid cells",
-        landingBox: "An outline of what the camera shows when you land",
-        comedownBox: "An outline of what the camera shows as the pod comes down, while the sublevel's name is on screen",
+        landingBox: "An outline of what the camera shows when you land after pressing L, which turns the camera the way the pod faces (white)",
+        landingBoxOlimar: "An outline of what the camera shows when you land as Olimar without pressing L (red)",
+        landingBoxLouie: "An outline of what the camera shows when you land as Louie without pressing L (blue)",
+        comedownBox: "An outline of what the camera shows as the pod comes down, while the sublevel's name is on screen (yellow)",
         quickGlance: "Colored discs behind what matters, to read a layout at a glance: the pod (red), treasures and teki carrying them (orange), the exit (green), Gatling Groinks (pink), Candypop Buds and Onions (CaveGen's QuickGlance)",
         pretty: "Draws the vanilla map units as pictures of the actual floor instead of radar images (CaveGen's Pretty)",
       },
@@ -312,8 +320,10 @@ const STRINGS = {
     colUltra: "超ランダム",
     colExtra: "追加ユニット",
     col5: "オニヨン5個",
-    landing: "着地時の範囲だけ",
-    comedownView: "降下中の範囲だけ",
+    viewPod: "着地時の範囲だけ（ポッド）",
+    viewOlimar: "着地時の範囲だけ（オリマー）",
+    viewLouie: "着地時の範囲だけ（ルーイー）",
+    viewComedown: "降下中の範囲だけ",
     screen: "画面",
     seedStep: "‹ › ボタン",
     seedStepPlus: "±1",
@@ -364,7 +374,9 @@ const STRINGS = {
       paths: "運搬ルート",
       gauge: "お宝ゲージ",
       grid: "グリッド",
-      landingBox: "着地時の範囲の枠",
+      landingBox: "着地時の範囲の枠（ポッド）",
+      landingBoxOlimar: "着地時の範囲の枠（オリマー）",
+      landingBoxLouie: "着地時の範囲の枠（ルーイー）",
       comedownBox: "降下中の範囲の枠",
       quickGlance: "クイックグランス",
       pretty: "きれいな表示",
@@ -418,8 +430,10 @@ const STRINGS = {
       colUltra: "マップユニットの並びを配置前にもっと大きくかき混ぜます（CaveGenの -ultraRandomizer）",
       colExtra: "Pikmin 251 のマップユニットも使います（CaveGenの -extraUnits）",
       col5: "オニヨンを3個ではなく5個置きます（CaveGenの -5onion）",
-      landing: "着地したときに画面に映る範囲だけを、カメラが上を向くよう回転して表示します",
-      comedownView: "ポッドが降りてくる間（階層名が表示されている間）に画面に映る範囲だけを、画面と同じ向きで表示します",
+      viewPod: "Lボタンでカメラをポッドの向きに合わせたときに、着地時に画面に映る範囲だけを、画面と同じ向きで表示します",
+      viewOlimar: "オリマーでLボタンを押さずに着地したときに画面に映る範囲だけを、画面と同じ向きで表示します。カメラはどの階でも同じ向きです",
+      viewLouie: "ルーイーでLボタンを押さずに着地したときに画面に映る範囲だけを、画面と同じ向きで表示します。カメラはどの階でも同じ向きです",
+      viewComedown: "ポッドが降りてくる間（階層名が表示されている間）に画面に映る範囲だけを、画面と同じ向きで表示します",
       water: "水の部分に色をつけます",
       screen: "ゲームの画面設定（着地時と降下中の範囲用）。16:9のほうが左右が広く映ります",
       seedStep: "±1、またはゲームの乱数で前後のシード（CaveGenの -consecutiveSeeds）",
@@ -454,8 +468,10 @@ const STRINGS = {
         paths: "各お宝がポッドまで運ばれる道すじ",
         gauge: "その場所でお宝ゲージの針がどこまで上がるかで床を塗り分けます。針が0.3未満は黄色、0.3からオレンジ、0.8から赤で、内側ほど濃くなります（0.05, 0.1, 0.2 … 0.9 ごと）",
         grid: "マップのマス目",
-        landingBox: "着地したときにカメラに映る範囲の枠",
-        comedownBox: "ポッドが降りてくる間（階層名が表示されている間）にカメラに映る範囲の枠",
+        landingBox: "Lボタンでカメラをポッドの向きに合わせたときに、着地時にカメラに映る範囲の枠（白）",
+        landingBoxOlimar: "オリマーでLボタンを押さずに着地したときにカメラに映る範囲の枠（赤）",
+        landingBoxLouie: "ルーイーでLボタンを押さずに着地したときにカメラに映る範囲の枠（青）",
+        comedownBox: "ポッドが降りてくる間（階層名が表示されている間）にカメラに映る範囲の枠（黄）",
         quickGlance: "大事なものの下に色の円を描いて、ひと目で読めるようにします：ポッド（赤）、お宝とお宝を持つ原生生物（オレンジ）、出口（緑）、ガトリングモドキ（ピンク）、ポンガシグサ、オニヨン（CaveGenの QuickGlance）",
         pretty: "元のゲームのマップユニットを、レーダー画像ではなく実際の床の絵で描きます（CaveGenの Pretty）",
       },
@@ -772,8 +788,39 @@ const LANDING_CAMERA = { dist: 900, angle: 25, fov: 26, lift: 40, lookAhead: -55
 // pod's left, y up from the floor). The camera looks almost straight down from 1,321 units up
 // with a 74° vertical field of view, turned by its roll (JStudio: RotZ(-roll) * LookAt).
 const COMEDOWN_CAMERA = { eye: [-0.286, 1320.99, -3.17], target: [4.737, 6.729, -1.692], fovy: 74.11, roll: 87.82 };
-const LANDING_COLOR = "#ffe14d";
-const COMEDOWN_COLOR = "#4dd2ff";
+// Outline colors: white for the pod, the captains' cursor colors, and yellow for the comedown.
+const LANDING_COLOR = "#f2f2f2";
+const OLIMAR_COLOR = "#ff5a4d";
+const LOUIE_COLOR = "#4d9bff";
+const COMEDOWN_COLOR = "#ffe14d";
+
+// Which way the camera faces when you land. Each floor starts both captains' cameras at
+// camera_angle in /user/Kando/aiConstants.txt (290: behind the captain at 290 degrees, looking
+// toward 110), with the captains facing 0 (+Z), since caves have no map rotation
+// (BaseGameSection::setupFloatMemory). The cave then makes the active captain the player, and
+// CameraMgr::changePlayerMode centers the camera behind him only when that switches from Olimar:
+// as Louie it looks toward his cursor, straight ahead of him, at 0. Pressing L does the same, but
+// by then the captain faces the way the pod does. Checked against a speedrun that often doesn't
+// press L.
+const LANDING_HEADINGS = { pod: null, olimar: 110, louie: 0 };
+const VIEWS = ["pod", "olimar", "louie", "comedown"];
+
+/** The landing view's corners in game units, for `camera` "pod", "olimar" or "louie". */
+function landingCorners(ship, camera) {
+  const a = ((ship.angle ?? 0) * Math.PI) / 180;
+  const heading = LANDING_HEADINGS[camera] ?? ship.angle ?? 0;
+  const h = (heading * Math.PI) / 180;
+  const look = LANDING_CAMERA.lookAhead;
+  // The point the trapezoid is measured from: the captain, moved back along the view.
+  const qx = ship.x + look * (Math.sin(a) - Math.sin(h));
+  const qz = ship.z + look * (Math.cos(a) - Math.cos(h));
+  return placeCorners(qx, qz, heading, shapeCorners(landingShape()));
+}
+
+/** The view drawn alone ("pod", "olimar", "louie" or "comedown"), or null. */
+function chosenView() {
+  return VIEWS.find((v) => $(`view-${v}`)?.checked) ?? null;
+}
 
 /** The screen's width over its height: 16:9 or 4:3 (the game's Screen setting). */
 function screenAspect() {
@@ -846,11 +893,11 @@ function placeCorners(x, z, degrees, corners) {
 /** The part of the map to draw, in grid cells: the whole cave, or the landing view. */
 function mapView(layout) {
   const ship = layout.objects.find((o) => o.kind === "ship");
-  const landing = $("landing")?.checked;
-  if ((landing || $("comedown-view")?.checked) && ship) {
+  const chosen = chosenView();
+  if (chosen && ship) {
     // One view alone: the floor in view, turned as the screen shows it. Corners go bottom-left,
     // bottom-right, top-right, top-left of the screen.
-    const corners = placeCorners(ship.x, ship.z, ship.angle ?? 0, landing ? shapeCorners(landingShape()) : comedownCorners());
+    const corners = chosen === "comedown" ? placeCorners(ship.x, ship.z, ship.angle ?? 0, comedownCorners()) : landingCorners(ship, chosen);
     const [tr, tl] = [corners[2], corners[3]];
     const turn = -Math.atan2(tr[1] - tl[1], tr[0] - tl[0]);
     const center = [0, 1].map((i) => corners.reduce((s, c) => s + c[i], 0) / 4);
@@ -890,12 +937,11 @@ function viewOutlines(layout, withColors = false) {
   const ship = layout.objects.find((o) => o.kind === "ship");
   if (!ship || ship.angle === undefined) return [];
   const out = [];
-  if ($("opt-comedownBox")?.checked) out.push([comedownCorners(), COMEDOWN_COLOR]);
-  if ($("opt-landingBox")?.checked) out.push([shapeCorners(landingShape()), LANDING_COLOR]);
-  return out.map(([c, color]) => {
-    const placed = placeCorners(ship.x, ship.z, ship.angle, c);
-    return withColors ? [placed, color] : placed;
-  });
+  if ($("opt-comedownBox")?.checked) out.push([placeCorners(ship.x, ship.z, ship.angle, comedownCorners()), COMEDOWN_COLOR]);
+  if ($("opt-landingBoxOlimar")?.checked) out.push([landingCorners(ship, "olimar"), OLIMAR_COLOR]);
+  if ($("opt-landingBoxLouie")?.checked) out.push([landingCorners(ship, "louie"), LOUIE_COLOR]);
+  if ($("opt-landingBox")?.checked) out.push([landingCorners(ship, "pod"), LANDING_COLOR]);
+  return withColors ? out : out.map(([c]) => c);
 }
 
 /** The largest scale whose canvas the browser can still draw comfortably. */
@@ -1118,6 +1164,8 @@ const MAP_OPTIONS = [
   { key: "gateHealth", on: true, section: "objects" },
   { key: "exits", on: true, section: "objects" },
   { key: "landingBox", section: "view" },
+  { key: "landingBoxOlimar", section: "view" },
+  { key: "landingBoxLouie", section: "view" },
   { key: "comedownBox", section: "view" },
   { key: "quickGlance", section: "view" },
   { key: "pretty", section: "view" },
@@ -2080,8 +2128,9 @@ function buildAdvanced() {
     for (const { key } of MAP_OPTIONS) if (key in map) $(`opt-${key}`).checked = !!map[key];
     if (JUDGES.includes(saved.judge)) $("judge").value = saved.judge;
     // "comedown" and "comedownScreen" are the old names.
-    if (saved.landing ?? saved.comedown) $("landing").checked = true;
-    else if (saved.comedownView) $("comedown-view").checked = true;
+    // "landing" and "comedown" are old saves of the pod view.
+    const view = VIEWS.includes(saved.view) ? saved.view : saved.landing || saved.comedown ? "pod" : null;
+    if (view) $(`view-${view}`).checked = true;
     if (saved.screen || saved.comedownScreen) $("screen-shape").value = saved.screen || saved.comedownScreen;
     if (saved.seedStep) $("seed-step").value = saved.seedStep;
     if (saved.open) $("advanced").open = true;
@@ -2098,8 +2147,7 @@ function saveSettings() {
         map,
         judge: $("judge").value,
         open: $("advanced").open,
-        landing: $("landing").checked,
-        comedownView: $("comedown-view").checked,
+        view: chosenView(),
         screen: $("screen-shape").value,
         seedStep: $("seed-step").value,
       }));
@@ -2611,13 +2659,9 @@ async function init() {
   selectStart();
   const seed = params.get("seed") && parseSeed(params.get("seed"));
   // "comedown=1" is the old name.
-  if (params.get("landing") === "1" || params.get("comedown") === "1") {
-    $("landing").checked = true;
-    $("comedown-view").checked = false;
-  } else if (params.get("comedownView") === "1") {
-    $("comedown-view").checked = true;
-    $("landing").checked = false;
-  }
+  // "landing=1" and "comedown=1" are old links to the pod view.
+  const viewParam = VIEWS.includes(params.get("view")) ? params.get("view") : params.get("landing") === "1" || params.get("comedown") === "1" ? "pod" : null;
+  if (viewParam) for (const v of VIEWS) $(`view-${v}`).checked = v === viewParam;
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -2662,17 +2706,16 @@ async function init() {
   $("zoom-in").addEventListener("click", () => mainViewer.zoomCenter(1.5));
   $("zoom-out").addEventListener("click", () => mainViewer.zoomCenter(1 / 1.5));
   $("zoom-fit").addEventListener("click", () => redraw(true));
-  // Landing view only and Comedown view only: at most one at a time.
-  for (const [id, other] of [["landing", "comedown-view"], ["comedown-view", "landing"]]) {
-    $(id).addEventListener("change", () => {
-      if ($(id).checked) $(other).checked = false;
+  // The landing and comedown views alone: at most one at a time.
+  for (const v of VIEWS) {
+    $(`view-${v}`).addEventListener("change", () => {
+      if ($(`view-${v}`).checked) for (const other of VIEWS) if (other !== v) $(`view-${other}`).checked = false;
       saveSettings();
       const p = new URLSearchParams(location.search);
       p.delete("comedown");
       p.delete("landing");
-      p.delete("comedownView");
-      if ($("landing").checked) p.set("landing", "1");
-      if ($("comedown-view").checked) p.set("comedownView", "1");
+      p.delete("view");
+      if (chosenView()) p.set("view", chosenView());
       history.replaceState(null, "", `?${p.toString()}`);
       redraw(true);
     });
@@ -2680,7 +2723,7 @@ async function init() {
   $("screen-shape").addEventListener("change", () => {
     saveSettings();
     // The landing view and the outlines change size with the screen.
-    redraw($("landing").checked || $("comedown-view").checked || $("opt-landingBox").checked || $("opt-comedownBox").checked);
+    redraw(true);
   });
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {
@@ -2689,7 +2732,7 @@ async function init() {
       // Turning on an option that needs the extra layout data generates the layout again.
       if (details && !current.layout.spawnpoints && $(`opt-${key}`).checked) run();
       // The outlines can grow the map.
-      else redraw(key === "landingBox" || key === "comedownBox");
+      else redraw(key.startsWith("landingBox") || key === "comedownBox");
     });
   }
   $("judge").addEventListener("change", () => {

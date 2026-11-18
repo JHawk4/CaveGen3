@@ -155,8 +155,11 @@ pub struct Options {
     pub paths: bool,
     pub gauge: bool,
     pub grid: bool,
-    /// An outline of what the camera shows when you land.
+    /// Outlines of what the camera shows when you land: after pressing L (the way the pod faces),
+    /// and without L as Olimar or as Louie.
     pub landing_box: bool,
+    pub landing_box_olimar: bool,
+    pub landing_box_louie: bool,
     /// An outline of what the camera shows while the sublevel's name is on screen, as the pod comes down.
     pub comedown_box: bool,
     /// CaveGen's -drawSpawnOrder: map units and objects numbered in placement order.
@@ -169,10 +172,8 @@ pub struct Options {
     pub quick_glance: bool,
     /// CaveGen's Pretty: rendered floor pictures for the vanilla map units.
     pub pretty: bool,
-    /// Draw only what the camera shows on landing, turned so the camera faces up.
-    pub landing: bool,
-    /// Draw only what the camera shows while the sublevel's name is on screen, turned as on screen.
-    pub comedown_view: bool,
+    /// Draw only what one camera shows, turned as on screen.
+    pub view: Option<View>,
     /// The screen's width over its height, for the landing and comedown views.
     pub aspect: f32,
     /// 1 draws a grid cell as [`CELL`] pixels.
@@ -203,14 +204,15 @@ impl Default for Options {
             gauge: false,
             grid: false,
             landing_box: false,
+            landing_box_olimar: false,
+            landing_box_louie: false,
             comedown_box: false,
             spawn_order: false,
             path_dists: false,
             pod_angle: false,
             quick_glance: false,
             pretty: false,
-            landing: false,
-            comedown_view: false,
+            view: None,
             aspect: 16.0 / 9.0,
             scale: 1.0,
         }
@@ -240,6 +242,8 @@ pub const OPTION_NAMES: &[&str] = &[
     "gauge",
     "grid",
     "landingBox",
+    "landingBoxOlimar",
+    "landingBoxLouie",
     "comedownBox",
     "spawnOrder",
     "pathDists",
@@ -278,6 +282,8 @@ impl Options {
             "gauge" => &mut self.gauge,
             "grid" => &mut self.grid,
             "landingbox" => &mut self.landing_box,
+            "landingboxolimar" => &mut self.landing_box_olimar,
+            "landingboxlouie" => &mut self.landing_box_louie,
             "comedownbox" => &mut self.comedown_box,
             "spawnorder" => &mut self.spawn_order,
             "pathdists" => &mut self.path_dists,
@@ -361,8 +367,11 @@ pub const COMEDOWN_CAMERA: CutsceneCamera = CutsceneCamera {
     roll: 87.82,
 };
 
-pub const LANDING_COLOR: &str = "#ffe14d";
-pub const COMEDOWN_COLOR: &str = "#4dd2ff";
+/// Outline colors: white for the pod, the captains' cursor colors, and yellow for the comedown.
+pub const LANDING_COLOR: &str = "#f2f2f2";
+pub const OLIMAR_COLOR: &str = "#ff5a4d";
+pub const LOUIE_COLOR: &str = "#4d9bff";
+pub const COMEDOWN_COLOR: &str = "#ffe14d";
 
 /// The floor a camera sees: a trapezoid from `near` to `far` units ahead of the pod.
 #[derive(Clone, Copy)]
@@ -441,6 +450,66 @@ pub fn cutscene_corners(cam: &CutsceneCamera, aspect: f32) -> [(f32, f32); 4] {
 /// What the camera shows while the sublevel's name is on screen, as (ahead, side) corners.
 pub fn comedown_corners(aspect: f32) -> [(f32, f32); 4] {
     cutscene_corners(&COMEDOWN_CAMERA, aspect)
+}
+
+/// Which way the camera faces when you land.
+///
+/// Each floor starts both captains' cameras at `camera_angle` in `/user/Kando/aiConstants.txt`
+/// (290°: behind the captain at 290°, looking toward 110°), and the captains face 0° (+Z), since
+/// caves have no map rotation (`BaseGameSection::setupFloatMemory`). The cave then makes the active
+/// captain the player; `CameraMgr::changePlayerMode` centers the camera behind him only when that
+/// switches from Olimar, so with Louie it looks toward his cursor, straight ahead of him: 0°.
+/// Pressing L does the same, but by then the captain faces the way the pod does.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum LandingCamera {
+    /// After pressing L: the way the pod faces. What speedruns show.
+    Pod,
+    /// Olimar without L: toward 110°.
+    Olimar,
+    /// Louie without L: toward 0° (+Z).
+    Louie,
+}
+
+/// A view drawn alone, turned as on screen.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum View {
+    Landing(LandingCamera),
+    Comedown,
+}
+
+impl View {
+    /// `pod` (or `landing`), `olimar`, `louie` or `comedown`.
+    pub fn parse(s: &str) -> Result<Self, String> {
+        Ok(match s.to_ascii_lowercase().as_str() {
+            "pod" | "landing" => View::Landing(LandingCamera::Pod),
+            "olimar" => View::Landing(LandingCamera::Olimar),
+            "louie" => View::Landing(LandingCamera::Louie),
+            "comedown" => View::Comedown,
+            _ => return Err(format!("unknown view {s:?}: pod, olimar, louie or comedown")),
+        })
+    }
+}
+
+impl LandingCamera {
+
+    /// The direction the camera looks, in degrees, for a pod facing `pod`.
+    pub fn heading(self, pod: f32) -> f32 {
+        match self {
+            LandingCamera::Pod => pod,
+            LandingCamera::Olimar => 110.0,
+            LandingCamera::Louie => 0.0,
+        }
+    }
+}
+
+/// The landing view's corners in game units, for a pod at (x, z) facing `pod` degrees. The
+/// camera aims at the captain, who lands `look_ahead` units ahead of the pod (behind it).
+pub fn landing_corners(x: f32, z: f32, pod: f32, camera: LandingCamera, aspect: f32) -> [(f32, f32); 4] {
+    let (a, h) = (pod.to_radians(), camera.heading(pod).to_radians());
+    let look = LANDING_CAMERA.look_ahead;
+    // The point the trapezoid is measured from: the captain, moved back along the view.
+    let (qx, qz) = (x + look * (a.sin() - h.sin()), z + look * (a.cos() - h.cos()));
+    place_corners(qx, qz, camera.heading(pod), landing_shape(aspect).corners())
 }
 
 /// Corners given as (ahead, side) from a pod at (x, z) facing `degrees`, in game units.
@@ -981,27 +1050,37 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
     let to_px = |v: f32| v / UNIT * cell;
     let ship = layout.objects.iter().find(|o| o.kind == "ship");
     // The landing or comedown view alone: the floor in view, turned as it is on screen.
-    let single = if opts.landing || opts.comedown_view {
-        let ship = ship.ok_or("this sublevel has no pod, so it has no landing or comedown view")?;
-        let local = if opts.landing {
-            landing_shape(opts.aspect).corners()
-        } else {
-            comedown_corners(opts.aspect)
-        };
-        Some(place_corners(ship.x, ship.z, ship.angle.unwrap_or(0.0), local))
-    } else {
-        None
+    let single = match opts.view {
+        Some(view) => {
+            let ship = ship.ok_or("this sublevel has no pod, so it has no landing or comedown view")?;
+            let angle = ship.angle.unwrap_or(0.0);
+            Some(match view {
+                View::Landing(camera) => landing_corners(ship.x, ship.z, angle, camera, opts.aspect),
+                View::Comedown => place_corners(ship.x, ship.z, angle, comedown_corners(opts.aspect)),
+            })
+        }
+        None => None,
     };
     // The landing and comedown outlines that are on, in game units.
     let outlines: Vec<([(f32, f32); 4], &str)> = match ship.filter(|s| s.angle.is_some() && single.is_none()) {
-        Some(ship) => [
-            (opts.comedown_box, comedown_corners(opts.aspect), COMEDOWN_COLOR),
-            (opts.landing_box, landing_shape(opts.aspect).corners(), LANDING_COLOR),
-        ]
-        .into_iter()
-        .filter(|b| b.0)
-        .map(|(_, c, color)| (place_corners(ship.x, ship.z, ship.angle.unwrap(), c), color))
-        .collect(),
+        Some(ship) => {
+            let angle = ship.angle.unwrap();
+            let landing = |camera| landing_corners(ship.x, ship.z, angle, camera, opts.aspect);
+            let mut out = vec![];
+            if opts.comedown_box {
+                out.push((place_corners(ship.x, ship.z, angle, comedown_corners(opts.aspect)), COMEDOWN_COLOR));
+            }
+            for (on, camera, color) in [
+                (opts.landing_box_olimar, LandingCamera::Olimar, OLIMAR_COLOR),
+                (opts.landing_box_louie, LandingCamera::Louie, LOUIE_COLOR),
+                (opts.landing_box, LandingCamera::Pod, LANDING_COLOR),
+            ] {
+                if on {
+                    out.push((landing(camera), color));
+                }
+            }
+            out
+        }
         None => vec![],
     };
     // The cave with a half-cell margin, grown to fit the outlines (in grid cells).

@@ -2,7 +2,7 @@
 
 use cavegen3_cli::{
     Painter, default_data_dir,
-    render::{CELL, OPTION_NAMES, Options, comedown_corners},
+    render::{CELL, LandingCamera, OPTION_NAMES, Options, View, comedown_corners},
 };
 use tiny_skia::Pixmap;
 
@@ -28,7 +28,7 @@ fn whole_map_png() {
 fn landing_and_scale() {
     let p = painter();
     let opts = Options {
-        landing: true,
+        view: Some(View::Landing(LandingCamera::Pod)),
         scale: 2.0,
         ..Options::default()
     };
@@ -76,7 +76,7 @@ fn comedown_view() {
     // The comedown alone, turned as on screen: a 4:3 rectangle of floor plus a small margin.
     let p = painter();
     let opts = Options {
-        comedown_view: true,
+        view: Some(View::Comedown),
         aspect: 4.0 / 3.0,
         ..Options::default()
     };

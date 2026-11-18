@@ -22,7 +22,7 @@ use serde_json::Value;
 ///   cavegen3 SCx-6 1234ABCD
 ///   cavegen3 BK-4 -n 100 --seeds r -o bk4
 ///   cavegen3 SCx-6 1234ABCD --landing --screen 4:3
-///   cavegen3 SCx-6 1234ABCD --comedown-view
+///   cavegen3 SCx-6 1234ABCD --view louie
 ///   cavegen3 EC-1 1234ABCD --show landingBox,comedownBox,podAngle --screen 4:3
 ///   cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 ///   cavegen3 colossal+ultra+5onion 0
@@ -150,15 +150,15 @@ struct LookArgs {
     #[arg(long, default_value_t = 1.0)]
     scale: f32,
 
-    /// Draw only what you see when you land, turned so the camera faces up. (--comedown is its
-    /// old name.)
-    #[arg(long, alias = "comedown")]
-    landing: bool,
+    /// Draw only what one camera shows, turned as on screen: pod (when you land, after pressing
+    /// L), olimar or louie (when you land, without L, playing as that captain), or comedown
+    /// (while the sublevel's name is on screen).
+    #[arg(long, value_parser = ["pod", "olimar", "louie", "comedown"])]
+    view: Option<String>,
 
-    /// Draw only what you see while the sublevel's name is on screen as the pod comes down,
-    /// turned as on screen.
-    #[arg(long, conflicts_with = "landing")]
-    comedown_view: bool,
+    /// The same as --view pod. (--comedown is its old name.)
+    #[arg(long, alias = "comedown", conflicts_with = "view")]
+    landing: bool,
 
     /// The game's screen shape, for the landing and comedown views: 16:9 or 4:3.
     #[arg(long, default_value = "16:9", value_parser = ["16:9", "4:3"])]
@@ -179,8 +179,11 @@ impl LookArgs {
             return Err("--scale must be between 0.05 and 20".into());
         }
         let mut opts = Options {
-            landing: self.landing,
-            comedown_view: self.comedown_view,
+            view: match (&self.view, self.landing) {
+                (Some(v), _) => Some(render::View::parse(v)?),
+                (None, true) => Some(render::View::Landing(render::LandingCamera::Pod)),
+                (None, false) => None,
+            },
             scale: self.scale,
             ..Options::default()
         };
@@ -385,8 +388,8 @@ fn run(cli: Cli) -> Result<(), String> {
                 images: None,
                 look: LookArgs {
                     scale: 1.0,
+                    view: None,
                     landing: false,
-                    comedown_view: false,
                     screen: "16:9".into(),
                     show: vec![],
                     hide: vec![],
@@ -406,8 +409,8 @@ fn run(cli: Cli) -> Result<(), String> {
                 images: None,
                 look: LookArgs {
                     scale: 1.0,
+                    view: None,
                     landing: false,
-                    comedown_view: false,
                     screen: "16:9".into(),
                     show: vec![],
                     hide: vec![],
