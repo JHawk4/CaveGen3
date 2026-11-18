@@ -36,8 +36,8 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 
 - **Objects**, **View**, **Generation details** and **Scores**: hide treasures (or only the
   fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants,
-  gates, gate HP (written on each gate) or exits; show only the landing or comedown view, the
-  landing and comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
+  gates, gate HP (written on each gate) or exits; show only one landing or comedown view,
+  the landing and comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
   for plants, rings for easy teki), spawn order (CaveGen's `-drawSpawnOrder`), carry distances
   (`-drawPathDists`), the pod's facing (`-drawPodAngle`), facing directions, the game's unit,
   door, treasure and hole scores, teki scores, door links and numbers, waypoints and treasure
@@ -81,9 +81,24 @@ The map pane keeps its size: the mouse wheel, a trackpad pinch, two fingers, the
 or a double-click zoom about the pointer, zooming out shrinks the map against a dark background,
 and dragging moves it anywhere, past the edges too. **Save image** saves the whole map.
 
-**Landing view only** shows just what's on screen when you land, turned so the camera faces up as
-in the game (`landing=1` in a link turns it on; the old `comedown=1` still works), and **Landing
-outline** marks it on the full map in yellow. It uses the game's "Far(Low)" camera settings
+**Landing outline** marks what's on screen when you land, and **Landing view only** shows just
+that, turned as on screen. Each comes in three versions, since which way the camera faces depends
+on whether you press L and which captain you play as:
+
+- **(pod)**, white: after pressing L, which turns the camera behind the captain toward the cursor,
+  the way the pod faces. Speedrunners mostly do this before the screen fades in.
+- **(Olimar)**, red, and **(Louie)**, blue: without pressing L. Each floor starts both captains'
+  cameras at `camera_angle` in `/user/Kando/aiConstants.txt` (290°, looking toward 110°), with
+  the captains facing 0° (+Z), since caves have no map rotation (`setupFloatMemory`). The cave
+  then makes the active captain the player, and `CameraMgr::changePlayerMode` centers the camera
+  behind him only when that switches from Olimar. So as Olimar the camera looks toward 110° and
+  as Louie toward 0°, on every floor, whichever way the pod faces (0° points down the map, 90°
+  to the right). Checked against a speedrun
+  that often doesn't press L: Louie on White Flower Garden 2 and Hole of Beasts 4, Olimar on
+  Subterranean Complex 3 and Frontier Cavern 1, each within a few tens of degrees by eye.
+
+In a link, `view=pod`, `view=olimar`, `view=louie` or `view=comedown` picks the view (the old
+`landing=1` and `comedown=1` mean `view=pod`). The landing views use the game's "Far(Low)" camera settings
 (`/user/Nishimura/Camera/caveCameraParms.txt`: 900 units back, 25° down, a 26° field of view),
 looking the way the pod faces from just behind it, where the captain lands. The floor in view is
 a trapezoid from about 330 units behind the pod to about 1,100 ahead, about 1,200 wide at the far
@@ -92,7 +107,7 @@ fitted to speedrun videos whose seeds were recovered from the video (Emergence C
 Beasts 1, three runners): there the pod sits a little above the middle of the screen while the
 Pikmin pour out. It's accurate to roughly a tenth of the screen, not to the pixel.
 
-**Comedown outline** (blue) marks what's on screen earlier, while the sublevel's name is up and
+**Comedown outline** (yellow) marks what's on screen earlier, while the sublevel's name is up and
 the pod comes down: the camera of the cutscene that starts each floor, `s0B_cv_coursein`
 (`/user/Mukki/movie/s0B_cv_coursein/demo.szs`). Its first frame looks almost straight down from
 1,321 units above the pod, with a 74° vertical field of view and the picture turned so the pod
@@ -101,18 +116,8 @@ the cutscene cuts to a low shot of the Pikmin and the pod lands. On the floor th
 about 2,000 units tall and 2,660 wide on 4:3 (3,560 on 16:9), centered on the pod and turned
 about 19° from its facing. Checked against Emergence Cave 1 in two runs: treasures in view land
 within a pixel or two of where this camera puts them. The map grows to fit the outlines.
-**Comedown view only** shows just that part of the floor, turned as it is on screen
-(`comedownView=1` in a link).
-
-Which way the camera faces when you land: in the game's code (`BaseGameSection::setupFloatMemory`)
-each floor starts the camera at a fixed angle, `camera_angle` in `/user/Kando/aiConstants.txt`
-(290°) plus the area's start angle, which caves don't have; nothing there turns it toward the pod.
-Pressing L (`PlayCamera::setTargetThetaToWhistle`) swings it behind the captain, toward the
-cursor, which starts straight ahead of the captain. Control comes back before the screen fades
-in, so a player who presses L then sees the pod-facing view from the first frame. That's what
-every speedrun checked shows (Emergence Cave 1 in two runs, Bulblax Kingdom 2 and White Flower
-Garden 2, within about 8°), and it's what **Landing view** draws. Without L, the view would face
-the same way on every floor, whichever way the pod faces; no footage here shows that.
+**Comedown view only** shows just that part of the floor, turned as it is on screen. Only one
+of the four views can be on at a time.
 
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.
@@ -174,9 +179,10 @@ Then run `target/release/cavegen3` (`cavegen3.exe` on Windows). With no command 
 ```
 cavegen3 SCx-6 1234ABCD                      # one image: output/SCx6_1234ABCD.png
 cavegen3 BK-4 -n 100 --seeds r -o bk4        # 100 random seeds into bk4/
-cavegen3 SCx-6 1234ABCD --landing            # only what you see when you land
-cavegen3 SCx-6 1234ABCD --comedown-view      # only what you see under the sublevel's name
-cavegen3 EC-1 63452B1B --show landingBox,comedownBox,podAngle --screen 4:3
+cavegen3 SCx-6 1234ABCD --view pod           # what you see when you land, after pressing L
+cavegen3 SCx-6 1234ABCD --view louie         # ... as Louie without L (or olimar)
+cavegen3 SCx-6 1234ABCD --view comedown      # what you see under the sublevel's name
+cavegen3 EC-1 63452B1B --show landingBox,landingBoxOlimar,landingBoxLouie,comedownBox,podAngle --screen 4:3
 cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 cavegen3 251:AT-2 5                          # romhacks take a game prefix
 cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
@@ -198,9 +204,9 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
   `c` and `g` begin. Searches use every CPU core (about 60,000 judged layouts a second).
 - `--show` and `--hide` take the web page's map options; treasures, teki, plants, gates, gate
   HP, exits and water are on by default. `--scale 2` doubles the size (1 is 40 pixels per grid
-  cell); `--screen 4:3` sets the screen shape for the landing view and both outlines.
-  `--comedown` is the old name of `--landing`; `comedownBox` now means the comedown outline,
-  and the landing outline is `landingBox`.
+  cell); `--screen 4:3` sets the screen shape for the views and outlines. `--landing` (and its
+  old name `--comedown`) is `--view pod`; `comedownBox` now means the comedown outline, and the
+  pod's landing outline is `landingBox`.
 - It reads the repository's `data` folder; set `CAVEGEN3_DATA` or `--data` to use another.
 
 ## In-game names

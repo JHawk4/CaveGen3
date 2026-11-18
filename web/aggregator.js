@@ -293,7 +293,7 @@ function groupCard(group, index) {
   const examples = el("span", { class: "agg-examples" }, T.aggExamples);
   for (const seed of group.seeds) {
     const p = new URLSearchParams({ sublevel: agg.sublevelParam, seed: formatSeed(seed) });
-    if (agg.grouping === "landing") p.set("landing", "1");
+    if (agg.grouping === "landing") p.set("view", "pod");
     examples.append(" ", el("a", { href: `./?${p}`, class: "seed-link" }, formatSeed(seed)));
   }
   const card = { group, content: document.createElement("canvas"), hits: [] };
