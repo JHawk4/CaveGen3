@@ -196,6 +196,17 @@ impl Web {
                 let (_, ci) = caveinfo(1)?;
                 let judge = JhawkJudge::new(arg(2)?.parse::<JudgeType>()?, ci);
                 let layout = Layout::generate(num(3)? as u32, ci);
+                if judge.judge_type == JudgeType::Judge2 {
+                    // judge2 also says which treasures the runner likely skips: [name, chance]
+                    let r = judge.judge2(&layout);
+                    let skips: Vec<String> = r
+                        .skip_chances()
+                        .iter()
+                        .filter(|(_, p)| *p >= 0.005)
+                        .map(|(n, p)| format!("[{},{}]", q(n), fnum(*p)))
+                        .collect();
+                    return Ok(format!("{{\"score\":{},\"skips\":[{}]}}", fnum(r.score), skips.join(",")));
+                }
                 Ok(format!("{{\"score\":{}}}", fnum(judge.judge(&layout))))
             }
             "search" => {
@@ -795,6 +806,8 @@ mod tests {
         let judge = JhawkJudge::new(JudgeType::Score, data.caveinfo(&sub).unwrap());
         let score = judge.judge(&expected);
         assert_eq!(web.command("judge\tSCx6\tscore\t4660").unwrap(), format!("{{\"score\":{}}}", fnum(score)));
+        // judge2 adds the treasures likely skipped (SH-6 0x2B1980E4: the lens is behind water).
+        assert_eq!(web.command("judge\tSH6\tjudge2\t723091684").unwrap(), "{\"score\":70.84,\"skips\":[[\"bey_goma\",1]]}");
         let found = web.command("search\tSCx6\tscore\t-\t4660\t20\tc\t3").unwrap();
         assert!(found.starts_with("{\"tested\":20,\"matched\":20,\"best\":[["), "{found}");
         let found = web.command("search\tSCx6\t-\thole carry dist < 1500\t0\t50\tr\t5").unwrap();

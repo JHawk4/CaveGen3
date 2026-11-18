@@ -63,7 +63,8 @@ their in-game names in either language. Hover over or tap an icon on the map to 
   minus the treasure's bounding radius. Treasures carried by teki use the teki's position with no
   extra radius, since teki sizes aren't in the data.
 - **Judge**: score the layout with any of CaveGen's judges (`score`, `pod`, `at`, `attk`,
-  `cmat`, `key`, `colossal`, `mapunitcount`).
+  `cmat`, `key`, `colossal`, `mapunitcount`), or with `judge2`, a refit Pay off Debt judge
+  (see [judge2](#judge2)) that also lists the treasures a runner likely skips.
 - **Seed search**: test thousands of seeds (counting up from the seed, random, or game-RNG
   steps) and list the best by the judge, with each one's rank among the seeds tested, or the
   seeds matching a [Caveripper-style query](https://github.com/mayabyte/caveripper/blob/main/QUERY.md)
@@ -192,7 +193,8 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
 |---|---|
 | `caves [game]` | Lists the caves and how to name their sublevels. |
 | `caveinfo FC-3` | The floor's limits, teki (min, weight, group, what they carry), treasures (value, carry counts), gates, alcove teki and map units. `--json` for the raw data. |
-| `judge BK-4 pod 1234ABCD [more seeds]` | Scores seeds with one of CaveGen's judges. |
+| `judge BK-4 pod 1234ABCD [more seeds]` | Scores seeds with one of CaveGen's judges, or `judge2`. |
+| `judge SH-6 judge2 2B1980E4` | judge2 also prints the treasures likely skipped: `2B1980E4  70.84  likely skipped: bey_goma 100%`. |
 | `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
 | `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
 | `count SCx-7 minihoudai` | How many of something each seed has, as a distribution (CaveGen's `-count`). |
@@ -208,6 +210,34 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
   old name `--comedown`) is `--view pod`; `comedownBox` now means the comedown outline, and the
   pod's landing outline is `landingBox`.
 - It reads the repository's `data` folder; set `CAVEGEN3_DATA` or `--data` to use another.
+
+### judge2
+
+`judge2` (also `pod2`) is a Pay off Debt judge refit against timed Pay off Debt runs; it is not
+part of CaveGen. CaveGen's `pod` judge assumes every counted treasure is collected. judge2 takes
+the same parts (built by the `pod` code) for every choice of which counted treasures the runner
+takes: all subsets when there are up to 4, otherwise taking all and skipping each one alone.
+Each choice scores
+
+```
+1.22 walking + 0.78 carry + 0.60 hazard + 0.58 gate + 0.54 Glutton's Kitchen adjustments
+  + 10 s per treasure taken + missing pokos / 2  [+ 100 s if SH-6's lens is taken and its carry route crosses water]
+```
+
+with no credit for bug pokos or optional treasures (runners take neither in practice). The
+score is the choices' scores averaged with weights exp(−score / 5 s), so a treasure that isn't
+worth its trip counts as likely skipped; the weights are also the chances of each choice. It
+works wherever `pod` does and uses `pod`'s sublevel setup.
+
+```
+cavegen3 judge SH-6 judge2 2B1980E4 29698334
+cavegen3 search SH-6 --judge judge2 -n 100000 --top 10
+```
+
+In the library, `JhawkJudge::new(JudgeType::Judge2, caveinfo)` scores with `judge`, and
+`judge2(&layout)` returns the score with every choice and `skip_chances()`. The web page's judge
+list has it too, and shows the treasures likely skipped (10% or more) under the score. It is
+slower than `pod` by about the number of choices (one `pod`-like pass each, up to 16).
 
 ## In-game names
 
@@ -268,6 +298,8 @@ What the tests check:
 - `crates/cavegen3/tests/waypoints_vs_reference.rs`: waypoint graphs and carry paths match.
 - `crates/cavegen3/tests/query_vs_reference.rs`: queries give the same answers on every seed tested.
 - `crates/cavegen3/tests/jhawk_judge_vs_cavegen.rs`: 72,500 judge scores match CaveGen.
+- `crates/cavegen3/tests/judge2.rs`: judge2 scores and skip chances for fixed seeds, from the
+  program it was fitted with (16,308 layouts of the 54 Pay off Debt sublevels matched exactly).
 - `crates/caveripper-ref/tests`: the reference passes CaveGen's expect tests and 72,500
   judge scores.
 
