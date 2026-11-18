@@ -126,6 +126,7 @@ const STRINGS = {
     judgeNames: {
       score: "score: game's own treasure scores",
       pod: "pod: Pay off Debt",
+      judge2: "judge2: Pay off Debt, refit",
       at: "at: All Treasures",
       attk: "attk: Challenge Mode score attack",
       cmat: "cmat: Challenge Mode all treasures",
@@ -136,6 +137,7 @@ const STRINGS = {
     judgeTips: {
       score: "The game's own unit and treasure scores, as CaveGen judges them",
       pod: "Estimated seconds to collect this sublevel's treasures in a Pay off Debt run",
+      judge2: "Pay off Debt, refit against timed runs: expected net seconds, letting the runner skip treasures that aren't worth the trip",
       at: "Estimated seconds to collect every treasure in an All Treasures run",
       attk: "Challenge Mode score attack estimate",
       cmat: "Challenge Mode all-treasures estimate",
@@ -144,6 +146,7 @@ const STRINGS = {
       mapunitcount: "The number of map units; fewer usually means a faster floor",
     },
     judgeLine: (type, score) => `Judge (${type}): ${score}`,
+    likelySkipped: (list) => `Likely skipped: ${list}`,
     search: "Seed search",
     searchCount: "Seeds to test",
     searchMode: "Seeds",
@@ -386,6 +389,7 @@ const STRINGS = {
     judgeNames: {
       score: "score：ゲーム内のお宝スコア",
       pod: "pod：借金返済",
+      judge2: "judge2：借金返済（再調整版）",
       at: "at：お宝全回収",
       attk: "attk：チャレンジモードのスコアアタック",
       cmat: "cmat：チャレンジモードのお宝全回収",
@@ -396,6 +400,7 @@ const STRINGS = {
     judgeTips: {
       score: "ゲーム内のユニットとお宝のスコア（CaveGenの評価）",
       pod: "借金返済で、この階のお宝を集めるまでの見積もり秒数",
+      judge2: "実際の借金返済の走りに合わせて調整した見積もり秒数。割に合わないお宝は取らずに進む場合も考えます",
       at: "お宝全回収で、すべてのお宝を集めるまでの見積もり秒数",
       attk: "チャレンジモードのスコアアタックの見積もり",
       cmat: "チャレンジモードのお宝全回収の見積もり",
@@ -404,6 +409,7 @@ const STRINGS = {
       mapunitcount: "マップユニットの数（少ないほど速いことが多い）",
     },
     judgeLine: (type, score) => `評価（${type}）：${score}`,
+    likelySkipped: (list) => `取らない可能性が高いお宝：${list}`,
     search: "シード検索",
     searchCount: "試すシードの数",
     searchMode: "シード",
@@ -1874,6 +1880,12 @@ async function renderSummary(layout) {
   info.append(el("li", {}, T.unitsLine(layout.units.length, layout.width, layout.height)));
   info.append(el("li", {}, exit ? (exit.kind === "hole" ? T.exitHole(exit.plugged) : T.exitGeyser) : T.noExit));
   if (current && current.judge) info.append(el("li", { class: "judge-line" }, T.judgeLine(current.judge.type, current.judge.score)));
+  // judge2: the treasures a runner likely leaves behind, with the chance
+  const skips = current && current.judge ? current.judge.skips.filter(([, p]) => p >= 0.1) : [];
+  if (skips.length) {
+    const list = skips.map(([name, p]) => `${displayName("treasures", name)} (${Math.round(p * 100)}%)`).join(", ");
+    info.append(el("li", { class: "judge-line" }, T.likelySkipped(list)));
+  }
   if (current) info.append(el("li", { class: "muted gen-time" }, T.generatedIn(current.ms.toFixed(1))));
   parts.push(info);
 
@@ -2049,7 +2061,8 @@ async function generateAndShow({ newCave = false } = {}) {
     const ms = performance.now() - start;
     if (newCave || $("floor").options.length !== layout.floors) fillFloors(layout.floors, floor);
     const judgeType = $("judge").value;
-    const judge = judgeType ? { type: judgeType, score: (await command("judge", sublevel, judgeType, seed)).score } : null;
+    const judged = judgeType ? await command("judge", sublevel, judgeType, seed) : null;
+    const judge = judged ? { type: judgeType, score: judged.score, skips: judged.skips || [] } : null;
     const refit = !current || current.sublevel !== sublevel;
     current = { layout, cave, floor, ms, sublevel, judge };
     $("result").hidden = false;
@@ -2105,7 +2118,7 @@ function selectFromParam(text) {
 
 // ---- Advanced options ----
 
-const JUDGES = ["score", "pod", "at", "attk", "cmat", "key", "colossal", "mapunitcount"];
+const JUDGES = ["score", "pod", "judge2", "at", "attk", "cmat", "key", "colossal", "mapunitcount"];
 const SETTINGS_KEY = "cavegen3-options";
 
 function buildAdvanced() {
