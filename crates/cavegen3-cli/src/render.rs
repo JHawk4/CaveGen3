@@ -1061,8 +1061,9 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
         }
         None => None,
     };
-    // The landing and comedown outlines that are on, in game units.
-    let outlines: Vec<([(f32, f32); 4], &str)> = match ship.filter(|s| s.angle.is_some() && single.is_none()) {
+    // The landing and comedown outlines that are on, in game units (drawn in the single views too,
+    // where the view clips them).
+    let outlines: Vec<([(f32, f32); 4], &str)> = match ship.filter(|s| s.angle.is_some()) {
         Some(ship) => {
             let angle = ship.angle.unwrap();
             let landing = |camera| landing_corners(ship.x, ship.z, angle, camera, opts.aspect);

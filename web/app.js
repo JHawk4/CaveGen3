@@ -1700,18 +1700,16 @@ function drawMap(layout, scale) {
       if ((sp.group === 4 || sp.group === 9) && sp.hole_score > -1) label(String(sp.hole_score), x, z - cell * 0.12, "#3cff3c", undefined, "left");
     }
   }
-  // The comedown and landing outlines.
-  if (!view.single) {
-    for (const [corners, color] of viewOutlines(layout, true)) {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = Math.max(1.5, cell / 16);
-      ctx.setLineDash([cell / 4, cell / 6]);
-      ctx.beginPath();
-      for (const [x, z] of corners) ctx.lineTo(toPx(x), toPx(z));
-      ctx.closePath();
-      ctx.stroke();
-      ctx.setLineDash([]);
-    }
+  // The comedown and landing outlines (in a single view too, which clips them).
+  for (const [corners, color] of viewOutlines(layout, true)) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.5, cell / 16);
+    ctx.setLineDash([cell / 4, cell / 6]);
+    ctx.beginPath();
+    for (const [x, z] of corners) ctx.lineTo(toPx(x), toPx(z));
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
   if (opts.doorScores || opts.doorIds) {
     let unit = -1;

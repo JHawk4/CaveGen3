@@ -86,7 +86,10 @@ that, turned as on screen. Each comes in three versions, since which way the cam
 on whether you press L and which captain you play as:
 
 - **(pod)**, white: after pressing L, which turns the camera behind the captain toward the cursor,
-  the way the pod faces. Speedrunners mostly do this before the screen fades in.
+  the way the pod faces. Speedrunners mostly do this before the screen fades in. It's the same for
+  either captain: at the end of the cutscene both face the way the pod does (their animations,
+  `s0b_2_orima.bck` and `s0b_2_rui.bck`, end unturned), and `Navi::movieSetFaceDir` points each
+  one's cursor that way too.
 - **(Olimar)**, red, and **(Louie)**, blue: without pressing L. Each floor starts both captains'
   cameras at `camera_angle` in `/user/Kando/aiConstants.txt` (290°, looking toward 110°), with
   the captains facing 0° (+Z), since caves have no map rotation (`setupFloatMemory`). The cave
@@ -117,7 +120,8 @@ about 2,000 units tall and 2,660 wide on 4:3 (3,560 on 16:9), centered on the po
 about 19° from its facing. Checked against Emergence Cave 1 in two runs: treasures in view land
 within a pixel or two of where this camera puts them. The map grows to fit the outlines.
 **Comedown view only** shows just that part of the floor, turned as it is on screen. Only one
-of the four views can be on at a time.
+of the four views can be on at a time; the outlines that are on show in it too, cut off at its
+edges.
 
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.

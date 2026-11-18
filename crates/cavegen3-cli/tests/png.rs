@@ -90,6 +90,39 @@ fn comedown_view() {
 }
 
 #[test]
+fn outlines_in_every_view() {
+    // Each outline shows in the whole map and in every single view, clipped to it.
+    let p = painter();
+    let near = |c: tiny_skia::PremultipliedColorU8, rgb: (u8, u8, u8)| {
+        c.red().abs_diff(rgb.0) < 12 && c.green().abs_diff(rgb.1) < 12 && c.blue().abs_diff(rgb.2) < 12
+    };
+    let views = [
+        None,
+        Some(View::Landing(LandingCamera::Pod)),
+        Some(View::Landing(LandingCamera::Olimar)),
+        Some(View::Landing(LandingCamera::Louie)),
+        Some(View::Comedown),
+    ];
+    for view in views {
+        for aspect in [4.0 / 3.0, 16.0 / 9.0] {
+            let count = |outline: Option<&str>| {
+                let mut opts = Options { view, aspect, ..Options::default() };
+                if let Some(o) = outline {
+                    opts.set(o, true).unwrap();
+                }
+                let (_, png) = p.png("EC-1", 0x63452B1B, &opts).unwrap();
+                let img = Pixmap::decode_png(&png).unwrap();
+                img.pixels().iter().filter(|c| near(**c, (0x4d, 0x9b, 0xff))).count()
+            };
+            // Louie's outline is blue; nothing else in EC-1 is that color. Seen from the pod's
+            // or the comedown camera it crosses the view; in its own view it's the edge.
+            assert_eq!(count(None), 0, "{view:?}");
+            assert!(count(Some("landingBoxLouie")) > 20, "{view:?} {aspect}");
+        }
+    }
+}
+
+#[test]
 fn every_option_draws() {
     let p = painter();
     let mut opts = Options::default();
