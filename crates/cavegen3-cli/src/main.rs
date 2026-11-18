@@ -22,6 +22,7 @@ use serde_json::Value;
 ///   cavegen3 SCx-6 1234ABCD
 ///   cavegen3 BK-4 -n 100 --seeds r -o bk4
 ///   cavegen3 SCx-6 1234ABCD --landing --screen 4:3
+///   cavegen3 SCx-6 1234ABCD --comedown-view
 ///   cavegen3 EC-1 1234ABCD --show landingBox,comedownBox,podAngle --screen 4:3
 ///   cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 ///   cavegen3 colossal+ultra+5onion 0
@@ -154,6 +155,11 @@ struct LookArgs {
     #[arg(long, alias = "comedown")]
     landing: bool,
 
+    /// Draw only what you see while the sublevel's name is on screen as the pod comes down,
+    /// turned as on screen.
+    #[arg(long, conflicts_with = "landing")]
+    comedown_view: bool,
+
     /// The game's screen shape, for the landing and comedown views: 16:9 or 4:3.
     #[arg(long, default_value = "16:9", value_parser = ["16:9", "4:3"])]
     screen: String,
@@ -174,6 +180,7 @@ impl LookArgs {
         }
         let mut opts = Options {
             landing: self.landing,
+            comedown_view: self.comedown_view,
             scale: self.scale,
             ..Options::default()
         };
@@ -379,6 +386,7 @@ fn run(cli: Cli) -> Result<(), String> {
                 look: LookArgs {
                     scale: 1.0,
                     landing: false,
+                    comedown_view: false,
                     screen: "16:9".into(),
                     show: vec![],
                     hide: vec![],
@@ -399,6 +407,7 @@ fn run(cli: Cli) -> Result<(), String> {
                 look: LookArgs {
                     scale: 1.0,
                     landing: false,
+                    comedown_view: false,
                     screen: "16:9".into(),
                     show: vec![],
                     hide: vec![],
