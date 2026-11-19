@@ -267,15 +267,16 @@ struct AggArgs {
     #[arg(help = SUBLEVEL_HELP)]
     sublevel: String,
 
-    /// How to group seeds: landing (the map units in view when you land; "comedown" is its old
+    /// How to group seeds: landing (the map units in view when you land, after pressing L;
+    /// "comedown" is its old name), comedown-view (the map units in view under the sublevel's
     /// name), layout (CaveGen's default), rooms, or first (the first room placed).
-    #[arg(long, default_value = "landing", value_parser = ["landing", "comedown", "layout", "rooms", "first"])]
+    #[arg(long, default_value = "landing", value_parser = ["landing", "comedown", "comedown-view", "layout", "rooms", "first"])]
     group: String,
 
     #[command(flatten)]
     range: Range,
 
-    /// The game's screen shape, for the landing view: 16:9 or 4:3.
+    /// The game's screen shape, for the landing and comedown views: 16:9 or 4:3.
     #[arg(long, default_value = "16:9", value_parser = ["16:9", "4:3"])]
     screen: String,
 
@@ -718,22 +719,14 @@ fn search_command(painter: &Painter, args: &SearchArgs) -> Result<(), String> {
 
 fn aggregate(painter: &mut Painter, args: &AggArgs) -> Result<(), String> {
     let aspect = if args.screen == "4:3" { 4.0 / 3.0 } else { 16.0 / 9.0 };
-    let shape = render::landing_shape(aspect);
+    let comedown = args.group == "comedown-view";
+    let corners = if comedown { render::comedown_corners(aspect) } else { render::landing_shape(aspect).corners() };
     let periods = painter.image_periods(&args.sublevel)?;
     let game = painter.layout(&args.sublevel, 0, false)?.game.clone();
-    painter.web.command(
-        &[
-            "agg_start",
-            &args.sublevel,
-            &args.group,
-            &shape.near.to_string(),
-            &shape.far.to_string(),
-            &shape.near_half.to_string(),
-            &shape.far_half.to_string(),
-            &periods,
-        ]
-        .join("\t"),
-    )?;
+    let mut start_args = vec!["agg_start".to_string(), args.sublevel.clone(), args.group.clone()];
+    start_args.extend(corners.iter().flat_map(|&(a, s)| [a.to_string(), s.to_string()]));
+    start_args.push(periods);
+    painter.web.command(&start_args.join("\t"))?;
     let start = args.range.start()?;
     let mode = args.range.seeds.as_str();
     let total = args.range.num;
@@ -776,7 +769,7 @@ fn aggregate(painter: &mut Painter, args: &AggArgs) -> Result<(), String> {
     }
     let base = file_name(&args.sublevel);
     for (i, group) in result.groups.iter().enumerate() {
-        let pixmap = render::render_agg_group(group, result.view, &opts, &painter.assets)?;
+        let pixmap = render::render_agg_group(group, result.view, comedown, &opts, &painter.assets)?;
         let png = pixmap.encode_png().map_err(|e| e.to_string())?;
         let path = write_png(&args.out, &format!("{base}_{}_{:02}.png", args.group, i + 1), &png)?;
         let examples: Vec<String> = group.seeds.iter().take(4).map(|s| format!("{s:08X}")).collect();

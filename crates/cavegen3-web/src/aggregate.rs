@@ -1,12 +1,12 @@
 //! CaveGen's Aggregator: generate many seeds of a sublevel, group the layouts that look alike,
 //! and count what spawns at each spot in each group.
 //!
-//! Positions are taken relative to an anchor unit (the first unit placed, or for landing
-//! grouping the unit the pod is in) and turned by quarter turns, so the same arrangement in any
-//! rotation lands in one group:
+//! Positions are taken relative to an anchor unit (the first unit placed, or for landing and
+//! comedown grouping the unit the pod is in) and turned by quarter turns, so the same
+//! arrangement in any rotation lands in one group:
 //!
-//! - Landing groups are turned so the pod (and the camera when you land) faces as close to up
-//!   as a quarter turn allows.
+//! - Landing and comedown groups are turned so the top of the screen faces as close to up as a
+//!   quarter turn allows.
 //! - Other groups try all four turns and keep the one whose description sorts first.
 //!
 //! Map units that look the same after a half or quarter turn (like a four-way room) are matched
@@ -31,6 +31,8 @@ pub enum Grouping {
     First,
     /// What you see when you land: the map units in view of the camera.
     Landing,
+    /// What you see under the sublevel's name: the map units in view of the comedown camera.
+    Comedown,
 }
 
 impl Grouping {
@@ -41,34 +43,48 @@ impl Grouping {
             "first" => Grouping::First,
             // "comedown" and "comedown-units" are old names, from links and saved settings.
             "landing" | "comedown" | "comedown-units" => Grouping::Landing,
+            "comedown-view" => Grouping::Comedown,
             _ => return Err(format!("unknown grouping {s:?}")),
         })
     }
 
-    fn is_landing(self) -> bool {
-        self == Grouping::Landing
+    /// Whether the group is what a camera at the pod sees.
+    fn uses_view(self) -> bool {
+        matches!(self, Grouping::Landing | Grouping::Comedown)
     }
 }
 
-/// The floor in view when you land: a trapezoid ahead of the pod, in game units. `near` and
-/// `far` are distances ahead of the pod (`near` is negative: a little behind it), with the
-/// half-widths there. The page works these out from the game's camera settings.
+/// The floor a camera at the pod sees, in game units: the corners of the screen (bottom left,
+/// bottom right, top right, top left) as (ahead, side) from the pod, side being to its right.
+/// The page and the CLI work these out from the game's camera settings.
 #[derive(Debug, Clone, Copy)]
 pub struct View {
-    pub near: f32,
-    pub far: f32,
-    pub near_half: f32,
-    pub far_half: f32,
+    pub corners: [(f32, f32); 4],
 }
 
 impl View {
-    /// The corners around a pod at `p` facing `f` (a unit vector): near left, near right, far
-    /// right, far left.
-    fn corners(&self, p: (f32, f32), f: (f32, f32)) -> [(f32, f32); 4] {
-        let r = (-f.1, f.0);
-        let at = |ahead: f32, side: f32| (p.0 + f.0 * ahead + r.0 * side, p.1 + f.1 * ahead + r.1 * side);
-        [at(self.near, -self.near_half), at(self.near, self.near_half), at(self.far, self.far_half), at(self.far, -self.far_half)]
+    /// The landing view's trapezoid: `near` and `far` are distances ahead of the pod (`near` is
+    /// negative: a little behind it), with the half-widths there.
+    pub fn trapezoid(near: f32, far: f32, near_half: f32, far_half: f32) -> View {
+        View { corners: [(near, -near_half), (near, near_half), (far, far_half), (far, -far_half)] }
     }
+
+    /// The corners around a pod at `p` facing `f` (a unit vector).
+    fn corners(&self, p: (f32, f32), f: (f32, f32)) -> [(f32, f32); 4] {
+        self.corners.map(|(ahead, side)| place(p, f, ahead, side))
+    }
+
+    /// Which way the top of the screen faces, for a pod facing `f`.
+    fn up(&self, f: (f32, f32)) -> (f32, f32) {
+        let [a, b, c, d] = self.corners;
+        place((0.0, 0.0), f, (c.0 + d.0 - a.0 - b.0) / 2.0, (c.1 + d.1 - a.1 - b.1) / 2.0)
+    }
+}
+
+/// The point `ahead` units in front of `p` (facing `f`) and `side` units to its right.
+fn place(p: (f32, f32), f: (f32, f32), ahead: f32, side: f32) -> (f32, f32) {
+    let r = (-f.1, f.0);
+    (p.0 + f.0 * ahead + r.0 * side, p.1 + f.1 * ahead + r.1 * side)
 }
 
 /// Whether two convex polygons overlap (separating axis test). Touching edges don't count.
@@ -116,7 +132,7 @@ struct Group {
     seeds: Vec<u32>,
     /// The units that define the group (from its first layout).
     units: Vec<GroupUnit>,
-    /// The pod, for landing groups.
+    /// The pod, for landing and comedown groups.
     pod: Option<Pod>,
     /// What spawned at each spot: spot -> object -> count.
     spots: HashMap<(i32, i32), HashMap<String, u64>>,
@@ -257,7 +273,7 @@ impl Aggregator {
     pub fn add(&mut self, seed: u32, layout: &Layout) {
         self.total += 1;
         let ship = layout.ship.map(|i| &layout.spawnpoints[i as usize]);
-        if self.grouping.is_landing() && ship.is_none() {
+        if self.grouping.uses_view() && ship.is_none() {
             self.dropped += 1;
             return;
         }
@@ -283,7 +299,7 @@ impl Aggregator {
             }
         }
 
-        // The units (and, for landing, objects) that define the group.
+        // The units that define the group.
         let pod: Option<Pod> = ship.map(|sp| {
             let a = sp.angle.to_radians();
             ((sp.pos[0], sp.pos[2]), (a.sin(), a.cos()))
@@ -292,7 +308,7 @@ impl Aggregator {
             Grouping::Layout => (0, (0..layout.units.len()).collect()),
             Grouping::Rooms => (0, (0..layout.units.len()).filter(|&i| layout.units[i].unit.room_type == RoomType::Room).collect()),
             Grouping::First => (0, vec![0]),
-            Grouping::Landing => {
+            Grouping::Landing | Grouping::Comedown => {
                 let (p, f) = pod.expect("checked above");
                 let view = self.view.corners(p, f);
                 let ids = (0..layout.units.len())
@@ -319,12 +335,12 @@ impl Aggregator {
             parts.sort();
             parts.join("|")
         };
-        let frame = if self.grouping.is_landing() {
-            // Turn so the pod faces as close to up (-z) as possible.
-            let (_, f) = pod.expect("checked above");
+        let frame = if self.grouping.uses_view() {
+            // Turn so the top of the screen faces as close to up (-z) as possible.
+            let up = self.view.up(pod.expect("checked above").1);
             (0..4u16)
                 .map(|rot| Frame::new(layout, anchor, rot))
-                .min_by(|a, b| a.turn(f).1.total_cmp(&b.turn(f).1))
+                .min_by(|a, b| a.turn(up).1.total_cmp(&b.turn(up).1))
                 .expect("four turns")
         } else {
             (0..4u16).map(|rot| Frame::new(layout, anchor, rot)).min_by_key(key_for).expect("four turns")
@@ -335,12 +351,12 @@ impl Aggregator {
             self.dropped += 1;
             return;
         }
-        let is_landing = self.grouping.is_landing();
+        let uses_view = self.grouping.uses_view();
         let grouping = self.grouping;
         let group = self.groups.entry(key).or_default();
         if group.count == 0 {
             group.units = unit_ids.iter().map(|&i| frame.unit(layout, i)).collect();
-            group.pod = pod.filter(|_| is_landing).map(|(p, f)| (frame.apply(p.0, p.1), frame.turn(f)));
+            group.pod = pod.filter(|_| uses_view).map(|(p, f)| (frame.apply(p.0, p.1), frame.turn(f)));
         }
         group.count += 1;
         if group.seeds.len() < EXAMPLE_SEEDS {
@@ -420,14 +436,11 @@ impl Aggregator {
             })
             .collect();
         format!(
-            "{{\"total\":{},\"groups_total\":{},\"dropped\":{},\"view\":[{},{},{},{}],\"groups\":[{}]}}",
+            "{{\"total\":{},\"groups_total\":{},\"dropped\":{},\"view\":[{}],\"groups\":[{}]}}",
             self.total,
             self.groups.len(),
             self.dropped,
-            crate::f(self.view.near),
-            crate::f(self.view.far),
-            crate::f(self.view.near_half),
-            crate::f(self.view.far_half),
+            self.view.corners.iter().map(|&(a, s)| format!("{},{}", crate::f(a), crate::f(s))).collect::<Vec<_>>().join(","),
             out.join(",")
         )
     }
@@ -476,7 +489,7 @@ mod rotation_tests {
     use super::*;
 
     fn view() -> View {
-        View { near: -90.0, far: 1030.0, near_half: 165.0, far_half: 545.0 }
+        View::trapezoid(-90.0, 1030.0, 165.0, 545.0)
     }
 
     /// Grouping by the first room puts every rotation of a room in one group, so there are at

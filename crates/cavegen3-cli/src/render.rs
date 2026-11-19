@@ -1566,8 +1566,9 @@ pub struct AggResult {
     pub total: u64,
     pub groups_total: u64,
     pub dropped: u64,
-    /// The landing view: near, far, near half-width, far half-width.
-    pub view: [f32; 4],
+    /// The view's corners (bottom left, bottom right, top right, top left of the screen), as
+    /// ahead and side pairs from the pod.
+    pub view: [f32; 8],
     pub groups: Vec<AggGroup>,
 }
 
@@ -1575,7 +1576,7 @@ pub struct AggResult {
 pub struct AggGroup {
     pub count: u64,
     pub seeds: Vec<u32>,
-    /// The pod's position and facing in the group's frame, for landing groupings.
+    /// The pod's position and facing in the group's frame, for landing and comedown groupings.
     pub pod: Option<[f32; 4]>,
     pub units: Vec<AggUnit>,
     /// Spots: position and (object id, how many seeds had it there).
@@ -1665,16 +1666,19 @@ pub fn pct(n: u64, total: u64) -> String {
     }
 }
 
-/// Draws one aggregator group, like the aggregator page's map for it.
-pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, assets: &Assets) -> Result<Pixmap, String> {
+/// Draws one aggregator group, like the aggregator page's map for it. `comedown` says the view
+/// is the comedown camera's, drawn in its color.
+pub fn render_agg_group(group: &AggGroup, view: [f32; 8], comedown: bool, opts: &AggOptions, assets: &Assets) -> Result<Pixmap, String> {
     let cell = CELL * opts.scale;
     let px = |v: f32| v / UNIT * cell;
-    // The landing view's trapezoid in the group's frame.
+    // The view's corners in the group's frame.
     let landing = group.pod.map(|[x, z, fx, fz]| {
-        let [near, far, near_half, far_half] = view;
         let r = (-fz, fx);
-        let at = |ahead: f32, side: f32| (x + fx * ahead + r.0 * side, z + fz * ahead + r.1 * side);
-        [at(near, -near_half), at(near, near_half), at(far, far_half), at(far, -far_half)]
+        let at = |i: usize| {
+            let (ahead, side) = (view[2 * i], view[2 * i + 1]);
+            (x + fx * ahead + r.0 * side, z + fz * ahead + r.1 * side)
+        };
+        [at(0), at(1), at(2), at(3)]
     });
     // Its extent: units, cells others covered, spots and view, plus half a cell.
     let (mut x0, mut z0, mut x1, mut z1) = (f32::INFINITY, f32::INFINITY, f32::NEG_INFINITY, f32::NEG_INFINITY);
@@ -1744,7 +1748,7 @@ pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, ass
             ),
         }
     }
-    // What the camera sees when you land.
+    // What the camera sees.
     if let Some(corners) = landing {
         let mut pb = PathBuilder::new();
         for (i, (x, z)) in corners.into_iter().enumerate() {
@@ -1757,7 +1761,7 @@ pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, ass
         pb.close();
         let mut s = stroke((cell / 16.0).max(1.5));
         s.dash = StrokeDash::new(vec![cell / 4.0, cell / 6.0], 0.0);
-        cv.stroke_path(pb, hex(LANDING_COLOR), &s);
+        cv.stroke_path(pb, hex(if comedown { COMEDOWN_COLOR } else { LANDING_COLOR }), &s);
     }
     // Each spot's objects, stacked, sized by how often they spawned there; likeliest on top.
     let mut spots: Vec<(f32, f32, Vec<(AggObject, u64)>)> = group

@@ -167,8 +167,10 @@ impl Web {
     ///   otherwise the first `keep` matches. `{"tested", "matched", "best": [[seed, score]],
     ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
     /// - `caveinfo <sublevel>`: the sublevel's generation parameters (see [`caveinfo_json`]).
-    /// - `agg_start <sublevel> <grouping> <near> <far> <near half> <far half> [image periods]`
-    ///   (the landing view, see [`aggregate::View`]; image periods are "unit=period;..."), then `agg_run <start> <count> <c|g|r>`
+    /// - `agg_start <sublevel> <grouping> <view> [image periods]`, then `agg_run <start> <count> <c|g|r>`.
+    ///   The view is the landing trapezoid (`<near> <far> <near half> <far half>`) or the screen's
+    ///   four corners as `<ahead> <side>` pairs (see [`aggregate::View`]); image periods are
+    ///   "unit=period;...".
     ///   any number of times, then `agg_result <max groups>`: CaveGen's Aggregator (see
     ///   [`aggregate`]).
     pub fn command(&mut self, text: &str) -> Result<String, String> {
@@ -264,12 +266,14 @@ impl Web {
                     let data = self.data()?;
                     let sublevel = data.sublevel(arg(1)?).map_err(|e| e.to_string())?;
                     data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
-                    let nums: Vec<f32> = (3..7)
-                        .map(|i| arg(i)?.trim().parse::<f32>().map_err(|_| "bad landing view".to_string()))
-                        .collect::<Result<_, _>>()?;
-                    let view = aggregate::View { near: nums[0], far: nums[1], near_half: nums[2], far_half: nums[3] };
+                    let nums: Vec<f32> = args[3..].iter().map_while(|a| a.trim().parse::<f32>().ok()).collect();
+                    let view = match nums[..] {
+                        [near, far, near_half, far_half] => aggregate::View::trapezoid(near, far, near_half, far_half),
+                        [a0, s0, a1, s1, a2, s2, a3, s3] => aggregate::View { corners: [(a0, s0), (a1, s1), (a2, s2), (a3, s3)] },
+                        _ => return Err("bad view: 4 or 8 numbers".into()),
+                    };
                     let grouping = aggregate::Grouping::parse(arg(2)?)?;
-                    let image_periods = args.get(7).copied().unwrap_or("");
+                    let image_periods = args.get(3 + nums.len()).copied().unwrap_or("");
                     self.agg = Some(aggregate::Aggregator::new(arg(1)?.to_string(), grouping, view, image_periods));
                     "{}".into()
                 }
@@ -810,8 +814,19 @@ mod tests {
 
         // The aggregator: every seed lands in exactly one group, and each group's spots count
         // one pod per layout.
-        for grouping in ["layout", "rooms", "first", "landing", "comedown", "comedown-units"] {
-            web.command(&format!("agg_start\tBK1\t{grouping}\t-90\t1030\t165\t545")).unwrap();
+        let trapezoid = "-90\t1030\t165\t545";
+        let comedown = "-640\t-500\t-640\t500\t640\t500\t640\t-500";
+        for (grouping, view) in [
+            ("layout", trapezoid.to_string()),
+            ("rooms", trapezoid.to_string()),
+            ("first", trapezoid.to_string()),
+            ("landing", trapezoid.to_string()),
+            ("comedown", trapezoid.to_string()),
+            ("comedown-units", trapezoid.to_string()),
+            ("comedown-view", comedown.to_string()),
+            ("comedown-view", format!("{comedown}\tunit_a=2")),
+        ] {
+            web.command(&format!("agg_start\tBK1\t{grouping}\t{view}")).unwrap();
             web.command("agg_run\t0\t150\tc").unwrap();
             web.command("agg_run\t150\t50\tr").unwrap();
             let r = web.command("agg_result\t1000").unwrap();
@@ -830,6 +845,7 @@ mod tests {
         let first = web.command("agg_result\t1000").unwrap();
         assert!(first.contains("\"groups_total\":"), "{first}");
         assert!(web.command("agg_start\tBK1\tnonsense\t-90\t1030\t165\t545").is_err());
+        assert!(web.command("agg_start\tBK1\tlanding\t-90\t1030\t165").is_err());
 
         // Game-RNG stepping: seed i is the RNG state i steps after the start.
         let mut rng = Rng::new(0x1234);

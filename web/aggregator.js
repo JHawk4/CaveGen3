@@ -1,5 +1,6 @@
 // CaveGen3 aggregator page: CaveGen's Aggregator, plus grouping by the landing view (what you
-// see when you land). Uses the helpers in app.js, which is loaded first.
+// see when you land) or the comedown view (what you see under the sublevel's name). Uses the
+// helpers in app.js, which is loaded first.
 "use strict";
 
 Object.assign(STRINGS.en, {
@@ -7,6 +8,7 @@ Object.assign(STRINGS.en, {
     "Generates many seeds of a sublevel, groups the ones that look alike, and shows how often each thing spawned at each spot.",
   aggGroupBy: "Group seeds by",
   aggGroupLanding: "Landing view: map units in view when you land",
+  aggGroupComedown: "Comedown view: map units in view under the sublevel's name",
   aggGroupLayout: "Whole layout (CaveGen's default)",
   aggGroupRooms: "Rooms only",
   aggGroupFirst: "First room placed",
@@ -18,7 +20,7 @@ Object.assign(STRINGS.en, {
   aggMaxGroups: "Groups shown",
   aggHelp:
     "Each map is a group of seeds that look alike in any rotation. Icons show what spawned at each spot and how often; " +
-    "gray shows how often other map units covered a cell; the dashed outline is the landing camera's view.",
+    "gray shows how often other map units covered a cell; the dashed outline is the landing (white) or comedown (yellow) camera's view.",
   aggRunning: (done, total) => `Aggregating… ${done.toLocaleString()} of ${total.toLocaleString()} seeds`,
   aggDone: (total, groups, s) => `${total.toLocaleString()} seeds in ${s} s, ${groups.toLocaleString()} groups.`,
   aggStopped: (total) => `Stopped after ${total.toLocaleString()} seeds.`,
@@ -33,6 +35,7 @@ Object.assign(STRINGS.ja, {
   aggIntro: "ある階のシードをたくさん生成し、見た目が同じものをまとめて、各地点に何がどれくらいの割合で出たかを表示します。",
   aggGroupBy: "まとめ方",
   aggGroupLanding: "着地時の範囲：見えるマップユニット",
+  aggGroupComedown: "降下中の範囲：階層名の表示中に見えるマップユニット",
   aggGroupLayout: "レイアウト全体（CaveGenの標準）",
   aggGroupRooms: "部屋のみ",
   aggGroupFirst: "最初に置かれた部屋",
@@ -44,7 +47,7 @@ Object.assign(STRINGS.ja, {
   aggMaxGroups: "表示するグループ数",
   aggHelp:
     "各マップは、回転を含めて見た目が同じシードのグループです。アイコンは各地点に出たものとその割合、" +
-    "灰色はほかのマップユニットがそのマスにあった頻度、点線は着地直後のカメラの範囲です。",
+    "灰色はほかのマップユニットがそのマスにあった頻度、点線は着地直後（白）または降下中（黄）のカメラの範囲です。",
   aggRunning: (done, total) => `集計中… ${done.toLocaleString()} / ${total.toLocaleString()} シード`,
   aggDone: (total, groups, s) => `${total.toLocaleString()} シードを${s}秒で集計、${groups.toLocaleString()} グループ。`,
   aggStopped: (total) => `${total.toLocaleString()} シードで停止しました。`,
@@ -132,14 +135,19 @@ function groupSpots(group) {
   return spots;
 }
 
-/** The landing view's corners in a group's frame. */
+/** The landing or comedown view's corners in a group's frame. */
 function groupLanding(group) {
   if (!group.pod) return null;
   const [x, z, fx, fz] = group.pod;
-  const [near, far, nearHalf, farHalf] = agg.result.view;
+  const v = agg.result.view; // ahead and side pairs from the pod
   const r = [-fz, fx];
   const at = (ahead, side) => [x + fx * ahead + r[0] * side, z + fz * ahead + r[1] * side];
-  return [at(near, -nearHalf), at(near, nearHalf), at(far, farHalf), at(far, -farHalf)];
+  return [0, 1, 2, 3].map((i) => at(v[2 * i], v[2 * i + 1]));
+}
+
+/** Whether a grouping is by what a camera at the pod sees. */
+function groupingUsesView(grouping) {
+  return grouping === "landing" || grouping === "comedown-view";
 }
 
 /** A group's extent in game units: its units, the cells others covered, its spots and view. */
@@ -219,10 +227,10 @@ async function drawGroupContent(card, scale) {
     ctx.restore();
   }
 
-  // What the camera sees when you land.
+  // What the camera sees.
   const view = groupLanding(group);
   if (view) {
-    ctx.strokeStyle = LANDING_COLOR;
+    ctx.strokeStyle = agg.grouping === "comedown-view" ? COMEDOWN_COLOR : LANDING_COLOR;
     ctx.lineWidth = Math.max(1.5, cell / 16);
     ctx.setLineDash([cell / 4, cell / 6]);
     ctx.beginPath();
@@ -294,6 +302,7 @@ function groupCard(group, index) {
   for (const seed of group.seeds) {
     const p = new URLSearchParams({ sublevel: agg.sublevelParam, seed: formatSeed(seed) });
     if (agg.grouping === "landing") p.set("view", "pod");
+    if (agg.grouping === "comedown-view") p.set("view", "comedown");
     examples.append(" ", el("a", { href: `./?${p}`, class: "seed-link" }, formatSeed(seed)));
   }
   const card = { group, content: document.createElement("canvas"), hits: [] };
@@ -414,9 +423,9 @@ async function runAgg() {
   const t0 = performance.now();
   try {
     await loadGame(sel.cave.game);
-    const shape = landingShape();
+    const corners = grouping === "comedown-view" ? comedownCorners() : shapeCorners(landingShape());
     const periods = await imagePeriods(sublevel);
-    await command("agg_start", sublevel, grouping, shape.near, shape.far, shape.nearHalf, shape.farHalf, periods);
+    await command("agg_start", sublevel, grouping, ...corners.flat(), periods);
     let doneSeeds = 0;
     let chunk = 50;
     let chunkStart = startAt;
@@ -490,7 +499,7 @@ function loadAggSettings() {
       if (!node) continue;
       if (typeof v === "boolean") node.checked = v;
       // "comedown" and "comedown-units" were old names of the landing grouping.
-      else node.value = id === "agg-group" && v.startsWith("comedown") ? "landing" : v;
+      else node.value = id === "agg-group" && (v === "comedown" || v === "comedown-units") ? "landing" : v;
     }
     const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
     if (shared.screen || shared.comedownScreen) $("screen-shape").value = shared.screen || shared.comedownScreen;
@@ -500,7 +509,7 @@ function loadAggSettings() {
 }
 
 function updateFieldVisibility() {
-  $("screen-field").hidden = $("agg-group").value !== "landing";
+  $("screen-field").hidden = !groupingUsesView($("agg-group").value);
   $("seed-field").hidden = $("agg-mode").value === "r";
 }
 

@@ -132,12 +132,16 @@ The seed buttons can step through the game's RNG instead of counting by one (Cav
 the ones that look alike, and draws each group with how often each treasure, teki, gate and exit
 spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's default), the rooms
 only, or the first room placed, as in CaveGen, or by **landing view**: what the camera shows when
-you land: the map units in view (the default). Find the group that matches your landing to see where
-the treasures probably are; a floor usually has a few dozen of these groups. Gray cells show how often other map
-units were there.
+you land, after pressing L: the map units in view (the default), or by **comedown view**: the
+map units in view as the pod comes down, while the sublevel's name is up. Find the group that
+matches your landing (or what you see under the name, before you can move) to see where the
+treasures probably are; a floor usually has a few dozen landing groups. The comedown camera sees
+more of the floor, so it splits seeds into more groups. Gray cells show how often other map units
+were there.
 
 Rotations don't split groups: the same arrangement turned any way is one group (CaveGen only
-lined up the first room's rotation). Landing groups are turned so the camera faces up. Map
+lined up the first room's rotation). Landing and comedown groups are turned so the top of the
+screen faces as close to up as a quarter turn allows. Map
 units that look the same after a quarter or half turn count as the same in any of those
 rotations: the aggregator checks each unit's shape, doors and water, and the page checks its
 radar image. In vanilla Pikmin 2 these include the four-way junctions, the cross rooms (like
@@ -200,7 +204,7 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
 | `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
 | `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
 | `count SCx-7 minihoudai` | How many of something each seed has, as a distribution (CaveGen's `-count`). |
-| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group landing`, `layout`, `rooms` or `first`; `comedown` is the old name for `landing`), with what spawned at each spot and how often. |
+| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group landing`, `comedown-view`, `layout`, `rooms` or `first`; `comedown` is the old name for `landing`), with what spawned at each spot and how often. |
 | `options` | Lists the map options for `--show` and `--hide`. |
 
 - Seeds are hex; leave the seed out for a random one. `--seeds c` counts up by one, `g` steps

@@ -77,6 +77,24 @@ fn aggregate_writes_group_images() {
     assert_eq!(pngs, 3);
 }
 
+/// Grouping by the comedown view: the comedown camera sees more of the floor than the landing
+/// camera, so it splits the same seeds into at least as many groups.
+#[test]
+fn aggregate_by_comedown_view() {
+    let groups = |group: &str| -> usize {
+        let dir = std::env::temp_dir().join(format!("cavegen3-agg-{group}-test"));
+        let _ = std::fs::remove_dir_all(&dir);
+        let text = cavegen3(&[
+            "aggregate", "HoB-2", "--group", group, "-n", "2000", "--seeds", "c", "--start", "0", "--max", "2", "-o",
+            dir.to_str().unwrap(),
+        ]);
+        assert!(text.contains(&format!("_{group}_02.png")), "{text}");
+        let line = text.lines().find(|l| l.contains(&format!("groups (by {group})"))).expect("summary line");
+        line.split(", ").nth(1).and_then(|s| s.split(' ').next()).unwrap().parse().unwrap()
+    };
+    assert!(groups("comedown-view") >= groups("landing"));
+}
+
 #[test]
 fn colossal_options_reach_the_generator() {
     let dir = std::env::temp_dir().join("cavegen3-colossal-test");
