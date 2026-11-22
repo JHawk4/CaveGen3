@@ -10,7 +10,7 @@ use cavegen3_cli::{
     Painter, default_data_dir,
     render::{self, AggOptions, AggResult, OPTION_NAMES, Options, pct},
 };
-use cavegen3_web::seed_at;
+use cavegen3_web::{mix64, seed_at, seed_in};
 use clap::{Args, Parser, Subcommand};
 use rayon::prelude::*;
 use serde_json::Value;
@@ -31,6 +31,7 @@ use serde_json::Value;
 /// Other commands:
 ///   cavegen3 caveinfo FC-3
 ///   cavegen3 judge BK-4 pod 1234ABCD
+///   cavegen3 judge SH-6 judge2 2B1980E4
 ///   cavegen3 search BK-4 --judge pod -n 100000 --top 10
 ///   cavegen3 search SCx-7 --query "minihoudai < 2" -n 50000
 ///   cavegen3 stats SR-5 "BlackPom = 1" -n 20000
@@ -118,7 +119,8 @@ enum Cmd {
 
 const SUBLEVEL_HELP: &str = "The sublevel, like SCx-6, BK-1 or \"Subterranean Complex 6\". Romhacks take a game \
     prefix (251:AT-2, 216:CC-1); Colossal Caverns is \"colossal\", with options +ultra, +extra and +5onion.";
-const JUDGE_HELP: &str = "A judge: score, pod, at, attk, cmat, key, colossal or mapunitcount.";
+const JUDGE_HELP: &str = "A judge: score, pod, judge2, at, attk, cmat, key, colossal or mapunitcount. judge2 is a \
+    refit Pay off Debt judge that also lists the treasures a runner likely skips.";
 
 #[derive(Args)]
 struct GenerateArgs {
@@ -297,8 +299,8 @@ struct AggArgs {
     #[arg(long, value_delimiter = ',')]
     hide: Vec<String>,
 
-    /// Draw only what the game shows while the pod comes down: treasures, gates, exits and the
-    /// pod, no teki.
+    /// Draw only what the game shows while the pod comes down: treasures, gates, exits, the pod,
+    /// plants and fire/electric/gas hazards, but no other teki.
     #[arg(long)]
     comedown_visible: bool,
 
@@ -327,28 +329,6 @@ fn parse_seed_for(generator: Generator, text: &str) -> Result<u64, String> {
     u64::from_str_radix(t, 16).map_err(|_| bad())
 }
 
-/// [`seed_at`] for any generator: on Switch, "c" counts up, "g" steps the Switch RNG and "r"
-/// spreads seeds over all 2^64.
-fn seed_for(generator: Generator, mode: &str, start: u64, i: u64) -> u64 {
-    match (generator, mode) {
-        (Generator::Gc, _) => seed_at(mode, start, i) as u64,
-        (Generator::Switch, "g") => {
-            let mut rng = Rng::with(Generator::Switch, start);
-            rng.advance(i);
-            rng.state()
-        }
-        (Generator::Switch, "r") => mix64(start.wrapping_add(i)),
-        (Generator::Switch, _) => start.wrapping_add(i),
-    }
-}
-
-/// SplitMix64's finalizer: a bijection spreading 0, 1, 2, ... over all 64-bit seeds.
-fn mix64(i: u64) -> u64 {
-    let mut x = i.wrapping_add(0x9E37_79B9_7F4A_7C15);
-    x = (x ^ (x >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
-    x = (x ^ (x >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
-    x ^ (x >> 31)
-}
 
 fn random_seed() -> u32 {
     let nanos = std::time::SystemTime::now()
@@ -417,7 +397,19 @@ fn run(cli: Cli) -> Result<(), String> {
             for s in &seeds {
                 let seed = parse_seed_for(cli.rng, s)?;
                 let r = painter.query(&["judge", &sublevel, &judge, &seed.to_string(), cli.rng.name()])?;
-                println!("{seed:0w$X}  {}", r["score"], w = cli.rng.seed_digits());
+                // judge2: the treasures likely skipped, with their chance
+                let skips: Vec<String> = r["skips"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .map(|s| format!("{} {:.0}%", s[0].as_str().unwrap_or("?"), s[1].as_f64().unwrap_or(0.0) * 100.0))
+                    .collect();
+                let w = cli.rng.seed_digits();
+                if skips.is_empty() {
+                    println!("{seed:0w$X}  {}", r["score"]);
+                } else {
+                    println!("{seed:0w$X}  {}  likely skipped: {}", r["score"], skips.join(", "));
+                }
             }
             Ok(())
         }
@@ -482,7 +474,7 @@ fn generate(painter: &Painter, args: &GenerateArgs) -> Result<(), String> {
     let results: Vec<Result<PathBuf, String>> = (0..args.count)
         .into_par_iter()
         .map(|i| {
-            let seed = seed_for(g, &args.seeds, start, i);
+            let seed = seed_in(g, &args.seeds, start, i);
             let (layout, png) = painter.png(sublevel, seed, &opts)?;
             write_png(&args.out, &format!("{}_{}.png", file_name(&layout.sublevel), layout.seed), &png)
         })

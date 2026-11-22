@@ -7,6 +7,7 @@ use crate::{
     caveinfo::TekiInfo,
     data::{GameData, Sublevel},
     layout::{Layout, SpawnObject},
+    rng::Generator,
 };
 
 /// Matches seeds where this seed and the next `num_consecutive - 1` seeds generate the same
@@ -17,9 +18,13 @@ pub struct ConsecutiveIdenticalSeedsQuery {
 }
 
 impl Query for ConsecutiveIdenticalSeedsQuery {
-    fn matches(&self, seed: u32, data: &GameData) -> bool {
+    fn matches_with(&self, generator: Generator, seed: u64, data: &GameData) -> bool {
         let caveinfo = data.caveinfo(&self.sublevel).expect("sublevel has no caveinfo");
-        let layouts: Vec<Layout> = (seed..seed.saturating_add(self.num_consecutive)).map(|s| Layout::generate(s, caveinfo)).collect();
+        let last = match generator {
+            Generator::Gc => (seed as u32).saturating_add(self.num_consecutive) as u64,
+            Generator::Switch => seed.saturating_add(self.num_consecutive as u64),
+        };
+        let layouts: Vec<Layout> = (seed..last).map(|s| Layout::generate_with(generator, s, caveinfo)).collect();
         let units = |l: &Layout| l.units.iter().map(|u| (u.unit.unit_folder_name.clone(), u.unit.rotation, u.x, u.z)).collect::<Vec<_>>();
         let treasures = |l: &Layout| {
             l.spawn_objects()

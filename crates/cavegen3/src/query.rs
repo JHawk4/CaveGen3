@@ -21,6 +21,7 @@ use crate::{
     error::{Error, Result},
     layout::{Layout, SpawnObject},
     point::Point,
+    rng::Generator,
 };
 
 #[derive(Parser)]
@@ -29,7 +30,13 @@ struct QueryParser;
 
 /// A condition on the layouts a seed generates.
 pub trait Query {
-    fn matches(&self, seed: u32, data: &GameData) -> bool;
+    /// Whether the layouts `seed` generates with `generator`'s `rand()` match.
+    fn matches_with(&self, generator: Generator, seed: u64, data: &GameData) -> bool;
+
+    /// [`Query::matches_with`] for the GameCube generator.
+    fn matches(&self, seed: u32, data: &GameData) -> bool {
+        self.matches_with(Generator::Gc, seed as u64, data)
+    }
 }
 
 /// One or more conditions joined with `&`, each on a sublevel.
@@ -41,11 +48,11 @@ pub struct StructuralQuery {
 }
 
 impl Query for StructuralQuery {
-    fn matches(&self, seed: u32, data: &GameData) -> bool {
+    fn matches_with(&self, generator: Generator, seed: u64, data: &GameData) -> bool {
         let layouts: Vec<Layout> = self
             .sublevels
             .iter()
-            .map(|sublevel| Layout::generate(seed, data.caveinfo(sublevel).expect("sublevel was checked when parsing")))
+            .map(|sublevel| Layout::generate_with(generator, seed, data.caveinfo(sublevel).expect("sublevel was checked when parsing")))
             .collect();
         self.clauses.iter().all(|clause| clause.querykind.matches(&layouts[clause.sublevel]))
     }

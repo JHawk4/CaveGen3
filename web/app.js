@@ -12,6 +12,7 @@ const STRINGS = {
     prevSeed: "Previous seed",
     nextSeed: "Next seed",
     seedTitle: "Up to 8 hex digits",
+    seedTitleSwitch: "Up to 16 hex digits (Switch)",
     random: "Random seed",
     generate: "Generate",
     water: "Water",
@@ -37,6 +38,7 @@ const STRINGS = {
     generating: "Generating…",
     generatedIn: (ms) => `Generated in ${ms} ms`,
     badSeed: "The seed should be up to 8 hex digits, like 1234ABCD.",
+    badSeedSwitch: "A Switch seed should be up to 16 hex digits, like 306306F66F0443C4.",
     cantGenerate: (msg) => `Couldn't generate this sublevel: ${msg}`,
     cantStart: (msg) => `Couldn't start: ${msg}. This page needs a recent browser.`,
     linkCopied: "Link copied.",
@@ -91,6 +93,9 @@ const STRINGS = {
     secGeneration: "Generation details",
     secScores: "Scores",
     secSeeds: "Seeds",
+    platform: "Game version",
+    platformGc: "GameCube / Wii",
+    platformSwitch: "Switch",
     opt: {
       treasures: "Treasures",
       hideBuried: "Hide fully buried treasures",
@@ -127,6 +132,7 @@ const STRINGS = {
     judgeNames: {
       score: "score: game's own treasure scores",
       pod: "pod: Pay off Debt",
+      judge2: "judge2: Pay off Debt, refit",
       at: "at: All Treasures",
       attk: "attk: Challenge Mode score attack",
       cmat: "cmat: Challenge Mode all treasures",
@@ -137,6 +143,7 @@ const STRINGS = {
     judgeTips: {
       score: "The game's own unit and treasure scores, as CaveGen judges them",
       pod: "Estimated seconds to collect this sublevel's treasures in a Pay off Debt run",
+      judge2: "Pay off Debt, refit against timed runs: expected net seconds, letting the runner skip treasures that aren't worth the trip",
       at: "Estimated seconds to collect every treasure in an All Treasures run",
       attk: "Challenge Mode score attack estimate",
       cmat: "Challenge Mode all-treasures estimate",
@@ -145,6 +152,7 @@ const STRINGS = {
       mapunitcount: "The number of map units; fewer usually means a faster floor",
     },
     judgeLine: (type, score) => `Judge (${type}): ${score}`,
+    likelySkipped: (list) => `Likely skipped: ${list}`,
     search: "Seed search",
     searchCount: "Seeds to test",
     searchMode: "Seeds",
@@ -177,6 +185,10 @@ const STRINGS = {
       water: "Shade the water",
       screen: "The game's screen setting, for the landing and comedown views. A 16:9 screen shows more to the sides",
       seedStep: "±1, or the seed before/after it in the game's RNG (CaveGen's -consecutiveSeeds)",
+      platform:
+        "Which release's random number generator makes the layouts. GameCube, Wii and Wii U share one with 8-digit seeds; " +
+        "the Switch release (Pikmin 2 HD) uses a 64-bit one, so its seeds have 16 hex digits. " +
+        "The Switch generator was worked out from gameplay video and its layouts haven't been checked against the game yet",
       judge: "Rate each layout with one of CaveGen's judges. Lower is better; most estimate the seconds a kind of run takes",
       search: "Test many seeds of this sublevel, then list the best by the judge, or the ones matching the query",
       searchCount: "How many seeds to generate and check",
@@ -194,8 +206,9 @@ const STRINGS = {
         gateHealth: "Each gate's HP, written on the gate",
         exits: "The pod, the hole or geyser, and Onions",
         comedownVisible:
-          "Only what the game draws as the pod comes down: treasures (a buried one shows as its mound of dirt), gates, the hole or geyser and the pod. " +
-          "The cave intro doesn't draw teki, so no enemies, plants, eggs or Candypop Buds, nor the treasures they carry. Only the floor near the pod is lit",
+          "Only what the game draws as the pod comes down: treasures (a buried one shows as its mound of dirt), gates, the hole or geyser, the pod, " +
+          "plants, and fire, electric and gas hazards. The cave intro doesn't draw other teki, so no enemies, eggs or Candypop Buds, nor the treasures they carry. " +
+          "Only the floor near the pod is lit",
         spawnpoints: "Every spawn point, marked by what can spawn there as in Caveripper: pink rings for easy teki, red dots for hard teki, a duck for treasures, a hole for the exit, a leaf for plants, a star for special teki, the ship for the pod. Faded ones are empty",
         angles: "Arrows for the way each object and spawn point faces",
         spawnOrder: "The order things were placed in: map units (outlined), then the pod, exits, teki, treasures, alcove teki and gates (CaveGen's -drawSpawnOrder)",
@@ -276,6 +289,7 @@ const STRINGS = {
     prevSeed: "前のシード",
     nextSeed: "次のシード",
     seedTitle: "16進数8桁まで",
+    seedTitleSwitch: "16進数16桁まで（Switch版）",
     random: "ランダム",
     generate: "生成",
     water: "水",
@@ -301,6 +315,7 @@ const STRINGS = {
     generating: "生成中…",
     generatedIn: (ms) => `${ms}ミリ秒で生成`,
     badSeed: "シードは 1234ABCD のような16進数8桁までで入力してください。",
+    badSeedSwitch: "Switch版のシードは 306306F66F0443C4 のような16進数16桁までで入力してください。",
     cantGenerate: (msg) => `この階は生成できませんでした：${msg}`,
     cantStart: (msg) => `起動できませんでした：${msg}。新しいブラウザでお試しください。`,
     linkCopied: "リンクをコピーしました。",
@@ -355,6 +370,9 @@ const STRINGS = {
     secGeneration: "生成の詳細",
     secScores: "スコア",
     secSeeds: "シード",
+    platform: "ゲームの版",
+    platformGc: "ゲームキューブ / Wii",
+    platformSwitch: "Switch",
     opt: {
       treasures: "お宝",
       hideBuried: "完全に埋まったお宝を隠す",
@@ -391,6 +409,7 @@ const STRINGS = {
     judgeNames: {
       score: "score：ゲーム内のお宝スコア",
       pod: "pod：借金返済",
+      judge2: "judge2：借金返済（再調整版）",
       at: "at：お宝全回収",
       attk: "attk：チャレンジモードのスコアアタック",
       cmat: "cmat：チャレンジモードのお宝全回収",
@@ -401,6 +420,7 @@ const STRINGS = {
     judgeTips: {
       score: "ゲーム内のユニットとお宝のスコア（CaveGenの評価）",
       pod: "借金返済で、この階のお宝を集めるまでの見積もり秒数",
+      judge2: "実際の借金返済の走りに合わせて調整した見積もり秒数。割に合わないお宝は取らずに進む場合も考えます",
       at: "お宝全回収で、すべてのお宝を集めるまでの見積もり秒数",
       attk: "チャレンジモードのスコアアタックの見積もり",
       cmat: "チャレンジモードのお宝全回収の見積もり",
@@ -409,6 +429,7 @@ const STRINGS = {
       mapunitcount: "マップユニットの数（少ないほど速いことが多い）",
     },
     judgeLine: (type, score) => `評価（${type}）：${score}`,
+    likelySkipped: (list) => `取らない可能性が高いお宝：${list}`,
     search: "シード検索",
     searchCount: "試すシードの数",
     searchMode: "シード",
@@ -442,6 +463,10 @@ const STRINGS = {
       water: "水の部分に色をつけます",
       screen: "ゲームの画面設定（着地時と降下中の範囲用）。16:9のほうが左右が広く映ります",
       seedStep: "±1、またはゲームの乱数で前後のシード（CaveGenの -consecutiveSeeds）",
+      platform:
+        "レイアウトを作る乱数の種類。ゲームキューブ・Wii・Wii Uは共通で、シードは8桁です。" +
+        "Switch版（Pikmin 2 HD）は64ビットの乱数を使うため、シードは16進数16桁です。" +
+        "Switch版の乱数はプレイ動画から割り出したもので、レイアウトはまだ実機と照合していません",
       judge: "CaveGenの評価で各レイアウトを採点します。小さいほど良く、多くは走り方ごとの秒数の見積もりです",
       search: "この階のシードをたくさん試して、評価の良いものや条件に合うものを一覧にします",
       searchCount: "生成して調べるシードの数",
@@ -459,8 +484,8 @@ const STRINGS = {
         gateHealth: "各ゲートの体力をゲートの上に表示します",
         exits: "ポッド、穴か間欠泉、オニヨン",
         comedownVisible:
-          "ポッドが降りてくる間にゲームが描くものだけを表示します：お宝（埋まったお宝は土の盛り上がりとして）、ゲート、穴か間欠泉、ポッド。" +
-          "洞窟に入るときのムービーでは原生生物が描かれないため、敵・植物・タマゴ・ポンガシグサと、それらが持つお宝は表示しません。明るいのはポッドの近くの床だけです",
+          "ポッドが降りてくる間にゲームが描くものだけを表示します：お宝（埋まったお宝は土の盛り上がりとして）、ゲート、穴か間欠泉、ポッド、植物、火・電気・毒ガスの噴出口。" +
+          "洞窟に入るときのムービーではそれ以外の原生生物が描かれないため、敵・タマゴ・ポンガシグサと、それらが持つお宝は表示しません。明るいのはポッドの近くの床だけです",
         spawnpoints: "すべての出現ポイント（Caveripperと同じ記号：ピンクの輪は弱い原生生物、赤い点は強い原生生物、アヒルはお宝、穴は出口、葉は植物、星は特殊、船はポッド。薄いものは空）",
         angles: "各オブジェクトと出現ポイントの向きの矢印",
         spawnOrder: "置かれた順番：マップユニット（枠）、ポッド、出口、原生生物、お宝、行き止まりの原生生物、ゲート（CaveGenの -drawSpawnOrder）",
@@ -670,7 +695,18 @@ async function loadGame(game) {
 
 function generate(sublevel, seed, flags) {
   const name = new TextEncoder().encode(sublevel);
+  if (typeof seed === "bigint") {
+    // A Switch seed: 64 bits, passed as two halves.
+    const lo = Number(seed & 0xffffffffn);
+    const hi = Number((seed >> 32n) & 0xffffffffn);
+    return guarded(() => withBytes(name, (p, n) => readResult(wasm.generate_switch(p, n, lo, hi, flags))));
+  }
   return guarded(() => withBytes(name, (p, n) => readResult(wasm.generate(p, n, seed >>> 0, flags))));
+}
+
+/** The extra argument that tells the generator's commands to use the Switch RNG. */
+function rngArgs(seed) {
+  return typeof seed === "bigint" ? ["switch"] : [];
 }
 
 /** A tab-separated command for the generator: judge, search or caveinfo. */
@@ -1179,7 +1215,7 @@ const MAP_OPTIONS = [
   { key: "gates", on: true, section: "objects" },
   { key: "gateHealth", on: true, section: "objects" },
   { key: "exits", on: true, section: "objects" },
-  { key: "comedownVisible", section: "objects" },
+  { key: "comedownVisible", section: "view" },
   { key: "landingBox", section: "view" },
   { key: "landingBoxOlimar", section: "view" },
   { key: "landingBoxLouie", section: "view" },
@@ -1257,15 +1293,23 @@ function tintedIcon(img, color) {
   return tintCache.get(key);
 }
 
+// Teki the game draws even in cutscenes (their managers are EnemyMgrBaseAlwaysMovieActor):
+// the plants and the fire, electric and gas hazards. Lowercase internal names.
+const COMEDOWN_VISIBLE_TEKI = new Set([
+  "chiyogami", "clover", "diodered", "diodegreen", "hikarikinoko", "kareooinu_l", "kareooinu_s", "margaret", "nekojarashi",
+  "ooinu_l", "ooinu_s", "tanpopo", "tukushi", "wakame_l", "wakame_s", "watage", "zenmai", "hiba", "elechiba", "gashiba",
+]);
+
 /**
- * Whether the game draws an object of this kind while the pod comes down. The cave intro
- * cutscene (s0B_cv_coursein) has draw flags 5 in /user/Mukki/movie/demos.txt: Pikmin and pellets,
- * not enemies, so no teki shows (plants, eggs and Candypop Buds are teki, and a treasure a teki
- * carries is only a pellet once it dies). Treasures, gates, exits, Onions and the pod show.
- * The CLI's render::comedown_visible is the same.
+ * Whether the game draws an object while the pod comes down. The cave intro cutscene
+ * (s0B_cv_coursein) has draw flags 5 in /user/Mukki/movie/demos.txt: Pikmin and pellets, not
+ * enemies, so only the teki that always count as cutscene actors show (plants and hazards). Eggs,
+ * Candypop Buds and every enemy don't, nor a treasure a teki carries, which is only a pellet once
+ * it dies. Treasures, gates, exits, Onions and the pod show. The CLI's render::comedown_visible
+ * is the same.
  */
 function comedownVisible(o) {
-  return o.kind !== "teki";
+  return o.kind !== "teki" || COMEDOWN_VISIBLE_TEKI.has(String(o.name).toLowerCase());
 }
 
 function objectShown(o, opts) {
@@ -1903,6 +1947,12 @@ async function renderSummary(layout) {
   info.append(el("li", {}, T.unitsLine(layout.units.length, layout.width, layout.height)));
   info.append(el("li", {}, exit ? (exit.kind === "hole" ? T.exitHole(exit.plugged) : T.exitGeyser) : T.noExit));
   if (current && current.judge) info.append(el("li", { class: "judge-line" }, T.judgeLine(current.judge.type, current.judge.score)));
+  // judge2: the treasures a runner likely leaves behind, with the chance
+  const skips = current && current.judge ? current.judge.skips.filter(([, p]) => p >= 0.1) : [];
+  if (skips.length) {
+    const list = skips.map(([name, p]) => `${displayName("treasures", name)} (${Math.round(p * 100)}%)`).join(", ");
+    info.append(el("li", { class: "judge-line" }, T.likelySkipped(list)));
+  }
   if (current) info.append(el("li", { class: "muted gen-time" }, T.generatedIn(current.ms.toFixed(1))));
   parts.push(info);
 
@@ -1983,18 +2033,56 @@ function showColossalOptions() {
   box.hidden = !(cave && cave.name === "Colossal Caverns");
 }
 
+// Seeds are numbers for the GameCube/Wii generator and BigInts for the Switch one (64 bits).
+const MASK64 = (1n << 64n) - 1n;
+const A64 = 6364136223846793005n;
+const A64_INV = (() => {
+  // Newton's iteration for the inverse mod 2^64 (each step doubles the correct bits).
+  let x = A64;
+  for (let i = 0; i < 6; i++) x = (x * (2n - ((A64 * x) & MASK64))) & MASK64;
+  return x;
+})();
+
+/** True when the Advanced options ask for the Switch generator (never on other pages). */
+function isSwitch() {
+  const sel = $("platform");
+  return !!sel && sel.value === "switch";
+}
+
 function parseSeed(text) {
   const t = text.trim().replace(/^0x/i, "");
+  if (isSwitch()) return /^[0-9a-f]{1,16}$/i.test(t) ? BigInt(`0x${t}`) : null;
   if (!/^[0-9a-f]{1,8}$/i.test(t)) return null;
   return parseInt(t, 16) >>> 0;
 }
 
 function formatSeed(seed) {
+  if (typeof seed === "bigint") return (seed & MASK64).toString(16).toUpperCase().padStart(16, "0");
   return (seed >>> 0).toString(16).toUpperCase().padStart(8, "0");
+}
+
+/** The Switch RNG's state `n` steps after (or before, if negative) `seed`, in O(log n). */
+function rngJump64(seed, n) {
+  let k = BigInt(n);
+  let [a, c] = k < 0n ? [A64_INV, (MASK64 + 1n - A64_INV) & MASK64] : [A64, 1n];
+  if (k < 0n) k = -k;
+  let mul = 1n;
+  let add = 0n;
+  while (k > 0n) {
+    if (k & 1n) {
+      mul = (mul * a) & MASK64;
+      add = (add * a + c) & MASK64;
+    }
+    c = (c * a + c) & MASK64;
+    a = (a * a) & MASK64;
+    k >>= 1n;
+  }
+  return (seed * mul + add) & MASK64;
 }
 
 /** The game RNG's state `n` steps after (or before, if negative) `seed`. */
 function rngStep(seed, n) {
+  if (typeof seed === "bigint") return rngJump64(seed, n);
   let s = seed >>> 0;
   for (let i = 0; i < Math.abs(n); i++) {
     s = n > 0 ? (Math.imul(s, 0x41c64e6d) + 0x3039) >>> 0 : Math.imul((s - 0x3039) >>> 0, 0xeeb9eb65) >>> 0;
@@ -2008,11 +2096,33 @@ function rngStep(seed, n) {
  * slice ended (each slice steps the RNG from its own start).
  */
 function nextChunkStart(mode, start, n) {
+  if (typeof start === "bigint") return mode === "g" ? rngJump64(start, n) : (start + BigInt(n)) & MASK64;
   return mode === "g" ? rngStep(start, n) : start + n;
 }
 
 function randomSeed() {
+  if (isSwitch()) {
+    const [lo, hi] = crypto.getRandomValues(new Uint32Array(2));
+    return (BigInt(hi) << 32n) | BigInt(lo);
+  }
   return crypto.getRandomValues(new Uint32Array(1))[0];
+}
+
+/** `seed` turned into a seed for the other generator: Switch keeps the number, GC keeps the low 32 bits. */
+function convertSeed(seed) {
+  if (isSwitch()) return typeof seed === "bigint" ? seed : BigInt(seed >>> 0);
+  return typeof seed === "bigint" ? Number(seed & 0xffffffffn) : seed;
+}
+
+/** The seed box's length, pattern and tooltip for the chosen generator. */
+function setSeedInput() {
+  const box = $("seed");
+  if (!box) return;
+  const sw = isSwitch();
+  box.maxLength = sw ? 18 : 10;
+  box.pattern = sw ? "(0x)?[0-9A-Fa-f]{1,16}" : "(0x)?[0-9A-Fa-f]{1,8}";
+  box.title = sw ? T.seedTitleSwitch : T.seedTitle;
+  box.classList.toggle("seed64", sw);
 }
 
 function fillGames(games) {
@@ -2063,7 +2173,7 @@ async function generateAndShow({ newCave = false } = {}) {
   if (!cave) return;
   const seed = parseSeed($("seed").value);
   if (seed === null) {
-    setStatus(T.badSeed, true);
+    setStatus(isSwitch() ? T.badSeedSwitch : T.badSeed, true);
     return;
   }
   $("seed").value = formatSeed(seed);
@@ -2078,7 +2188,8 @@ async function generateAndShow({ newCave = false } = {}) {
     const ms = performance.now() - start;
     if (newCave || $("floor").options.length !== layout.floors) fillFloors(layout.floors, floor);
     const judgeType = $("judge").value;
-    const judge = judgeType ? { type: judgeType, score: (await command("judge", sublevel, judgeType, seed)).score } : null;
+    const judged = judgeType ? await command("judge", sublevel, judgeType, seed, ...rngArgs(seed)) : null;
+    const judge = judged ? { type: judgeType, score: judged.score, skips: judged.skips || [] } : null;
     const refit = !current || current.sublevel !== sublevel;
     current = { layout, cave, floor, ms, sublevel, judge };
     $("result").hidden = false;
@@ -2108,6 +2219,8 @@ function updateUrl(cave, floor, seed) {
   const suffix = cave.name === "Colossal Caverns" ? colossalSuffix() : "";
   p.set("sublevel", `${cave.game}:${cave.short}-${floor}${suffix}`);
   p.set("seed", formatSeed(seed));
+  if (typeof seed === "bigint") p.set("rng", "switch");
+  else p.delete("rng");
   history.replaceState(null, "", `?${p.toString()}`);
 }
 
@@ -2134,7 +2247,7 @@ function selectFromParam(text) {
 
 // ---- Advanced options ----
 
-const JUDGES = ["score", "pod", "at", "attk", "cmat", "key", "colossal", "mapunitcount"];
+const JUDGES = ["score", "pod", "judge2", "at", "attk", "cmat", "key", "colossal", "mapunitcount"];
 const SETTINGS_KEY = "cavegen3-options";
 
 function buildAdvanced() {
@@ -2162,6 +2275,7 @@ function buildAdvanced() {
     if (view) $(`view-${view}`).checked = true;
     if (saved.screen || saved.comedownScreen) $("screen-shape").value = saved.screen || saved.comedownScreen;
     if (saved.seedStep) $("seed-step").value = saved.seedStep;
+    if (saved.platform === "switch" || saved.platform === "gc") $("platform").value = saved.platform;
     if (saved.open) $("advanced").open = true;
   } catch {
     // Nothing saved, or storage is unavailable.
@@ -2179,6 +2293,7 @@ function saveSettings() {
         view: chosenView(),
         screen: $("screen-shape").value,
         seedStep: $("seed-step").value,
+        platform: $("platform").value,
       }));
   } catch {
     // Not saved; the choices still apply to this page.
@@ -2285,7 +2400,9 @@ async function startSearch() {
       }
       const n = Math.min(chunk, total - s.tested);
       const t = performance.now();
-      const r = await command("search", s.sublevel, judge || "-", query || "-", chunkStart, n, mode, keep, countWhat || "-");
+      const r = await command("search", s.sublevel, judge || "-", query || "-", chunkStart, n, mode, keep, countWhat || "-", ...rngArgs(chunkStart));
+      // Switch seeds come back as decimal strings (64 bits don't fit a JavaScript number).
+      r.best = r.best.map(([seed, score]) => [typeof seed === "string" ? BigInt(seed) : seed, score]);
       s.tested += n;
       chunkStart = nextChunkStart(mode, chunkStart, n);
       s.matched += r.matched;
@@ -2567,7 +2684,7 @@ function applyLanguage() {
   for (const node of document.querySelectorAll("[data-i18n-placeholder]")) node.placeholder = T[node.dataset.i18nPlaceholder];
   for (const node of document.querySelectorAll("[data-i18n-tip]")) node.title = T.tips[node.dataset.i18nTip];
   for (const node of document.querySelectorAll("[data-i18n-tip-opt]")) node.title = T.tips.opt[node.dataset.i18nTipOpt];
-  if ($("seed")) $("seed").title = T.seedTitle;
+  if ($("seed")) setSeedInput();
   if ($("footer-text")) $("footer-text").innerHTML = T.footer;
   if ($("search-go")) $("search-go").textContent = search && !search.done ? T.stop : T.searchButton;
   if ($("judge")) fillJudges();
@@ -2686,6 +2803,9 @@ async function init() {
   }
 
   selectStart();
+  // A link's generator wins over the saved one: ?rng=switch, or none for GameCube/Wii.
+  if (params.has("seed")) $("platform").value = params.get("rng") === "switch" ? "switch" : "gc";
+  setSeedInput();
   const seed = params.get("seed") && parseSeed(params.get("seed"));
   // "comedown=1" is the old name.
   // "landing=1" and "comedown=1" are old links to the pod view.
@@ -2694,6 +2814,9 @@ async function init() {
   // The comedown-visible filter is kept in the link, so a shared link shows the same objects.
   if (params.has("comedownVisible")) $("opt-comedownVisible").checked = params.get("comedownVisible") === "1";
   setUrlFlag("comedownVisible", $("opt-comedownVisible").checked);
+  // "judge=judge2" picks the judge for this link (over the saved one); "judge=none" turns it off.
+  const judgeParam = params.get("judge");
+  if (judgeParam === "none" || JUDGES.includes(judgeParam)) $("judge").value = judgeParam === "none" ? "" : judgeParam;
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -2715,10 +2838,21 @@ async function init() {
   const step = (d) => {
     const s = parseSeed($("seed").value);
     if (s === null) return;
-    $("seed").value = formatSeed($("seed-step").value === "g" ? rngStep(s, d) : s + d);
+    const next = typeof s === "bigint" ? (s + BigInt(d)) & MASK64 : s + d;
+    $("seed").value = formatSeed($("seed-step").value === "g" ? rngStep(s, d) : next);
     run();
   };
   $("seed-step").addEventListener("change", saveSettings);
+  $("platform").addEventListener("change", () => {
+    // Keep the seed where it makes sense (Switch takes it as is, GameCube/Wii its low 8 digits).
+    const text = $("seed").value.trim().replace(/^0x/i, "");
+    const old = /^[0-9a-f]{1,16}$/i.test(text) ? BigInt(`0x${text}`) : null;
+    setSeedInput();
+    $("seed").value = formatSeed(old === null ? randomSeed() : convertSeed(old));
+    stopSearch(true);
+    saveSettings();
+    run();
+  });
   $("prev").addEventListener("click", () => step(-1));
   $("next").addEventListener("click", () => step(1));
   $("water").addEventListener("change", () => current && render(current.layout));
@@ -2770,6 +2904,12 @@ async function init() {
   }
   $("judge").addEventListener("change", () => {
     saveSettings();
+    // A link that named the judge follows the menu, so reloading or sharing it keeps the choice.
+    const p = new URLSearchParams(location.search);
+    if (p.has("judge")) {
+      p.set("judge", $("judge").value || "none");
+      history.replaceState(null, "", `?${p.toString()}`);
+    }
     run();
   });
   $("advanced").addEventListener("toggle", saveSettings);
