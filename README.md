@@ -36,11 +36,18 @@ The Switch release (2023) runs the same cave generation with a different `rand()
 
 The generator was worked out from gameplay video (Challenge Mode score rolls and the falling
 letters of sublevel names), not from the Switch program, and no Switch layout has been compared
-with the game yet. The command line takes `--rng switch` for drawing layouts and `judge`; the
-library has `Layout::generate_with(Generator::Switch, seed, caveinfo)`. On Switch, `(f32)rand()`
-can round up to 2^31, so about one `randInt` call in 2^25 would return its limit and read past a
-list; CaveGen3 uses the last element instead. The web page, searches, stats, counts and the
-aggregator are GameCube only for now.
+with the game yet.
+
+- **Web page:** Advanced options → Seeds → Game version → Switch. The seed box then takes 16
+  hex digits, and ‹ ›, Random seed, the judge and the seed search (with queries and counts) all
+  use the Switch generator. Links carry it as `&rng=switch`.
+- **Command line:** `--rng switch` for drawing layouts and `judge`.
+- **Library:** `Layout::generate_with(Generator::Switch, seed, caveinfo)`, and
+  `Query::matches_with` for queries.
+
+On Switch, `(f32)rand()` can round up to 2^31, so about one `randInt` call in 2^25 would return
+its limit and read past a list; CaveGen3 uses the last element instead. The aggregator, and the
+command line's search, stats and count, are GameCube only for now.
 
 ## Web page
 

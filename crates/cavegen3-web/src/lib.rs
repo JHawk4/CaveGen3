@@ -166,8 +166,10 @@ impl Web {
     ///
     /// - `judge <sublevel> <type> <seed> [gc|switch]`: `{"score": n}` (the seed in decimal; 64-bit
     ///   on Switch)
-    /// - `search <sublevel> <type or -> <query or -> <start> <count> <c|g|r> <keep>`: tests `count`
-    ///   seeds from `start` (see [`seed_at`] for the modes).
+    /// - `search <sublevel> <type or -> <query or -> <start> <count> <c|g|r> <keep> [count what or -]
+    ///   [gc|switch]`: tests `count` seeds from `start` (see [`seed_in`] for the modes). With
+    ///   `switch`, seeds have 64 bits, and `best` writes them as decimal strings (a JSON number
+    ///   can't hold 64 bits exactly in JavaScript).
     ///   Seeds must match the query; with a judge type the `keep` lowest scores are returned,
     ///   otherwise the first `keep` matches. `{"tested", "matched", "best": [[seed, score]],
     ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
@@ -231,21 +233,25 @@ impl Web {
                 let (start, count, mode, keep) = (num(4)?, num(5)?, arg(6)?, num(7)? as usize);
                 // Optional: tally how many of something every tested seed has (CaveGen's -count).
                 let tally_what = args.get(8).map(|w| w.trim()).filter(|w| !w.is_empty() && *w != "-");
+                let generator = match args.get(9) {
+                    Some(g) if !g.trim().is_empty() => g.parse::<Generator>()?,
+                    _ => Generator::Gc,
+                };
                 let mut tally: BTreeMap<u32, u64> = BTreeMap::new();
-                let mut best: Vec<(u32, f64)> = Vec::new();
+                let mut best: Vec<(u64, f64)> = Vec::new();
                 let mut scores = Vec::new();
                 for i in 0..count {
-                    let seed = seed_at(mode, start, i);
+                    let seed = seed_in(generator, mode, start, i);
                     if let Some(what) = tally_what {
-                        *tally.entry(Layout::generate(seed, ci).count(what)).or_default() += 1;
+                        *tally.entry(Layout::generate_with(generator, seed, ci).count(what)).or_default() += 1;
                     }
                     if let Some(q) = &query
-                        && !q.matches(seed, data)
+                        && !q.matches_with(generator, seed, data)
                     {
                         continue;
                     }
                     let score = match &judge {
-                        Some(j) => j.judge(&Layout::generate(seed, ci)),
+                        Some(j) => j.judge(&Layout::generate_with(generator, seed, ci)),
                         None => 0.0,
                     };
                     scores.push(fnum(score));
@@ -259,7 +265,13 @@ impl Web {
                         best.push((seed, score));
                     }
                 }
-                let best: Vec<String> = best.iter().map(|(seed, s)| format!("[{seed},{}]", fnum(*s))).collect();
+                let best: Vec<String> = best
+                    .iter()
+                    .map(|(seed, s)| match generator {
+                        Generator::Gc => format!("[{seed},{}]", fnum(*s)),
+                        Generator::Switch => format!("[\"{seed}\",{}]", fnum(*s)),
+                    })
+                    .collect();
                 let tally: Vec<String> = tally.iter().map(|(k, n)| format!("[{k},{n}]")).collect();
                 Ok(format!(
                     "{{\"tested\":{count},\"matched\":{},\"best\":[{}],\"scores\":[{}],\"counts\":[{}]}}",
@@ -348,6 +360,29 @@ pub fn seed_at(mode: &str, start: u64, i: u64) -> u32 {
         "r" => mix32(start.wrapping_add(i)),
         _ => start.wrapping_add(i) as u32,
     }
+}
+
+/// [`seed_at`] for any generator. On Switch, "c" counts up, "g" steps the Switch RNG and "r"
+/// spreads seeds over all 2^64.
+pub fn seed_in(generator: Generator, mode: &str, start: u64, i: u64) -> u64 {
+    match (generator, mode) {
+        (Generator::Gc, _) => seed_at(mode, start, i) as u64,
+        (Generator::Switch, "g") => {
+            let mut rng = Rng::with(Generator::Switch, start);
+            rng.advance(i);
+            rng.state()
+        }
+        (Generator::Switch, "r") => mix64(start.wrapping_add(i)),
+        (Generator::Switch, _) => start.wrapping_add(i),
+    }
+}
+
+/// SplitMix64's finalizer: a bijection spreading 0, 1, 2, ... over all 64-bit seeds.
+pub fn mix64(i: u64) -> u64 {
+    let mut x = i.wrapping_add(0x9E37_79B9_7F4A_7C15);
+    x = (x ^ (x >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+    x = (x ^ (x >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+    x ^ (x >> 31)
 }
 
 /// Spreads the numbers 0, 1, 2, ... over all seeds. It's a bijection, so no seed repeats.
@@ -747,6 +782,16 @@ pub unsafe extern "C" fn generate(ptr: *const u8, len: usize, seed: u32, flags: 
     set_result(with_state(|w| w.generate_json(&name, seed as u64, flags)))
 }
 
+/// [`generate`] with the Switch generator: the 64-bit seed is `hi << 32 | lo`.
+///
+/// # Safety
+/// `ptr` must point to `len` readable bytes.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn generate_switch(ptr: *const u8, len: usize, lo: u32, hi: u32, flags: u32) -> *const u8 {
+    let name = String::from_utf8_lossy(unsafe { std::slice::from_raw_parts(ptr, len) }).into_owned();
+    set_result(with_state(|w| w.generate_json(&name, (hi as u64) << 32 | lo as u64, flags | SWITCH)))
+}
+
 /// Runs a tab-separated command (see [`Web::command`]) given as UTF-8 text at `ptr`.
 ///
 /// # Safety
@@ -813,6 +858,12 @@ mod tests {
         let judged = web.query("judge\tEC-1\tpod\t3486638192009167812\tswitch").unwrap();
         assert_eq!(judged, format!("{{\"score\":{}}}", fnum(JhawkJudge::new(JudgeType::Pod, ec1).judge(&sw))));
         assert_ne!(judged, web.query("judge\tEC-1\tpod\t1862550468").unwrap(), "same low bits on GC");
+        // A Switch search: 64-bit seeds, best ones returned as decimal strings.
+        let found = web.query("search\tEC-1\tpod\t-\t3486638192009167812\t20\tg\t3\t-\tswitch").unwrap();
+        assert!(found.contains("\"tested\":20"), "{found}");
+        assert!(found.contains("\"best\":[[\""), "{found}");
+        let first = Rng::with(Generator::Switch, 3_486_638_192_009_167_812).state();
+        assert_eq!(seed_in(Generator::Switch, "g", first, 0), first);
         assert!(json.contains("\"kind\":\"ship\""));
         assert!(web.generate_json("251:AT1", 7, 0).unwrap().contains("\"game\":\"251\""));
         assert!(web.caves_json().unwrap().contains("\"name\":\"Colossal Caverns\""));

@@ -10,7 +10,7 @@ use cavegen3_cli::{
     Painter, default_data_dir,
     render::{self, AggOptions, AggResult, OPTION_NAMES, Options, pct},
 };
-use cavegen3_web::seed_at;
+use cavegen3_web::{mix64, seed_at, seed_in};
 use clap::{Args, Parser, Subcommand};
 use rayon::prelude::*;
 use serde_json::Value;
@@ -324,28 +324,6 @@ fn parse_seed_for(generator: Generator, text: &str) -> Result<u64, String> {
     u64::from_str_radix(t, 16).map_err(|_| bad())
 }
 
-/// [`seed_at`] for any generator: on Switch, "c" counts up, "g" steps the Switch RNG and "r"
-/// spreads seeds over all 2^64.
-fn seed_for(generator: Generator, mode: &str, start: u64, i: u64) -> u64 {
-    match (generator, mode) {
-        (Generator::Gc, _) => seed_at(mode, start, i) as u64,
-        (Generator::Switch, "g") => {
-            let mut rng = Rng::with(Generator::Switch, start);
-            rng.advance(i);
-            rng.state()
-        }
-        (Generator::Switch, "r") => mix64(start.wrapping_add(i)),
-        (Generator::Switch, _) => start.wrapping_add(i),
-    }
-}
-
-/// SplitMix64's finalizer: a bijection spreading 0, 1, 2, ... over all 64-bit seeds.
-fn mix64(i: u64) -> u64 {
-    let mut x = i.wrapping_add(0x9E37_79B9_7F4A_7C15);
-    x = (x ^ (x >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
-    x = (x ^ (x >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
-    x ^ (x >> 31)
-}
 
 fn random_seed() -> u32 {
     let nanos = std::time::SystemTime::now()
@@ -491,7 +469,7 @@ fn generate(painter: &Painter, args: &GenerateArgs) -> Result<(), String> {
     let results: Vec<Result<PathBuf, String>> = (0..args.count)
         .into_par_iter()
         .map(|i| {
-            let seed = seed_for(g, &args.seeds, start, i);
+            let seed = seed_in(g, &args.seeds, start, i);
             let (layout, png) = painter.png(sublevel, seed, &opts)?;
             write_png(&args.out, &format!("{}_{}.png", file_name(&layout.sublevel), layout.seed), &png)
         })
