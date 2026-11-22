@@ -2675,6 +2675,9 @@ async function init() {
   // "landing=1" and "comedown=1" are old links to the pod view.
   const viewParam = VIEWS.includes(params.get("view")) ? params.get("view") : params.get("landing") === "1" || params.get("comedown") === "1" ? "pod" : null;
   if (viewParam) for (const v of VIEWS) $(`view-${v}`).checked = v === viewParam;
+  // "judge=judge2" picks the judge for this link (over the saved one); "judge=none" turns it off.
+  const judgeParam = params.get("judge");
+  if (judgeParam === "none" || JUDGES.includes(judgeParam)) $("judge").value = judgeParam === "none" ? "" : judgeParam;
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -2750,6 +2753,12 @@ async function init() {
   }
   $("judge").addEventListener("change", () => {
     saveSettings();
+    // A link that named the judge follows the menu, so reloading or sharing it keeps the choice.
+    const p = new URLSearchParams(location.search);
+    if (p.has("judge")) {
+      p.set("judge", $("judge").value || "none");
+      history.replaceState(null, "", `?${p.toString()}`);
+    }
     run();
   });
   $("advanced").addEventListener("toggle", saveSettings);
