@@ -12,6 +12,7 @@ const STRINGS = {
     prevSeed: "Previous seed",
     nextSeed: "Next seed",
     seedTitle: "Up to 8 hex digits",
+    seedTitleSwitch: "Up to 16 hex digits (Switch)",
     random: "Random seed",
     generate: "Generate",
     water: "Water",
@@ -37,6 +38,7 @@ const STRINGS = {
     generating: "Generating…",
     generatedIn: (ms) => `Generated in ${ms} ms`,
     badSeed: "The seed should be up to 8 hex digits, like 1234ABCD.",
+    badSeedSwitch: "A Switch seed should be up to 16 hex digits, like 306306F66F0443C4.",
     cantGenerate: (msg) => `Couldn't generate this sublevel: ${msg}`,
     cantStart: (msg) => `Couldn't start: ${msg}. This page needs a recent browser.`,
     linkCopied: "Link copied.",
@@ -91,6 +93,9 @@ const STRINGS = {
     secGeneration: "Generation details",
     secScores: "Scores",
     secSeeds: "Seeds",
+    platform: "Game version",
+    platformGc: "GameCube / Wii",
+    platformSwitch: "Switch",
     opt: {
       treasures: "Treasures",
       hideBuried: "Hide fully buried treasures",
@@ -176,6 +181,10 @@ const STRINGS = {
       water: "Shade the water",
       screen: "The game's screen setting, for the landing and comedown views. A 16:9 screen shows more to the sides",
       seedStep: "±1, or the seed before/after it in the game's RNG (CaveGen's -consecutiveSeeds)",
+      platform:
+        "Which release's random number generator makes the layouts. GameCube, Wii and Wii U share one with 8-digit seeds; " +
+        "the Switch release (Pikmin 2 HD) uses a 64-bit one, so its seeds have 16 hex digits. " +
+        "The Switch generator was worked out from gameplay video and its layouts haven't been checked against the game yet",
       judge: "Rate each layout with one of CaveGen's judges. Lower is better; most estimate the seconds a kind of run takes",
       search: "Test many seeds of this sublevel, then list the best by the judge, or the ones matching the query",
       searchCount: "How many seeds to generate and check",
@@ -272,6 +281,7 @@ const STRINGS = {
     prevSeed: "前のシード",
     nextSeed: "次のシード",
     seedTitle: "16進数8桁まで",
+    seedTitleSwitch: "16進数16桁まで（Switch版）",
     random: "ランダム",
     generate: "生成",
     water: "水",
@@ -297,6 +307,7 @@ const STRINGS = {
     generating: "生成中…",
     generatedIn: (ms) => `${ms}ミリ秒で生成`,
     badSeed: "シードは 1234ABCD のような16進数8桁までで入力してください。",
+    badSeedSwitch: "Switch版のシードは 306306F66F0443C4 のような16進数16桁までで入力してください。",
     cantGenerate: (msg) => `この階は生成できませんでした：${msg}`,
     cantStart: (msg) => `起動できませんでした：${msg}。新しいブラウザでお試しください。`,
     linkCopied: "リンクをコピーしました。",
@@ -351,6 +362,9 @@ const STRINGS = {
     secGeneration: "生成の詳細",
     secScores: "スコア",
     secSeeds: "シード",
+    platform: "ゲームの版",
+    platformGc: "ゲームキューブ / Wii",
+    platformSwitch: "Switch",
     opt: {
       treasures: "お宝",
       hideBuried: "完全に埋まったお宝を隠す",
@@ -437,6 +451,10 @@ const STRINGS = {
       water: "水の部分に色をつけます",
       screen: "ゲームの画面設定（着地時と降下中の範囲用）。16:9のほうが左右が広く映ります",
       seedStep: "±1、またはゲームの乱数で前後のシード（CaveGenの -consecutiveSeeds）",
+      platform:
+        "レイアウトを作る乱数の種類。ゲームキューブ・Wii・Wii Uは共通で、シードは8桁です。" +
+        "Switch版（Pikmin 2 HD）は64ビットの乱数を使うため、シードは16進数16桁です。" +
+        "Switch版の乱数はプレイ動画から割り出したもので、レイアウトはまだ実機と照合していません",
       judge: "CaveGenの評価で各レイアウトを採点します。小さいほど良く、多くは走り方ごとの秒数の見積もりです",
       search: "この階のシードをたくさん試して、評価の良いものや条件に合うものを一覧にします",
       searchCount: "生成して調べるシードの数",
@@ -662,7 +680,18 @@ async function loadGame(game) {
 
 function generate(sublevel, seed, flags) {
   const name = new TextEncoder().encode(sublevel);
+  if (typeof seed === "bigint") {
+    // A Switch seed: 64 bits, passed as two halves.
+    const lo = Number(seed & 0xffffffffn);
+    const hi = Number((seed >> 32n) & 0xffffffffn);
+    return guarded(() => withBytes(name, (p, n) => readResult(wasm.generate_switch(p, n, lo, hi, flags))));
+  }
   return guarded(() => withBytes(name, (p, n) => readResult(wasm.generate(p, n, seed >>> 0, flags))));
+}
+
+/** The extra argument that tells the generator's commands to use the Switch RNG. */
+function rngArgs(seed) {
+  return typeof seed === "bigint" ? ["switch"] : [];
 }
 
 /** A tab-separated command for the generator: judge, search or caveinfo. */
@@ -1954,18 +1983,56 @@ function showColossalOptions() {
   box.hidden = !(cave && cave.name === "Colossal Caverns");
 }
 
+// Seeds are numbers for the GameCube/Wii generator and BigInts for the Switch one (64 bits).
+const MASK64 = (1n << 64n) - 1n;
+const A64 = 6364136223846793005n;
+const A64_INV = (() => {
+  // Newton's iteration for the inverse mod 2^64 (each step doubles the correct bits).
+  let x = A64;
+  for (let i = 0; i < 6; i++) x = (x * (2n - ((A64 * x) & MASK64))) & MASK64;
+  return x;
+})();
+
+/** True when the Advanced options ask for the Switch generator (never on other pages). */
+function isSwitch() {
+  const sel = $("platform");
+  return !!sel && sel.value === "switch";
+}
+
 function parseSeed(text) {
   const t = text.trim().replace(/^0x/i, "");
+  if (isSwitch()) return /^[0-9a-f]{1,16}$/i.test(t) ? BigInt(`0x${t}`) : null;
   if (!/^[0-9a-f]{1,8}$/i.test(t)) return null;
   return parseInt(t, 16) >>> 0;
 }
 
 function formatSeed(seed) {
+  if (typeof seed === "bigint") return (seed & MASK64).toString(16).toUpperCase().padStart(16, "0");
   return (seed >>> 0).toString(16).toUpperCase().padStart(8, "0");
+}
+
+/** The Switch RNG's state `n` steps after (or before, if negative) `seed`, in O(log n). */
+function rngJump64(seed, n) {
+  let k = BigInt(n);
+  let [a, c] = k < 0n ? [A64_INV, (MASK64 + 1n - A64_INV) & MASK64] : [A64, 1n];
+  if (k < 0n) k = -k;
+  let mul = 1n;
+  let add = 0n;
+  while (k > 0n) {
+    if (k & 1n) {
+      mul = (mul * a) & MASK64;
+      add = (add * a + c) & MASK64;
+    }
+    c = (c * a + c) & MASK64;
+    a = (a * a) & MASK64;
+    k >>= 1n;
+  }
+  return (seed * mul + add) & MASK64;
 }
 
 /** The game RNG's state `n` steps after (or before, if negative) `seed`. */
 function rngStep(seed, n) {
+  if (typeof seed === "bigint") return rngJump64(seed, n);
   let s = seed >>> 0;
   for (let i = 0; i < Math.abs(n); i++) {
     s = n > 0 ? (Math.imul(s, 0x41c64e6d) + 0x3039) >>> 0 : Math.imul((s - 0x3039) >>> 0, 0xeeb9eb65) >>> 0;
@@ -1979,11 +2046,33 @@ function rngStep(seed, n) {
  * slice ended (each slice steps the RNG from its own start).
  */
 function nextChunkStart(mode, start, n) {
+  if (typeof start === "bigint") return mode === "g" ? rngJump64(start, n) : (start + BigInt(n)) & MASK64;
   return mode === "g" ? rngStep(start, n) : start + n;
 }
 
 function randomSeed() {
+  if (isSwitch()) {
+    const [lo, hi] = crypto.getRandomValues(new Uint32Array(2));
+    return (BigInt(hi) << 32n) | BigInt(lo);
+  }
   return crypto.getRandomValues(new Uint32Array(1))[0];
+}
+
+/** `seed` turned into a seed for the other generator: Switch keeps the number, GC keeps the low 32 bits. */
+function convertSeed(seed) {
+  if (isSwitch()) return typeof seed === "bigint" ? seed : BigInt(seed >>> 0);
+  return typeof seed === "bigint" ? Number(seed & 0xffffffffn) : seed;
+}
+
+/** The seed box's length, pattern and tooltip for the chosen generator. */
+function setSeedInput() {
+  const box = $("seed");
+  if (!box) return;
+  const sw = isSwitch();
+  box.maxLength = sw ? 18 : 10;
+  box.pattern = sw ? "(0x)?[0-9A-Fa-f]{1,16}" : "(0x)?[0-9A-Fa-f]{1,8}";
+  box.title = sw ? T.seedTitleSwitch : T.seedTitle;
+  box.classList.toggle("seed64", sw);
 }
 
 function fillGames(games) {
@@ -2034,7 +2123,7 @@ async function generateAndShow({ newCave = false } = {}) {
   if (!cave) return;
   const seed = parseSeed($("seed").value);
   if (seed === null) {
-    setStatus(T.badSeed, true);
+    setStatus(isSwitch() ? T.badSeedSwitch : T.badSeed, true);
     return;
   }
   $("seed").value = formatSeed(seed);
@@ -2049,7 +2138,7 @@ async function generateAndShow({ newCave = false } = {}) {
     const ms = performance.now() - start;
     if (newCave || $("floor").options.length !== layout.floors) fillFloors(layout.floors, floor);
     const judgeType = $("judge").value;
-    const judge = judgeType ? { type: judgeType, score: (await command("judge", sublevel, judgeType, seed)).score } : null;
+    const judge = judgeType ? { type: judgeType, score: (await command("judge", sublevel, judgeType, seed, ...rngArgs(seed))).score } : null;
     const refit = !current || current.sublevel !== sublevel;
     current = { layout, cave, floor, ms, sublevel, judge };
     $("result").hidden = false;
@@ -2079,6 +2168,8 @@ function updateUrl(cave, floor, seed) {
   const suffix = cave.name === "Colossal Caverns" ? colossalSuffix() : "";
   p.set("sublevel", `${cave.game}:${cave.short}-${floor}${suffix}`);
   p.set("seed", formatSeed(seed));
+  if (typeof seed === "bigint") p.set("rng", "switch");
+  else p.delete("rng");
   history.replaceState(null, "", `?${p.toString()}`);
 }
 
@@ -2133,6 +2224,7 @@ function buildAdvanced() {
     if (view) $(`view-${view}`).checked = true;
     if (saved.screen || saved.comedownScreen) $("screen-shape").value = saved.screen || saved.comedownScreen;
     if (saved.seedStep) $("seed-step").value = saved.seedStep;
+    if (saved.platform === "switch" || saved.platform === "gc") $("platform").value = saved.platform;
     if (saved.open) $("advanced").open = true;
   } catch {
     // Nothing saved, or storage is unavailable.
@@ -2150,6 +2242,7 @@ function saveSettings() {
         view: chosenView(),
         screen: $("screen-shape").value,
         seedStep: $("seed-step").value,
+        platform: $("platform").value,
       }));
   } catch {
     // Not saved; the choices still apply to this page.
@@ -2256,7 +2349,9 @@ async function startSearch() {
       }
       const n = Math.min(chunk, total - s.tested);
       const t = performance.now();
-      const r = await command("search", s.sublevel, judge || "-", query || "-", chunkStart, n, mode, keep, countWhat || "-");
+      const r = await command("search", s.sublevel, judge || "-", query || "-", chunkStart, n, mode, keep, countWhat || "-", ...rngArgs(chunkStart));
+      // Switch seeds come back as decimal strings (64 bits don't fit a JavaScript number).
+      r.best = r.best.map(([seed, score]) => [typeof seed === "string" ? BigInt(seed) : seed, score]);
       s.tested += n;
       chunkStart = nextChunkStart(mode, chunkStart, n);
       s.matched += r.matched;
@@ -2538,7 +2633,7 @@ function applyLanguage() {
   for (const node of document.querySelectorAll("[data-i18n-placeholder]")) node.placeholder = T[node.dataset.i18nPlaceholder];
   for (const node of document.querySelectorAll("[data-i18n-tip]")) node.title = T.tips[node.dataset.i18nTip];
   for (const node of document.querySelectorAll("[data-i18n-tip-opt]")) node.title = T.tips.opt[node.dataset.i18nTipOpt];
-  if ($("seed")) $("seed").title = T.seedTitle;
+  if ($("seed")) setSeedInput();
   if ($("footer-text")) $("footer-text").innerHTML = T.footer;
   if ($("search-go")) $("search-go").textContent = search && !search.done ? T.stop : T.searchButton;
   if ($("judge")) fillJudges();
@@ -2657,6 +2752,9 @@ async function init() {
   }
 
   selectStart();
+  // A link's generator wins over the saved one: ?rng=switch, or none for GameCube/Wii.
+  if (params.has("seed")) $("platform").value = params.get("rng") === "switch" ? "switch" : "gc";
+  setSeedInput();
   const seed = params.get("seed") && parseSeed(params.get("seed"));
   // "comedown=1" is the old name.
   // "landing=1" and "comedown=1" are old links to the pod view.
@@ -2683,10 +2781,21 @@ async function init() {
   const step = (d) => {
     const s = parseSeed($("seed").value);
     if (s === null) return;
-    $("seed").value = formatSeed($("seed-step").value === "g" ? rngStep(s, d) : s + d);
+    const next = typeof s === "bigint" ? (s + BigInt(d)) & MASK64 : s + d;
+    $("seed").value = formatSeed($("seed-step").value === "g" ? rngStep(s, d) : next);
     run();
   };
   $("seed-step").addEventListener("change", saveSettings);
+  $("platform").addEventListener("change", () => {
+    // Keep the seed where it makes sense (Switch takes it as is, GameCube/Wii its low 8 digits).
+    const text = $("seed").value.trim().replace(/^0x/i, "");
+    const old = /^[0-9a-f]{1,16}$/i.test(text) ? BigInt(`0x${text}`) : null;
+    setSeedInput();
+    $("seed").value = formatSeed(old === null ? randomSeed() : convertSeed(old));
+    stopSearch(true);
+    saveSettings();
+    run();
+  });
   $("prev").addEventListener("click", () => step(-1));
   $("next").addEventListener("click", () => step(1));
   $("water").addEventListener("change", () => current && render(current.layout));
