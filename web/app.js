@@ -99,6 +99,7 @@ const STRINGS = {
       gates: "Gates",
       gateHealth: "Gate health",
       exits: "Pod and exits",
+      comedownVisible: "Comedown-visible only",
       spawnpoints: "Spawn points",
       spawnOrder: "Spawn order",
       pathDists: "Carry distances",
@@ -192,6 +193,9 @@ const STRINGS = {
         gates: "Gates",
         gateHealth: "Each gate's HP, written on the gate",
         exits: "The pod, the hole or geyser, and Onions",
+        comedownVisible:
+          "Only what the game draws as the pod comes down: treasures (a buried one shows as its mound of dirt), gates, the hole or geyser and the pod. " +
+          "The cave intro doesn't draw teki, so no enemies, plants, eggs or Candypop Buds, nor the treasures they carry. Only the floor near the pod is lit",
         spawnpoints: "Every spawn point, marked by what can spawn there as in Caveripper: pink rings for easy teki, red dots for hard teki, a duck for treasures, a hole for the exit, a leaf for plants, a star for special teki, the ship for the pod. Faded ones are empty",
         angles: "Arrows for the way each object and spawn point faces",
         spawnOrder: "The order things were placed in: map units (outlined), then the pod, exits, teki, treasures, alcove teki and gates (CaveGen's -drawSpawnOrder)",
@@ -359,6 +363,7 @@ const STRINGS = {
       gates: "ゲート",
       gateHealth: "ゲートの体力",
       exits: "ポッドと出口",
+      comedownVisible: "降下中に見えるものだけ",
       spawnpoints: "出現ポイント",
       spawnOrder: "生成順",
       pathDists: "運搬距離",
@@ -453,6 +458,9 @@ const STRINGS = {
         gates: "ゲート",
         gateHealth: "各ゲートの体力をゲートの上に表示します",
         exits: "ポッド、穴か間欠泉、オニヨン",
+        comedownVisible:
+          "ポッドが降りてくる間にゲームが描くものだけを表示します：お宝（埋まったお宝は土の盛り上がりとして）、ゲート、穴か間欠泉、ポッド。" +
+          "洞窟に入るときのムービーでは原生生物が描かれないため、敵・植物・タマゴ・ポンガシグサと、それらが持つお宝は表示しません。明るいのはポッドの近くの床だけです",
         spawnpoints: "すべての出現ポイント（Caveripperと同じ記号：ピンクの輪は弱い原生生物、赤い点は強い原生生物、アヒルはお宝、穴は出口、葉は植物、星は特殊、船はポッド。薄いものは空）",
         angles: "各オブジェクトと出現ポイントの向きの矢印",
         spawnOrder: "置かれた順番：マップユニット（枠）、ポッド、出口、原生生物、お宝、行き止まりの原生生物、ゲート（CaveGenの -drawSpawnOrder）",
@@ -817,6 +825,14 @@ function landingCorners(ship, camera) {
   return placeCorners(qx, qz, heading, shapeCorners(landingShape()));
 }
 
+/** Sets or removes a `name=1` flag in the page's URL, without reloading. */
+function setUrlFlag(name, on) {
+  const p = new URLSearchParams(location.search);
+  if (on) p.set(name, "1");
+  else p.delete(name);
+  history.replaceState(null, "", `?${p.toString()}`);
+}
+
 /** The view drawn alone ("pod", "olimar", "louie" or "comedown"), or null. */
 function chosenView() {
   return VIEWS.find((v) => $(`view-${v}`)?.checked) ?? null;
@@ -1163,6 +1179,7 @@ const MAP_OPTIONS = [
   { key: "gates", on: true, section: "objects" },
   { key: "gateHealth", on: true, section: "objects" },
   { key: "exits", on: true, section: "objects" },
+  { key: "comedownVisible", section: "objects" },
   { key: "landingBox", section: "view" },
   { key: "landingBoxOlimar", section: "view" },
   { key: "landingBoxLouie", section: "view" },
@@ -1240,7 +1257,19 @@ function tintedIcon(img, color) {
   return tintCache.get(key);
 }
 
+/**
+ * Whether the game draws an object of this kind while the pod comes down. The cave intro
+ * cutscene (s0B_cv_coursein) has draw flags 5 in /user/Mukki/movie/demos.txt: Pikmin and pellets,
+ * not enemies, so no teki shows (plants, eggs and Candypop Buds are teki, and a treasure a teki
+ * carries is only a pellet once it dies). Treasures, gates, exits, Onions and the pod show.
+ * The CLI's render::comedown_visible is the same.
+ */
+function comedownVisible(o) {
+  return o.kind !== "teki";
+}
+
 function objectShown(o, opts) {
+  if (opts.comedownVisible && !comedownVisible(o)) return false;
   switch (o.kind) {
     case "treasure":
       return opts.treasures && !(opts.hideBuried && o.buried);
@@ -2662,6 +2691,9 @@ async function init() {
   // "landing=1" and "comedown=1" are old links to the pod view.
   const viewParam = VIEWS.includes(params.get("view")) ? params.get("view") : params.get("landing") === "1" || params.get("comedown") === "1" ? "pod" : null;
   if (viewParam) for (const v of VIEWS) $(`view-${v}`).checked = v === viewParam;
+  // The comedown-visible filter is kept in the link, so a shared link shows the same objects.
+  if (params.has("comedownVisible")) $("opt-comedownVisible").checked = params.get("comedownVisible") === "1";
+  setUrlFlag("comedownVisible", $("opt-comedownVisible").checked);
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -2728,6 +2760,7 @@ async function init() {
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {
       saveSettings();
+      if (key === "comedownVisible") setUrlFlag(key, $(`opt-${key}`).checked);
       if (!current) return;
       // Turning on an option that needs the extra layout data generates the layout again.
       if (details && !current.layout.spawnpoints && $(`opt-${key}`).checked) run();

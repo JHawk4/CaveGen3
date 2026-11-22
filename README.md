@@ -139,6 +139,13 @@ within a pixel or two of where this camera puts them. The map grows to fit the o
 **Comedown view only** shows just that part of the floor, turned as it is on screen. Only one
 of the four views can be on at a time.
 
+**Comedown-visible only** draws only the objects the game shows while the pod comes down:
+treasures (a buried one as its mound of dirt), gates, the hole or geyser, Onions and the pod. The
+cave intro cutscene doesn't draw teki at all, so enemies, plants, eggs and Candypop Buds, and the
+treasures they carry, are left off. In a link it's `comedownVisible=1`. The evidence (the
+cutscene's draw flags in the game files, the decomp and run videos) is in
+[docs/COMEDOWN_VISIBILITY.md](docs/COMEDOWN_VISIBILITY.md).
+
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.
 
@@ -150,7 +157,9 @@ spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's defaul
 only, or the first room placed, as in CaveGen, or by **landing view**: what the camera shows when
 you land: the map units in view (the default). Find the group that matches your landing to see where
 the treasures probably are; a floor usually has a few dozen of these groups. Gray cells show how often other map
-units were there.
+units were there. **Comedown-visible only** leaves off what the game doesn't draw while the pod
+comes down (all teki), as on the main page, and is kept in the link (`comedownVisible=1`) and
+passed on to the example seed links.
 
 Rotations don't split groups: the same arrangement turned any way is one group (CaveGen only
 lined up the first room's rotation). Landing groups are turned so the camera faces up. Map
@@ -217,7 +226,7 @@ cavegen3 EC-1 306306F66F0443C4 --rng switch  # a Switch (Pikmin 2 HD) seed
 | `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
 | `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
 | `count SCx-7 minihoudai` | How many of something each seed has, as a distribution (CaveGen's `-count`). |
-| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group landing`, `layout`, `rooms` or `first`; `comedown` is the old name for `landing`), with what spawned at each spot and how often. |
+| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group landing`, `layout`, `rooms` or `first`; `comedown` is the old name for `landing`), with what spawned at each spot and how often. `--comedown-visible` draws only what shows as the pod comes down (no teki). |
 | `options` | Lists the map options for `--show` and `--hide`. |
 
 - Seeds are hex; leave the seed out for a random one. `--seeds c` counts up by one, `g` steps

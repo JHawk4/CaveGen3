@@ -162,6 +162,8 @@ pub struct Options {
     pub landing_box_louie: bool,
     /// An outline of what the camera shows while the sublevel's name is on screen, as the pod comes down.
     pub comedown_box: bool,
+    /// Only the objects the game draws while the pod comes down (see [`comedown_visible`]).
+    pub comedown_visible: bool,
     /// CaveGen's -drawSpawnOrder: map units and objects numbered in placement order.
     pub spawn_order: bool,
     /// CaveGen's -drawPathDists: carry distances in tens of units.
@@ -207,6 +209,7 @@ impl Default for Options {
             landing_box_olimar: false,
             landing_box_louie: false,
             comedown_box: false,
+            comedown_visible: false,
             spawn_order: false,
             path_dists: false,
             pod_angle: false,
@@ -229,6 +232,7 @@ pub const OPTION_NAMES: &[&str] = &[
     "gates",
     "gateHealth",
     "exits",
+    "comedownVisible",
     "spawnpoints",
     "angles",
     "unitScores",
@@ -269,6 +273,7 @@ impl Options {
             "gates" => &mut self.gates,
             "gatehealth" => &mut self.gate_health,
             "exits" => &mut self.exits,
+            "comedownvisible" => &mut self.comedown_visible,
             "spawnpoints" => &mut self.spawnpoints,
             "angles" => &mut self.angles,
             "unitscores" => &mut self.unit_scores,
@@ -312,7 +317,10 @@ impl Options {
             || self.paths
     }
 
-    fn shows(&self, o: &Object) -> bool {
+    pub fn shows(&self, o: &Object) -> bool {
+        if self.comedown_visible && !comedown_visible(&o.kind) {
+            return false;
+        }
         match o.kind.as_str() {
             "treasure" => self.treasures && !(self.hide_buried && o.buried),
             "teki" if o.group() == Some(6) => self.plants,
@@ -324,6 +332,21 @@ impl Options {
 }
 
 // ---- The landing and comedown views ----
+
+/// Whether the game draws objects of this kind ("treasure", "teki", "gate", "hole", "geyser",
+/// "ship", "onion") while the pod comes down.
+///
+/// The cave intro cutscene s0B_cv_coursein has draw flags 5 in `/user/Mukki/movie/demos.txt`:
+/// Pikmin (1) and pellets (4), not enemies (2) or captains (8). `MoviePlayer::setPauseAndDraw`
+/// passes those to each manager, and with enemies off `GeneralEnemyMgr` draws only the
+/// cutscene's own actors, so no teki shows: plants, eggs and Candypop Buds are teki too, and so
+/// are treasures a teki carries, which only become pellets when it dies. Treasures are pellets
+/// and show (a buried one as its dirt mound); gates, the hole, the geyser and Onions are items,
+/// which cutscenes don't hide. Checked in run videos: EC-1's first treasure shows, HoB-4's
+/// Red Bulborb beside the pod doesn't.
+pub fn comedown_visible(kind: &str) -> bool {
+    kind != "teki"
+}
 
 /// A camera looking the way the pod faces: `dist` units back from its target, `angle` degrees
 /// down, with a vertical field of view of `fov` degrees, aimed `lift` units above the target,
@@ -1600,6 +1623,8 @@ pub struct AggOptions {
     pub teki: bool,
     pub gates: bool,
     pub exits: bool,
+    /// Only what the game draws while the pod comes down: no teki (see [`comedown_visible`]).
+    pub comedown_visible: bool,
     /// Hide objects at a spot in fewer than this share of the group's seeds.
     pub min_share: f64,
     pub scale: f32,
@@ -1638,7 +1663,21 @@ impl AggObject {
         }
     }
 
+    pub fn kind(&self) -> &'static str {
+        match self {
+            AggObject::Teki { .. } => "teki",
+            AggObject::Treasure(_) => "treasure",
+            AggObject::Gate => "gate",
+            AggObject::Hole => "hole",
+            AggObject::Geyser => "geyser",
+            AggObject::Ship => "ship",
+        }
+    }
+
     pub fn shown(&self, o: &AggOptions) -> bool {
+        if o.comedown_visible && !comedown_visible(self.kind()) {
+            return false;
+        }
         match self {
             AggObject::Treasure(_) => o.treasures,
             AggObject::Teki { carry, .. } => o.teki || (carry.is_some() && o.treasures),

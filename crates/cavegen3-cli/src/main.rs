@@ -297,6 +297,11 @@ struct AggArgs {
     #[arg(long, value_delimiter = ',')]
     hide: Vec<String>,
 
+    /// Draw only what the game shows while the pod comes down: treasures, gates, exits and the
+    /// pod, no teki.
+    #[arg(long)]
+    comedown_visible: bool,
+
     /// Image size: 1 draws a map grid cell as 40 pixels.
     #[arg(long, default_value_t = 1.0)]
     scale: f32,
@@ -801,6 +806,7 @@ fn aggregate(painter: &mut Painter, args: &AggArgs) -> Result<(), String> {
         teki: !hidden("teki"),
         gates: !hidden("gates"),
         exits: !hidden("exits"),
+        comedown_visible: args.comedown_visible,
         min_share: args.min_pct / 100.0,
         scale: args.scale,
         game,
