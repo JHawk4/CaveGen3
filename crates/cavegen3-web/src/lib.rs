@@ -26,12 +26,14 @@ use cavegen3::{
     jhawk_judge::{JhawkJudge, JudgeType},
     point::Point,
     query::{Query, StructuralQuery},
-    rng::Rng,
+    rng::{Generator, Rng},
     waypoint::get_path_to_goal,
 };
 
 /// `generate` flag: add spawn points, doors, scores, waypoints and carry paths.
 pub const DETAILS: u32 = 1;
+/// `generate` flag: use the Switch release's `rand()` (seeds are 64-bit; see [`Generator::Switch`]).
+pub const SWITCH: u32 = 2;
 
 /// Data files held in memory, shared with [`GameData`] so more games can be added later.
 /// Paths match ignoring case, as on the game's file system.
@@ -148,19 +150,22 @@ impl Web {
     }
 
     /// Generates one layout and describes it as JSON (see the page's `render` for the fields).
-    /// With [`DETAILS`] in `flags` it also has spawn points, doors, scores, waypoints and paths.
-    pub fn generate_json(&self, sublevel: &str, seed: u32, flags: u32) -> Result<String, String> {
+    /// With [`DETAILS`] in `flags` it also has spawn points, doors, scores, waypoints and paths;
+    /// with [`SWITCH`] it uses the Switch generator, where `seed` has 64 bits.
+    pub fn generate_json(&self, sublevel: &str, seed: u64, flags: u32) -> Result<String, String> {
         let data = self.data()?;
         let sublevel = data.sublevel(sublevel).map_err(|e| e.to_string())?;
         let caveinfo = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
         let num_floors = data.floors(&sublevel.cfg).map_err(|e| e.to_string())?.len();
-        let layout = Layout::generate(seed, caveinfo);
+        let generator = if flags & SWITCH != 0 { Generator::Switch } else { Generator::Gc };
+        let layout = Layout::generate_with(generator, seed, caveinfo);
         Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
     }
 
     /// Runs one tab-separated command and returns JSON:
     ///
-    /// - `judge <sublevel> <type> <seed>`: `{"score": n}`
+    /// - `judge <sublevel> <type> <seed> [gc|switch]`: `{"score": n}` (the seed in decimal; 64-bit
+    ///   on Switch)
     /// - `search <sublevel> <type or -> <query or -> <start> <count> <c|g|r> <keep>`: tests `count`
     ///   seeds from `start` (see [`seed_at`] for the modes).
     ///   Seeds must match the query; with a judge type the `keep` lowest scores are returned,
@@ -195,7 +200,11 @@ impl Web {
             "judge" => {
                 let (_, ci) = caveinfo(1)?;
                 let judge = JhawkJudge::new(arg(2)?.parse::<JudgeType>()?, ci);
-                let layout = Layout::generate(num(3)? as u32, ci);
+                let generator = match args.get(4) {
+                    Some(g) if !g.trim().is_empty() => g.parse::<Generator>()?,
+                    _ => Generator::Gc,
+                };
+                let layout = Layout::generate_with(generator, num(3)?, ci);
                 Ok(format!("{{\"score\":{}}}", fnum(judge.judge(&layout))))
             }
             "search" => {
@@ -322,7 +331,7 @@ pub fn seed_at(mode: &str, start: u64, i: u64) -> u32 {
     match mode {
         "g" => {
             let mut rng = Rng::new(start as u32);
-            rng.advance(i as u32);
+            rng.advance(i);
             rng.seed()
         }
         "r" => mix32(start.wrapping_add(i)),
@@ -456,6 +465,7 @@ fn f(v: f32) -> String {
 
 fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize, data: &GameData, details: bool) -> String {
     let ci = layout.caveinfo;
+    let digits = layout.generator.seed_digits();
     let (mut width, mut height) = (0, 0);
     let mut units = Vec::new();
     for u in layout.units.iter() {
@@ -646,12 +656,13 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
     extra.push_str(&format!(",\"treasure_order\":[{}]", order.join(",")));
 
     format!(
-        "{{\"sublevel\":{},\"long_name\":{},\"game\":{},\"floor\":{},\"floors\":{num_floors},\"seed\":\"{:08X}\",\"width\":{width},\"height\":{height},\"final_floor\":{},\"units\":[{}],\"objects\":[{}]{extra}}}",
+        "{{\"sublevel\":{},\"long_name\":{},\"game\":{},\"floor\":{},\"floors\":{num_floors},\"seed\":\"{:0digits$X}\",\"rng\":{},\"width\":{width},\"height\":{height},\"final_floor\":{},\"units\":[{}],\"objects\":[{}]{extra}}}",
         q(&sublevel.short_name()),
         q(&sublevel.long_name()),
         q(&sublevel.cfg.game),
         sublevel.floor,
         layout.seed,
+        q(layout.generator.name()),
         ci.is_final_floor,
         units.join(","),
         objects.join(","),
@@ -722,7 +733,7 @@ pub extern "C" fn caves() -> *const u8 {
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn generate(ptr: *const u8, len: usize, seed: u32, flags: u32) -> *const u8 {
     let name = String::from_utf8_lossy(unsafe { std::slice::from_raw_parts(ptr, len) }).into_owned();
-    set_result(with_state(|w| w.generate_json(&name, seed, flags)))
+    set_result(with_state(|w| w.generate_json(&name, seed as u64, flags)))
 }
 
 /// Runs a tab-separated command (see [`Web::command`]) given as UTF-8 text at `ptr`.
@@ -782,6 +793,15 @@ mod tests {
             assert!(json.contains(&format!("\"name\":\"{}\",", u.unit.unit_folder_name)));
         }
         assert!(json.contains("\"seed\":\"00001234\""));
+        assert!(json.contains("\"rng\":\"gc\""));
+        // The Switch generator: 64-bit seeds, written with 16 digits.
+        let switch = web.generate_json("EC-1", 0x3063_06F6_6F04_43C4, SWITCH).unwrap();
+        assert!(switch.contains("\"seed\":\"306306F66F0443C4\",\"rng\":\"switch\""), "{switch}");
+        let ec1 = data.caveinfo(&data.sublevel("EC-1").unwrap()).unwrap();
+        let sw = Layout::generate_with(Generator::Switch, 0x3063_06F6_6F04_43C4, ec1);
+        let judged = web.query("judge\tEC-1\tpod\t3486638192009167812\tswitch").unwrap();
+        assert_eq!(judged, format!("{{\"score\":{}}}", fnum(JhawkJudge::new(JudgeType::Pod, ec1).judge(&sw))));
+        assert_ne!(judged, web.query("judge\tEC-1\tpod\t1862550468").unwrap(), "same low bits on GC");
         assert!(json.contains("\"kind\":\"ship\""));
         assert!(web.generate_json("251:AT1", 7, 0).unwrap().contains("\"game\":\"251\""));
         assert!(web.caves_json().unwrap().contains("\"name\":\"Colossal Caverns\""));
@@ -849,7 +869,7 @@ mod tests {
             for floor in 1..=floors.len() {
                 let name = format!("{}:{}-{floor}", cave.game, cave.short_name());
                 for seed in [0u32, 0x1234_5678, 0xFFFF_FFFF] {
-                    web.generate_json(&name, seed, DETAILS).unwrap();
+                    web.generate_json(&name, seed as u64, DETAILS).unwrap();
                 }
                 for judge in JudgeType::ALL {
                     web.command(&format!("judge\t{name}\t{judge}\t7")).unwrap();

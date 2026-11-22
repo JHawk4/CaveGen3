@@ -19,3 +19,4 @@ pub mod waypoint;
 pub use data::{CaveConfig, GameData, Sublevel, Variant};
 pub use error::{Error, Result};
 pub use layout::{Layout, Placement, SpawnObject};
+pub use rng::Generator;

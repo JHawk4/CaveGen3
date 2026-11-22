@@ -22,10 +22,12 @@ type UnitId = u16;
 /// Door score candidates: (score, scored door, link index, target door), smallest first.
 type ScoreHeap = std::collections::BinaryHeap<std::cmp::Reverse<(i32, u32, u32, u32)>>;
 
-pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
+pub(crate) fn generate(rng: Rng, caveinfo: &CaveInfo) -> Layout<'_> {
+    let seed = rng.state();
+    let generator = rng.generator();
     let mut g = Generator {
         ci: caveinfo,
-        rng: Rng::new(seed),
+        rng,
         seed,
         units: Vec::new(),
         doors: Vec::new(),
@@ -55,6 +57,7 @@ pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
     Layout {
         caveinfo,
         seed,
+        generator,
         units: g.units,
         doors: g.doors,
         spawnpoints: g.spawnpoints,
@@ -69,7 +72,7 @@ pub(crate) fn generate(seed: u32, caveinfo: &CaveInfo) -> Layout<'_> {
 struct Generator<'a> {
     ci: &'a CaveInfo,
     rng: Rng,
-    seed: u32,
+    seed: u64,
     units: Vec<PlacedUnit<'a>>,
     doors: Vec<PlacedDoor<'a>>,
     /// Indices of doors with nothing attached, in ascending order (the game's iteration order).

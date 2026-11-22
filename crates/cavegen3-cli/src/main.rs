@@ -5,7 +5,7 @@ use std::{
     time::Instant,
 };
 
-use cavegen3::rng::Rng;
+use cavegen3::{Generator, rng::Rng};
 use cavegen3_cli::{
     Painter, default_data_dir,
     render::{self, AggOptions, AggResult, OPTION_NAMES, Options, pct},
@@ -26,6 +26,7 @@ use serde_json::Value;
 ///   cavegen3 EC-1 1234ABCD --show landingBox,comedownBox,podAngle --screen 4:3
 ///   cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 ///   cavegen3 colossal+ultra+5onion 0
+///   cavegen3 EC-1 306306F66F0443C4 --rng switch      (Switch: 64-bit seeds)
 ///
 /// Other commands:
 ///   cavegen3 caveinfo FC-3
@@ -54,6 +55,11 @@ struct Cli {
     /// The data folder (default: CAVEGEN3_DATA, else the repository's data folder).
     #[arg(long, global = true)]
     data: Option<PathBuf>,
+
+    /// The game's random number generator: gc (GameCube, Wii, Wii U) or switch (Pikmin 2 HD on
+    /// Switch, 64-bit seeds). Switch works for drawing layouts and judge.
+    #[arg(long, global = true, default_value = "gc")]
+    rng: Generator,
 }
 
 #[derive(Subcommand)]
@@ -119,7 +125,7 @@ struct GenerateArgs {
     #[arg(help = SUBLEVEL_HELP, required_unless_present = "list_options")]
     sublevel: Option<String>,
 
-    /// The seed in hex (up to 8 digits, 0x optional). A random one if left out.
+    /// The seed in hex (up to 8 digits, 16 with --rng switch; 0x optional). A random one if left out.
     seed: Option<String>,
 
     /// How many layouts to draw.
@@ -301,12 +307,42 @@ struct AggArgs {
 }
 
 fn parse_seed(text: &str) -> Result<u32, String> {
+    parse_seed_for(Generator::Gc, text).map(|s| s as u32)
+}
+
+/// A seed in hex: up to 8 digits on GC, 16 on Switch.
+fn parse_seed_for(generator: Generator, text: &str) -> Result<u64, String> {
+    let digits = generator.seed_digits();
+    let bad = || format!("{text:?} isn't a seed: give up to {digits} hex digits");
     let t = text.trim();
     let t = t.strip_prefix("0x").or_else(|| t.strip_prefix("0X")).unwrap_or(t);
-    if t.is_empty() || t.len() > 8 {
-        return Err(format!("{text:?} isn't a seed: give up to 8 hex digits"));
+    if t.is_empty() || t.len() > digits {
+        return Err(bad());
     }
-    u32::from_str_radix(t, 16).map_err(|_| format!("{text:?} isn't a seed: give up to 8 hex digits"))
+    u64::from_str_radix(t, 16).map_err(|_| bad())
+}
+
+/// [`seed_at`] for any generator: on Switch, "c" counts up, "g" steps the Switch RNG and "r"
+/// spreads seeds over all 2^64.
+fn seed_for(generator: Generator, mode: &str, start: u64, i: u64) -> u64 {
+    match (generator, mode) {
+        (Generator::Gc, _) => seed_at(mode, start, i) as u64,
+        (Generator::Switch, "g") => {
+            let mut rng = Rng::with(Generator::Switch, start);
+            rng.advance(i);
+            rng.state()
+        }
+        (Generator::Switch, "r") => mix64(start.wrapping_add(i)),
+        (Generator::Switch, _) => start.wrapping_add(i),
+    }
+}
+
+/// SplitMix64's finalizer: a bijection spreading 0, 1, 2, ... over all 64-bit seeds.
+fn mix64(i: u64) -> u64 {
+    let mut x = i.wrapping_add(0x9E37_79B9_7F4A_7C15);
+    x = (x ^ (x >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+    x = (x ^ (x >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+    x ^ (x >> 31)
 }
 
 fn random_seed() -> u32 {
@@ -321,7 +357,7 @@ fn random_seed() -> u32 {
 fn slice_start(mode: &str, start: u64, offset: u64) -> u64 {
     if mode == "g" {
         let mut rng = Rng::new(start as u32);
-        rng.advance(offset as u32);
+        rng.advance(offset);
         rng.seed() as u64
     } else {
         start + offset
@@ -364,15 +400,19 @@ fn run(cli: Cli) -> Result<(), String> {
         return Ok(());
     }
     let mut painter = Painter::new(&data)?;
+    painter.generator = cli.rng;
+    if cli.rng != Generator::Gc && !matches!(cmd, Cmd::Generate(_) | Cmd::Judge { .. } | Cmd::Caves { .. } | Cmd::Caveinfo { .. }) {
+        return Err(format!("--rng {} works only for drawing layouts and judge so far", cli.rng.name()));
+    }
     match cmd {
         Cmd::Generate(args) => generate(&painter, &args),
         Cmd::Caves { game } => caves(&painter, game.as_deref()),
         Cmd::Caveinfo { sublevel, json } => caveinfo(&painter, &sublevel, json),
         Cmd::Judge { sublevel, judge, seeds } => {
             for s in &seeds {
-                let seed = parse_seed(s)?;
-                let r = painter.query(&["judge", &sublevel, &judge, &seed.to_string()])?;
-                println!("{seed:08X}  {}", r["score"]);
+                let seed = parse_seed_for(cli.rng, s)?;
+                let r = painter.query(&["judge", &sublevel, &judge, &seed.to_string(), cli.rng.name()])?;
+                println!("{seed:0w$X}  {}", r["score"], w = cli.rng.seed_digits());
             }
             Ok(())
         }
@@ -427,15 +467,17 @@ fn run(cli: Cli) -> Result<(), String> {
 fn generate(painter: &Painter, args: &GenerateArgs) -> Result<(), String> {
     let opts = args.look.options()?;
     let sublevel = args.sublevel.as_deref().unwrap_or_default();
+    let g = painter.generator;
     let start = match &args.seed {
-        Some(s) => parse_seed(s)? as u64,
+        Some(s) => parse_seed_for(g, s)?,
+        None if g == Generator::Switch => mix64(random_seed() as u64 ^ (std::process::id() as u64) << 32),
         None => random_seed() as u64,
     };
     let began = Instant::now();
     let results: Vec<Result<PathBuf, String>> = (0..args.count)
         .into_par_iter()
         .map(|i| {
-            let seed = seed_at(&args.seeds, start, i);
+            let seed = seed_for(g, &args.seeds, start, i);
             let (layout, png) = painter.png(sublevel, seed, &opts)?;
             write_png(&args.out, &format!("{}_{}.png", file_name(&layout.sublevel), layout.seed), &png)
         })
@@ -708,7 +750,7 @@ fn search_command(painter: &Painter, args: &SearchArgs) -> Result<(), String> {
     if let Some(dir) = &args.images {
         let opts = args.look.options()?;
         for (seed, _) in &r.best {
-            let (layout, png) = painter.png(&args.sublevel, *seed, &opts)?;
+            let (layout, png) = painter.png(&args.sublevel, *seed as u64, &opts)?;
             let path = write_png(dir, &format!("{}_{}.png", file_name(&layout.sublevel), layout.seed), &png)?;
             eprintln!("{}", path.display());
         }
