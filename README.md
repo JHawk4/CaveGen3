@@ -22,11 +22,33 @@ The game data it needs is included, so there's nothing to extract.
 
 [docs/ADDING_ROMHACKS.md](docs/ADDING_ROMHACKS.md) explains how to add another romhack.
 
+### Switch (Pikmin 2 HD)
+
+The Switch release (2023) runs the same cave generation with a different `rand()`: musl libc's
+64-bit generator instead of the GameCube's 32-bit one, so its seeds are 64 bits.
+
+| | GameCube, Wii, Wii U | Switch |
+|---|---|---|
+| State update | `s * 0x41C64E6D + 0x3039` (mod 2^32) | `s * 6364136223846793005 + 1` (mod 2^64) |
+| `rand()` | `(s >> 16) & 0x7FFF` | `s >> 33` |
+| `randFloat()` | `rand() / 32768` | `rand() / 2^31` (as an f32) |
+| Seeds | 8 hex digits | 16 hex digits |
+
+The generator was worked out from gameplay video (Challenge Mode score rolls and the falling
+letters of sublevel names), not from the Switch program, and no Switch layout has been compared
+with the game yet. The command line takes `--rng switch` for drawing layouts and `judge`; the
+library has `Layout::generate_with(Generator::Switch, seed, caveinfo)`. On Switch, `(f32)rand()`
+can round up to 2^31, so about one `randInt` call in 2^25 would return its limit and read past a
+list; CaveGen3 uses the last element instead. The web page, searches, stats, counts and the
+aggregator are GameCube only for now.
+
 ## Web page
 
 The page at https://jhawk4.github.io/CaveGen3/ runs the generator in the browser (compiled
 to WebAssembly). Pick a sublevel and a seed, and it draws the layout with its treasures, teki
 and gates. Links keep the sublevel and seed: `?sublevel=pikmin2:SCx-6&seed=1234ABCD`.
+A link can also pick the judge, over the one saved from last time: `&judge=judge2` (any name in
+the judge menu, or `judge=none`).
 
 The page is in English and Japanese (日本語). It follows the browser's language; the button in the
 corner switches, and `lang=ja` or `lang=en` in a link picks one. Treasures, teki and caves use
@@ -187,13 +209,14 @@ cavegen3 EC-1 63452B1B --show landingBox,landingBoxOlimar,landingBoxLouie,comedo
 cavegen3 FC-3 0 --show spawnpoints,doorScores,quickGlance --hide water
 cavegen3 251:AT-2 5                          # romhacks take a game prefix
 cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
+cavegen3 EC-1 306306F66F0443C4 --rng switch  # a Switch (Pikmin 2 HD) seed
 ```
 
 | Command | What it does |
 |---|---|
 | `caves [game]` | Lists the caves and how to name their sublevels. |
 | `caveinfo FC-3` | The floor's limits, teki (min, weight, group, what they carry), treasures (value, carry counts), gates, alcove teki and map units. `--json` for the raw data. |
-| `judge BK-4 pod 1234ABCD [more seeds]` | Scores seeds with one of CaveGen's judges, or `judge2`. |
+| `judge BK-4 pod 1234ABCD [more seeds]` | Scores seeds with one of CaveGen's judges, or `judge2` (`--rng switch` for Switch seeds). |
 | `judge SH-6 judge2 2B1980E4` | judge2 also prints the treasures likely skipped: `2B1980E4  70.84  likely skipped: bey_goma 100%`. |
 | `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
 | `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
@@ -209,6 +232,8 @@ cavegen3 colossal+ultra+5onion 0             # Colossal Caverns options
   cell); `--screen 4:3` sets the screen shape for the views and outlines. `--landing` (and its
   old name `--comedown`) is `--view pod`; `comedownBox` now means the comedown outline, and the
   pod's landing outline is `landingBox`.
+- `--rng switch` uses the Switch release's generator (64-bit seeds; see
+  [Switch](#switch-pikmin-2-hd)) for drawing and `judge`.
 - It reads the repository's `data` folder; set `CAVEGEN3_DATA` or `--data` to use another.
 
 ### judge2
@@ -300,6 +325,9 @@ What the tests check:
 - `crates/cavegen3/tests/jhawk_judge_vs_cavegen.rs`: 72,500 judge scores match CaveGen.
 - `crates/cavegen3/tests/judge2.rs`: judge2 scores and skip chances for fixed seeds, from the
   program it was fitted with (16,308 layouts of the 54 Pay off Debt sublevels matched exactly).
+- `crates/cavegen3/tests/switch.rs`: every vanilla sublevel generates 200 Switch layouts without
+  error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, and the f32
+  rounding of `randFloat` and `randInt`.
 - `crates/caveripper-ref/tests`: the reference passes CaveGen's expect tests and 72,500
   judge scores.
 

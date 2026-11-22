@@ -10,6 +10,7 @@ use crate::{
     caveinfo::{CapInfo, CaveInfo, CaveUnit, DoorUnit, GateInfo, ItemInfo, SpawnPoint, TekiInfo},
     generate,
     point::Point,
+    rng::{Generator, Rng},
     waypoint::WaypointGraph,
 };
 
@@ -118,7 +119,10 @@ impl PlacedSpawnPoint<'_> {
 #[derive(Debug, Clone)]
 pub struct Layout<'a> {
     pub caveinfo: &'a CaveInfo,
-    pub seed: u32,
+    /// The RNG state generation started from (64 bits on Switch).
+    pub seed: u64,
+    /// Which `rand()` made it.
+    pub generator: Generator,
     pub units: Vec<PlacedUnit<'a>>,
     pub doors: Vec<PlacedDoor<'a>>,
     pub spawnpoints: Vec<PlacedSpawnPoint<'a>>,
@@ -147,9 +151,14 @@ impl<'a> Layout<'a> {
         self.waypoints.get_or_init(|| WaypointGraph::build(self))
     }
 
-    /// Generates the layout for `seed`.
+    /// Generates the layout for `seed` (GameCube, Wii and Wii U).
     pub fn generate(seed: u32, caveinfo: &'a CaveInfo) -> Layout<'a> {
-        generate::generate(seed, caveinfo)
+        generate::generate(Rng::new(seed), caveinfo)
+    }
+
+    /// Generates the layout for `seed` with `generator`'s `rand()` (64-bit seeds on Switch).
+    pub fn generate_with(generator: Generator, seed: u64, caveinfo: &'a CaveInfo) -> Layout<'a> {
+        generate::generate(Rng::with(generator, seed), caveinfo)
     }
 
     /// How many of something the layout has, for CaveGen's -count and stats: a teki or treasure

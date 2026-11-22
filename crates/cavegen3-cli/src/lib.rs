@@ -9,8 +9,8 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use cavegen3::GameData;
-use cavegen3_web::{DETAILS, Web};
+use cavegen3::{GameData, Generator};
+use cavegen3_web::{DETAILS, SWITCH, Web};
 use render::{Assets, Layout, Options};
 use serde_json::Value;
 
@@ -26,6 +26,8 @@ pub fn default_data_dir() -> PathBuf {
 pub struct Painter {
     pub web: Web,
     pub assets: Assets,
+    /// Which `rand()` layouts are generated with (GC unless set).
+    pub generator: Generator,
     names: Names,
 }
 
@@ -35,18 +37,24 @@ impl Painter {
         Ok(Painter {
             web: Web::from_data(data),
             assets: Assets::new(data_dir)?,
+            generator: Generator::Gc,
             names: Names::load(data_dir),
         })
     }
 
     /// One layout, as the web page gets it.
-    pub fn layout(&self, sublevel: &str, seed: u32, details: bool) -> Result<Layout, String> {
-        let json = self.web.generate_json(sublevel, seed, if details { DETAILS } else { 0 })?;
+    /// `seed` has 64 bits with the Switch generator, 32 otherwise.
+    pub fn layout(&self, sublevel: &str, seed: u64, details: bool) -> Result<Layout, String> {
+        let mut flags = if details { DETAILS } else { 0 };
+        if self.generator == Generator::Switch {
+            flags |= SWITCH;
+        }
+        let json = self.web.generate_json(sublevel, seed, flags)?;
         serde_json::from_str(&json).map_err(|e| format!("bad layout JSON: {e}"))
     }
 
     /// One layout's image, encoded as PNG.
-    pub fn png(&self, sublevel: &str, seed: u32, opts: &Options) -> Result<(Layout, Vec<u8>), String> {
+    pub fn png(&self, sublevel: &str, seed: u64, opts: &Options) -> Result<(Layout, Vec<u8>), String> {
         let layout = self.layout(sublevel, seed, opts.needs_details())?;
         let pixmap = render::render(&layout, opts, &self.assets)?;
         let png = pixmap.encode_png().map_err(|e| e.to_string())?;
