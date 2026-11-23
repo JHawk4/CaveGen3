@@ -54,6 +54,8 @@ command line's search, stats and count, are GameCube only for now.
 The page at https://jhawk4.github.io/CaveGen3/ runs the generator in the browser (compiled
 to WebAssembly). Pick a sublevel and a seed, and it draws the layout with its treasures, teki
 and gates. Links keep the sublevel and seed: `?sublevel=pikmin2:SCx-6&seed=1234ABCD`.
+A link can also pick the judge, over the one saved from last time: `&judge=judge2` (any name in
+the judge menu, or `judge=none`).
 
 The page is in English and Japanese (日本語). It follows the browser's language; the button in the
 corner switches, and `lang=ja` or `lang=en` in a link picks one. Treasures, teki and caves use
@@ -90,7 +92,8 @@ their in-game names in either language. Hover over or tap an icon on the map to 
   minus the treasure's bounding radius. Treasures carried by teki use the teki's position with no
   extra radius, since teki sizes aren't in the data.
 - **Judge**: score the layout with any of CaveGen's judges (`score`, `pod`, `at`, `attk`,
-  `cmat`, `key`, `colossal`, `mapunitcount`).
+  `cmat`, `key`, `colossal`, `mapunitcount`), or with `judge2`, a refit Pay off Debt judge
+  (see [judge2](#judge2)) that also lists the treasures a runner likely skips.
 - **Seed search**: test thousands of seeds (counting up from the seed, random, or game-RNG
   steps) and list the best by the judge, with each one's rank among the seeds tested, or the
   seeds matching a [Caveripper-style query](https://github.com/mayabyte/caveripper/blob/main/QUERY.md)
@@ -146,6 +149,13 @@ within a pixel or two of where this camera puts them. The map grows to fit the o
 **Comedown view only** shows just that part of the floor, turned as it is on screen. Only one
 of the four views can be on at a time.
 
+**Comedown-visible only** (under View, next to Comedown view only) draws only the objects the game shows while the pod comes down:
+treasures (a buried one as its mound of dirt), gates, the hole or geyser, Onions, the pod,
+plants, and fire, electric and gas hazards. The cave intro cutscene draws no other teki, so
+enemies, eggs and Candypop Buds, and the treasures they carry, are left off. In a link it's `comedownVisible=1`. The evidence (the
+cutscene's draw flags in the game files, the decomp and run videos) is in
+[docs/COMEDOWN_VISIBILITY.md](docs/COMEDOWN_VISIBILITY.md).
+
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.
 
@@ -157,7 +167,9 @@ spawned at each spot. Seeds can be grouped by the whole layout (CaveGen's defaul
 only, or the first room placed, as in CaveGen, or by **landing view**: what the camera shows when
 you land: the map units in view (the default). Find the group that matches your landing to see where
 the treasures probably are; a floor usually has a few dozen of these groups. Gray cells show how often other map
-units were there.
+units were there. **Comedown-visible only** leaves off what the game doesn't draw while the pod
+comes down (teki other than plants and hazards), as on the main page, and is kept in the link (`comedownVisible=1`) and
+passed on to the example seed links.
 
 Rotations don't split groups: the same arrangement turned any way is one group (CaveGen only
 lined up the first room's rotation). Landing groups are turned so the camera faces up. Map
@@ -220,11 +232,12 @@ cavegen3 EC-1 306306F66F0443C4 --rng switch  # a Switch (Pikmin 2 HD) seed
 |---|---|
 | `caves [game]` | Lists the caves and how to name their sublevels. |
 | `caveinfo FC-3` | The floor's limits, teki (min, weight, group, what they carry), treasures (value, carry counts), gates, alcove teki and map units. `--json` for the raw data. |
-| `judge BK-4 pod 1234ABCD [more seeds]` | Scores seeds with one of CaveGen's judges (`--rng switch` for Switch seeds). |
+| `judge BK-4 pod 1234ABCD [more seeds]` | Scores seeds with one of CaveGen's judges, or `judge2` (`--rng switch` for Switch seeds). |
+| `judge SH-6 judge2 2B1980E4` | judge2 also prints the treasures likely skipped: `2B1980E4  70.84  likely skipped: bey_goma 100%`. |
 | `search BK-4 --judge pod -n 100000 --top 10` | Tests seeds in parallel and lists the best, with each one's rank. `--query` keeps matching seeds and reports the share; `--count` adds a distribution; `--images DIR` draws the listed seeds; `--json`. |
 | `stats SR-5 "BlackPom = 1"` | The share of seeds matching a query (Caveripper's `stats`). |
 | `count SCx-7 minihoudai` | How many of something each seed has, as a distribution (CaveGen's `-count`). |
-| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group landing`, `layout`, `rooms` or `first`; `comedown` is the old name for `landing`), with what spawned at each spot and how often. |
+| `aggregate HoB-2 -n 20000` | CaveGen's aggregator: groups alike seeds and draws a map per group (`--group landing`, `layout`, `rooms` or `first`; `comedown` is the old name for `landing`), with what spawned at each spot and how often. `--comedown-visible` draws only what shows as the pod comes down (no teki but plants and hazards). |
 | `options` | Lists the map options for `--show` and `--hide`. |
 
 - Seeds are hex; leave the seed out for a random one. `--seeds c` counts up by one, `g` steps
@@ -238,6 +251,34 @@ cavegen3 EC-1 306306F66F0443C4 --rng switch  # a Switch (Pikmin 2 HD) seed
 - `--rng switch` uses the Switch release's generator (64-bit seeds; see
   [Switch](#switch-pikmin-2-hd)) for drawing and `judge`.
 - It reads the repository's `data` folder; set `CAVEGEN3_DATA` or `--data` to use another.
+
+### judge2
+
+`judge2` (also `pod2`) is a Pay off Debt judge refit against timed Pay off Debt runs; it is not
+part of CaveGen. CaveGen's `pod` judge assumes every counted treasure is collected. judge2 takes
+the same parts (built by the `pod` code) for every choice of which counted treasures the runner
+takes: all subsets when there are up to 4, otherwise taking all and skipping each one alone.
+Each choice scores
+
+```
+1.22 walking + 0.78 carry + 0.60 hazard + 0.58 gate + 0.54 Glutton's Kitchen adjustments
+  + 10 s per treasure taken + missing pokos / 2  [+ 100 s if SH-6's lens is taken and its carry route crosses water]
+```
+
+with no credit for bug pokos or optional treasures (runners take neither in practice). The
+score is the choices' scores averaged with weights exp(−score / 5 s), so a treasure that isn't
+worth its trip counts as likely skipped; the weights are also the chances of each choice. It
+works wherever `pod` does and uses `pod`'s sublevel setup.
+
+```
+cavegen3 judge SH-6 judge2 2B1980E4 29698334
+cavegen3 search SH-6 --judge judge2 -n 100000 --top 10
+```
+
+In the library, `JhawkJudge::new(JudgeType::Judge2, caveinfo)` scores with `judge`, and
+`judge2(&layout)` returns the score with every choice and `skip_chances()`. The web page's judge
+list has it too, and shows the treasures likely skipped (10% or more) under the score. It is
+slower than `pod` by about the number of choices (one `pod`-like pass each, up to 16).
 
 ## In-game names
 
@@ -298,6 +339,8 @@ What the tests check:
 - `crates/cavegen3/tests/waypoints_vs_reference.rs`: waypoint graphs and carry paths match.
 - `crates/cavegen3/tests/query_vs_reference.rs`: queries give the same answers on every seed tested.
 - `crates/cavegen3/tests/jhawk_judge_vs_cavegen.rs`: 72,500 judge scores match CaveGen.
+- `crates/cavegen3/tests/judge2.rs`: judge2 scores and skip chances for fixed seeds, from the
+  program it was fitted with (16,308 layouts of the 54 Pay off Debt sublevels matched exactly).
 - `crates/cavegen3/tests/switch.rs`: every vanilla sublevel generates 200 Switch layouts without
   error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, and the f32
   rounding of `randFloat` and `randInt`.

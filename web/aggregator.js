@@ -69,6 +69,7 @@ function parseObjectId(id, game) {
 }
 
 function objectShownAgg(o) {
+  if ($("show-comedown").checked && !comedownVisible(o)) return false;
   if (o.kind === "treasure") return $("show-treasures").checked;
   if (o.kind === "teki") return $("show-teki").checked || (o.carry && $("show-treasures").checked);
   if (o.kind === "gate") return $("show-gates").checked;
@@ -294,6 +295,7 @@ function groupCard(group, index) {
   for (const seed of group.seeds) {
     const p = new URLSearchParams({ sublevel: agg.sublevelParam, seed: formatSeed(seed) });
     if (agg.grouping === "landing") p.set("view", "pod");
+    if ($("show-comedown").checked) p.set("comedownVisible", "1");
     examples.append(" ", el("a", { href: `./?${p}`, class: "seed-link" }, formatSeed(seed)));
   }
   const card = { group, content: document.createElement("canvas"), hits: [] };
@@ -471,7 +473,7 @@ function saveAggSettings() {
   try {
     const s = {};
     for (const id of ["agg-group", "agg-count", "agg-mode", "agg-min", "agg-max"]) s[id] = $(id).value;
-    for (const id of ["show-treasures", "show-teki", "show-gates", "show-exits"]) s[id] = $(id).checked;
+    for (const id of ["show-treasures", "show-teki", "show-gates", "show-exits", "show-comedown"]) s[id] = $(id).checked;
     localStorage.setItem(AGG_SETTINGS_KEY, JSON.stringify(s));
     const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
     shared.screen = $("screen-shape").value;
@@ -496,6 +498,19 @@ function loadAggSettings() {
     if (shared.screen || shared.comedownScreen) $("screen-shape").value = shared.screen || shared.comedownScreen;
   } catch {
     // Nothing saved, or storage is unavailable.
+  }
+  // The comedown-visible filter is kept in the link, so a shared link shows the same objects.
+  if (params.has("comedownVisible")) $("show-comedown").checked = params.get("comedownVisible") === "1";
+  setUrlFlag("comedownVisible", $("show-comedown").checked);
+}
+
+/** The example seed links open the main page with the same comedown-visible filter. */
+function updateExampleLinks() {
+  for (const a of document.querySelectorAll(".agg-examples a")) {
+    const url = new URL(a.href);
+    if ($("show-comedown").checked) url.searchParams.set("comedownVisible", "1");
+    else url.searchParams.delete("comedownVisible");
+    a.href = `./${url.search}`;
   }
 }
 
@@ -540,9 +555,13 @@ async function initAggregator() {
       updateFieldVisibility();
     });
   }
-  for (const id of ["show-treasures", "show-teki", "show-gates", "show-exits", "agg-min"]) {
+  for (const id of ["show-treasures", "show-teki", "show-gates", "show-exits", "show-comedown", "agg-min"]) {
     $(id).addEventListener("change", () => {
       saveAggSettings();
+      if (id === "show-comedown") {
+        setUrlFlag("comedownVisible", $(id).checked);
+        updateExampleLinks();
+      }
       redrawCards();
     });
   }

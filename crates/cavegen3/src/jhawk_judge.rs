@@ -7,6 +7,8 @@
 //! - `score`: sum of the game's own unit/door scores for every treasure, plus a
 //!   large penalty for each missing treasure.
 //! - `pod`: Pikmin 2 "Pay off Debt" speedruns (seconds, adjusted for pokos).
+//! - `judge2`: a refit of `pod` against timed Pay off Debt runs, that lets the runner skip
+//!   treasures that aren't worth taking (see `pod2.rs`). Not part of CaveGen.
 //! - `at`: "All Treasures" speedruns (seconds, with penalties for missing
 //!   purple candypops and treasures).
 //! - `attk`: Challenge Mode score attack (estimated final score, negated so
@@ -21,6 +23,7 @@
 //! behavior is kept even though it looks unintended.
 
 mod graph;
+mod pod2;
 
 use std::{
     collections::{HashMap, HashSet},
@@ -30,6 +33,7 @@ use std::{
 };
 
 use graph::{Graph, INF, V3, dist};
+pub use pod2::{Judge2, Judge2Choice};
 
 use crate::{
     caveinfo::{CaveInfo, RoomType},
@@ -41,6 +45,8 @@ use crate::{
 pub enum JudgeType {
     Score,
     Pod,
+    /// The refit Pay off Debt judge (`pod2.rs`).
+    Judge2,
     At,
     Attk,
     Cmat,
@@ -50,9 +56,10 @@ pub enum JudgeType {
 }
 
 impl JudgeType {
-    pub const ALL: [JudgeType; 8] = [
+    pub const ALL: [JudgeType; 9] = [
         JudgeType::Score,
         JudgeType::Pod,
+        JudgeType::Judge2,
         JudgeType::At,
         JudgeType::Attk,
         JudgeType::Cmat,
@@ -61,10 +68,16 @@ impl JudgeType {
         JudgeType::MapUnitCount,
     ];
 
+    /// Pay off Debt judges share the sublevel setup (which treasures count, pikmin values).
+    fn is_pod(self) -> bool {
+        matches!(self, JudgeType::Pod | JudgeType::Judge2)
+    }
+
     pub fn name(&self) -> &'static str {
         match self {
             JudgeType::Score => "score",
             JudgeType::Pod => "pod",
+            JudgeType::Judge2 => "judge2",
             JudgeType::At => "at",
             JudgeType::Attk => "attk",
             JudgeType::Cmat => "cmat",
@@ -87,6 +100,7 @@ impl FromStr for JudgeType {
         match s.to_ascii_lowercase().as_str() {
             "score" => Ok(JudgeType::Score),
             "pod" => Ok(JudgeType::Pod),
+            "judge2" | "pod2" => Ok(JudgeType::Judge2),
             "at" => Ok(JudgeType::At),
             "attk" | "sa" | "scoreattack" => Ok(JudgeType::Attk),
             "cmat" => Ok(JudgeType::Cmat),
@@ -293,7 +307,7 @@ impl JhawkJudge {
             expected_max_carry += carry_info(&name).max_carry;
             if !n.ignore_treasures_pod.contains(name.as_str()) && !n.optional_treasures_pod.contains(name.as_str()) {
                 expected_num_pokos_pod += pokos(&name);
-            } else if judge_type == JudgeType::Pod {
+            } else if judge_type.is_pod() {
                 expected_max_carry -= carry_info(&name).max_carry;
             }
         };
@@ -438,7 +452,7 @@ impl JhawkJudge {
             piki_strength_value = 1.0;
             piki_dig_value = 16.0;
         }
-        if judge_type == JudgeType::Pod {
+        if judge_type.is_pod() {
             let whites = match cave_short_name.as_str() {
                 "EC" | "HoB" => 0,
                 "WFG" => {
@@ -861,6 +875,9 @@ impl Ctx<'_> {
 impl JhawkJudge {
     /// Scores a layout. Lower is better.
     pub fn judge(&self, layout: &Layout) -> f64 {
+        if self.judge_type == JudgeType::Judge2 {
+            return self.judge2(layout).score;
+        }
         let placed = Placed::from_layout(layout);
         let start_pos = placed.sps[placed.start].pos;
         let graph = Graph::build(layout, start_pos);
@@ -872,6 +889,7 @@ impl JhawkJudge {
         match self.judge_type {
             JudgeType::Score => self.judge_score(&mut ctx),
             JudgeType::Pod => self.judge_pod(&mut ctx),
+            JudgeType::Judge2 => unreachable!(),
             JudgeType::At => self.judge_at(&mut ctx),
             JudgeType::Attk => self.judge_attk(&mut ctx),
             JudgeType::Cmat => self.judge_cmat(&mut ctx),
@@ -879,6 +897,12 @@ impl JhawkJudge {
             JudgeType::Colossal => self.judge_colossal(&mut ctx),
             JudgeType::MapUnitCount => layout.units.len() as f64,
         }
+    }
+
+    /// judge2's score with the runner's likely take/skip choices (any judge type can ask; the
+    /// sublevel setup is Pay off Debt's only when the judge type is `pod` or `judge2`).
+    pub fn judge2(&self, layout: &Layout) -> Judge2 {
+        pod2::judge(self, layout)
     }
 
     fn judge_score(&self, c: &mut Ctx) -> f64 {

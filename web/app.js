@@ -104,6 +104,7 @@ const STRINGS = {
       gates: "Gates",
       gateHealth: "Gate health",
       exits: "Pod and exits",
+      comedownVisible: "Comedown-visible only",
       spawnpoints: "Spawn points",
       spawnOrder: "Spawn order",
       pathDists: "Carry distances",
@@ -131,6 +132,7 @@ const STRINGS = {
     judgeNames: {
       score: "score: game's own treasure scores",
       pod: "pod: Pay off Debt",
+      judge2: "judge2: Pay off Debt, refit",
       at: "at: All Treasures",
       attk: "attk: Challenge Mode score attack",
       cmat: "cmat: Challenge Mode all treasures",
@@ -141,6 +143,7 @@ const STRINGS = {
     judgeTips: {
       score: "The game's own unit and treasure scores, as CaveGen judges them",
       pod: "Estimated seconds to collect this sublevel's treasures in a Pay off Debt run",
+      judge2: "Pay off Debt, refit against timed runs: expected net seconds, letting the runner skip treasures that aren't worth the trip",
       at: "Estimated seconds to collect every treasure in an All Treasures run",
       attk: "Challenge Mode score attack estimate",
       cmat: "Challenge Mode all-treasures estimate",
@@ -149,6 +152,7 @@ const STRINGS = {
       mapunitcount: "The number of map units; fewer usually means a faster floor",
     },
     judgeLine: (type, score) => `Judge (${type}): ${score}`,
+    likelySkipped: (list) => `Likely skipped: ${list}`,
     search: "Seed search",
     searchCount: "Seeds to test",
     searchMode: "Seeds",
@@ -201,6 +205,10 @@ const STRINGS = {
         gates: "Gates",
         gateHealth: "Each gate's HP, written on the gate",
         exits: "The pod, the hole or geyser, and Onions",
+        comedownVisible:
+          "Only what the game draws as the pod comes down: treasures (a buried one shows as its mound of dirt), gates, the hole or geyser, the pod, " +
+          "plants, and fire, electric and gas hazards. The cave intro doesn't draw other teki, so no enemies, eggs or Candypop Buds, nor the treasures they carry. " +
+          "Only the floor near the pod is lit",
         spawnpoints: "Every spawn point, marked by what can spawn there as in Caveripper: pink rings for easy teki, red dots for hard teki, a duck for treasures, a hole for the exit, a leaf for plants, a star for special teki, the ship for the pod. Faded ones are empty",
         angles: "Arrows for the way each object and spawn point faces",
         spawnOrder: "The order things were placed in: map units (outlined), then the pod, exits, teki, treasures, alcove teki and gates (CaveGen's -drawSpawnOrder)",
@@ -373,6 +381,7 @@ const STRINGS = {
       gates: "ゲート",
       gateHealth: "ゲートの体力",
       exits: "ポッドと出口",
+      comedownVisible: "降下中に見えるものだけ",
       spawnpoints: "出現ポイント",
       spawnOrder: "生成順",
       pathDists: "運搬距離",
@@ -400,6 +409,7 @@ const STRINGS = {
     judgeNames: {
       score: "score：ゲーム内のお宝スコア",
       pod: "pod：借金返済",
+      judge2: "judge2：借金返済（再調整版）",
       at: "at：お宝全回収",
       attk: "attk：チャレンジモードのスコアアタック",
       cmat: "cmat：チャレンジモードのお宝全回収",
@@ -410,6 +420,7 @@ const STRINGS = {
     judgeTips: {
       score: "ゲーム内のユニットとお宝のスコア（CaveGenの評価）",
       pod: "借金返済で、この階のお宝を集めるまでの見積もり秒数",
+      judge2: "実際の借金返済の走りに合わせて調整した見積もり秒数。割に合わないお宝は取らずに進む場合も考えます",
       at: "お宝全回収で、すべてのお宝を集めるまでの見積もり秒数",
       attk: "チャレンジモードのスコアアタックの見積もり",
       cmat: "チャレンジモードのお宝全回収の見積もり",
@@ -418,6 +429,7 @@ const STRINGS = {
       mapunitcount: "マップユニットの数（少ないほど速いことが多い）",
     },
     judgeLine: (type, score) => `評価（${type}）：${score}`,
+    likelySkipped: (list) => `取らない可能性が高いお宝：${list}`,
     search: "シード検索",
     searchCount: "試すシードの数",
     searchMode: "シード",
@@ -471,6 +483,9 @@ const STRINGS = {
         gates: "ゲート",
         gateHealth: "各ゲートの体力をゲートの上に表示します",
         exits: "ポッド、穴か間欠泉、オニヨン",
+        comedownVisible:
+          "ポッドが降りてくる間にゲームが描くものだけを表示します：お宝（埋まったお宝は土の盛り上がりとして）、ゲート、穴か間欠泉、ポッド、植物、火・電気・毒ガスの噴出口。" +
+          "洞窟に入るときのムービーではそれ以外の原生生物が描かれないため、敵・タマゴ・ポンガシグサと、それらが持つお宝は表示しません。明るいのはポッドの近くの床だけです",
         spawnpoints: "すべての出現ポイント（Caveripperと同じ記号：ピンクの輪は弱い原生生物、赤い点は強い原生生物、アヒルはお宝、穴は出口、葉は植物、星は特殊、船はポッド。薄いものは空）",
         angles: "各オブジェクトと出現ポイントの向きの矢印",
         spawnOrder: "置かれた順番：マップユニット（枠）、ポッド、出口、原生生物、お宝、行き止まりの原生生物、ゲート（CaveGenの -drawSpawnOrder）",
@@ -846,6 +861,14 @@ function landingCorners(ship, camera) {
   return placeCorners(qx, qz, heading, shapeCorners(landingShape()));
 }
 
+/** Sets or removes a `name=1` flag in the page's URL, without reloading. */
+function setUrlFlag(name, on) {
+  const p = new URLSearchParams(location.search);
+  if (on) p.set(name, "1");
+  else p.delete(name);
+  history.replaceState(null, "", `?${p.toString()}`);
+}
+
 /** The view drawn alone ("pod", "olimar", "louie" or "comedown"), or null. */
 function chosenView() {
   return VIEWS.find((v) => $(`view-${v}`)?.checked) ?? null;
@@ -1192,6 +1215,7 @@ const MAP_OPTIONS = [
   { key: "gates", on: true, section: "objects" },
   { key: "gateHealth", on: true, section: "objects" },
   { key: "exits", on: true, section: "objects" },
+  { key: "comedownVisible", section: "view" },
   { key: "landingBox", section: "view" },
   { key: "landingBoxOlimar", section: "view" },
   { key: "landingBoxLouie", section: "view" },
@@ -1269,7 +1293,27 @@ function tintedIcon(img, color) {
   return tintCache.get(key);
 }
 
+// Teki the game draws even in cutscenes (their managers are EnemyMgrBaseAlwaysMovieActor):
+// the plants and the fire, electric and gas hazards. Lowercase internal names.
+const COMEDOWN_VISIBLE_TEKI = new Set([
+  "chiyogami", "clover", "diodered", "diodegreen", "hikarikinoko", "kareooinu_l", "kareooinu_s", "margaret", "nekojarashi",
+  "ooinu_l", "ooinu_s", "tanpopo", "tukushi", "wakame_l", "wakame_s", "watage", "zenmai", "hiba", "elechiba", "gashiba",
+]);
+
+/**
+ * Whether the game draws an object while the pod comes down. The cave intro cutscene
+ * (s0B_cv_coursein) has draw flags 5 in /user/Mukki/movie/demos.txt: Pikmin and pellets, not
+ * enemies, so only the teki that always count as cutscene actors show (plants and hazards). Eggs,
+ * Candypop Buds and every enemy don't, nor a treasure a teki carries, which is only a pellet once
+ * it dies. Treasures, gates, exits, Onions and the pod show. The CLI's render::comedown_visible
+ * is the same.
+ */
+function comedownVisible(o) {
+  return o.kind !== "teki" || COMEDOWN_VISIBLE_TEKI.has(String(o.name).toLowerCase());
+}
+
 function objectShown(o, opts) {
+  if (opts.comedownVisible && !comedownVisible(o)) return false;
   switch (o.kind) {
     case "treasure":
       return opts.treasures && !(opts.hideBuried && o.buried);
@@ -1903,6 +1947,12 @@ async function renderSummary(layout) {
   info.append(el("li", {}, T.unitsLine(layout.units.length, layout.width, layout.height)));
   info.append(el("li", {}, exit ? (exit.kind === "hole" ? T.exitHole(exit.plugged) : T.exitGeyser) : T.noExit));
   if (current && current.judge) info.append(el("li", { class: "judge-line" }, T.judgeLine(current.judge.type, current.judge.score)));
+  // judge2: the treasures a runner likely leaves behind, with the chance
+  const skips = current && current.judge ? current.judge.skips.filter(([, p]) => p >= 0.1) : [];
+  if (skips.length) {
+    const list = skips.map(([name, p]) => `${displayName("treasures", name)} (${Math.round(p * 100)}%)`).join(", ");
+    info.append(el("li", { class: "judge-line" }, T.likelySkipped(list)));
+  }
   if (current) info.append(el("li", { class: "muted gen-time" }, T.generatedIn(current.ms.toFixed(1))));
   parts.push(info);
 
@@ -2138,7 +2188,8 @@ async function generateAndShow({ newCave = false } = {}) {
     const ms = performance.now() - start;
     if (newCave || $("floor").options.length !== layout.floors) fillFloors(layout.floors, floor);
     const judgeType = $("judge").value;
-    const judge = judgeType ? { type: judgeType, score: (await command("judge", sublevel, judgeType, seed, ...rngArgs(seed))).score } : null;
+    const judged = judgeType ? await command("judge", sublevel, judgeType, seed, ...rngArgs(seed)) : null;
+    const judge = judged ? { type: judgeType, score: judged.score, skips: judged.skips || [] } : null;
     const refit = !current || current.sublevel !== sublevel;
     current = { layout, cave, floor, ms, sublevel, judge };
     $("result").hidden = false;
@@ -2196,7 +2247,7 @@ function selectFromParam(text) {
 
 // ---- Advanced options ----
 
-const JUDGES = ["score", "pod", "at", "attk", "cmat", "key", "colossal", "mapunitcount"];
+const JUDGES = ["score", "pod", "judge2", "at", "attk", "cmat", "key", "colossal", "mapunitcount"];
 const SETTINGS_KEY = "cavegen3-options";
 
 function buildAdvanced() {
@@ -2760,6 +2811,12 @@ async function init() {
   // "landing=1" and "comedown=1" are old links to the pod view.
   const viewParam = VIEWS.includes(params.get("view")) ? params.get("view") : params.get("landing") === "1" || params.get("comedown") === "1" ? "pod" : null;
   if (viewParam) for (const v of VIEWS) $(`view-${v}`).checked = v === viewParam;
+  // The comedown-visible filter is kept in the link, so a shared link shows the same objects.
+  if (params.has("comedownVisible")) $("opt-comedownVisible").checked = params.get("comedownVisible") === "1";
+  setUrlFlag("comedownVisible", $("opt-comedownVisible").checked);
+  // "judge=judge2" picks the judge for this link (over the saved one); "judge=none" turns it off.
+  const judgeParam = params.get("judge");
+  if (judgeParam === "none" || JUDGES.includes(judgeParam)) $("judge").value = judgeParam === "none" ? "" : judgeParam;
   $("seed").value = formatSeed(seed ?? randomSeed());
 
   $("game").addEventListener("change", () => {
@@ -2837,6 +2894,7 @@ async function init() {
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {
       saveSettings();
+      if (key === "comedownVisible") setUrlFlag(key, $(`opt-${key}`).checked);
       if (!current) return;
       // Turning on an option that needs the extra layout data generates the layout again.
       if (details && !current.layout.spawnpoints && $(`opt-${key}`).checked) run();
@@ -2846,6 +2904,12 @@ async function init() {
   }
   $("judge").addEventListener("change", () => {
     saveSettings();
+    // A link that named the judge follows the menu, so reloading or sharing it keeps the choice.
+    const p = new URLSearchParams(location.search);
+    if (p.has("judge")) {
+      p.set("judge", $("judge").value || "none");
+      history.replaceState(null, "", `?${p.toString()}`);
+    }
     run();
   });
   $("advanced").addEventListener("toggle", saveSettings);

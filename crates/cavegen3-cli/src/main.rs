@@ -31,6 +31,7 @@ use serde_json::Value;
 /// Other commands:
 ///   cavegen3 caveinfo FC-3
 ///   cavegen3 judge BK-4 pod 1234ABCD
+///   cavegen3 judge SH-6 judge2 2B1980E4
 ///   cavegen3 search BK-4 --judge pod -n 100000 --top 10
 ///   cavegen3 search SCx-7 --query "minihoudai < 2" -n 50000
 ///   cavegen3 stats SR-5 "BlackPom = 1" -n 20000
@@ -118,7 +119,8 @@ enum Cmd {
 
 const SUBLEVEL_HELP: &str = "The sublevel, like SCx-6, BK-1 or \"Subterranean Complex 6\". Romhacks take a game \
     prefix (251:AT-2, 216:CC-1); Colossal Caverns is \"colossal\", with options +ultra, +extra and +5onion.";
-const JUDGE_HELP: &str = "A judge: score, pod, at, attk, cmat, key, colossal or mapunitcount.";
+const JUDGE_HELP: &str = "A judge: score, pod, judge2, at, attk, cmat, key, colossal or mapunitcount. judge2 is a \
+    refit Pay off Debt judge that also lists the treasures a runner likely skips.";
 
 #[derive(Args)]
 struct GenerateArgs {
@@ -297,6 +299,11 @@ struct AggArgs {
     #[arg(long, value_delimiter = ',')]
     hide: Vec<String>,
 
+    /// Draw only what the game shows while the pod comes down: treasures, gates, exits, the pod,
+    /// plants and fire/electric/gas hazards, but no other teki.
+    #[arg(long)]
+    comedown_visible: bool,
+
     /// Image size: 1 draws a map grid cell as 40 pixels.
     #[arg(long, default_value_t = 1.0)]
     scale: f32,
@@ -390,7 +397,19 @@ fn run(cli: Cli) -> Result<(), String> {
             for s in &seeds {
                 let seed = parse_seed_for(cli.rng, s)?;
                 let r = painter.query(&["judge", &sublevel, &judge, &seed.to_string(), cli.rng.name()])?;
-                println!("{seed:0w$X}  {}", r["score"], w = cli.rng.seed_digits());
+                // judge2: the treasures likely skipped, with their chance
+                let skips: Vec<String> = r["skips"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .map(|s| format!("{} {:.0}%", s[0].as_str().unwrap_or("?"), s[1].as_f64().unwrap_or(0.0) * 100.0))
+                    .collect();
+                let w = cli.rng.seed_digits();
+                if skips.is_empty() {
+                    println!("{seed:0w$X}  {}", r["score"]);
+                } else {
+                    println!("{seed:0w$X}  {}  likely skipped: {}", r["score"], skips.join(", "));
+                }
             }
             Ok(())
         }
@@ -779,6 +798,7 @@ fn aggregate(painter: &mut Painter, args: &AggArgs) -> Result<(), String> {
         teki: !hidden("teki"),
         gates: !hidden("gates"),
         exits: !hidden("exits"),
+        comedown_visible: args.comedown_visible,
         min_share: args.min_pct / 100.0,
         scale: args.scale,
         game,

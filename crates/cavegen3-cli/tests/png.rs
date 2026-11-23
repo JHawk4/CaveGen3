@@ -2,7 +2,7 @@
 
 use cavegen3_cli::{
     Painter, default_data_dir,
-    render::{CELL, LandingCamera, OPTION_NAMES, Options, View, comedown_corners},
+    render::{AggObject, AggOptions, CELL, LandingCamera, OPTION_NAMES, Options, View, comedown_corners, comedown_visible},
 };
 use tiny_skia::Pixmap;
 
@@ -87,6 +87,75 @@ fn comedown_view() {
     // The pod is in the middle of the screen; its room's floor is there.
     let mid = img.pixel(img.width() / 2, img.height() / 2 + 8).unwrap();
     assert!(mid.red() > 150, "{mid:?}");
+}
+
+#[test]
+fn comedown_visible_leaves_off_teki() {
+    // The cave intro draws pellets but not enemies: treasures, gates, exits and the pod stay,
+    // and of the teki only plants and hazards, which always count as cutscene actors.
+    assert!(!comedown_visible("teki", "Chappy"));
+    assert!(!comedown_visible("teki", "Egg"));
+    assert!(!comedown_visible("teki", "BlackPom"));
+    for name in ["HikariKinoko", "Hikarikinoko", "Clover", "KareOoinu_s", "Hiba", "ElecHiba", "GasHiba"] {
+        assert!(comedown_visible("teki", name), "{name}");
+    }
+    for kind in ["treasure", "gate", "hole", "geyser", "ship", "onion"] {
+        assert!(comedown_visible(kind, ""), "{kind}");
+    }
+
+    // HoB-4 in a run video: glowcaps glow around the pod on the comedown, but the Red Bulborb
+    // beside it isn't there.
+    let p = painter();
+    let opts = Options {
+        comedown_visible: true,
+        ..Options::default()
+    };
+    let (layout, filtered) = p.png("HoB-4", 0x47BD3207, &opts).unwrap();
+    let ship = layout.objects.iter().find(|o| o.kind == "ship").unwrap();
+    let near = |name: &str| {
+        layout
+            .objects
+            .iter()
+            .any(|o| o.name.as_deref() == Some(name) && (o.x - ship.x).hypot(o.z - ship.z) < 600.0)
+    };
+    assert!(near("Chappy") && near("HikariKinoko"));
+    let plain = Options::default();
+    for o in &layout.objects {
+        let plant_or_hazard = matches!(o.name.as_deref(), Some("HikariKinoko" | "Hiba"));
+        assert_eq!(opts.shows(o), o.kind != "teki" || plant_or_hazard, "{} {:?}", o.kind, o.name);
+        assert!(plain.shows(o));
+    }
+    let (_, all) = p.png("HoB-4", 0x47BD3207, &plain).unwrap();
+    assert_ne!(filtered, all);
+    let mut named = Options::default();
+    named.set("comedownVisible", true).unwrap();
+    assert!(named.comedown_visible);
+
+    // The aggregator's maps: teki go, even ones carrying a treasure, but plants and hazards stay.
+    let agg = |comedown_visible| AggOptions {
+        treasures: true,
+        teki: true,
+        gates: true,
+        exits: true,
+        comedown_visible,
+        min_share: 0.0,
+        scale: 1.0,
+        game: "pikmin2".into(),
+    };
+    for (id, visible) in [("t:Chappy|", false), ("t:Chappy|Ice Cream Sandwich", false), ("t:HikariKinoko|", true), ("t:Hiba|", true), ("i:Ice Cream Sandwich", true), ("g", true), ("h", true), ("y", true), ("s", true)] {
+        let o = AggObject::parse(id);
+        assert!(o.shown(&agg(false)), "{id}");
+        assert_eq!(o.shown(&agg(true)), visible, "{id}");
+    }
+}
+
+/// The web page offers every map option the CLI has (the CLI mirrors its drawing).
+#[test]
+fn web_page_has_every_option() {
+    let app = std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/../../web/app.js")).unwrap();
+    for name in OPTION_NAMES.iter().filter(|n| **n != "water") {
+        assert!(app.contains(&format!("key: \"{name}\"")), "web/app.js has no map option {name}");
+    }
 }
 
 #[test]
