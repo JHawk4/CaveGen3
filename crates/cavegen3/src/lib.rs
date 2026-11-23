@@ -6,8 +6,8 @@
 pub mod caveinfo;
 pub mod data;
 pub mod error;
+pub mod generate;
 pub mod jhawk_judge;
-mod generate;
 pub mod layout;
 pub mod math;
 mod parse;

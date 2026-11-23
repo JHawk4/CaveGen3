@@ -22,37 +22,134 @@ type UnitId = u16;
 /// Door score candidates: (score, scored door, link index, target door), smallest first.
 type ScoreHeap = std::collections::BinaryHeap<std::cmp::Reverse<(i32, u32, u32, u32)>>;
 
+/// How many rooms the map has when room placement stops, and in how many placement steps: for
+/// finding seeds whose map closes before all rooms fit. Stops as soon as every room is placed.
+pub fn rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
+    let mut g = Generator::new(rng, caveinfo);
+    g.early_stop = true;
+    g.sort_units_and_allocate_teki();
+    let steps = g.place_map_units();
+    (g.rooms_placed, steps)
+}
+
+/// The levels of [`room_failure_odds`]: (doors where a room fits, open doors) at most, with
+/// (0, 0) meaning closed.
+fn failure_levels() -> Vec<(usize, usize)> {
+    let mut levels = vec![(3, usize::MAX), (2, usize::MAX), (1, usize::MAX), (0, usize::MAX)];
+    levels.extend((1..=4).rev().map(|o| (0, o)));
+    levels.push((0, 0));
+    levels
+}
+
+/// How many of [`room_failure_odds`]'s levels one seed's map reaches, in order: for checking the
+/// estimate against real seeds.
+pub fn failure_levels_reached(rng: Rng, caveinfo: &CaveInfo) -> usize {
+    let levels = failure_levels();
+    let mut g = Generator::new(rng, caveinfo);
+    g.sort_units_and_allocate_teki();
+    if !g.place_start() {
+        return 0;
+    }
+    let (mut reached, mut closed) = (0, false);
+    for steps in 1..=500 {
+        if g.rooms_placed >= g.ci.num_rooms {
+            break;
+        }
+        while reached < levels.len() {
+            let (max_roomable, max_open) = levels[reached];
+            if closed || (max_open > 0 && g.open.len() <= max_open && g.roomable_doors() <= max_roomable) {
+                reached += 1;
+            } else {
+                break;
+            }
+        }
+        if closed {
+            break;
+        }
+        closed = !g.placement_step(steps);
+    }
+    reached
+}
+
+/// Estimates the chance that a sublevel's map closes before all its rooms are placed, by
+/// multilevel splitting. A map fails this way only once no open door has room for a room unit
+/// and the open doors then close, so the levels are: at most 3, 2, 1 and 0 open doors where a room
+/// fits, then no such door and at most 4, 3, 2 and 1 open doors, then closed. At each level,
+/// `particles` maps grow until they reach the next level, or fail by placing their last room or
+/// reaching the game's 500 steps; the share that reaches it is the chance of getting there from
+/// the level before, and the maps that did are resampled to start the next level. Each map draws
+/// from its own random state seeded from `seed`, so this is the chance for an ideal random number
+/// generator using the given generator's arithmetic. Returns the estimate and each level's share.
+pub fn room_failure_odds(caveinfo: &CaveInfo, generator: crate::Generator, particles: usize, seed: u64) -> (f64, Vec<f64>) {
+    let mut mix = seed;
+    let mut next = move || {
+        // splitmix64
+        mix = mix.wrapping_add(0x9E3779B97F4A7C15);
+        let mut z = mix;
+        z = (z ^ (z >> 30)).wrapping_mul(0xBF58476D1CE4E5B9);
+        z = (z ^ (z >> 27)).wrapping_mul(0x94D049BB133111EB);
+        z ^ (z >> 31)
+    };
+    // Each map starts from its own seed: the unit queues' order is random too.
+    let mut alive: Vec<(Generator, u32, bool)> = Vec::with_capacity(particles);
+    for _ in 0..particles {
+        let mut g = Generator::new(Rng::with(generator, next()), caveinfo);
+        g.sort_units_and_allocate_teki();
+        if !g.place_start() {
+            return (0.0, Vec::new());
+        }
+        alive.push((g, 0, false));
+    }
+    let levels = failure_levels();
+    let mut odds = 1.0;
+    let mut shares = Vec::new();
+    for (max_roomable, max_open) in levels {
+        let mut hits = Vec::new();
+        for (mut g, mut steps, mut closed) in alive {
+            if steps > 0 {
+                g.rng = Rng::with(generator, next());
+            }
+            loop {
+                if closed || (max_open > 0 && g.open.len() <= max_open && g.roomable_doors() <= max_roomable) {
+                    hits.push((g, steps, closed));
+                    break;
+                }
+                if steps >= 500 {
+                    break;
+                }
+                steps += 1;
+                closed = !g.placement_step(steps);
+                if g.rooms_placed >= g.ci.num_rooms {
+                    break;
+                }
+            }
+        }
+        let share = hits.len() as f64 / particles as f64;
+        odds *= share;
+        shares.push(share);
+        if hits.is_empty() {
+            break;
+        }
+        alive = (0..particles)
+            .map(|_| hits[(next() % hits.len() as u64) as usize].clone())
+            .collect();
+    }
+    (odds, shares)
+}
+
+/// Like [`rooms_placed`], printing each placement step to stderr (for studying odd maps).
+pub fn trace_rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
+    let mut g = Generator::new(rng, caveinfo);
+    g.trace = true;
+    g.sort_units_and_allocate_teki();
+    let steps = g.place_map_units();
+    (g.rooms_placed, steps)
+}
+
 pub(crate) fn generate(rng: Rng, caveinfo: &CaveInfo) -> Layout<'_> {
     let seed = rng.state();
     let generator = rng.generator();
-    let mut g = Generator {
-        ci: caveinfo,
-        rng,
-        seed,
-        units: Vec::new(),
-        doors: Vec::new(),
-        open: Vec::new(),
-        grid: Grid::new(),
-        cap_queue: Vec::new(),
-        room_queue: Vec::new(),
-        corridor_queue: Vec::new(),
-        rooms_placed: 0,
-        slots: [0; 10],
-        weight_sums: [0; 10],
-        min_teki_0: 0,
-        map_min_x: 0,
-        map_min_z: 0,
-        map_max_x: 0,
-        map_max_z: 0,
-        diameter_36: false,
-        marked_caps: false,
-        placed_teki: 0,
-        spawnpoints: Vec::new(),
-        ship: None,
-        hole: None,
-        geyser: None,
-        spawn_order: Vec::new(),
-    };
+    let mut g = Generator::new(rng, caveinfo);
     g.run();
     Layout {
         caveinfo,
@@ -69,6 +166,43 @@ pub(crate) fn generate(rng: Rng, caveinfo: &CaveInfo) -> Layout<'_> {
     }
 }
 
+impl<'a> Generator<'a> {
+    fn new(rng: Rng, caveinfo: &'a CaveInfo) -> Self {
+        let seed = rng.state();
+        Generator {
+            ci: caveinfo,
+            rng,
+            seed,
+            units: Vec::new(),
+            doors: Vec::new(),
+            open: Vec::new(),
+            grid: Grid::new(),
+            cap_queue: Vec::new(),
+            room_queue: Vec::new(),
+            corridor_queue: Vec::new(),
+            rooms_placed: 0,
+            slots: [0; 10],
+            weight_sums: [0; 10],
+            min_teki_0: 0,
+            map_min_x: 0,
+            map_min_z: 0,
+            map_max_x: 0,
+            map_max_z: 0,
+            diameter_36: false,
+            marked_caps: false,
+            placed_teki: 0,
+            spawnpoints: Vec::new(),
+            ship: None,
+            hole: None,
+            geyser: None,
+            spawn_order: Vec::new(),
+            early_stop: false,
+            trace: false,
+        }
+    }
+}
+
+#[derive(Clone)]
 struct Generator<'a> {
     ci: &'a CaveInfo,
     rng: Rng,
@@ -99,6 +233,10 @@ struct Generator<'a> {
     hole: Option<u32>,
     geyser: Option<u32>,
     spawn_order: Vec<Placement>,
+    /// Stop placing units once every room is placed ([`rooms_placed`]).
+    early_stop: bool,
+    /// Print each placement step to stderr ([`trace_rooms_placed`]).
+    trace: bool,
 }
 
 /// A unit position that passed the placement checks.
@@ -189,37 +327,31 @@ impl<'a> Generator<'a> {
     // ---------------------------------------------------------------------------------
     // Map unit placement
 
-    fn place_map_units(&mut self) {
+    /// Places the first room; false if it has no doors.
+    fn place_start(&mut self) -> bool {
         let start = *self
             .room_queue
             .iter()
             .find(|&&id| self.unit(id).has_start_spawnpoint())
             .expect("no room with a start spawn point");
         self.place_unit(Candidate { unit: start, x: 0, z: 0 });
+        !self.open.is_empty()
+    }
 
-        if self.open.is_empty() {
-            return;
+    fn place_map_units(&mut self) -> u32 {
+        if !self.place_start() {
+            return 0;
         }
         // The game gives up after 500 placement steps (RandMapUnit::setMapUnit).
+        let mut steps = 0;
         for _ in 0..500 {
-            let mut placed = if self.rooms_placed < self.ci.num_rooms { self.try_place_room() } else { self.try_place_hallway() };
-            if placed.is_none() {
-                placed = self.try_place_cap();
+            steps += 1;
+            if self.early_stop && self.rooms_placed >= self.ci.num_rooms {
+                return steps;
             }
-            if let Some(candidate) = placed {
-                self.place_unit(candidate);
+            if !self.placement_step(steps) {
+                break;
             }
-
-            if !self.open.is_empty() {
-                continue;
-            }
-            self.change_cap_to_hallway();
-            if !self.open.is_empty() {
-                continue;
-            }
-            // With no open doors left, the game merges hallways and stops.
-            self.change_two_hallways_to_one();
-            break;
         }
         assert!(
             self.open.is_empty(),
@@ -227,6 +359,68 @@ impl<'a> Generator<'a> {
             self.seed,
             self.ci.name()
         );
+        steps
+    }
+
+    /// How many open doors a room could be attached to right now.
+    fn roomable_doors(&self) -> usize {
+        self.open
+            .iter()
+            .filter(|&&d| {
+                self.room_queue
+                    .iter()
+                    .any(|&id| (0..self.unit(id).num_doors).any(|di| self.try_place_unit_at(d, id, di).is_some()))
+            })
+            .count()
+    }
+
+    /// One step of the placement loop. False once no doors are open and the map is closed.
+    fn placement_step(&mut self, steps: u32) -> bool {
+        if self.trace && self.rooms_placed < self.ci.num_rooms {
+            eprintln!("a room fits at {} of {} open doors", self.roomable_doors(), self.open.len());
+        }
+        let mut placed = if self.rooms_placed < self.ci.num_rooms {
+            self.try_place_room()
+        } else {
+            self.try_place_hallway()
+        };
+        if placed.is_none() {
+            placed = self.try_place_cap();
+        }
+        if self.trace {
+            match placed {
+                Some(c) => {
+                    let u = self.unit(c.unit);
+                    eprintln!(
+                        "step {steps:>2}: {} rot {} at ({}, {}); rooms {}, open doors before {}",
+                        u.unit_folder_name,
+                        u.rotation,
+                        c.x,
+                        c.z,
+                        self.rooms_placed,
+                        self.open.len()
+                    );
+                }
+                None => eprintln!("step {steps:>2}: nothing placed"),
+            }
+        }
+        if let Some(candidate) = placed {
+            self.place_unit(candidate);
+        }
+
+        if !self.open.is_empty() {
+            return true;
+        }
+        if self.trace {
+            eprintln!("no open doors left with {} of {} rooms", self.rooms_placed, self.ci.num_rooms);
+        }
+        self.change_cap_to_hallway();
+        if !self.open.is_empty() {
+            return true;
+        }
+        // With no open doors left, the game merges hallways and stops.
+        self.change_two_hallways_to_one();
+        false
     }
 
     /// Places a room, hallway or cap on a random open door, preferring rooms.
@@ -241,7 +435,21 @@ impl<'a> Generator<'a> {
         if self.units[dest_unit].unit.room_type == RoomType::Room {
             corridor_probability *= 2.0;
         }
-        let priority = if self.rng.rand_f32() < corridor_probability {
+        let roll = self.rng.rand_f32();
+        if self.trace {
+            let d = &self.doors[destination as usize];
+            eprintln!(
+                "  door {} of {} open: ({}, {}) facing {} on a {}; corridor roll {roll:.3} < {corridor_probability} = {}",
+                self.open.iter().position(|&o| o == destination).unwrap(),
+                self.open.len(),
+                d.x,
+                d.z,
+                d.door.direction,
+                self.units[dest_unit].unit.unit_folder_name,
+                roll < corridor_probability
+            );
+        }
+        let priority = if roll < corridor_probability {
             [RoomType::Hallway, RoomType::Room, RoomType::DeadEnd]
         } else {
             [RoomType::Room, RoomType::Hallway, RoomType::DeadEnd]
@@ -1561,6 +1769,7 @@ impl<'a> Generator<'a> {
 
 /// Which map grid cells are covered by placed units. Overlap checks look cells up here
 /// instead of comparing against every placed unit. Grows as units are placed further out.
+#[derive(Clone)]
 struct Grid {
     x0: i32,
     z0: i32,
