@@ -34,6 +34,129 @@ pub fn rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
     (g.rooms_placed, steps)
 }
 
+/// Whether a seed's map closes with at most `max_rooms` rooms placed, stopping as soon as one
+/// more room is placed: a fast test for hunting maps that close with only a few rooms.
+pub fn closes_with_rooms(rng: Rng, caveinfo: &CaveInfo, max_rooms: u32) -> bool {
+    let mut g = Generator::new(rng, caveinfo);
+    g.sort_units_and_allocate_teki();
+    if !g.place_start() {
+        return true;
+    }
+    for steps in 1..=500 {
+        if g.rooms_placed > max_rooms {
+            return false;
+        }
+        if !g.placement_step(steps) {
+            return g.rooms_placed <= max_rooms;
+        }
+    }
+    false
+}
+
+/// Rooms placed after the start room and the first placement step (for checking
+/// [`ClosureFilter`]).
+pub fn first_step_rooms(rng: Rng, caveinfo: &CaveInfo) -> u32 {
+    let mut g = Generator::new(rng, caveinfo);
+    g.sort_units_and_allocate_teki();
+    if g.place_start() {
+        g.placement_step(1);
+    }
+    g.rooms_placed
+}
+
+/// A one-multiply test that rules out most seeds when hunting maps that close with only the start
+/// room. The first placement step's corridor roll always lands on the same `rand()` call, and if
+/// it says "room first", a room is placed: [`ClosureFilter::new`] checks that some room fits at
+/// every door of every possible start room.
+#[derive(Clone, Copy, Debug)]
+pub struct ClosureFilter {
+    generator: crate::Generator,
+    /// Steps from the seed to just before the first step's corridor roll.
+    jump: (u64, u64),
+    /// The roll is below this for "hallway first".
+    corridor_probability: f32,
+}
+
+impl ClosureFilter {
+    /// None if the shortcut doesn't hold for this sublevel.
+    pub fn new(caveinfo: &CaveInfo, generator: crate::Generator) -> Option<Self> {
+        // Where the roll falls: count calls with tapes of different random values.
+        let mut roll_call = None;
+        for k in 0..200u64 {
+            let mut g = Generator::new(Rng::tape(generator, Vec::new(), 0xF117_0000 + k), caveinfo);
+            g.sort_units_and_allocate_teki();
+            if !g.place_start() || g.ci.num_rooms < 2 || g.diameter_36 {
+                return None;
+            }
+            let calls = g.rng.tape_ref().unwrap().pos + 1; // the door pick comes first
+            if *roll_call.get_or_insert(calls) != calls {
+                return None;
+            }
+        }
+        // Some room must fit at every door of every room the map can start with.
+        let mut g = Generator::new(Rng::with(generator, 0), caveinfo);
+        g.sort_units_and_allocate_teki();
+        for &start in &g.room_queue {
+            if !g.unit(start).has_start_spawnpoint() {
+                continue;
+            }
+            let mut s = Generator::new(Rng::with(generator, 0), caveinfo);
+            s.sort_units_and_allocate_teki();
+            s.place_unit(Candidate { unit: start, x: 0, z: 0 });
+            let all_fit = s.open.iter().all(|&d| {
+                s.room_queue.iter().any(|&id| (0..s.unit(id).num_doors).any(|di| s.try_place_unit_at(d, id, di).is_some()))
+            });
+            if s.open.is_empty() || !all_fit {
+                return None;
+            }
+        }
+        Some(ClosureFilter {
+            generator,
+            jump: Rng::jump_coefficients(generator, roll_call? as u64),
+            // The destination is the start room, which doubles it.
+            corridor_probability: caveinfo.corridor_probability * 2.0,
+        })
+    }
+
+    /// True if the seed's first step certainly places a second room.
+    #[inline]
+    pub fn rejects(&self, seed: u64) -> bool {
+        let mut rng = Rng::with(self.generator, seed);
+        rng.jump(self.jump);
+        rng.rand_f32() >= self.corridor_probability
+    }
+}
+
+/// Seconds spent in each stage of [`closes_with_rooms`] over `n` seeds (new, sort, start room,
+/// placement steps), and the mean number of placement steps: for speeding up hunts.
+#[doc(hidden)]
+pub fn profile_closes_with_rooms(caveinfo: &CaveInfo, generator: crate::Generator, n: u64, max_rooms: u32) -> ([f64; 4], f64) {
+    let mut t = [0.0; 4];
+    let mut total_steps = 0u64;
+    for i in 0..n {
+        let seed = i.wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ 0x0F1E_2D3C_4B5A_6978;
+        let c0 = std::time::Instant::now();
+        let mut g = Generator::new(Rng::with(generator, seed), caveinfo);
+        let c1 = std::time::Instant::now();
+        g.sort_units_and_allocate_teki();
+        let c2 = std::time::Instant::now();
+        g.place_start();
+        let c3 = std::time::Instant::now();
+        for steps in 1..=500 {
+            total_steps += 1;
+            if g.rooms_placed > max_rooms || !g.placement_step(steps) {
+                break;
+            }
+        }
+        let c4 = std::time::Instant::now();
+        t[0] += (c1 - c0).as_secs_f64();
+        t[1] += (c2 - c1).as_secs_f64();
+        t[2] += (c3 - c2).as_secs_f64();
+        t[3] += (c4 - c3).as_secs_f64();
+    }
+    (t, total_steps as f64 / n as f64)
+}
+
 /// The levels of [`room_failure_odds`]: (doors where a room fits, open doors) at most, with
 /// (0, 0) meaning closed.
 fn failure_levels() -> Vec<(usize, usize)> {
