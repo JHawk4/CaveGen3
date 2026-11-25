@@ -9,6 +9,8 @@
 
 use std::cmp::{max, min};
 
+pub mod steer;
+
 use crate::{
     caveinfo::{CapInfo, CaveInfo, CaveUnit, ItemInfo, RoomType, TekiInfo},
     layout::{Layout, PlacedDoor, PlacedSpawnPoint, PlacedUnit, Placement, SpawnObject},

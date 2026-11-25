@@ -57,6 +57,27 @@ impl std::str::FromStr for Generator {
     }
 }
 
+impl Tape {
+    #[cold]
+    fn next(&mut self, generator: Generator) -> u32 {
+        if self.pos == self.values.len() {
+            // splitmix64
+            self.fresh = self.fresh.wrapping_add(0x9E3779B97F4A7C15);
+            let mut z = self.fresh;
+            z = (z ^ (z >> 30)).wrapping_mul(0xBF58476D1CE4E5B9);
+            z = (z ^ (z >> 27)).wrapping_mul(0x94D049BB133111EB);
+            z ^= z >> 31;
+            let v = match generator {
+                Generator::Gc => (z >> 49) as u32,
+                Generator::Switch => (z >> 33) as u32,
+            };
+            self.values.push(v);
+        }
+        self.pos += 1;
+        self.values[self.pos - 1]
+    }
+}
+
 /// The game's linear congruential generator.
 ///
 /// A layout's "seed" is this generator's state when the game starts generating the cave: 32 bits
@@ -65,6 +86,17 @@ impl std::str::FromStr for Generator {
 pub struct Rng {
     state: u64,
     generator: Generator,
+    /// When set, `rand()` plays these values instead of stepping the LCG.
+    tape: Option<Box<Tape>>,
+}
+
+/// A list of `rand()` values to play back, for studying what a generator would have to return:
+/// past its end, fresh values come from a private random stream and are added to it.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Tape {
+    pub values: Vec<u32>,
+    pub pos: usize,
+    fresh: u64,
 }
 
 const A: u32 = 0x41C6_4E6D;
@@ -75,7 +107,25 @@ const C64: u64 = 1;
 impl Rng {
     /// The GC generator at state `seed`.
     pub fn new(seed: u32) -> Self {
-        Self { state: seed as u64, generator: Generator::Gc }
+        Self { state: seed as u64, generator: Generator::Gc, tape: None }
+    }
+
+    /// Plays `values` as `rand()`'s results with `generator`'s arithmetic, then fresh random
+    /// values drawn from a stream seeded by `fresh` (recorded onto the tape).
+    pub fn tape(generator: Generator, values: Vec<u32>, fresh: u64) -> Self {
+        Self { state: 0, generator, tape: Some(Box::new(Tape { values, pos: 0, fresh })) }
+    }
+
+    /// The tape, if this plays one.
+    pub fn tape_ref(&self) -> Option<&Tape> {
+        self.tape.as_deref()
+    }
+
+    /// Replaces where fresh tape values come from (so clones diverge).
+    pub fn reseed_fresh(&mut self, fresh: u64) {
+        if let Some(t) = self.tape.as_mut() {
+            t.fresh = fresh;
+        }
     }
 
     /// `generator` at state `seed` (only the low 32 bits count on GC).
@@ -84,7 +134,7 @@ impl Rng {
             Generator::Gc => seed as u32 as u64,
             Generator::Switch => seed,
         };
-        Self { state, generator }
+        Self { state, generator, tape: None }
     }
 
     pub fn generator(&self) -> Generator {
@@ -105,6 +155,9 @@ impl Rng {
     /// on Switch.
     #[inline]
     pub fn rand_raw(&mut self) -> u32 {
+        if let Some(t) = self.tape.as_mut() {
+            return t.next(self.generator);
+        }
         match self.generator {
             Generator::Gc => {
                 let s = (self.state as u32).wrapping_mul(A).wrapping_add(C);
