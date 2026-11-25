@@ -41,6 +41,15 @@ fn failure_levels() -> Vec<(usize, usize)> {
     levels
 }
 
+/// Finer levels for sublevels with more rooms and doors: at most 12 down to 0 doors where a room
+/// fits, then no such door and at most 10 down to 1 open doors, then closed.
+fn fine_failure_levels() -> Vec<(usize, usize)> {
+    let mut levels: Vec<(usize, usize)> = (0..=12).rev().map(|r| (r, usize::MAX)).collect();
+    levels.extend((1..=10).rev().map(|o| (0, o)));
+    levels.push((0, 0));
+    levels
+}
+
 /// How many of [`room_failure_odds`]'s levels one seed's map reaches, in order: for checking the
 /// estimate against real seeds.
 pub fn failure_levels_reached(rng: Rng, caveinfo: &CaveInfo) -> usize {
@@ -81,6 +90,40 @@ pub fn failure_levels_reached(rng: Rng, caveinfo: &CaveInfo) -> usize {
 /// from its own random state seeded from `seed`, so this is the chance for an ideal random number
 /// generator using the given generator's arithmetic. Returns the estimate and each level's share.
 pub fn room_failure_odds(caveinfo: &CaveInfo, generator: crate::Generator, particles: usize, seed: u64) -> (f64, Vec<f64>) {
+    let (odds, shares, _) = room_failure_run(caveinfo, generator, particles, seed, failure_levels());
+    (odds, shares)
+}
+
+/// Like [`room_failure_odds`], also returning the maps that closed short of rooms at the last
+/// level, each finished into a full layout (teki, treasures, gates) with a fresh random state.
+/// Uses finer levels, for sublevels with many rooms or doors.
+pub fn room_failure_layouts(
+    caveinfo: &CaveInfo,
+    generator: crate::Generator,
+    particles: usize,
+    seed: u64,
+) -> (f64, Vec<f64>, Vec<Layout<'_>>) {
+    let (odds, shares, closed) = room_failure_run(caveinfo, generator, particles, seed, fine_failure_levels());
+    let mut mix = seed ^ 0xF1A1_5EED;
+    let layouts = closed
+        .into_iter()
+        .map(|mut g| {
+            mix = mix.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            g.rng = Rng::with(generator, mix);
+            g.finish();
+            g.into_layout()
+        })
+        .collect();
+    (odds, shares, layouts)
+}
+
+fn room_failure_run(
+    caveinfo: &CaveInfo,
+    generator: crate::Generator,
+    particles: usize,
+    seed: u64,
+    levels: Vec<(usize, usize)>,
+) -> (f64, Vec<f64>, Vec<Generator<'_>>) {
     let mut mix = seed;
     let mut next = move || {
         // splitmix64
@@ -96,14 +139,15 @@ pub fn room_failure_odds(caveinfo: &CaveInfo, generator: crate::Generator, parti
         let mut g = Generator::new(Rng::with(generator, next()), caveinfo);
         g.sort_units_and_allocate_teki();
         if !g.place_start() {
-            return (0.0, Vec::new());
+            return (0.0, Vec::new(), Vec::new());
         }
         alive.push((g, 0, false));
     }
-    let levels = failure_levels();
     let mut odds = 1.0;
     let mut shares = Vec::new();
-    for (max_roomable, max_open) in levels {
+    let last = levels.len() - 1;
+    let mut closed_maps = Vec::new();
+    for (level, (max_roomable, max_open)) in levels.into_iter().enumerate() {
         let mut hits = Vec::new();
         for (mut g, mut steps, mut closed) in alive {
             if steps > 0 {
@@ -127,6 +171,10 @@ pub fn room_failure_odds(caveinfo: &CaveInfo, generator: crate::Generator, parti
         let share = hits.len() as f64 / particles as f64;
         odds *= share;
         shares.push(share);
+        if level == last {
+            closed_maps = hits.into_iter().map(|h| h.0).collect();
+            break;
+        }
         if hits.is_empty() {
             break;
         }
@@ -134,7 +182,7 @@ pub fn room_failure_odds(caveinfo: &CaveInfo, generator: crate::Generator, parti
             .map(|_| hits[(next() % hits.len() as u64) as usize].clone())
             .collect();
     }
-    (odds, shares)
+    (odds, shares, closed_maps)
 }
 
 /// Like [`rooms_placed`], printing each placement step to stderr (for studying odd maps).
@@ -147,22 +195,26 @@ pub fn trace_rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
 }
 
 pub(crate) fn generate(rng: Rng, caveinfo: &CaveInfo) -> Layout<'_> {
-    let seed = rng.state();
-    let generator = rng.generator();
     let mut g = Generator::new(rng, caveinfo);
     g.run();
-    Layout {
-        caveinfo,
-        seed,
-        generator,
-        units: g.units,
-        doors: g.doors,
-        spawnpoints: g.spawnpoints,
-        spawn_order: g.spawn_order,
-        ship: g.ship,
-        hole: g.hole,
-        geyser: g.geyser,
-        waypoints: Default::default(),
+    g.into_layout()
+}
+
+impl<'a> Generator<'a> {
+    fn into_layout(self) -> Layout<'a> {
+        Layout {
+            caveinfo: self.ci,
+            seed: self.seed,
+            generator: self.rng.generator(),
+            units: self.units,
+            doors: self.doors,
+            spawnpoints: self.spawnpoints,
+            spawn_order: self.spawn_order,
+            ship: self.ship,
+            hole: self.hole,
+            geyser: self.geyser,
+            waypoints: Default::default(),
+        }
     }
 }
 
@@ -261,6 +313,11 @@ impl<'a> Generator<'a> {
     fn run(&mut self) {
         self.sort_units_and_allocate_teki();
         self.place_map_units();
+        self.finish();
+    }
+
+    /// Everything after map unit placement.
+    fn finish(&mut self) {
         self.create_spawnpoints_and_recenter();
         self.place_ship();
         self.set_score();
