@@ -177,3 +177,46 @@ pub fn search(
     }
     (None, stats)
 }
+
+/// The full layout a tape of `rand()` values generates (for drawing steered maps).
+pub fn layout_from_tape<'a>(caveinfo: &'a CaveInfo, generator: crate::Generator, values: &[u32]) -> Layout<'a> {
+    let mut g = Generator::new(Rng::tape(generator, values.to_vec(), 0x7A9E), caveinfo);
+    g.run();
+    g.into_layout()
+}
+
+/// Levels on how many ways a room still fits (open door, room unit, unit door), then on open doors.
+fn fit_levels() -> Vec<(usize, usize)> {
+    let mut levels: Vec<(usize, usize)> = [64, 48, 36, 28, 22, 18, 15, 12, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0].iter().map(|&r| (r, usize::MAX)).collect();
+    levels.extend((1..=10).rev().map(|o| (0, o)));
+    levels.push((0, 0));
+    levels
+}
+
+/// Estimates the chance a seed's map closes with only its start room and is short of a
+/// treasure: [`super::room_failure_odds`]' splitting, where only maps whose start room has fewer
+/// treasure spots than treasures take part and maps that place a second room fail. The closed
+/// maps are then finished with fresh random states, and the share short of a treasure scales
+/// the closing odds. Returns (chance, closing odds, level shares, closed maps, short maps).
+pub fn missing_treasure_odds(
+    caveinfo: &CaveInfo,
+    generator: crate::Generator,
+    particles: usize,
+    seed: u64,
+) -> (f64, f64, Vec<f64>, usize, usize) {
+    let start_ok = |g: &Generator| (g.units[0].unit.spawnpoints.iter().filter(|s| s.group == 2).count() as u32) < g.ci.max_treasures;
+    let (odds, shares, closed) = room_failure_run(caveinfo, generator, particles, seed, fit_levels(), 1, &start_ok, true);
+    let mut mix = seed ^ 0x5407_7EED;
+    let mut short = 0;
+    for mut g in closed.iter().cloned() {
+        mix = mix.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        g.rng = Rng::with(generator, mix);
+        let rooms = g.rooms_placed;
+        g.finish_through_items();
+        if outcome(&g, rooms).short_and_missing() {
+            short += 1;
+        }
+    }
+    let p = if closed.is_empty() { 0.0 } else { odds * short as f64 / closed.len() as f64 };
+    (p, odds, shares, closed.len(), short)
+}

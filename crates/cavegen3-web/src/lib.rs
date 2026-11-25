@@ -162,6 +162,17 @@ impl Web {
         Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
     }
 
+    /// Like [`Web::generate_json`], for the layout a tape of chosen `rand()` values generates
+    /// (see `cavegen3::generate::steer`). The seed shown is 0.
+    pub fn generate_tape_json(&self, sublevel: &str, generator: Generator, values: &[u32], flags: u32) -> Result<String, String> {
+        let data = self.data()?;
+        let sublevel = data.sublevel(sublevel).map_err(|e| e.to_string())?;
+        let caveinfo = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
+        let num_floors = data.floors(&sublevel.cfg).map_err(|e| e.to_string())?.len();
+        let layout = cavegen3::generate::steer::layout_from_tape(caveinfo, generator, values);
+        Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
+    }
+
     /// Runs one tab-separated command and returns JSON:
     ///
     /// - `judge <sublevel> <type> <seed> [gc|switch]`: `{"score": n}` (the seed in decimal; 64-bit

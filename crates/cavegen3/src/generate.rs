@@ -92,7 +92,7 @@ pub fn failure_levels_reached(rng: Rng, caveinfo: &CaveInfo) -> usize {
 /// from its own random state seeded from `seed`, so this is the chance for an ideal random number
 /// generator using the given generator's arithmetic. Returns the estimate and each level's share.
 pub fn room_failure_odds(caveinfo: &CaveInfo, generator: crate::Generator, particles: usize, seed: u64) -> (f64, Vec<f64>) {
-    let (odds, shares, _) = room_failure_run(caveinfo, generator, particles, seed, failure_levels());
+    let (odds, shares, _) = room_failure_run(caveinfo, generator, particles, seed, failure_levels(), u32::MAX, &|_| true, false);
     (odds, shares)
 }
 
@@ -105,7 +105,7 @@ pub fn room_failure_layouts(
     particles: usize,
     seed: u64,
 ) -> (f64, Vec<f64>, Vec<Layout<'_>>) {
-    let (odds, shares, closed) = room_failure_run(caveinfo, generator, particles, seed, fine_failure_levels());
+    let (odds, shares, closed) = room_failure_run(caveinfo, generator, particles, seed, fine_failure_levels(), u32::MAX, &|_| true, false);
     let mut mix = seed ^ 0xF1A1_5EED;
     let layouts = closed
         .into_iter()
@@ -119,13 +119,16 @@ pub fn room_failure_layouts(
     (odds, shares, layouts)
 }
 
-fn room_failure_run(
-    caveinfo: &CaveInfo,
+fn room_failure_run<'a>(
+    caveinfo: &'a CaveInfo,
     generator: crate::Generator,
     particles: usize,
     seed: u64,
     levels: Vec<(usize, usize)>,
-) -> (f64, Vec<f64>, Vec<Generator<'_>>) {
+    max_rooms: u32,
+    start_ok: &dyn Fn(&Generator) -> bool,
+    count_fits: bool,
+) -> (f64, Vec<f64>, Vec<Generator<'a>>) {
     let mut mix = seed;
     let mut next = move || {
         // splitmix64
@@ -145,8 +148,16 @@ fn room_failure_run(
         }
         alive.push((g, 0, false));
     }
-    let mut odds = 1.0;
-    let mut shares = Vec::new();
+    // Maps whose start doesn't qualify fail at once; the share that does is the first factor.
+    let total = alive.len();
+    alive.retain(|(g, _, _)| start_ok(g));
+    let start_share = alive.len() as f64 / total as f64;
+    if alive.is_empty() {
+        return (0.0, vec![0.0], Vec::new());
+    }
+    alive = (0..particles).map(|i| alive[i % alive.len()].clone()).collect();
+    let mut odds = start_share;
+    let mut shares = vec![start_share];
     let last = levels.len() - 1;
     let mut closed_maps = Vec::new();
     for (level, (max_roomable, max_open)) in levels.into_iter().enumerate() {
@@ -156,7 +167,8 @@ fn room_failure_run(
                 g.rng = Rng::with(generator, next());
             }
             loop {
-                if closed || (max_open > 0 && g.open.len() <= max_open && g.roomable_doors() <= max_roomable) {
+                let roomable = if count_fits { g.room_fits() } else { g.roomable_doors() };
+                if closed || (max_open > 0 && g.open.len() <= max_open && roomable <= max_roomable) {
                     hits.push((g, steps, closed));
                     break;
                 }
@@ -165,7 +177,7 @@ fn room_failure_run(
                 }
                 steps += 1;
                 closed = !g.placement_step(steps);
-                if g.rooms_placed >= g.ci.num_rooms {
+                if g.rooms_placed >= g.ci.num_rooms || g.rooms_placed > max_rooms {
                     break;
                 }
             }
@@ -431,6 +443,19 @@ impl<'a> Generator<'a> {
                     .any(|&id| (0..self.unit(id).num_doors).any(|di| self.try_place_unit_at(d, id, di).is_some()))
             })
             .count()
+    }
+
+    /// How many ways a room could be placed right now (open door, room unit, unit door).
+    fn room_fits(&self) -> usize {
+        self.open
+            .iter()
+            .map(|&d| {
+                self.room_queue
+                    .iter()
+                    .map(|&id| (0..self.unit(id).num_doors).filter(|&di| self.try_place_unit_at(d, id, di).is_some()).count())
+                    .sum::<usize>()
+            })
+            .sum()
     }
 
     /// One step of the placement loop. False once no doors are open and the map is closed.
