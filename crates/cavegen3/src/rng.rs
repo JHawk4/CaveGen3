@@ -128,6 +128,36 @@ impl Rng {
         }
     }
 
+    /// The (multiplier, increment) that steps `generator`'s state `n` times at once: state
+    /// becomes `state * mul + add` (wrapping, cut to 32 bits on GC). For [`Rng::jump`].
+    pub fn jump_coefficients(generator: Generator, n: u64) -> (u64, u64) {
+        let (mut a, mut c) = match generator {
+            Generator::Gc => (A as u64, C as u64),
+            Generator::Switch => (A64, C64),
+        };
+        let (mut mul, mut add) = (1u64, 0u64);
+        let mut n = n;
+        while n > 0 {
+            if n & 1 == 1 {
+                mul = mul.wrapping_mul(a);
+                add = add.wrapping_mul(a).wrapping_add(c);
+            }
+            c = c.wrapping_mul(a).wrapping_add(c);
+            a = a.wrapping_mul(a);
+            n >>= 1;
+        }
+        (mul, add)
+    }
+
+    /// Steps the state as many times as `jump_coefficients` was given, in one go (no tape).
+    #[inline]
+    pub fn jump(&mut self, (mul, add): (u64, u64)) {
+        self.state = self.state.wrapping_mul(mul).wrapping_add(add);
+        if self.generator == Generator::Gc {
+            self.state &= 0xFFFF_FFFF;
+        }
+    }
+
     /// `generator` at state `seed` (only the low 32 bits count on GC).
     pub fn with(generator: Generator, seed: u64) -> Self {
         let state = match generator {
@@ -281,6 +311,21 @@ mod test {
     use flate2::read::GzDecoder;
 
     use super::{Generator, Rng};
+
+    #[test]
+    fn jump_matches_stepping() {
+        for generator in [Generator::Gc, Generator::Switch] {
+            for n in [0u64, 1, 2, 47, 1000, 123_457] {
+                let mut stepped = Rng::with(generator, 0xDEAD_BEEF_1234_5678);
+                for _ in 0..n {
+                    stepped.rand_raw();
+                }
+                let mut jumped = Rng::with(generator, 0xDEAD_BEEF_1234_5678);
+                jumped.jump(Rng::jump_coefficients(generator, n));
+                assert_eq!(stepped.state(), jumped.state(), "{generator:?} {n}");
+            }
+        }
+    }
 
     const TEST_SEED: u32 = 0x12345678;
 
