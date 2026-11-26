@@ -23,7 +23,6 @@ use cavegen3::{
     GameData, Layout, Placement, SpawnObject,
     caveinfo::CaveInfo,
     data::FileSource,
-    hole_odds::{self, Fact},
     jhawk_judge::{JhawkJudge, JudgeType},
     point::Point,
     query::{Query, StructuralQuery},
@@ -175,10 +174,6 @@ impl Web {
     ///   otherwise the first `keep` matches. `{"tested", "matched", "best": [[seed, score]],
     ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
     /// - `caveinfo <sublevel>`: the sublevel's generation parameters (see [`caveinfo_json`]).
-    /// - `hole_odds <sublevel> <seed> <facts> [gc|switch]`: the chance of the exit (hole, or geyser
-    ///   on a final floor) being at each spawn point, from the layout's own weights given facts
-    ///   about spots ("12e,40h", or "-"; see [`cavegen3::hole_odds`]): `{"spots": [[spawn point,
-    ///   chance]]}`, empty if the facts rule out every spot.
     /// - `agg_start <sublevel> <grouping> <near> <far> <near half> <far half> [image periods]`
     ///   (the landing view, see [`aggregate::View`]; image periods are "unit=period;..."), then `agg_run <start> <count> <c|g|r>`
     ///   any number of times, then `agg_result <max groups>`: CaveGen's Aggregator (see
@@ -287,16 +282,6 @@ impl Web {
                 ))
             }
             "caveinfo" => Ok(caveinfo_json(caveinfo(1)?.1, data)),
-            "hole_odds" => {
-                let (_, ci) = caveinfo(1)?;
-                let generator = parse_generator(args.get(4))?;
-                // Stopped after the exits, so the unit scores are the ones the exit was picked with.
-                let layout = cavegen3::generate::generate_partly(cavegen3::rng::Rng::with(generator, num(2)?), ci, true);
-                let facts = Fact::parse_list(arg(3)?)?;
-                let spots: Vec<String> =
-                    hole_odds::odds(&layout, &facts).iter().map(|(i, p)| format!("[{i},{}]", num6(*p))).collect();
-                Ok(format!("{{\"spots\":[{}]}}", spots.join(",")))
-            }
             other => Err(format!("unknown command {other:?}")),
         }
     }
@@ -359,20 +344,6 @@ fn parse_query(text: &str, sublevel: &cavegen3::Sublevel, data: &GameData) -> Re
             StructuralQuery::try_parse_in(&format!("{} {text}", sublevel.short_name()), data, game).map_err(|e| e.to_string())
         }
         Err(e) => Err(e.to_string()),
-    }
-}
-
-/// A probability as JSON, to 6 decimals.
-fn num6(v: f64) -> String {
-    let r = (v * 1e6).round() / 1e6;
-    if r.is_finite() { format!("{r}") } else { "null".into() }
-}
-
-/// An optional generator argument ("gc" or "switch"); GameCube when it's missing or empty.
-fn parse_generator(arg: Option<&&str>) -> Result<Generator, String> {
-    match arg {
-        Some(g) if !g.trim().is_empty() => g.trim().parse::<Generator>(),
-        _ => Ok(Generator::Gc),
     }
 }
 
@@ -655,12 +626,15 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
 
     let mut extra = String::new();
     if details {
+        let odds = cavegen3::hole_odds::exit_odds(layout);
         let spawnpoints: Vec<String> = layout
             .spawnpoints
             .iter()
-            .map(|sp| {
+            .enumerate()
+            .map(|(i, sp)| {
+                let p = odds.get(&(i as u32)).copied().unwrap_or(0.0);
                 format!(
-                    "{{\"x\":{},\"z\":{},\"group\":{},\"r\":{},\"angle\":{},\"min\":{},\"max\":{},\"unit\":{},\"hole_score\":{},\"treasure_score\":{},\"used\":{}}}",
+                    "{{\"x\":{},\"z\":{},\"group\":{},\"r\":{},\"angle\":{},\"min\":{},\"max\":{},\"unit\":{},\"hole_score\":{},\"treasure_score\":{},\"used\":{},\"odds\":{}}}",
                     f(sp.pos[0]),
                     f(sp.pos[2]),
                     sp.spawnpoint.group,
@@ -672,6 +646,7 @@ fn layout_json(layout: &Layout, sublevel: &cavegen3::Sublevel, num_floors: usize
                     sp.hole_score,
                     sp.treasure_score,
                     !sp.contains.is_empty(),
+                    (p * 1e6).round() / 1e6,
                 )
             })
             .collect();
@@ -914,10 +889,6 @@ mod tests {
         assert!(found.starts_with("{\"tested\":50,"), "{found}");
         assert!(web.command("caveinfo\tSCx6").unwrap().contains("\"teki\":[{\"name\":"));
         assert!(web.command("search\tSCx6\t-\tnot a query ((\t0\t5\tc\t5").is_err());
-        // Hole odds: the north room's alcove, with the pod room's ruled out.
-        let odds = web.command("hole_odds\tCH12-1\t305419896\t2n").unwrap();
-        assert!(odds.starts_with("{\"spots\":[[27,0.08"), "{odds}");
-        assert!(web.command("hole_odds\tCH12-1\t305419896\t12q").is_err());
         // A romhack sublevel's query, with or without naming the sublevel, stays in that romhack
         // (251's SS is Subterranean Sands; vanilla has no SS).
         for q in ["hole carry dist < 1500", "ss2 hole carry dist < 1500"] {

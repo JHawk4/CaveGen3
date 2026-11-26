@@ -69,8 +69,8 @@ their in-game names in either language. Hover over or tap an icon on the map to 
   the landing and comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
   for plants, rings for easy teki), spawn order (CaveGen's `-drawSpawnOrder`), carry distances
   (`-drawPathDists`), the pod's facing (`-drawPodAngle`), facing directions, the game's unit,
-  door, treasure and hole scores, teki scores, door links and numbers, waypoints and treasure
-  carry paths.
+  door, treasure and hole scores, hole odds, teki scores, door links and numbers, waypoints and
+  treasure carry paths.
 - **QuickGlance** puts CaveGen's colored discs behind what matters (the pod, treasures, the exit,
   Gatling Groinks, Candypop Buds, Onions); **Pretty** draws the vanilla map units as CaveGen's
   pictures of the real floor instead of radar images. CaveGen took those as screenshots against a
@@ -161,26 +161,16 @@ The seed buttons can step through the game's RNG instead of counting by one (Cav
 
 ### Hole odds
 
-**Hole odds** (above the map) is for runs where the seed isn't known, as in Challenge Mode: it
-shows how likely the hole (or the geyser, on a final floor) is to be at each spot, given what
-you've seen. Show a seed with the same map as yours; the odds are worked out from that map
-directly, with no other layouts generated, so they're instant.
+**Hole odds** (under Scores in the advanced options, `holeOdds=1`) is for Challenge Mode, where
+the seed isn't known: it writes on each alcove and dead end the chance that the hole (or the
+geyser, on a final floor) is there, given what's on the shown map.
 
-The game places the exit right after the pod, before any teki or treasure: in an empty alcove
-or dead end (hallways only if there are none; alcoves within 150 of the pod in its own room don't
-count), picked at random with weight sqrt(room score) + 10 in Challenge Mode, using the room
-scores before teki raise them (in story mode the best-scored spot wins). So each spot's chance
-is its weight over the total. Click a spot to say what you saw there (empty, something else
-there, nothing visible in the comedown, the exit here or not), or a room to rule out all of it;
-the spots ruled out drop and the rest share the chance by their weights. A teki seen in a hard
-or special teki spot also rules out the spots within 200 or 150 of it, since those teki keep that
-far from the exit. **Comedown: nothing else seen** marks every unmarked spot inside the comedown
-outline as showing nothing then (teki can still be there: the comedown hides them).
-
-The marks are kept in the link: `odds=1&facts=12e,40h` (spawn points of the shown layout;
-e empty, o something else, v nothing in the comedown, h/n the exit here or not). They stay while
-you look at other seeds with the same map. The generator command is `hole_odds` (see
-`crates/cavegen3-web`) and the code is `crates/cavegen3/src/hole_odds.rs`.
+The game places the exit right after the pod, before any teki or treasure: in an empty alcove or
+dead end, picked at random with weight sqrt(unit score) + 10 (the green hole score). So each spot's chance is its weight over the total of the spots that could
+still have it: spots that hold something else are left out, and so are spots within 200 units of
+a hard teki or 150 of a special teki, since those teki keep that far from the exit. The code is
+`crates/cavegen3/src/hole_odds.rs`; the CLI draws it too (`--show holeOdds`). Story floors get
+no odds: there the best score always wins.
 
 ### Aggregator
 
@@ -364,10 +354,9 @@ What the tests check:
 - `crates/cavegen3/tests/jhawk_judge_vs_cavegen.rs`: 72,500 judge scores match CaveGen.
 - `crates/cavegen3/tests/judge2.rs`: judge2 scores and skip chances for fixed seeds, from the
   program it was fitted with (16,308 layouts of the 54 Pay off Debt sublevels matched exactly).
-- `crates/cavegen3/tests/hole_odds.rs`: hole odds use the same candidates and weights as the
-  generator, renormalize exactly when a spot is ruled out, never rule out the real exit when the
-  marks are true, and are calibrated: over 3,000 seeds each of several floors (hole and geyser),
-  the chance given to the real spot averages to what the odds predict.
+- `crates/cavegen3/tests/hole_odds.rs`: hole odds add up to 1, only on empty alcoves and dead
+  ends clear of hard and special teki, are the hole scores renormalized, and never leave out the
+  real hole or geyser; story floors get none.
 - `crates/cavegen3/tests/switch.rs`: every vanilla sublevel generates 200 Switch layouts without
   error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, and the f32
   rounding of `randFloat` and `randInt`.

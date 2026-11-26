@@ -112,6 +112,7 @@ const STRINGS = {
       angles: "Facing directions",
       unitScores: "Unit scores",
       spawnScores: "Treasure and hole scores",
+      holeOdds: "Hole odds",
       tekiScores: "Teki scores",
       doorScores: "Door scores",
       doorLinks: "Door links",
@@ -216,6 +217,7 @@ const STRINGS = {
         podAngle: "An arrow for the way the pod faces, which is the way the camera looks when you land (CaveGen's -drawPodAngle)",
         unitScores: "Each map unit's score, which the generator uses to place the hole and treasures",
         spawnScores: "The scores used to pick the treasure spots (orange) and the hole (green)",
+        holeOdds: "For Challenge Mode, where the seed is unknown: the chance of the hole (or geyser) being at each alcove and dead end, from the game's weights (√unit score + 10) over the spots that are empty and not too close to a teki (hard teki keep 200 units away, special teki 150)",
         tekiScores: "The teki score in each map unit (red)",
         doorScores: "Each door's score (blue)",
         doorLinks: "Lines between linked doors in the same map unit",
@@ -272,34 +274,6 @@ const STRINGS = {
       "Pikmin 2 is &copy; Nintendo; romhack data belongs to its authors.",
     otherLang: "日本語",
     otherLangLabel: "日本語で表示",
-    oddsButton: "Hole odds",
-    odds: {
-      buttonTip: "Where the hole (or geyser) is likely to be when you don't know the seed (Challenge Mode): mark what you've seen",
-      title: "Hole odds",
-      intro:
-        "For runs where the seed is unknown: show a seed with your map. Each alcove and dead end gets the game's own weight for the exit (√room score + 10) over the total. " +
-        "Click a spot to say what you saw there, or a room to rule it out; the spots left share the chance by their weights.",
-      hole: "Hole",
-      geyser: "Geyser",
-      left: (n, exit) => `${exit}: ${n} possible ${n === 1 ? "spot" : "spots"} left.`,
-      none: "Your marks rule out every spot. Check them.",
-      comedown: "Comedown: nothing else seen",
-      comedownTip: "Marks every unmarked spot inside the comedown outline as showing nothing in the comedown (teki can still hide there)",
-      clear: "Clear marks",
-      reset: "This layout's map differs, so the marks were cleared.",
-      spotTip: (i, g) => `Spot ${i} (group ${g})`,
-      fact: (exit) => ({
-        e: "Empty (nothing there)",
-        o: "Something else there",
-        v: "Nothing visible in the comedown",
-        h: `${exit} here`,
-        n: `No ${exit.toLowerCase()} here`,
-        clear: "No mark",
-      }),
-      factShort: (exit) => ({ e: "empty", o: "something else", v: "nothing in comedown", h: exit.toLowerCase(), n: `no ${exit.toLowerCase()}` }),
-      roomNo: (exit) => `No ${exit.toLowerCase()} in this room`,
-      roomClear: "Clear marks in this room",
-    },
     gameNames: {
       pikmin2: "Pikmin 2",
       "251": "Pikmin 251",
@@ -417,6 +391,7 @@ const STRINGS = {
       angles: "向き",
       unitScores: "ユニットのスコア",
       spawnScores: "お宝と穴のスコア",
+      holeOdds: "穴の確率",
       tekiScores: "原生生物のスコア",
       doorScores: "ドアのスコア",
       doorLinks: "ドアのつながり",
@@ -521,6 +496,7 @@ const STRINGS = {
         podAngle: "ポッドの向きの矢印。着地したときにカメラが向く方向です（CaveGenの -drawPodAngle）",
         unitScores: "各マップユニットのスコア（穴とお宝の配置に使われます）",
         spawnScores: "お宝（オレンジ）と穴（緑）の場所選びに使われるスコア",
+        holeOdds: "チャレンジモードなどシードが分からないとき：各くぼみと行き止まりに穴（または間欠泉）がある確率。ゲームの重み（√ユニットスコア＋10）を、空いていて敵に近すぎない場所（強い敵は200、特殊な敵は150離れる）で分けます",
         tekiScores: "各マップユニットの原生生物スコア（赤）",
         doorScores: "各ドアのスコア（青）",
         doorLinks: "同じマップユニット内でつながっているドアどうしの線",
@@ -577,34 +553,6 @@ const STRINGS = {
       "ピクミン2 &copy; Nintendo。改造版のデータは各作者に帰属します。",
     otherLang: "English",
     otherLangLabel: "Show in English",
-    oddsButton: "穴の確率",
-    odds: {
-      buttonTip: "シードが分からないとき（チャレンジモード）に穴（または間欠泉）がありそうな場所：見たものを記録します",
-      title: "穴の確率",
-      intro:
-        "シードが分からないプレイ向けです。自分と同じマップのシードを表示してください。各くぼみと行き止まりに、ゲームと同じ出口の重み（√部屋のスコア＋10）を合計で割った確率を表示します。" +
-        "スポットをクリックすると見たものを記録でき、部屋をクリックするとその部屋を除外できます。残ったスポットで重みに応じて確率を分けます。",
-      hole: "穴",
-      geyser: "間欠泉",
-      left: (n, exit) => `${exit}：候補のスポットは残り${n}個。`,
-      none: "記録ですべてのスポットが除外されました。記録を確認してください。",
-      comedown: "降下中：他に何も見えなかった",
-      comedownTip: "降下中の視界の枠内にある未記録のスポットを「降下中は何も見えない」にします（敵は隠れている場合があります）",
-      clear: "記録を消す",
-      reset: "このレイアウトはマップが違うので、記録を消しました。",
-      spotTip: (i, g) => `スポット${i}（グループ${g}）`,
-      fact: (exit) => ({
-        e: "空（何もない）",
-        o: "他の何かがある",
-        v: "降下中は何も見えない",
-        h: `${exit}がある`,
-        n: `${exit}はない`,
-        clear: "記録なし",
-      }),
-      factShort: (exit) => ({ e: "空", o: "他の何か", v: "降下中は見えない", h: exit, n: `${exit}なし` }),
-      roomNo: (exit) => `この部屋に${exit}はない`,
-      roomClear: "この部屋の記録を消す",
-    },
     gameNames: {
       pikmin2: "ピクミン2",
       "251": "Pikmin 251",
@@ -1263,6 +1211,8 @@ function objectLabel(o) {
 
 // Map options. `details` ones need the generator's extra layout data.
 // `section` is the Advanced options box each goes in.
+// Map options kept in the link (as key=1) as well as in the saved settings.
+const URL_OPTIONS = ["comedownVisible", "holeOdds"];
 const MAP_OPTIONS = [
   { key: "treasures", on: true, section: "objects" },
   { key: "hideBuried", section: "objects" },
@@ -1291,18 +1241,19 @@ const MAP_OPTIONS = [
   { key: "paths", details: true, section: "generation" },
   { key: "unitScores", details: true, section: "scores" },
   { key: "spawnScores", details: true, section: "scores" },
+  { key: "holeOdds", details: true, section: "scores" },
   { key: "tekiScores", details: true, section: "scores" },
   { key: "doorScores", details: true, section: "scores" },
 ];
 
 function mapOptions() {
-  const o = { water: $("water").checked, odds: odds.on };
+  const o = { water: $("water").checked };
   for (const { key } of MAP_OPTIONS) o[key] = $(`opt-${key}`).checked;
   return o;
 }
 
 function needsDetails() {
-  return odds.on || MAP_OPTIONS.some((m) => m.details && $(`opt-${m.key}`).checked);
+  return MAP_OPTIONS.some((m) => m.details && $(`opt-${m.key}`).checked);
 }
 
 // CaveGen's colors for spawn point groups 0-9, and treasure gauge rings.
@@ -1369,8 +1320,6 @@ function comedownVisible(o) {
 }
 
 function objectShown(o, opts) {
-  // Hole odds: the shown layout stands in for the runner's, whose objects aren't known.
-  if (opts.odds) return o.kind === "ship";
   if (opts.comedownVisible && !comedownVisible(o)) return false;
   switch (o.kind) {
     case "treasure":
@@ -1713,8 +1662,6 @@ function drawMap(layout, scale) {
     ctx.globalAlpha = 1;
   }
 
-  if (opts.odds) drawOdds(ctx, layout, cell, toPx, label, toCanvas);
-
   // Exits and the ship first, then gates, treasures and teki on top.
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
@@ -1833,6 +1780,10 @@ function drawMap(layout, scale) {
       if ((sp.group === 4 || sp.group === 9) && sp.hole_score > -1) label(String(sp.hole_score), x, z - cell * 0.12, "#3cff3c", undefined, "left");
     }
   }
+  // The chance of the exit at each spot (crates/cavegen3/src/hole_odds.rs).
+  if (opts.holeOdds) {
+    for (const sp of spawnpoints) if (sp.odds > 0) label(oddsPercent(sp.odds), toPx(sp.x), toPx(sp.z) + cell * 0.32, "#ff9de2");
+  }
   // The comedown and landing outlines.
   if (!view.single) {
     for (const [corners, color] of viewOutlines(layout, true)) {
@@ -1902,6 +1853,13 @@ function quickGlanceColor(o, name, colossal) {
   return null;
 }
 
+/** A chance as a whole percentage, without rounding a small one to 0 or a near-certain one to 100. */
+function oddsPercent(p) {
+  if (p < 0.005) return "<1%";
+  if (p > 0.995 && p < 1) return ">99%";
+  return `${Math.round(p * 100)}%`;
+}
+
 /** A line with an arrowhead at its end. */
 function arrow(ctx, x1, z1, x2, z2, head) {
   const a = Math.atan2(z2 - z1, x2 - x1);
@@ -1958,303 +1916,7 @@ function setupTooltips() {
   };
   canvas.addEventListener("mousemove", (e) => show(e.clientX, e.clientY));
   canvas.addEventListener("mouseleave", () => ($("tooltip").hidden = true));
-  canvas.addEventListener("click", (e) => !mainViewer.dragged && !odds.on && show(e.clientX, e.clientY));
-}
-
-// ---- Hole odds (Challenge Mode, seed unknown) ----
-
-// The shown layout stands in for the runner's (same map). Each alcove or dead end gets the game's
-// own weight for the exit (√unit score + 10) over the total, after dropping the spots the
-// runner's marks rule out; the generator's `hole_odds` command works it out (see
-// crates/cavegen3/src/hole_odds.rs). Spot numbers are indices into the shown layout, as in the
-// link (?odds=1&facts=12e,40h).
-const FACT_CODES = ["e", "o", "v", "h", "n"];
-const odds = {
-  on: false,
-  facts: new Map(), // spawn point index -> fact code
-  spots: null, // spawn point index -> chance, for the current marks (empty: all ruled out)
-  token: 0,
-  hits: [], // clickable spots on the map: {x, z, r, index}
-  transform: null, // the map canvas's transform when drawn, to find what was clicked
-  cell: CELL,
-};
-
-function oddsFactsText() {
-  return [...odds.facts].sort((a, b) => a[0] - b[0]).map(([i, c]) => `${i}${c}`).join(",") || "-";
-}
-
-function oddsSaveUrl() {
-  const p = new URLSearchParams(location.search);
-  for (const k of ["odds", "facts"]) p.delete(k);
-  if (odds.on) {
-    p.set("odds", "1");
-    if (odds.facts.size) p.set("facts", oddsFactsText());
-  }
-  history.replaceState(null, "", `?${p.toString()}`);
-}
-
-function oddsLoadUrl() {
-  odds.on = params.get("odds") === "1";
-  odds.facts = new Map();
-  for (const f of (params.get("facts") || "").split(",")) {
-    const m = f.match(/^(\d+)([a-z])$/);
-    if (m && FACT_CODES.includes(m[2])) odds.facts.set(Number(m[1]), m[2]);
-  }
-}
-
-/** The floor's exit: the geyser on a final floor, else the hole. */
-function oddsExit(layout) {
-  const kinds = new Set(layout.objects.map((o) => o.kind));
-  return kinds.has("geyser") && !kinds.has("hole") ? "geyser" : "hole";
-}
-
-/** The map, to tell whether marks still fit a new layout. */
-function oddsMapKey(layout) {
-  return `${layout.sublevel}|${layout.units.map((u) => `${u.name},${u.x},${u.z},${u.rot}`).join(";")}`;
-}
-
-/** After a new layout: keep the marks if the map is the same, else clear them. */
-function oddsFollow(prev, layout) {
-  if (!prev || oddsMapKey(prev) === oddsMapKey(layout)) return null;
-  const had = odds.facts.size > 0;
-  odds.facts = new Map();
-  return had && odds.on ? T.odds.reset : null;
-}
-
-/** Drops marks that don't fit the layout (from an old link, say). */
-function oddsClean(layout) {
-  const sps = layout.spawnpoints || [];
-  for (const i of [...odds.facts.keys()]) if (!sps[i]) odds.facts.delete(i);
-}
-
-/** Works out the odds for the current marks. */
-async function oddsCount() {
-  if (!odds.on || !current?.layout.spawnpoints) return;
-  const layout = current.layout;
-  const token = ++odds.token;
-  try {
-    const seed = BigInt(`0x${layout.seed}`).toString();
-    const r = await command("hole_odds", layout.sublevel, seed, oddsFactsText(), layout.rng || "gc");
-    if (r.error) throw new Error(r.error);
-    if (token !== odds.token) return;
-    odds.spots = new Map(r.spots);
-  } catch (e) {
-    console.error(e);
-    setStatus(T.cantGenerate(e.message), true);
-  }
-  showOddsPanel();
-  await mainViewer.refresh();
-}
-
-/** Marks changed: save them in the link and work the odds out again. */
-function oddsChanged() {
-  oddsSaveUrl();
-  oddsCount();
-}
-
-function pct(p) {
-  if (!(p > 0)) return "0%";
-  if (p < 0.005) return "<1%";
-  if (p > 0.995 && p < 1) return ">99%";
-  return `${Math.round(p * 100)}%`;
-}
-
-/** Heat colors from pale yellow (unlikely) to red (likely). */
-function heat(p, alpha = 0.85) {
-  const t = Math.min(1, Math.sqrt(Math.max(0, p)));
-  const hue = 55 - 55 * t;
-  return `hsla(${hue}, 95%, ${60 - 12 * t}%, ${alpha})`;
-}
-
-function showOddsPanel() {
-  const panel = $("odds-panel");
-  $("odds-toggle").classList.toggle("on", odds.on);
-  $("odds-toggle").setAttribute("aria-pressed", odds.on ? "true" : "false");
-  panel.hidden = !odds.on || !current;
-  if (panel.hidden) return;
-  const O = T.odds;
-  const exit = O[oddsExit(current.layout)];
-  const button = (text, onClick, tip) => {
-    const b = el("button", { type: "button" }, text);
-    if (tip) b.title = tip;
-    b.addEventListener("click", onClick);
-    return b;
-  };
-  const lines = [];
-  if (odds.spots) {
-    const left = odds.spots.size;
-    lines.push(left ? el("p", { class: "odds-sum" }, O.left(left, exit)) : el("p", { class: "odds-warn" }, O.none));
-  }
-  panel.replaceChildren(
-    el("div", { class: "odds-head" }, el("strong", {}, O.title)),
-    el("p", { class: "odds-intro muted" }, O.intro),
-    ...lines,
-    el(
-      "div",
-      { class: "odds-buttons" },
-      button(O.comedown, oddsComedown, O.comedownTip),
-      button(O.clear, () => {
-        odds.facts = new Map();
-        oddsChanged();
-      }),
-    ),
-  );
-}
-
-function oddsShipIndex(layout) {
-  const ship = layout.objects.find((o) => o.kind === "ship");
-  return ship ? layout.spawnpoints.findIndex((sp) => sp.group === 7 && Math.hypot(sp.x - ship.x, sp.z - ship.z) < 1) : -1;
-}
-
-/** Marks the unmarked spots inside the comedown outline as showing nothing. */
-function oddsComedown() {
-  const layout = current.layout;
-  const ship = layout.objects.find((o) => o.kind === "ship");
-  if (!ship) return;
-  const poly = placeCorners(ship.x, ship.z, ship.angle ?? 0, comedownCorners());
-  const inside = (x, z) => {
-    let hit = false;
-    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-      const [xi, zi] = poly[i];
-      const [xj, zj] = poly[j];
-      if (zi > z !== zj > z && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) hit = !hit;
-    }
-    return hit;
-  };
-  const shipIndex = oddsShipIndex(layout);
-  layout.spawnpoints.forEach((sp, i) => {
-    if (i !== shipIndex && !odds.facts.has(i) && inside(sp.x, sp.z)) odds.facts.set(i, "v");
-  });
-  oddsChanged();
-}
-
-/** Draws the odds over the map: heat circles on the alcoves and dead ends, dots elsewhere. */
-function drawOdds(ctx, layout, cell, toPx, label, toCanvas) {
-  const O = T.odds;
-  odds.hits = [];
-  odds.transform = ctx.getTransform();
-  odds.cell = cell;
-  const exit = O[oddsExit(layout)];
-  const shipIndex = oddsShipIndex(layout);
-  ctx.save();
-  (layout.spawnpoints || []).forEach((sp, i) => {
-    if (i === shipIndex) return;
-    const x = toPx(sp.x);
-    const z = toPx(sp.z);
-    const p = odds.spots ? odds.spots.get(i) || 0 : null;
-    const candidate = sp.group === 4 || sp.group === 9 || p > 0;
-    const fact = odds.facts.get(i);
-    const r = candidate ? Math.max(6, cell * 0.3) : Math.max(3, cell * 0.11);
-    ctx.beginPath();
-    ctx.arc(x, z, r, 0, Math.PI * 2);
-    ctx.fillStyle = candidate ? (p === null ? "rgba(200, 200, 200, 0.45)" : p > 0 ? heat(p) : "rgba(90, 90, 90, 0.6)") : "rgba(220, 220, 220, 0.75)";
-    ctx.fill();
-    ctx.lineWidth = Math.max(1, cell / 28);
-    ctx.strokeStyle = fact ? "#4dd2ff" : "rgba(0, 0, 0, 0.8)";
-    ctx.stroke();
-    if (p > 0) label(pct(p), x, z, "#fff", Math.max(9, cell * 0.24));
-    if (fact) label(FACT_MARKS[fact], x + r * 0.9, z - r * 0.9, "#4dd2ff", Math.max(9, cell * 0.24));
-    const at = toCanvas(x, z);
-    const parts = [O.spotTip(i, sp.group)];
-    if (candidate && p !== null) parts.push(`${exit} ${pct(p)}`);
-    if (fact) parts.push(O.factShort(exit)[fact]);
-    hitTargets.push({ ...at, r: Math.max(r, 8), label: parts.join(" · ") });
-    odds.hits.push({ ...at, r: Math.max(r, 9), index: i });
-  });
-  ctx.restore();
-}
-
-// Short marks drawn beside marked spots.
-const FACT_MARKS = { e: "∅", o: "●", v: "◌", h: "★", n: "✕" };
-
-/** The map unit under a point of the drawn map (CSS pixels of the map canvas), or -1. */
-function oddsUnitAt(x, y) {
-  if (!odds.transform || !current) return -1;
-  const dpr = window.devicePixelRatio || 1;
-  const p = odds.transform.inverse().transformPoint(new DOMPoint(x * dpr, y * dpr));
-  const gx = p.x / odds.cell;
-  const gz = p.y / odds.cell;
-  return current.layout.units.findIndex((u) => gx >= u.x && gx < u.x + u.w && gz >= u.z && gz < u.z + u.h);
-}
-
-function closeOddsMenu() {
-  $("odds-menu").hidden = true;
-}
-
-/** Clicking the map with odds on: a menu of marks for a spot, or for a room. */
-function oddsClick(clientX, clientY) {
-  const at = mainViewer.toContent(clientX, clientY);
-  const k = mainViewer.cscale / mainViewer.scale;
-  let best = null;
-  let bestDist = Infinity;
-  for (const h of odds.hits) {
-    const d = Math.hypot(h.x - at.x, h.z - at.y);
-    if (d <= Math.max(h.r, 10 * k) && d < bestDist) {
-      best = h;
-      bestDist = d;
-    }
-  }
-  const O = T.odds;
-  const layout = current.layout;
-  const exit = O[oddsExit(layout)];
-  const items = [];
-  const item = (text, active, fn) => {
-    const b = el("button", { type: "button", class: active ? "active" : "" }, text);
-    b.addEventListener("click", () => {
-      closeOddsMenu();
-      fn();
-      oddsChanged();
-    });
-    items.push(b);
-  };
-  if (best) {
-    const i = best.index;
-    const now = odds.facts.get(i);
-    const names = O.fact(exit);
-    for (const c of FACT_CODES) item(names[c], now === c, () => odds.facts.set(i, c));
-    item(names.clear, !now, () => odds.facts.delete(i));
-  } else {
-    const u = oddsUnitAt(at.x, at.y);
-    if (u < 0) return closeOddsMenu();
-    const spots = layout.spawnpoints.map((sp, i) => [sp, i]).filter(([sp]) => sp.unit === u);
-    const exitSpots = spots.filter(([sp]) => sp.group === 4 || sp.group === 9);
-    if (exitSpots.length) item(O.roomNo(exit), false, () => exitSpots.forEach(([, i]) => odds.facts.set(i, "n")));
-    item(O.roomClear, false, () => spots.forEach(([, i]) => odds.facts.delete(i)));
-  }
-  const menu = $("odds-menu");
-  menu.replaceChildren(...items);
-  menu.hidden = false;
-  $("tooltip").hidden = true;
-  const wrap = $("map-scroll").getBoundingClientRect();
-  const left = Math.min(clientX - wrap.left + 8, wrap.width - menu.offsetWidth - 4);
-  menu.style.left = `${Math.max(4, left)}px`;
-  menu.style.top = `${Math.max(4, Math.min(clientY - wrap.top + 8, wrap.height - menu.offsetHeight - 4))}px`;
-}
-
-function setupOdds() {
-  $("odds-toggle").addEventListener("click", async () => {
-    odds.on = !odds.on;
-    closeOddsMenu();
-    oddsSaveUrl();
-    if (odds.on && current && !current.layout.spawnpoints) {
-      await run(); // the spawn points come with the details
-      return;
-    }
-    if (odds.on && current) oddsClean(current.layout);
-    showOddsPanel();
-    if (current) await render(current.layout);
-    if (odds.on) oddsCount();
-    else odds.token++;
-  });
-  // The pane takes the pointer while it's down (for dragging), so clicks land on it, not the canvas.
-  $("map-scroll").addEventListener("click", (e) => {
-    if (!odds.on || !current || mainViewer.dragged || e.target.closest("#odds-menu")) return;
-    oddsClick(e.clientX, e.clientY);
-  });
-  document.addEventListener("keydown", (e) => e.key === "Escape" && closeOddsMenu());
-  document.addEventListener("pointerdown", (e) => {
-    if (!$("odds-menu").hidden && !e.target.closest("#odds-menu")) closeOddsMenu();
-  });
+  canvas.addEventListener("click", (e) => !mainViewer.dragged && show(e.clientX, e.clientY));
 }
 
 // ---- Summary ----
@@ -2547,21 +2209,11 @@ async function generateAndShow({ newCave = false } = {}) {
     const judged = judgeType ? await command("judge", sublevel, judgeType, seed, ...rngArgs(seed)) : null;
     const judge = judged ? { type: judgeType, score: judged.score, skips: judged.skips || [] } : null;
     const refit = !current || current.sublevel !== sublevel;
-    // Hole odds marks stay while the map is the same, and are cleared otherwise.
-    const oddsNote = oddsFollow(current?.layout, layout);
-    odds.spots = null;
-    if (odds.on) {
-      oddsClean(layout);
-      oddsSaveUrl();
-    }
     current = { layout, cave, floor, ms, sublevel, judge };
     $("result").hidden = false;
     $("tooltip").hidden = true;
-    closeOddsMenu();
     await showCurrent(refit);
     updateUrl(cave, floor, seed);
-    if (oddsNote) setStatus(oddsNote);
-    if (odds.on) oddsCount();
     if ($("caveinfo-box").open) await showCaveInfo();
   } catch (e) {
     console.error(e);
@@ -2575,7 +2227,6 @@ async function showCurrent(refit = false) {
   const { layout, cave, floor, ms } = current;
   const title = layout.floors > 1 || cave.name !== "Colossal Caverns" ? T.floorName(caveName(cave), floor) : caveName(cave);
   $("title").textContent = `${title} · ${layout.seed}`;
-  showOddsPanel();
   await render(layout, refit);
   await renderSummary(layout);
   setStatus("");
@@ -3056,7 +2707,6 @@ function applyLanguage() {
   if ($("search-go")) $("search-go").textContent = search && !search.done ? T.stop : T.searchButton;
   if ($("judge")) fillJudges();
   if (T.pageTitle[page]) document.title = T.pageTitle[page];
-  if ($("odds-toggle")) $("odds-toggle").title = T.odds.buttonTip;
   const toggle = $("lang-toggle");
   toggle.textContent = T.otherLang;
   toggle.setAttribute("aria-label", T.otherLangLabel);
@@ -3179,10 +2829,11 @@ async function init() {
   // "landing=1" and "comedown=1" are old links to the pod view.
   const viewParam = VIEWS.includes(params.get("view")) ? params.get("view") : params.get("landing") === "1" || params.get("comedown") === "1" ? "pod" : null;
   if (viewParam) for (const v of VIEWS) $(`view-${v}`).checked = v === viewParam;
-  // The comedown-visible filter is kept in the link, so a shared link shows the same objects.
-  oddsLoadUrl();
-  if (params.has("comedownVisible")) $("opt-comedownVisible").checked = params.get("comedownVisible") === "1";
-  setUrlFlag("comedownVisible", $("opt-comedownVisible").checked);
+  // The comedown-visible filter and hole odds are kept in the link, so a shared link shows the same.
+  for (const key of URL_OPTIONS) {
+    if (params.has(key)) $(`opt-${key}`).checked = params.get(key) === "1";
+    setUrlFlag(key, $(`opt-${key}`).checked);
+  }
   // "judge=judge2" picks the judge for this link (over the saved one); "judge=none" turns it off.
   const judgeParam = params.get("judge");
   if (judgeParam === "none" || JUDGES.includes(judgeParam)) $("judge").value = judgeParam === "none" ? "" : judgeParam;
@@ -3263,7 +2914,7 @@ async function init() {
   for (const { key, details } of MAP_OPTIONS) {
     $(`opt-${key}`).addEventListener("change", () => {
       saveSettings();
-      if (key === "comedownVisible") setUrlFlag(key, $(`opt-${key}`).checked);
+      if (URL_OPTIONS.includes(key)) setUrlFlag(key, $(`opt-${key}`).checked);
       if (!current) return;
       // Turning on an option that needs the extra layout data generates the layout again.
       if (details && !current.layout.spawnpoints && $(`opt-${key}`).checked) run();
@@ -3308,7 +2959,6 @@ async function init() {
     }
   });
   setupTooltips();
-  setupOdds();
 
   await run();
 }

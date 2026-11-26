@@ -147,17 +147,9 @@ pub fn trace_rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
 }
 
 pub(crate) fn generate(rng: Rng, caveinfo: &CaveInfo) -> Layout<'_> {
-    generate_partly(rng, caveinfo, false)
-}
-
-/// Generates a layout. With `exits_only` it stops once the pod, hole and geyser are placed (no
-/// teki, treasures or gates), so the unit scores are still the ones the hole was picked with
-/// (see [`crate::hole_odds`]).
-pub fn generate_partly(rng: Rng, caveinfo: &CaveInfo, exits_only: bool) -> Layout<'_> {
     let seed = rng.state();
     let generator = rng.generator();
     let mut g = Generator::new(rng, caveinfo);
-    g.exits_only = exits_only;
     g.run();
     Layout {
         caveinfo,
@@ -206,7 +198,6 @@ impl<'a> Generator<'a> {
             spawn_order: Vec::new(),
             early_stop: false,
             trace: false,
-            exits_only: false,
         }
     }
 }
@@ -246,8 +237,6 @@ struct Generator<'a> {
     early_stop: bool,
     /// Print each placement step to stderr ([`trace_rooms_placed`]).
     trace: bool,
-    /// Stop after the exits ([`generate_partly`]).
-    exits_only: bool,
 }
 
 /// A unit position that passed the placement checks.
@@ -280,9 +269,6 @@ impl<'a> Generator<'a> {
         }
         if self.ci.is_final_floor || self.ci.has_geyser {
             self.place_hole(SpawnObject::Geyser(self.ci.is_challenge_mode() && self.ci.is_final_floor));
-        }
-        if self.exits_only {
-            return;
         }
         self.place_seam_teki();
         self.place_special_teki();

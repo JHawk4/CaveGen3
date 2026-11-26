@@ -108,6 +108,9 @@ pub struct Spawnpoint {
     pub hole_score: i64,
     pub treasure_score: i64,
     pub used: bool,
+    /// The chance of the exit being here.
+    #[serde(default)]
+    pub odds: f64,
 }
 
 #[derive(Deserialize)]
@@ -147,6 +150,8 @@ pub struct Options {
     pub angles: bool,
     pub unit_scores: bool,
     pub spawn_scores: bool,
+    /// The chance of the exit at each spot ([`cavegen3::hole_odds`]).
+    pub hole_odds: bool,
     pub teki_scores: bool,
     pub door_scores: bool,
     pub door_links: bool,
@@ -197,6 +202,7 @@ impl Default for Options {
             angles: false,
             unit_scores: false,
             spawn_scores: false,
+            hole_odds: false,
             teki_scores: false,
             door_scores: false,
             door_links: false,
@@ -237,6 +243,7 @@ pub const OPTION_NAMES: &[&str] = &[
     "angles",
     "unitScores",
     "spawnScores",
+    "holeOdds",
     "tekiScores",
     "doorScores",
     "doorLinks",
@@ -278,6 +285,7 @@ impl Options {
             "angles" => &mut self.angles,
             "unitscores" => &mut self.unit_scores,
             "spawnscores" => &mut self.spawn_scores,
+            "holeodds" => &mut self.hole_odds,
             "tekiscores" => &mut self.teki_scores,
             "doorscores" => &mut self.door_scores,
             "doorlinks" => &mut self.door_links,
@@ -309,6 +317,7 @@ impl Options {
             || self.angles
             || self.unit_scores
             || self.spawn_scores
+            || self.hole_odds
             || self.teki_scores
             || self.door_scores
             || self.door_links
@@ -1570,6 +1579,11 @@ pub fn render(layout: &Layout, opts: &Options, assets: &Assets) -> Result<Pixmap
             }
         }
     }
+    if opts.hole_odds {
+        for sp in layout.spawnpoints.iter().filter(|sp| sp.odds > 0.0) {
+            cv.label(&odds_percent(sp.odds), to_px(sp.x), to_px(sp.z) + cell * 0.32, hex("#ff9de2"), label_size, false);
+        }
+    }
     // The landing and comedown outlines.
     for (corners, color) in &outlines {
         let mut pb = PathBuilder::new();
@@ -1883,4 +1897,15 @@ pub fn render_agg_group(group: &AggGroup, view: [f32; 4], opts: &AggOptions, ass
         }
     }
     Ok(cv.pixmap)
+}
+
+/// A chance as a whole percentage, as web/app.js's `oddsPercent`.
+fn odds_percent(p: f64) -> String {
+    if p < 0.005 {
+        "<1%".into()
+    } else if p > 0.995 && p < 1.0 {
+        ">99%".into()
+    } else {
+        format!("{}%", (p * 100.0).round())
+    }
 }
