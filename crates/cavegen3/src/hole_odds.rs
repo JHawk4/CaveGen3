@@ -1,35 +1,19 @@
-//! Where the exit hole (or geyser) is likely to be, given what a runner has seen, when the seed
-//! isn't known (Challenge Mode).
+//! Where the exit (the hole, or the geyser on a final floor) is likely to be when the seed isn't
+//! known (Challenge Mode), worked out from the layout itself with no other layouts generated.
 //!
-//! The runner's view is a *reference* layout: some seed whose rooms around the pod look like
-//! theirs. They mark which of its map units they've seen, and facts about spawn points in those
-//! units (empty, holds something, the hole is or isn't there, nothing showed in the comedown).
-//! [`tally`] then generates many other seeds and keeps the layouts that agree:
+//! The game places the hole right after the pod, before any teki or treasure (`place_hole`):
+//! among the empty alcoves (group 4, except those within 150 of the pod in its own unit) and dead
+//! ends (group 9) of rooms and caps, or of hallways if there are none. In Challenge Mode it picks
+//! one at random with weight sqrt(unit score) + 10; in story mode the highest score wins. So a
+//! spot's chance is its weight over the total. What the runner has seen ([`Fact`]s about spots)
+//! rules spots out, and the rest share the chance in proportion to their weights.
 //!
-//! - **Rooms**: the pod is in the same unit at the same spawn point, and every seen unit sits in
-//!   the same place relative to the pod, the same way round. Positions are compared in the pod's
-//!   frame, so a map turned as a whole still matches (the runner can't tell north).
-//! - **Facts**: each marked spawn point (the same spot of the matching unit) agrees.
-//!
-//! For each agreeing layout the hole counts toward its spawn point when it's in a seen unit, or
-//! else toward the exit of the seen area nearest to it (the open door of a seen unit with the
-//! shortest walk through unseen units). Dividing by the number of agreeing layouts gives the
-//! probabilities. The same is done for the geyser.
-//!
-//! Nothing here assumes how the hole is picked, so it covers everything the generator does: in
-//! Challenge Mode the hole goes in an empty alcove or dead end weighted by the square root of
-//! its unit's score plus 10 (`place_hole`), before any teki or treasure, and teki then keep 150
-//! or 200 units away from it. A teki seen at a spot thus also says the hole isn't next to it.
+//! Teki keep away from the exit afterwards (hard teki 200 units, special teki 150), so a teki
+//! seen in a hard or special teki spot also rules out the spots near it.
 
-use std::collections::{BTreeMap, BinaryHeap};
+use std::collections::BTreeMap;
 
-use crate::{
-    Layout, SpawnObject,
-    caveinfo::CaveInfo,
-    generate::generate_partly,
-    layout::PlacedUnit,
-    rng::{Generator, Rng},
-};
+use crate::{Layout, SpawnObject};
 
 /// Teki the game draws during the comedown (plants and the fire, electric and gas hazards); every
 /// other teki is hidden then. Lowercase internal names. Same list as `COMEDOWN_VISIBLE_TEKI` in
@@ -73,14 +57,14 @@ pub fn comedown_visible(so: &SpawnObject) -> bool {
 pub enum Fact {
     /// Nothing at all spawned there.
     Empty,
-    /// Something other than the hole or geyser is there (a teki, treasure, plant...).
+    /// Something other than the exit is there (a teki, treasure, plant...).
     Occupied,
     /// Nothing the comedown shows is there (it may hold a teki, which the comedown hides).
     NothingVisible,
-    Hole,
-    NoHole,
-    Geyser,
-    NoGeyser,
+    /// The exit is here.
+    Exit,
+    /// The exit isn't here.
+    NoExit,
 }
 
 impl Fact {
@@ -90,10 +74,8 @@ impl Fact {
             Fact::Empty => 'e',
             Fact::Occupied => 'o',
             Fact::NothingVisible => 'v',
-            Fact::Hole => 'h',
-            Fact::NoHole => 'n',
-            Fact::Geyser => 'g',
-            Fact::NoGeyser => 'x',
+            Fact::Exit => 'h',
+            Fact::NoExit => 'n',
         }
     }
 
@@ -102,380 +84,54 @@ impl Fact {
             'e' => Fact::Empty,
             'o' => Fact::Occupied,
             'v' => Fact::NothingVisible,
-            'h' => Fact::Hole,
-            'n' => Fact::NoHole,
-            'g' => Fact::Geyser,
-            'x' => Fact::NoGeyser,
+            'h' => Fact::Exit,
+            'n' => Fact::NoExit,
             _ => return None,
         })
     }
 
     /// Whether a spawn point holding `contains` agrees with this fact.
     pub fn holds(self, contains: &[SpawnObject]) -> bool {
-        let hole = contains.iter().any(|so| matches!(so, SpawnObject::Hole(_)));
-        let geyser = contains.iter().any(|so| matches!(so, SpawnObject::Geyser(_)));
+        let is_exit = |so: &SpawnObject| matches!(so, SpawnObject::Hole(_) | SpawnObject::Geyser(_));
         match self {
             Fact::Empty => contains.is_empty(),
-            Fact::Occupied => contains
-                .iter()
-                .any(|so| !matches!(so, SpawnObject::Hole(_) | SpawnObject::Geyser(_))),
+            Fact::Occupied => contains.iter().any(|so| !is_exit(so)),
             Fact::NothingVisible => !contains.iter().any(comedown_visible),
-            Fact::Hole => hole,
-            Fact::NoHole => !hole,
-            Fact::Geyser => geyser,
-            Fact::NoGeyser => !geyser,
+            Fact::Exit => contains.iter().any(is_exit),
+            Fact::NoExit => !contains.iter().any(is_exit),
         }
     }
-}
 
-/// What the runner has seen, in terms of the reference layout.
-#[derive(Debug, Clone, Default)]
-pub struct Observations {
-    /// Indices of the reference's units the runner has seen. The pod's unit (0) always counts.
-    pub seen: Vec<u32>,
-    /// Facts about the reference's spawn points (by index). Facts about spawn points outside the
-    /// seen units are ignored: only seen rooms carry over between layouts.
-    pub facts: Vec<(u32, Fact)>,
-}
-
-impl Observations {
-    /// Parses `seen` ("0,3,5", or "-" for none) and `facts` ("12e,40h", or "-").
-    pub fn parse(seen: &str, facts: &str) -> Result<Observations, String> {
-        let list = |s: &str| -> Vec<String> {
-            let s = s.trim();
-            if s.is_empty() || s == "-" {
-                Vec::new()
-            } else {
-                s.split(',').map(|p| p.trim().to_string()).filter(|p| !p.is_empty()).collect()
-            }
-        };
-        let mut obs = Observations::default();
-        for p in list(seen) {
-            obs.seen.push(p.parse().map_err(|_| format!("bad unit number {p:?}"))?);
+    /// Parses facts about spawn points: "12e,40h" (spawn point index, then the code), or "-" or
+    /// "" for none.
+    pub fn parse_list(text: &str) -> Result<Vec<(u32, Fact)>, String> {
+        let text = text.trim();
+        if text.is_empty() || text == "-" {
+            return Ok(Vec::new());
         }
-        for p in list(facts) {
+        let mut out = Vec::new();
+        for p in text.split(',').map(str::trim).filter(|p| !p.is_empty()) {
             let c = p.chars().last().unwrap();
             let fact = Fact::from_code(c).ok_or_else(|| format!("bad fact {p:?}"))?;
             let index = p[..p.len() - c.len_utf8()].parse().map_err(|_| format!("bad fact {p:?}"))?;
-            obs.facts.push((index, fact));
+            out.push((index, fact));
         }
-        Ok(obs)
-    }
-
-    /// The seen units with the pod's unit, sorted, without repeats.
-    fn seen_units(&self) -> Vec<u32> {
-        let mut seen = self.seen.clone();
-        seen.push(0);
-        seen.sort_unstable();
-        seen.dedup();
-        seen
+        Ok(out)
     }
 }
 
-/// A unit's center in half grid cells, so it's a whole number whatever the unit's size.
-fn center2(u: &PlacedUnit) -> (i32, i32) {
-    (2 * u.x + u.unit.width as i32, 2 * u.z + u.unit.height as i32)
+/// The exit `layout` has: the geyser on a final floor, else the hole (a story floor with both
+/// gets the hole's odds).
+pub fn exit_of(layout: &Layout) -> Option<u32> {
+    if layout.caveinfo.is_final_floor { layout.geyser } else { layout.hole }
 }
 
-/// Turns a vector `k` quarter turns the way a unit's rotation does: (x, z) -> (-z, x).
-fn turn((x, z): (i32, i32), k: u16) -> (i32, i32) {
-    match k % 4 {
-        0 => (x, z),
-        1 => (-z, x),
-        2 => (-x, -z),
-        _ => (z, -x),
-    }
-}
-
-/// The pod's spawn point as an index into its unit's spawn points.
-fn ship_local(layout: &Layout) -> Option<u32> {
-    let ship = layout.ship?;
-    Some(ship - layout.units.first()?.first_spawnpoint)
-}
-
-/// For each of `units` (reference unit indices), the unit of `sample` in the same place relative
-/// to the pod, or `None` if any is missing or the pod's spot differs.
-pub fn match_units(reference: &Layout, units: &[u32], sample: &Layout) -> Option<Vec<u32>> {
-    let (r0, s0) = (reference.units.first()?, sample.units.first()?);
-    if r0.unit.name_id != s0.unit.name_id || ship_local(reference)? != ship_local(sample)? {
-        return None;
-    }
-    // Quarter turns from the sample's frame to the reference's.
-    let k = (r0.unit.rotation + 4 - s0.unit.rotation) % 4;
-    let (rc0, sc0) = (center2(r0), center2(s0));
-    let mut out = Vec::with_capacity(units.len());
-    for &ri in units {
-        let r = reference.units.get(ri as usize)?;
-        let want = center2(r);
-        let found = sample.units.iter().position(|s| {
-            if s.unit.name_id != r.unit.name_id || (s.unit.rotation + k) % 4 != r.unit.rotation {
-                return false;
-            }
-            let c = center2(s);
-            let (dx, dz) = turn((c.0 - sc0.0, c.1 - sc0.1), k);
-            (rc0.0 + dx, rc0.1 + dz) == want
-        })?;
-        out.push(found as u32);
-    }
-    Some(out)
-}
-
-/// The sample's spawn point matching the reference's spawn point `ri`, given the unit matches
-/// from [`match_units`] (`None` if `ri` isn't in a matched unit).
-fn map_spawnpoint(reference: &Layout, units: &[u32], map: &[u32], sample: &Layout, ri: u32) -> Option<usize> {
-    let sp = reference.spawnpoints.get(ri as usize)?;
-    let pos = units.iter().position(|&u| u == sp.unit)?;
-    let local = ri - reference.units[sp.unit as usize].first_spawnpoint;
-    Some((sample.units[map[pos] as usize].first_spawnpoint + local) as usize)
-}
-
-/// Re-expresses observations made on `reference` in terms of `other`, when its rooms match
-/// (`None` otherwise): for moving to another layout without losing the marks.
-pub fn remap(reference: &Layout, obs: &Observations, other: &Layout) -> Option<Observations> {
-    let units = obs.seen_units();
-    let map = match_units(reference, &units, other)?;
-    let facts = obs
-        .facts
-        .iter()
-        .filter_map(|&(ri, fact)| Some((map_spawnpoint(reference, &units, &map, other, ri)? as u32, fact)))
-        .collect();
-    Some(Observations { seen: map, facts })
-}
-
-/// Counts toward one exit object's location.
-#[derive(Debug, Clone, Default)]
-pub struct Where {
-    /// Reference spawn point index -> layouts with it there.
-    pub spots: BTreeMap<u32, f64>,
-    /// Reference door index (an open door of a seen unit) -> layouts with it beyond that door.
-    pub exits: BTreeMap<u32, f64>,
-    /// Layouts where it's beyond the seen units but no exit reaches it (shouldn't happen).
-    pub other: f64,
-    /// Layouts without one.
-    pub none: f64,
-}
-
-/// The result of [`tally`]; counts add up across calls with [`Tally::add`].
-#[derive(Debug, Clone, Default)]
-pub struct Tally {
-    pub tested: u64,
-    /// Layouts whose seen rooms match.
-    pub matched: u64,
-    /// Matching layouts that also agree with every fact.
-    pub consistent: u64,
-    pub hole: Where,
-    pub geyser: Where,
-    /// The first few consistent seeds, for looking at.
-    pub examples: Vec<u64>,
-}
-
-impl Tally {
-    pub fn add(&mut self, other: &Tally, max_examples: usize) {
-        self.tested += other.tested;
-        self.matched += other.matched;
-        self.consistent += other.consistent;
-        for (a, b) in [(&mut self.hole, &other.hole), (&mut self.geyser, &other.geyser)] {
-            for (k, v) in &b.spots {
-                *a.spots.entry(*k).or_default() += v;
-            }
-            for (k, v) in &b.exits {
-                *a.exits.entry(*k).or_default() += v;
-            }
-            a.other += b.other;
-            a.none += b.none;
-        }
-        for &s in &other.examples {
-            if self.examples.len() < max_examples {
-                self.examples.push(s);
-            }
-        }
-    }
-}
-
-/// The open doors of the seen units in the reference: (reference door, unit position in `units`,
-/// door index within its unit).
-fn seen_exits(reference: &Layout, units: &[u32]) -> Vec<(u32, usize, usize)> {
-    let mut out = Vec::new();
-    for (pos, &ui) in units.iter().enumerate() {
-        let u = &reference.units[ui as usize];
-        for (local, d) in u.door_indices().enumerate() {
-            let beyond = reference.doors[d].adjacent.map(|a| reference.doors[a as usize].unit);
-            if beyond.is_some_and(|b| !units.contains(&b)) {
-                out.push((d as u32, pos, local));
-            }
-        }
-    }
-    out
-}
-
-/// Which exits of the seen area the object at sample spawn point `target` is nearest to, by
-/// walking distance (door links within units, then straight to the spot) through unseen units.
-/// Ties share the count.
-fn nearest_exits(sample: &Layout, seen_sample: &[u32], exits: &[(u32, usize)], target: usize) -> Vec<u32> {
-    let n = sample.doors.len();
-    let mut dist = vec![f32::INFINITY; n];
-    let mut label: Vec<Vec<u32>> = vec![Vec::new(); n];
-    // Max-heap on negated, scaled distances.
-    let mut heap = BinaryHeap::new();
-    for &(ref_door, sample_door) in exits {
-        let Some(adj) = sample.doors[sample_door].adjacent else { continue };
-        let adj = adj as usize;
-        if dist[adj] > 0.0 {
-            dist[adj] = 0.0;
-            label[adj].clear();
-        }
-        if !label[adj].contains(&ref_door) {
-            label[adj].push(ref_door);
-        }
-        heap.push((0i64, adj));
-    }
-    let key = |d: f32| -((d * 16.0) as i64);
-    while let Some((negd, d)) = heap.pop() {
-        if negd != key(dist[d]) {
-            continue;
-        }
-        let door = &sample.doors[d];
-        let unit = &sample.units[door.unit as usize];
-        let relax =
-            |to: usize, nd: f32, from: &Vec<u32>, heap: &mut BinaryHeap<(i64, usize)>, dist: &mut Vec<f32>, label: &mut Vec<Vec<u32>>| {
-                if nd < dist[to] - 1e-3 {
-                    dist[to] = nd;
-                    label[to] = from.clone();
-                    heap.push((key(nd), to));
-                } else if (nd - dist[to]).abs() <= 1e-3 {
-                    for l in from {
-                        if !label[to].contains(l) {
-                            label[to].push(*l);
-                        }
-                    }
-                }
-            };
-        let from = label[d].clone();
-        for link in &door.door.door_links {
-            let to = unit.first_door as usize + link.door_id;
-            relax(to, dist[d] + link.distance, &from, &mut heap, &mut dist, &mut label);
-        }
-        if let Some(adj) = door.adjacent {
-            let adj = adj as usize;
-            if !seen_sample.contains(&sample.doors[adj].unit) {
-                relax(adj, dist[d], &from, &mut heap, &mut dist, &mut label);
-            }
-        }
-    }
-    let sp = &sample.spawnpoints[target];
-    let unit = &sample.units[sp.unit as usize];
-    let mut best = f32::INFINITY;
-    let mut out: Vec<u32> = Vec::new();
-    for d in unit.door_indices() {
-        if !dist[d].is_finite() {
-            continue;
-        }
-        let total = dist[d] + sample.doors[d].center().p2_dist(&sp.pos);
-        if total < best - 1e-3 {
-            best = total;
-            out = label[d].clone();
-        } else if (total - best).abs() <= 1e-3 {
-            for l in &label[d] {
-                if !out.contains(l) {
-                    out.push(*l);
-                }
-            }
-        }
-    }
-    out
-}
-
-/// Generates `seeds` and counts where the hole and geyser are in the layouts that agree with
-/// `obs` on `reference` (see the module docs). Keeps up to `max_examples` agreeing seeds.
-pub fn tally(
-    reference: &Layout,
-    obs: &Observations,
-    caveinfo: &CaveInfo,
-    generator: Generator,
-    seeds: impl IntoIterator<Item = u64>,
-    max_examples: usize,
-) -> Tally {
-    let units = obs.seen_units();
-    let exits = seen_exits(reference, &units);
-    // Facts on seen units only, as (unit position in `units`, spawn point index within it).
-    let facts: Vec<(usize, u32, Fact)> = obs
-        .facts
-        .iter()
-        .filter_map(|&(ri, fact)| {
-            let sp = reference.spawnpoints.get(ri as usize)?;
-            let pos = units.iter().position(|&u| u == sp.unit)?;
-            Some((pos, ri - reference.units[sp.unit as usize].first_spawnpoint, fact))
-        })
-        .collect();
-
-    // Layouts with another unit for the pod's are dropped as soon as it's placed, and teki and
-    // treasures are only placed when a fact needs them.
-    let first_unit = reference.units.first().map(|u| u.unit.name_id);
-    let exits_only = facts
-        .iter()
-        .all(|f| matches!(f.2, Fact::Hole | Fact::NoHole | Fact::Geyser | Fact::NoGeyser));
-
-    let mut t = Tally::default();
-    for seed in seeds {
-        t.tested += 1;
-        let Some(sample) = generate_partly(Rng::with(generator, seed), caveinfo, first_unit, exits_only) else {
-            continue;
-        };
-        let Some(map) = match_units(reference, &units, &sample) else {
-            continue;
-        };
-        t.matched += 1;
-        let agrees = facts.iter().all(|&(pos, local, fact)| {
-            let si = sample.units[map[pos] as usize].first_spawnpoint + local;
-            fact.holds(&sample.spawnpoints[si as usize].contains)
-        });
-        if !agrees {
-            continue;
-        }
-        t.consistent += 1;
-        if t.examples.len() < max_examples {
-            t.examples.push(seed);
-        }
-        for (object, w) in [(sample.hole, &mut t.hole), (sample.geyser, &mut t.geyser)] {
-            let Some(si) = object else {
-                w.none += 1.0;
-                continue;
-            };
-            let sp = &sample.spawnpoints[si as usize];
-            if let Some(pos) = map.iter().position(|&u| u == sp.unit) {
-                let local = si - sample.units[sp.unit as usize].first_spawnpoint;
-                let ri = reference.units[units[pos] as usize].first_spawnpoint + local;
-                *w.spots.entry(ri).or_default() += 1.0;
-                continue;
-            }
-            let sample_exits: Vec<(u32, usize)> = exits
-                .iter()
-                .map(|&(rd, pos, local)| (rd, sample.units[map[pos] as usize].first_door as usize + local))
-                .collect();
-            let nearest = nearest_exits(&sample, &map, &sample_exits, si as usize);
-            if nearest.is_empty() {
-                w.other += 1.0;
-            } else {
-                let share = 1.0 / nearest.len() as f64;
-                for rd in nearest {
-                    *w.exits.entry(rd).or_default() += share;
-                }
-            }
-        }
-    }
-    t
-}
-
-// ---------------------------------------------------------------------------------------------
-// Odds from the hole's own weights, without generating other layouts.
-
-/// Where the hole and geyser can go in `layout` and each spot's weight, as `place_hole` picks
-/// them: empty alcoves (group 4, except within 150 of the pod in its own unit) and dead ends
-/// (group 9) in rooms and caps, or hallways if there are none. In Challenge Mode the weight is
-/// sqrt(unit score) + 10; in story mode only the highest score can win, so those spots weigh 1.
+/// Where the exit can go in `layout` and each spot's weight, as `place_hole` picks it (see the
+/// module docs): sqrt(unit score) + 10 in Challenge Mode; in story mode 1 for the highest score
+/// and 0 for the rest.
 ///
-/// `layout` must be generated with `exits_only` ([`generate_partly`]): the unit scores are then
-/// still the ones the game had when it placed the hole (before teki raise them).
+/// `layout` must be generated with `exits_only` ([`generate_partly`](crate::generate::generate_partly)):
+/// the unit scores are then still the ones the game had when it placed the exit (teki raise them).
 pub fn exit_candidates(layout: &Layout) -> Vec<(u32, f64)> {
     let scores = candidate_scores(layout);
     pick_weights(layout, &scores.iter().collect::<Vec<_>>())
@@ -492,7 +148,7 @@ fn pick_weights(layout: &Layout, cands: &[&(u32, i32)]) -> Vec<(u32, f64)> {
     }
 }
 
-/// The hole candidates of `layout` and their scores (see [`exit_candidates`]).
+/// The exit candidates of `layout` and their scores (see [`exit_candidates`]).
 fn candidate_scores(layout: &Layout) -> Vec<(u32, i32)> {
     use crate::{caveinfo::RoomType, math};
     let challenge = layout.caveinfo.is_challenge_mode();
@@ -534,20 +190,22 @@ fn candidate_scores(layout: &Layout) -> Vec<(u32, i32)> {
     out
 }
 
-/// Whether the hole (`geyser` false) or geyser could be at spawn point `i` of `layout` given the
-/// facts: not at a spot seen empty or holding something else, nor near a seen hard teki (200) or
-/// special teki (150), which keep that far from both.
-fn allowed(layout: &Layout, facts: &[(u32, Fact)], i: u32, geyser: bool) -> bool {
+/// Whether the exit could be at spawn point `i` of `layout` given the facts: not at a spot seen
+/// empty or holding something else, nor near a seen hard teki (200) or special teki (150), which
+/// keep that far from it; and only at the spot marked as the exit, if one is.
+fn allowed(layout: &Layout, facts: &[(u32, Fact)], i: u32) -> bool {
     let pos = layout.spawnpoints[i as usize].pos;
     facts.iter().all(|&(fi, fact)| {
         let here = fi == i;
         match fact {
+            Fact::Exit => here,
+            Fact::NoExit => !here,
             Fact::Empty | Fact::Occupied | Fact::NothingVisible => {
                 if here {
                     return false;
                 }
                 // A seen teki in a hard (1) or special (8) teki spot.
-                let sp = &layout.spawnpoints[fi as usize];
+                let Some(sp) = layout.spawnpoints.get(fi as usize) else { return true };
                 let gap = match (fact, sp.group()) {
                     (Fact::Occupied, 1) => 200.0,
                     (Fact::Occupied, 8) => 150.0,
@@ -555,110 +213,22 @@ fn allowed(layout: &Layout, facts: &[(u32, Fact)], i: u32, geyser: bool) -> bool
                 };
                 sp.pos.p2_dist(&pos) >= gap
             }
-            Fact::Hole => !geyser || !here,
-            Fact::Geyser => geyser || !here,
-            Fact::NoHole => geyser || !here,
-            Fact::NoGeyser => !geyser || !here,
         }
     })
 }
 
-/// Odds from `layout`'s own hole weights, treating it as the runner's layout: each candidate's
-/// weight over the total, after dropping the spots the facts rule out (renormalizing the rest).
-/// The geyser is picked after the hole from the spots left, so its odds sum over where the hole
-/// went. Spots in unseen units count toward the nearest exit of the seen ones, as in [`tally`].
-///
-/// `layout` must be generated with `exits_only` (see [`exit_candidates`]). Facts outside the seen
-/// units are ignored. The counts in the result are probabilities (`consistent` is 1, or 0 when
-/// the facts rule everything out).
-pub fn weighted(layout: &Layout, obs: &Observations) -> Tally {
-    let units = obs.seen_units();
-    let facts: Vec<(u32, Fact)> = obs
-        .facts
-        .iter()
-        .copied()
-        .filter(|&(i, _)| layout.spawnpoints.get(i as usize).is_some_and(|sp| units.contains(&sp.unit)))
+/// The chance of the exit being at each spawn point of `layout`, given `facts`: each candidate's
+/// weight over the total, after dropping the spots the facts rule out. Empty when they rule out
+/// every spot (or the floor has no exit). `layout` must be generated with `exits_only` (see
+/// [`exit_candidates`]).
+pub fn odds(layout: &Layout, facts: &[(u32, Fact)]) -> BTreeMap<u32, f64> {
+    let cands: Vec<(u32, f64)> = exit_candidates(layout)
+        .into_iter()
+        .filter(|&(i, w)| w > 0.0 && allowed(layout, facts, i))
         .collect();
-    let scores = candidate_scores(layout);
-    let cands = exit_candidates(layout);
-    let has_hole = !layout.caveinfo.is_final_floor;
-    let has_geyser = layout.caveinfo.is_final_floor || layout.caveinfo.has_geyser;
-    let must = |f: Fact| facts.iter().find(|x| x.1 == f).map(|x| x.0);
-    let (hole_at, geyser_at) = (must(Fact::Hole), must(Fact::Geyser));
-    let ok_hole = |i: u32| allowed(layout, &facts, i, false) && hole_at.is_none_or(|h| h == i);
-    let ok_geyser = |i: u32| allowed(layout, &facts, i, true) && geyser_at.is_none_or(|g| g == i);
-
-    // Joint odds of (hole spot, geyser spot): the game picks the hole with its weights, then the
-    // geyser with the same weights among the rest; facts drop the pairs they rule out.
     let total: f64 = cands.iter().map(|c| c.1).sum();
-    let mut hole_p: BTreeMap<u32, f64> = BTreeMap::new();
-    let mut geyser_p: BTreeMap<u32, f64> = BTreeMap::new();
-    let mut sum = 0.0;
-    let holes: Vec<(Option<u32>, f64)> = if has_hole {
-        cands
-            .iter()
-            .map(|&(i, w)| (Some(i), if total > 0.0 { w / total } else { 0.0 }))
-            .collect()
-    } else {
-        vec![(None, 1.0)]
-    };
-    for (h, ph) in holes {
-        if ph == 0.0 || h.is_some_and(|h| !ok_hole(h)) {
-            continue;
-        }
-        if !has_geyser {
-            *hole_p.entry(h.unwrap()).or_default() += ph;
-            sum += ph;
-            continue;
-        }
-        // In story mode the geyser takes the best score the hole left, so weigh the rest again.
-        let left = pick_weights(layout, &scores.iter().filter(|c| Some(c.0) != h).collect::<Vec<_>>());
-        let rest: f64 = left.iter().map(|c| c.1).sum();
-        if rest <= 0.0 {
-            continue;
-        }
-        for &(g, w) in &left {
-            let p = ph * w / rest;
-            if p == 0.0 || !ok_geyser(g) {
-                continue;
-            }
-            if let Some(h) = h {
-                *hole_p.entry(h).or_default() += p;
-            }
-            *geyser_p.entry(g).or_default() += p;
-            sum += p;
-        }
+    if total <= 0.0 {
+        return BTreeMap::new();
     }
-
-    let mut t = Tally {
-        tested: 1,
-        matched: 1,
-        ..Tally::default()
-    };
-    if sum <= 0.0 {
-        return t;
-    }
-    t.consistent = 1;
-    let exits: Vec<(u32, usize)> = seen_exits(layout, &units).iter().map(|&(rd, _, _)| (rd, rd as usize)).collect();
-    for (probs, w, present) in [(&hole_p, &mut t.hole, has_hole), (&geyser_p, &mut t.geyser, has_geyser)] {
-        if !present {
-            w.none = 1.0;
-            continue;
-        }
-        for (&i, &p) in probs {
-            let p = p / sum;
-            if units.contains(&layout.spawnpoints[i as usize].unit) {
-                *w.spots.entry(i).or_default() += p;
-                continue;
-            }
-            let nearest = nearest_exits(layout, &units, &exits, i as usize);
-            if nearest.is_empty() {
-                w.other += p;
-            }
-            for rd in &nearest {
-                *w.exits.entry(*rd).or_default() += p / nearest.len() as f64;
-            }
-        }
-    }
-    t
+    cands.into_iter().map(|(i, w)| (i, w / total)).collect()
 }

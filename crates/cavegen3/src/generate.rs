@@ -147,23 +147,19 @@ pub fn trace_rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
 }
 
 pub(crate) fn generate(rng: Rng, caveinfo: &CaveInfo) -> Layout<'_> {
-    generate_partly(rng, caveinfo, None, false).expect("nothing to reject")
+    generate_partly(rng, caveinfo, false)
 }
 
-/// Generates a layout, giving up early (`None`) if its first map unit, the pod's, isn't the
-/// unit numbered `first_unit` (a [`CaveUnit::name_id`](crate::caveinfo::CaveUnit)). With
-/// `exits_only` it stops once the pod, hole and geyser are placed: no teki, treasures or gates.
-/// For sampling many layouts quickly (see [`crate::hole_odds`]).
-pub fn generate_partly(rng: Rng, caveinfo: &CaveInfo, first_unit: Option<u16>, exits_only: bool) -> Option<Layout<'_>> {
+/// Generates a layout. With `exits_only` it stops once the pod, hole and geyser are placed (no
+/// teki, treasures or gates), so the unit scores are still the ones the hole was picked with
+/// (see [`crate::hole_odds`]).
+pub fn generate_partly(rng: Rng, caveinfo: &CaveInfo, exits_only: bool) -> Layout<'_> {
     let seed = rng.state();
     let generator = rng.generator();
     let mut g = Generator::new(rng, caveinfo);
-    g.first_unit = first_unit;
     g.exits_only = exits_only;
-    if !g.run() {
-        return None;
-    }
-    Some(Layout {
+    g.run();
+    Layout {
         caveinfo,
         seed,
         generator,
@@ -175,7 +171,7 @@ pub fn generate_partly(rng: Rng, caveinfo: &CaveInfo, first_unit: Option<u16>, e
         hole: g.hole,
         geyser: g.geyser,
         waypoints: Default::default(),
-    })
+    }
 }
 
 impl<'a> Generator<'a> {
@@ -210,7 +206,6 @@ impl<'a> Generator<'a> {
             spawn_order: Vec::new(),
             early_stop: false,
             trace: false,
-            first_unit: None,
             exits_only: false,
         }
     }
@@ -251,8 +246,6 @@ struct Generator<'a> {
     early_stop: bool,
     /// Print each placement step to stderr ([`trace_rooms_placed`]).
     trace: bool,
-    /// Give up unless the first unit is this one ([`generate_partly`]).
-    first_unit: Option<u16>,
     /// Stop after the exits ([`generate_partly`]).
     exits_only: bool,
 }
@@ -276,16 +269,9 @@ impl<'a> Generator<'a> {
         &self.ci.cave_units[id as usize]
     }
 
-    /// Generates the layout; false if it gave up early ([`generate_partly`]).
-    fn run(&mut self) -> bool {
+    fn run(&mut self) {
         self.sort_units_and_allocate_teki();
-        let opened = self.place_start();
-        if self.first_unit.is_some_and(|id| self.units[0].unit.name_id != id) {
-            return false;
-        }
-        if opened {
-            self.place_rest_of_map();
-        }
+        self.place_map_units();
         self.create_spawnpoints_and_recenter();
         self.place_ship();
         self.set_score();
@@ -296,7 +282,7 @@ impl<'a> Generator<'a> {
             self.place_hole(SpawnObject::Geyser(self.ci.is_challenge_mode() && self.ci.is_final_floor));
         }
         if self.exits_only {
-            return true;
+            return;
         }
         self.place_seam_teki();
         self.place_special_teki();
@@ -310,7 +296,6 @@ impl<'a> Generator<'a> {
         if self.ci.cave_cfg.is_colossal_caverns() {
             self.place_onions();
         }
-        true
     }
 
     // ---------------------------------------------------------------------------------
@@ -371,11 +356,6 @@ impl<'a> Generator<'a> {
         if !self.place_start() {
             return 0;
         }
-        self.place_rest_of_map()
-    }
-
-    /// The placement loop after the first unit.
-    fn place_rest_of_map(&mut self) -> u32 {
         // The game gives up after 500 placement steps (RandMapUnit::setMapUnit).
         let mut steps = 0;
         for _ in 0..500 {

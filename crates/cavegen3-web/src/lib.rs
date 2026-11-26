@@ -23,7 +23,7 @@ use cavegen3::{
     GameData, Layout, Placement, SpawnObject,
     caveinfo::CaveInfo,
     data::FileSource,
-    hole_odds::{self, Observations},
+    hole_odds::{self, Fact},
     jhawk_judge::{JhawkJudge, JudgeType},
     point::Point,
     query::{Query, StructuralQuery},
@@ -175,19 +175,10 @@ impl Web {
     ///   otherwise the first `keep` matches. `{"tested", "matched", "best": [[seed, score]],
     ///   "scores": [...]}`, where `scores` has every matching seed's score, for ranking.
     /// - `caveinfo <sublevel>`: the sublevel's generation parameters (see [`caveinfo_json`]).
-    /// - `hole_odds <sublevel> <reference seed> <seen units> <facts> <start> <count> [gc|switch]
-    ///   [examples]`: where the hole and geyser are in `count` random layouts ("r" seeds from
-    ///   `start`) that agree with what was seen on the reference layout (see
-    ///   [`cavegen3::hole_odds`]; seen units are "0,3", facts "12e,40h", either "-" for none).
-    ///   `{"tested", "matched", "consistent", "hole": {"spots": [[spawn point, n]], "exits":
-    ///   [[door, n]], "other", "none"}, "geyser": {...}, "examples": ["seed"]}`.
-    /// - `hole_weights <sublevel> <seed> <seen units> <facts> [gc|switch]`: the same odds worked
-    ///   out from that layout's own hole weights, with no other layouts generated (see
-    ///   [`hole_odds::weighted`]); the counts are probabilities and `consistent` is 1 (0 if the
-    ///   facts rule out every spot).
-    /// - `hole_remap <sublevel> <reference seed> <seen units> <facts> <other seed> [gc|switch]`:
-    ///   the same observations in terms of another layout whose seen rooms match:
-    ///   `{"seen": [units], "facts": "12e,40h"}`, or `{"seen": null}` if they don't.
+    /// - `hole_odds <sublevel> <seed> <facts> [gc|switch]`: the chance of the exit (hole, or geyser
+    ///   on a final floor) being at each spawn point, from the layout's own weights given facts
+    ///   about spots ("12e,40h", or "-"; see [`cavegen3::hole_odds`]): `{"spots": [[spawn point,
+    ///   chance]]}`, empty if the facts rule out every spot.
     /// - `agg_start <sublevel> <grouping> <near> <far> <near half> <far half> [image periods]`
     ///   (the landing view, see [`aggregate::View`]; image periods are "unit=period;..."), then `agg_run <start> <count> <c|g|r>`
     ///   any number of times, then `agg_result <max groups>`: CaveGen's Aggregator (see
@@ -298,38 +289,13 @@ impl Web {
             "caveinfo" => Ok(caveinfo_json(caveinfo(1)?.1, data)),
             "hole_odds" => {
                 let (_, ci) = caveinfo(1)?;
-                let generator = parse_generator(args.get(7))?;
-                let reference = Layout::generate_with(generator, num(2)?, ci);
-                let obs = Observations::parse(arg(3)?, arg(4)?)?;
-                let (start, count) = (num(5)?, num(6)?);
-                let examples = args.get(8).and_then(|a| a.trim().parse().ok()).unwrap_or(0);
-                let seeds = (0..count).map(|i| seed_in(generator, "r", start, i));
-                let t = hole_odds::tally(&reference, &obs, ci, generator, seeds, examples);
-                Ok(tally_json(&t))
-            }
-            "hole_weights" => {
-                let (_, ci) = caveinfo(1)?;
-                let generator = parse_generator(args.get(5))?;
-                // Stopped after the exits, so the unit scores are the ones the hole was picked with.
-                let rng = cavegen3::rng::Rng::with(generator, num(2)?);
-                let layout = cavegen3::generate::generate_partly(rng, ci, None, true).ok_or("couldn't generate")?;
-                let obs = Observations::parse(arg(3)?, arg(4)?)?;
-                Ok(tally_json(&hole_odds::weighted(&layout, &obs)))
-            }
-            "hole_remap" => {
-                let (_, ci) = caveinfo(1)?;
-                let generator = parse_generator(args.get(6))?;
-                let reference = Layout::generate_with(generator, num(2)?, ci);
-                let other = Layout::generate_with(generator, num(5)?, ci);
-                let obs = Observations::parse(arg(3)?, arg(4)?)?;
-                Ok(match hole_odds::remap(&reference, &obs, &other) {
-                    Some(o) => {
-                        let seen: Vec<String> = o.seen.iter().map(|u| u.to_string()).collect();
-                        let facts: Vec<String> = o.facts.iter().map(|(i, f)| format!("{i}{}", f.code())).collect();
-                        format!("{{\"seen\":[{}],\"facts\":{}}}", seen.join(","), q(&facts.join(",")))
-                    }
-                    None => "{\"seen\":null}".to_string(),
-                })
+                let generator = parse_generator(args.get(4))?;
+                // Stopped after the exits, so the unit scores are the ones the exit was picked with.
+                let layout = cavegen3::generate::generate_partly(cavegen3::rng::Rng::with(generator, num(2)?), ci, true);
+                let facts = Fact::parse_list(arg(3)?)?;
+                let spots: Vec<String> =
+                    hole_odds::odds(&layout, &facts).iter().map(|(i, p)| format!("[{i},{}]", num6(*p))).collect();
+                Ok(format!("{{\"spots\":[{}]}}", spots.join(",")))
             }
             other => Err(format!("unknown command {other:?}")),
         }
@@ -396,25 +362,7 @@ fn parse_query(text: &str, sublevel: &cavegen3::Sublevel, data: &GameData) -> Re
     }
 }
 
-/// A [`hole_odds::Tally`] as JSON (see `hole_odds` in [`Web::query`]).
-fn tally_json(t: &hole_odds::Tally) -> String {
-    let place = |w: &hole_odds::Where| {
-        let pairs = |m: &BTreeMap<u32, f64>| m.iter().map(|(k, v)| format!("[{k},{}]", num6(*v))).collect::<Vec<_>>().join(",");
-        format!("{{\"spots\":[{}],\"exits\":[{}],\"other\":{},\"none\":{}}}", pairs(&w.spots), pairs(&w.exits), num6(w.other), num6(w.none))
-    };
-    let examples: Vec<String> = t.examples.iter().map(|s| format!("\"{s}\"")).collect();
-    format!(
-        "{{\"tested\":{},\"matched\":{},\"consistent\":{},\"hole\":{},\"geyser\":{},\"examples\":[{}]}}",
-        t.tested,
-        t.matched,
-        t.consistent,
-        place(&t.hole),
-        place(&t.geyser),
-        examples.join(",")
-    )
-}
-
-/// A count or probability as JSON, to 6 decimals.
+/// A probability as JSON, to 6 decimals.
 fn num6(v: f64) -> String {
     let r = (v * 1e6).round() / 1e6;
     if r.is_finite() { format!("{r}") } else { "null".into() }
@@ -966,17 +914,10 @@ mod tests {
         assert!(found.starts_with("{\"tested\":50,"), "{found}");
         assert!(web.command("caveinfo\tSCx6").unwrap().contains("\"teki\":[{\"name\":"));
         assert!(web.command("search\tSCx6\t-\tnot a query ((\t0\t5\tc\t5").is_err());
-        // Hole odds: counts add up, and marks move to a matching example and back.
-        let odds = web.command("hole_odds\tCH12-1\t305419896\t-\t-\t0\t300\tgc\t2").unwrap();
-        assert!(odds.starts_with("{\"tested\":300,\"matched\":"), "{odds}");
-        assert!(odds.contains("\"hole\":{\"spots\":[") && odds.contains("\"examples\":[\""), "{odds}");
-        let example = odds.split("\"examples\":[\"").nth(1).unwrap().split('"').next().unwrap();
-        let moved = web.command(&format!("hole_remap\tCH12-1\t305419896\t0\t-\t{example}")).unwrap();
-        assert!(moved.starts_with("{\"seen\":[0],\"facts\":\"\"}"), "{moved}");
-        assert!(web.command("hole_odds\tCH12-1\t305419896\t-\t12q\t0\t10").is_err());
-        // From the layout's own weights: the north room's alcove, with the pod room's ruled out.
-        let weights = web.command("hole_weights\tCH12-1\t305419896\t0,1\t2n").unwrap();
-        assert!(weights.starts_with("{\"tested\":1,\"matched\":1,\"consistent\":1,\"hole\":{\"spots\":[[27,0.08]],"), "{weights}");
+        // Hole odds: the north room's alcove, with the pod room's ruled out.
+        let odds = web.command("hole_odds\tCH12-1\t305419896\t2n").unwrap();
+        assert!(odds.starts_with("{\"spots\":[[27,0.08"), "{odds}");
+        assert!(web.command("hole_odds\tCH12-1\t305419896\t12q").is_err());
         // A romhack sublevel's query, with or without naming the sublevel, stays in that romhack
         // (251's SS is Subterranean Sands; vanilla has no SS).
         for q in ["hole carry dist < 1500", "ss2 hole carry dist < 1500"] {
