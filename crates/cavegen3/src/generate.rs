@@ -53,28 +53,71 @@ pub fn closes_with_rooms(rng: Rng, caveinfo: &CaveInfo, max_rooms: u32) -> bool 
     false
 }
 
-/// Rooms placed after the start room and the first placement step (for checking
+/// Rooms placed after the start room and `steps` placement steps (for checking
 /// [`ClosureFilter`]).
-pub fn first_step_rooms(rng: Rng, caveinfo: &CaveInfo) -> u32 {
+pub fn rooms_after_steps(rng: Rng, caveinfo: &CaveInfo, steps: u32) -> u32 {
     let mut g = Generator::new(rng, caveinfo);
     g.sort_units_and_allocate_teki();
     if g.place_start() {
-        g.placement_step(1);
+        for step in 1..=steps {
+            if !g.placement_step(step) {
+                break;
+            }
+        }
     }
     g.rooms_placed
 }
 
-/// A one-multiply test that rules out most seeds when hunting maps that close with only the start
-/// room. The first placement step's corridor roll always lands on the same `rand()` call, and if
-/// it says "room first", a room is placed: [`ClosureFilter::new`] checks that some room fits at
-/// every door of every possible start room.
-#[derive(Clone, Copy, Debug)]
+/// A fast test that rules out most seeds when hunting maps that close with only the start room.
+///
+/// The first placement step's corridor roll always lands on the same `rand()` call, and if it
+/// says "room first", a room is placed: [`ClosureFilter::new`] checks that some room fits at
+/// every door of every possible start room. That is one multiply per seed.
+///
+/// For the seeds left, [`ClosureFilter::rejects`] replays the first step (a hallway) and the
+/// second step's door pick and roll on small arrays, with the map geometry looked up in tables
+/// made by the real generator, and rules the seed out if the second step certainly places a room.
+#[derive(Clone, Debug)]
 pub struct ClosureFilter {
     generator: crate::Generator,
     /// Steps from the seed to just before the first step's corridor roll.
     jump: (u64, u64),
-    /// The roll is below this for "hallway first".
+    /// The first roll is below this for "hallway first" (the destination is the start room).
     corridor_probability: f32,
+    second: Option<Box<SecondStep>>,
+}
+
+/// What [`ClosureFilter`] needs to replay the first step when it places a hallway.
+#[derive(Clone, Debug)]
+struct SecondStep {
+    corridor_probability: f32,
+    max_doors: usize,
+    max_unit_doors: usize,
+    /// Steps over the cap list shuffle, the teki slots and the start room's reshuffle, and the
+    /// hallway list reshuffle after a hallway is placed.
+    skip_caps: (u64, u64),
+    skip_teki_start: (u64, u64),
+    skip_corridor_backs: (u64, u64),
+    /// Room units in list order before shuffling, and whether each can be the start room.
+    rooms: Vec<(UnitId, bool)>,
+    /// Hallway units in list order before shuffling, with their door counts.
+    corridors: Vec<(UnitId, usize)>,
+    /// Per start room: its id, its open door count and where its entries in `after` begin.
+    starts: Vec<(UnitId, usize, usize)>,
+    /// After a start room and a hallway attached at (start door, hallway, hallway door): the
+    /// open doors in order as (on a room, some room fits there), and whether the map is 36 wide.
+    /// None if that hallway doesn't fit there.
+    after: Vec<Option<(Vec<(bool, bool)>, bool)>>,
+}
+
+/// `rand_backs` on a small array: moves a random element to the back, once per element.
+#[inline]
+fn rand_backs_slice(rng: &mut Rng, list: &mut [u16]) {
+    let n = list.len();
+    for _ in 0..n {
+        let i = rng.rand_int(n as u32) as usize;
+        list[i..].rotate_left(1);
+    }
 }
 
 impl ClosureFilter {
@@ -93,6 +136,7 @@ impl ClosureFilter {
                 return None;
             }
         }
+        let roll_call = roll_call? as u64;
         // Some room must fit at every door of every room the map can start with.
         let mut g = Generator::new(Rng::with(generator, 0), caveinfo);
         g.sort_units_and_allocate_teki();
@@ -100,30 +144,177 @@ impl ClosureFilter {
             if !g.unit(start).has_start_spawnpoint() {
                 continue;
             }
-            let mut s = Generator::new(Rng::with(generator, 0), caveinfo);
-            s.sort_units_and_allocate_teki();
+            let mut s = g.clone();
             s.place_unit(Candidate { unit: start, x: 0, z: 0 });
-            let all_fit = s.open.iter().all(|&d| {
-                s.room_queue.iter().any(|&id| (0..s.unit(id).num_doors).any(|di| s.try_place_unit_at(d, id, di).is_some()))
-            });
-            if s.open.is_empty() || !all_fit {
+            if s.open.is_empty() || !s.open.iter().all(|&d| s.room_fits_at(d)) {
                 return None;
             }
         }
         Some(ClosureFilter {
             generator,
-            jump: Rng::jump_coefficients(generator, roll_call? as u64),
+            jump: Rng::jump_coefficients(generator, roll_call),
             // The destination is the start room, which doubles it.
             corridor_probability: caveinfo.corridor_probability * 2.0,
+            second: SecondStep::new(caveinfo, generator, roll_call).map(Box::new),
         })
+    }
+
+    /// Whether the second step is checked too.
+    pub fn checks_second_step(&self) -> bool {
+        self.second.is_some()
     }
 
     /// True if the seed's first step certainly places a second room.
     #[inline]
-    pub fn rejects(&self, seed: u64) -> bool {
+    pub fn rejects_first_step(&self, seed: u64) -> bool {
         let mut rng = Rng::with(self.generator, seed);
         rng.jump(self.jump);
         rng.rand_f32() >= self.corridor_probability
+    }
+
+    /// True if the seed's first or second step certainly places a second room.
+    #[inline]
+    pub fn rejects(&self, seed: u64) -> bool {
+        self.rejects_first_step(seed) || self.second.as_ref().is_some_and(|s| s.rejects(self.generator, seed))
+    }
+}
+
+impl SecondStep {
+    fn new(caveinfo: &CaveInfo, generator: crate::Generator, roll_call: u64) -> Option<Self> {
+        if caveinfo.ultra_randomizer {
+            return None;
+        }
+        let units = &caveinfo.cave_units;
+        let of = |t: RoomType| units.iter().enumerate().filter(move |u| u.1.room_type == t).map(|u| u.0 as UnitId);
+        let rooms: Vec<(UnitId, bool)> = of(RoomType::Room).map(|id| (id, units[id as usize].has_start_spawnpoint())).collect();
+        let corridors: Vec<(UnitId, usize)> = of(RoomType::Hallway).map(|id| (id, units[id as usize].num_doors)).collect();
+        let caps = of(RoomType::DeadEnd).count() as u64;
+        let max_doors = caveinfo.max_num_doors_single_unit();
+        if corridors.is_empty() || rooms.len() > 64 || corridors.len() > 64 || max_doors > 16 {
+            return None;
+        }
+        // The calls before the first door pick: the three list shuffles, then the rest.
+        let shuffles = caps + rooms.len() as u64 + corridors.len() as u64;
+        let teki_start = (roll_call - 1).checked_sub(shuffles)?;
+        let max_unit_doors = corridors.iter().map(|c| c.1).max().unwrap();
+
+        let mut g = Generator::new(Rng::with(generator, 0), caveinfo);
+        g.sort_units_and_allocate_teki();
+        let mut starts = Vec::new();
+        let mut after = Vec::new();
+        for &(start, can_start) in &rooms {
+            if !can_start {
+                continue;
+            }
+            let mut s = g.clone();
+            s.place_unit(Candidate { unit: start, x: 0, z: 0 });
+            starts.push((start, s.open.len(), after.len()));
+            for d in 0..s.open.len() {
+                for &(id, num_doors) in &corridors {
+                    for di in 0..max_unit_doors {
+                        let placed = if di < num_doors { s.try_place_unit_at(s.open[d], id, di) } else { None };
+                        after.push(placed.map(|c| {
+                            let mut h = s.clone();
+                            h.place_unit(c);
+                            let open = h
+                                .open
+                                .iter()
+                                .map(|&od| (h.units[h.doors[od as usize].unit as usize].unit.room_type == RoomType::Room, h.room_fits_at(od)))
+                                .collect();
+                            (open, h.diameter_36)
+                        }));
+                    }
+                }
+            }
+        }
+        Some(SecondStep {
+            corridor_probability: caveinfo.corridor_probability,
+            max_doors,
+            max_unit_doors,
+            skip_caps: Rng::jump_coefficients(generator, caps),
+            skip_teki_start: Rng::jump_coefficients(generator, teki_start),
+            skip_corridor_backs: Rng::jump_coefficients(generator, corridors.len() as u64),
+            rooms,
+            corridors,
+            starts,
+            after,
+        })
+    }
+
+    /// Replays the first step for a seed whose first roll says "hallway first" (the caller checks
+    /// that), then the second step's door pick and roll.
+    fn rejects(&self, generator: crate::Generator, seed: u64) -> bool {
+        let mut rng = Rng::with(generator, seed);
+        rng.jump(self.skip_caps);
+        // The start room: the first room in the shuffled list that can be one.
+        let mut room_order = [0u16; 64];
+        let room_order = &mut room_order[..self.rooms.len()];
+        for (i, r) in room_order.iter_mut().enumerate() {
+            *r = i as u16;
+        }
+        rand_backs_slice(&mut rng, room_order);
+        let Some(&start_pos) = room_order.iter().find(|&&r| self.rooms[r as usize].1) else {
+            return false;
+        };
+        let start_id = self.rooms[start_pos as usize].0;
+        let Some(&(_, n0, base)) = self.starts.iter().find(|s| s.0 == start_id) else {
+            return false;
+        };
+        let mut corridor_order = [0u16; 64];
+        let corridor_order = &mut corridor_order[..self.corridors.len()];
+        for (i, c) in corridor_order.iter_mut().enumerate() {
+            *c = i as u16;
+        }
+        rand_backs_slice(&mut rng, corridor_order);
+        rng.jump(self.skip_teki_start);
+        let door = rng.rand_int(n0 as u32) as usize;
+        rng.rand_f32(); // the first roll: "hallway first"
+
+        // shuffle_corridor_priority, with the start room's doors open.
+        let mut priority = [0usize; 16];
+        let priority = &mut priority[..self.max_doors];
+        for (i, p) in priority.iter_mut().enumerate() {
+            *p = if n0 < 4 { self.max_doors - i } else { i + 1 };
+        }
+        if (4..10).contains(&n0) {
+            rng.rand_swaps(priority);
+        }
+        // Hallways in that order, each tried by its doors in random order.
+        let per_door = self.corridors.len() * self.max_unit_doors;
+        let mut placed = None;
+        'outer: for &num_doors in priority.iter() {
+            for &c in corridor_order.iter() {
+                if self.corridors[c as usize].1 != num_doors {
+                    continue;
+                }
+                let mut order = [0usize; 16];
+                let order = &mut order[..num_doors];
+                for (i, d) in order.iter_mut().enumerate() {
+                    *d = i;
+                }
+                rng.rand_swaps(order);
+                for &di in order.iter() {
+                    if let Some(a) = &self.after[base + door * per_door + c as usize * self.max_unit_doors + di] {
+                        placed = Some(a);
+                        break 'outer;
+                    }
+                }
+            }
+        }
+        let Some((open, diameter_36)) = placed else {
+            return false;
+        };
+        rng.jump(self.skip_corridor_backs);
+        if open.is_empty() {
+            return false;
+        }
+        // The second step: door pick and roll.
+        let (on_room, room_fits) = open[rng.rand_int(open.len() as u32) as usize];
+        let mut cp = if *diameter_36 { 0.0 } else { self.corridor_probability };
+        if on_room {
+            cp *= 2.0;
+        }
+        room_fits && rng.rand_f32() >= cp
     }
 }
 
@@ -579,6 +770,11 @@ impl<'a> Generator<'a> {
                     .sum::<usize>()
             })
             .sum()
+    }
+
+    /// Whether some room fits at open door `d`.
+    fn room_fits_at(&self, d: u32) -> bool {
+        self.room_queue.iter().any(|&id| (0..self.unit(id).num_doors).any(|di| self.try_place_unit_at(d, id, di).is_some()))
     }
 
     /// One step of the placement loop. False once no doors are open and the map is closed.

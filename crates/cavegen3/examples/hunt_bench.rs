@@ -4,7 +4,7 @@
 
 use cavegen3::{
     GameData, Generator,
-    generate::{ClosureFilter, closes_with_rooms, profile_closes_with_rooms, rooms_placed},
+    generate::{ClosureFilter, closes_with_rooms, profile_closes_with_rooms, rooms_after_steps, rooms_placed},
     rng::Rng,
 };
 
@@ -18,7 +18,7 @@ fn main() {
     let n: u64 = args.get(3).map(|s| s.parse().unwrap()).unwrap_or(200_000);
     let data = GameData::bundled().unwrap();
     let ci = data.caveinfo(&data.sublevel(sub).unwrap()).unwrap();
-    println!("{sub}: {} rooms, corridor probability {}", ci.num_rooms, ci.corridor_probability);
+    println!("{sub} {generator:?}: {} rooms, corridor probability {}", ci.num_rooms, ci.corridor_probability);
     let seed = |i: u64| i.wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ 0x1234_5678_9ABC_DEF0;
     let per = |t: std::time::Instant| t.elapsed().as_secs_f64() * 1e6 / n as f64;
 
@@ -32,20 +32,39 @@ fn main() {
         us(t[3])
     );
 
+    let t = std::time::Instant::now();
     let filter = ClosureFilter::new(ci, generator);
-    println!("filter: {filter:?}");
+    println!(
+        "filter: {}, built in {:.2} s",
+        match &filter {
+            Some(f) if f.checks_second_step() => "first two steps",
+            Some(_) => "first step only",
+            None => "none",
+        },
+        t.elapsed().as_secs_f64()
+    );
 
-    // Every seed the filter rules out must also fail the full test.
-    if let Some(f) = filter {
-        let mut rejected = 0u64;
+    // Every seed the filter rules out must place a second room in the steps it looked at.
+    if let Some(f) = &filter {
+        let (mut first, mut second) = (0u64, 0u64);
         for i in 0..n {
-            if f.rejects(seed(i)) {
-                rejected += 1;
-                let rooms = cavegen3::generate::first_step_rooms(Rng::with(generator, seed(i)), ci);
-                assert!(rooms >= 2, "filter rejected seed {:016X}, but its first step placed no room", seed(i));
+            let s = seed(i);
+            if f.rejects_first_step(s) {
+                first += 1;
+                let rooms = rooms_after_steps(Rng::with(generator, s), ci, 1);
+                assert!(rooms >= 2, "filter rejected seed {s:016X} at step 1, but it placed no room there");
+            } else if f.rejects(s) {
+                second += 1;
+                let rooms = rooms_after_steps(Rng::with(generator, s), ci, 2);
+                assert!(rooms >= 2, "filter rejected seed {s:016X} at step 2, but it placed no room by then");
             }
         }
-        println!("filter rules out {:.1}% of seeds; all checked against the first placement step", 100.0 * rejected as f64 / n as f64);
+        println!(
+            "rules out {:.1}% at step 1 and {:.1}% more at step 2 ({:.1}% left); all checked against the generator",
+            100.0 * first as f64 / n as f64,
+            100.0 * second as f64 / n as f64,
+            100.0 * (n - first - second) as f64 / n as f64
+        );
     }
 
     let t = std::time::Instant::now();
@@ -55,23 +74,31 @@ fn main() {
     }
     let full = per(t);
     let t = std::time::Instant::now();
-    let mut y = 0u64;
     for i in 0..n {
-        y += closes_with_rooms(Rng::with(generator, seed(i)), ci, 1) as u64;
+        x += closes_with_rooms(Rng::with(generator, seed(i)), ci, 1) as u64;
     }
     let capped = per(t);
     println!("current hunt (place all rooms): {full:.2} us/seed ({:.0}/s)", 1e6 / full);
     println!("stop at the 2nd room:           {capped:.2} us/seed ({:.0}/s)", 1e6 / capped);
-    if let Some(f) = filter {
+    if let Some(f) = &filter {
+        let t = std::time::Instant::now();
+        for i in 0..n {
+            let s = seed(i);
+            if !f.rejects_first_step(s) {
+                x += closes_with_rooms(Rng::with(generator, s), ci, 1) as u64;
+            }
+        }
+        let one = per(t);
+        println!("step-1 filter, then the rest:   {one:.2} us/seed ({:.0}/s)", 1e6 / one);
         let t = std::time::Instant::now();
         for i in 0..n {
             let s = seed(i);
             if !f.rejects(s) {
-                y += closes_with_rooms(Rng::with(generator, s), ci, 1) as u64;
+                x += closes_with_rooms(Rng::with(generator, s), ci, 1) as u64;
             }
         }
-        let filtered = per(t);
-        println!("filter, then stop at 2nd room:  {filtered:.2} us/seed ({:.0}/s)", 1e6 / filtered);
+        let two = per(t);
+        println!("step-1+2 filter, then the rest: {two:.2} us/seed ({:.0}/s)", 1e6 / two);
     }
-    let _ = (x, y);
+    std::hint::black_box(x);
 }

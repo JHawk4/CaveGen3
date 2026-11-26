@@ -45,7 +45,12 @@ fn main() {
     let data = GameData::bundled().unwrap();
     let ci = data.caveinfo(&data.sublevel(sub).unwrap()).unwrap();
     let filter = ClosureFilter::new(ci, generator);
-    eprintln!("{sub} {generator:?}: {}", if filter.is_some() { "first-roll filter on" } else { "no first-roll filter" });
+    let mode = match &filter {
+        Some(f) if f.checks_second_step() => "filter on the first two steps",
+        Some(_) => "filter on the first step",
+        None => "no filter",
+    };
+    eprintln!("{sub} {generator:?}: {mode}");
     let mask = if generator == Generator::Gc { 0xFFFF_FFFF } else { u64::MAX };
     let found = AtomicU64::new(0);
     let closed = AtomicU64::new(0);
@@ -56,7 +61,7 @@ fn main() {
         (0..256u64).into_par_iter().for_each(|c| {
             for i in first + (c << 20)..first + ((c + 1) << 20) {
                 let seed = mix(i) & mask;
-                if filter.is_some_and(|f| f.rejects(seed)) || !closes_with_rooms(Rng::with(generator, seed), ci, 1) {
+                if filter.as_ref().is_some_and(|f| f.rejects(seed)) || !closes_with_rooms(Rng::with(generator, seed), ci, 1) {
                     continue;
                 }
                 closed.fetch_add(1, Ordering::Relaxed);
