@@ -272,6 +272,52 @@ const STRINGS = {
       "Pikmin 2 is &copy; Nintendo; romhack data belongs to its authors.",
     otherLang: "日本語",
     otherLangLabel: "日本語で表示",
+    oddsButton: "Hole odds",
+    odds: {
+      button: "Hole odds",
+      buttonTip: "Where the hole is likely to be when you don't know the seed (Challenge Mode): mark what you've seen",
+      title: "Hole odds",
+      intro:
+        "For runs where the seed is unknown. Find a seed whose pod room looks like yours, then click rooms you've seen to add them, and spots to say what you saw there. " +
+        "The odds come from random layouts whose seen rooms match (around the pod, either way round) and that agree with every mark.",
+      target: "Show odds for",
+      hole: "Hole",
+      geyser: "Geyser",
+      more: "More layouts",
+      next: "Next matching layout",
+      comedown: "Comedown: nothing else seen",
+      comedownTip: "Marks every unmarked spot of the seen rooms inside the comedown outline as showing nothing in the comedown (teki can still hide there)",
+      clear: "Clear marks",
+      status: (c, m, t) => `${c.toLocaleString()} layouts agree, of ${m.toLocaleString()} with these rooms, of ${t.toLocaleString()} tested.`,
+      running: "Counting…",
+      few: "Few layouts agree, so these odds are rough. Try More layouts.",
+      none: "No tested layout agrees with every mark. Check the marks or try More layouts.",
+      noMatch: "No other matching layout found yet.",
+      inRooms: (p) => `In the seen rooms: ${p}`,
+      beyond: (p) => `Beyond their exits: ${p}`,
+      noExit: (p) => `None on this floor: ${p}`,
+      legend: "Circles: chance it's at that spot. Arrows: chance it's through that exit (nearest by walking).",
+      spotTip: (i, g) => `Spot ${i} (group ${g})`,
+      exitTip: (p) => `Through this exit: ${p}`,
+      fact: {
+        e: "Empty (nothing there)",
+        o: "Something there",
+        v: "Nothing visible in the comedown",
+        h: "Hole here",
+        n: "No hole here",
+        g: "Geyser here",
+        x: "No geyser here",
+        clear: "No mark",
+      },
+      factShort: { e: "empty", o: "something", v: "nothing in comedown", h: "hole", n: "no hole", g: "geyser", x: "no geyser" },
+      roomSeen: "I've seen this room",
+      roomUnseen: "Not seen",
+      roomNoHole: "No hole in this room",
+      roomNoGeyser: "No geyser in this room",
+      roomClear: "Clear marks in this room",
+      remapped: "Marks moved to this layout.",
+      reset: "This layout's pod room differs, so the marks were cleared.",
+    },
     gameNames: {
       pikmin2: "Pikmin 2",
       "251": "Pikmin 251",
@@ -549,6 +595,52 @@ const STRINGS = {
       "ピクミン2 &copy; Nintendo。改造版のデータは各作者に帰属します。",
     otherLang: "English",
     otherLangLabel: "Show in English",
+    oddsButton: "穴の確率",
+    odds: {
+      button: "穴の確率",
+      buttonTip: "シードが分からないとき（チャレンジモード）に穴がありそうな場所：見たものを記録します",
+      title: "穴の確率",
+      intro:
+        "シードが分からないプレイ向けです。ポッドのある部屋が自分のと同じシードを探し、見た部屋をクリックして追加し、各スポットで見たものを記録してください。" +
+        "確率は、見た部屋がポッドから見て同じ配置（向きは問わない）で、すべての記録と合うランダムなレイアウトから数えています。",
+      target: "対象",
+      hole: "穴",
+      geyser: "間欠泉",
+      more: "レイアウトを追加",
+      next: "次の一致するレイアウト",
+      comedown: "降下中：他に何も見えなかった",
+      comedownTip: "見た部屋のうち降下中の視界の枠内にある未記録のスポットを「降下中は何も見えない」にします（敵は隠れている場合があります）",
+      clear: "記録を消す",
+      status: (c, m, t) => `${t.toLocaleString()}個中、部屋が一致${m.toLocaleString()}個、記録とも合う${c.toLocaleString()}個。`,
+      running: "計算中…",
+      few: "一致するレイアウトが少ないので確率は大まかです。「レイアウトを追加」を試してください。",
+      none: "すべての記録に合うレイアウトがありません。記録を確認するか「レイアウトを追加」を試してください。",
+      noMatch: "他に一致するレイアウトはまだ見つかっていません。",
+      inRooms: (p) => `見た部屋の中：${p}`,
+      beyond: (p) => `出口の先：${p}`,
+      noExit: (p) => `この階にない：${p}`,
+      legend: "円：そのスポットにある確率。矢印：その出口の先にある確率（歩いて一番近い出口）。",
+      spotTip: (i, g) => `スポット${i}（グループ${g}）`,
+      exitTip: (p) => `この出口の先：${p}`,
+      fact: {
+        e: "空（何もない）",
+        o: "何かある",
+        v: "降下中は何も見えない",
+        h: "穴がある",
+        n: "穴はない",
+        g: "間欠泉がある",
+        x: "間欠泉はない",
+        clear: "記録なし",
+      },
+      factShort: { e: "空", o: "何かある", v: "降下中は見えない", h: "穴", n: "穴なし", g: "間欠泉", x: "間欠泉なし" },
+      roomSeen: "この部屋を見た",
+      roomUnseen: "見ていない",
+      roomNoHole: "この部屋に穴はない",
+      roomNoGeyser: "この部屋に間欠泉はない",
+      roomClear: "この部屋の記録を消す",
+      remapped: "記録をこのレイアウトに移しました。",
+      reset: "このレイアウトはポッドの部屋が違うので、記録を消しました。",
+    },
     gameNames: {
       pikmin2: "ピクミン2",
       "251": "Pikmin 251",
@@ -1240,13 +1332,13 @@ const MAP_OPTIONS = [
 ];
 
 function mapOptions() {
-  const o = { water: $("water").checked };
+  const o = { water: $("water").checked, odds: odds.on };
   for (const { key } of MAP_OPTIONS) o[key] = $(`opt-${key}`).checked;
   return o;
 }
 
 function needsDetails() {
-  return MAP_OPTIONS.some((m) => m.details && $(`opt-${m.key}`).checked);
+  return odds.on || MAP_OPTIONS.some((m) => m.details && $(`opt-${m.key}`).checked);
 }
 
 // CaveGen's colors for spawn point groups 0-9, and treasure gauge rings.
@@ -1313,6 +1405,8 @@ function comedownVisible(o) {
 }
 
 function objectShown(o, opts) {
+  // Hole odds: the shown layout stands in for the runner's, whose objects aren't known.
+  if (opts.odds) return o.kind === "ship";
   if (opts.comedownVisible && !comedownVisible(o)) return false;
   switch (o.kind) {
     case "treasure":
@@ -1655,6 +1749,8 @@ function drawMap(layout, scale) {
     ctx.globalAlpha = 1;
   }
 
+  if (opts.odds) drawOdds(ctx, layout, cell, toPx, label, toCanvas);
+
   // Exits and the ship first, then gates, treasures and teki on top.
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
@@ -1898,7 +1994,465 @@ function setupTooltips() {
   };
   canvas.addEventListener("mousemove", (e) => show(e.clientX, e.clientY));
   canvas.addEventListener("mouseleave", () => ($("tooltip").hidden = true));
-  canvas.addEventListener("click", (e) => !mainViewer.dragged && show(e.clientX, e.clientY));
+  canvas.addEventListener("click", (e) => !mainViewer.dragged && !odds.on && show(e.clientX, e.clientY));
+}
+
+// ---- Hole odds (Challenge Mode, seed unknown) ----
+
+// The runner marks which rooms of the shown layout they've seen and what they saw at spots in
+// them; the generator's `hole_odds` command counts where the hole and geyser are in random
+// layouts that agree (see crates/cavegen3/src/hole_odds.rs). Spot and unit numbers are indices
+// into the shown layout, as in the link (?odds=1&seen=0,3&facts=12e,40h).
+const ODDS_BATCH = 20000; // layouts per "More layouts"
+const ODDS_EXAMPLES = 50;
+const FACT_CODES = ["e", "o", "v", "h", "n", "g", "x"];
+const odds = {
+  on: false,
+  seen: new Set([0]),
+  facts: new Map(), // spawn point index -> fact code
+  target: "hole",
+  run: null, // the count in progress or done, for the current marks
+  token: 0,
+  hits: [], // clickable spots on the map: {x, z, r, index}
+  transform: null, // the map canvas's transform when drawn, to find what was clicked
+  cell: CELL,
+  exampleAt: 0,
+};
+
+function oddsSeenText() {
+  return [...odds.seen].sort((a, b) => a - b).join(",") || "-";
+}
+
+function oddsFactsText() {
+  return [...odds.facts].sort((a, b) => a[0] - b[0]).map(([i, c]) => `${i}${c}`).join(",") || "-";
+}
+
+/** The current layout's seed in decimal and its generator, for commands. */
+function layoutSeedArgs(layout) {
+  return [BigInt(`0x${layout.seed}`).toString(), layout.rng || "gc"];
+}
+
+function oddsSaveUrl() {
+  const p = new URLSearchParams(location.search);
+  for (const k of ["odds", "seen", "facts", "oddsTarget"]) p.delete(k);
+  if (odds.on) {
+    p.set("odds", "1");
+    if (odds.seen.size > 1) p.set("seen", oddsSeenText());
+    if (odds.facts.size) p.set("facts", oddsFactsText());
+    if (odds.target !== "hole") p.set("oddsTarget", odds.target);
+  }
+  history.replaceState(null, "", `?${p.toString()}`);
+}
+
+function oddsLoadUrl() {
+  odds.on = params.get("odds") === "1";
+  odds.seen = new Set([0]);
+  for (const s of (params.get("seen") || "").split(",")) if (/^\d+$/.test(s)) odds.seen.add(Number(s));
+  odds.facts = new Map();
+  for (const f of (params.get("facts") || "").split(",")) {
+    const m = f.match(/^(\d+)([a-z])$/);
+    if (m && FACT_CODES.includes(m[2])) odds.facts.set(Number(m[1]), m[2]);
+  }
+  odds.target = params.get("oddsTarget") === "geyser" ? "geyser" : "hole";
+}
+
+/** Which exits the layout has: the target menu offers only those. */
+function oddsTargets(layout) {
+  const kinds = new Set(layout.objects.map((o) => o.kind));
+  return ["hole", "geyser"].filter((k) => kinds.has(k));
+}
+
+/** Drops marks that don't fit the layout (from an old link, say). */
+function oddsClean(layout) {
+  for (const u of [...odds.seen]) if (u >= layout.units.length) odds.seen.delete(u);
+  odds.seen.add(0);
+  const sps = layout.spawnpoints || [];
+  for (const i of [...odds.facts.keys()]) if (!sps[i] || !odds.seen.has(sps[i].unit)) odds.facts.delete(i);
+  const targets = oddsTargets(layout);
+  if (!targets.includes(odds.target)) odds.target = targets[0] || "hole";
+}
+
+/** After a new layout of the same sublevel: carry the marks over if its seen rooms match. */
+async function oddsFollow(prev, layout) {
+  odds.exampleAt = 0;
+  if (!prev || prev.sublevel !== layout.sublevel || prev.rng !== layout.rng) {
+    if (prev) {
+      odds.seen = new Set([0]);
+      odds.facts = new Map();
+    }
+    return null;
+  }
+  if (prev.seed === layout.seed) return null;
+  const [oldSeed] = layoutSeedArgs(prev);
+  const [newSeed, rng] = layoutSeedArgs(layout);
+  const r = await command("hole_remap", layout.sublevel, oldSeed, oddsSeenText(), oddsFactsText(), newSeed, rng);
+  if (r.seen) {
+    odds.seen = new Set(r.seen);
+    odds.facts = new Map();
+    for (const f of r.facts ? r.facts.split(",") : []) {
+      const m = f.match(/^(\d+)([a-z])$/);
+      if (m) odds.facts.set(Number(m[1]), m[2]);
+    }
+    return odds.seen.size > 1 || odds.facts.size ? T.odds.remapped : null;
+  }
+  const had = odds.seen.size > 1 || odds.facts.size;
+  odds.seen = new Set([0]);
+  odds.facts = new Map();
+  return had ? T.odds.reset : null;
+}
+
+function emptyPlace() {
+  return { spots: new Map(), exits: new Map(), other: 0, none: 0 };
+}
+
+/** Counts layouts for the current marks, `ODDS_BATCH` at a time, redrawing as it goes. */
+async function oddsCount(more = false) {
+  if (!odds.on || !current?.layout.spawnpoints) return;
+  const layout = current.layout;
+  const key = `${layout.sublevel}|${layout.seed}|${layout.rng}|${oddsSeenText()}|${oddsFactsText()}`;
+  if (!more || !odds.run || odds.run.key !== key) {
+    odds.run = { key, start: 0, goal: 0, tested: 0, matched: 0, consistent: 0, hole: emptyPlace(), geyser: emptyPlace(), examples: [] };
+  }
+  const run = odds.run;
+  run.goal += ODDS_BATCH;
+  const token = ++odds.token;
+  run.busy = true;
+  showOddsPanel();
+  const [seed, rng] = layoutSeedArgs(layout);
+  let chunk = 500;
+  let lastDraw = performance.now();
+  try {
+    while (run.tested < run.goal && token === odds.token) {
+      const n = Math.min(chunk, run.goal - run.tested);
+      const t0 = performance.now();
+      const r = await command("hole_odds", layout.sublevel, seed, oddsSeenText(), oddsFactsText(), run.start, n, rng, ODDS_EXAMPLES);
+      if (r.error) throw new Error(r.error);
+      if (token !== odds.token) return;
+      // Aim for about 80 ms per call so the page stays responsive.
+      const ms = performance.now() - t0;
+      chunk = Math.max(100, Math.min(20000, Math.round((n * 80) / Math.max(ms, 1))));
+      run.start += n;
+      run.tested += r.tested;
+      run.matched += r.matched;
+      run.consistent += r.consistent;
+      for (const k of ["hole", "geyser"]) {
+        const a = run[k];
+        for (const [i, c] of r[k].spots) a.spots.set(i, (a.spots.get(i) || 0) + c);
+        for (const [i, c] of r[k].exits) a.exits.set(i, (a.exits.get(i) || 0) + c);
+        a.other += r[k].other;
+        a.none += r[k].none;
+      }
+      for (const s of r.examples) if (run.examples.length < ODDS_EXAMPLES) run.examples.push(s);
+      showOddsPanel();
+      if (performance.now() - lastDraw > 400) {
+        lastDraw = performance.now();
+        await mainViewer.refresh();
+      }
+      await yieldToBrowser();
+    }
+  } catch (e) {
+    console.error(e);
+    setStatus(T.cantGenerate(e.message), true);
+  } finally {
+    if (token === odds.token) {
+      run.busy = false;
+      showOddsPanel();
+      await mainViewer.refresh();
+    }
+  }
+}
+
+/** Marks changed: save them in the link and count again. */
+function oddsChanged() {
+  oddsSaveUrl();
+  odds.run = null;
+  showOddsPanel();
+  if (current) mainViewer.refresh();
+  oddsCount();
+}
+
+function pct(p) {
+  if (!(p > 0)) return "0%";
+  if (p < 0.005) return "<1%";
+  if (p > 0.995 && p < 1) return ">99%";
+  return `${Math.round(p * 100)}%`;
+}
+
+/** Heat colors from pale yellow (unlikely) to red (likely). */
+function heat(p, alpha = 0.85) {
+  const t = Math.min(1, Math.sqrt(Math.max(0, p)));
+  const hue = 55 - 55 * t;
+  return `hsla(${hue}, 95%, ${60 - 12 * t}%, ${alpha})`;
+}
+
+function showOddsPanel() {
+  const panel = $("odds-panel");
+  $("odds-toggle").classList.toggle("on", odds.on);
+  $("odds-toggle").setAttribute("aria-pressed", odds.on ? "true" : "false");
+  panel.hidden = !odds.on || !current;
+  if (panel.hidden) return;
+  const O = T.odds;
+  const layout = current.layout;
+  const targets = oddsTargets(layout);
+  const run = odds.run;
+  const select = el("select", { id: "odds-target", "aria-label": O.target });
+  for (const k of targets) select.append(el("option", { value: k }, O[k]));
+  select.value = odds.target;
+  select.addEventListener("change", () => {
+    odds.target = select.value;
+    oddsSaveUrl();
+    showOddsPanel();
+    mainViewer.refresh();
+  });
+  const button = (text, onClick, tip) => {
+    const b = el("button", { type: "button" }, text);
+    if (tip) b.title = tip;
+    b.addEventListener("click", onClick);
+    return b;
+  };
+  const lines = [];
+  if (run) {
+    lines.push(el("p", { class: "odds-status" }, run.busy ? `${O.running} ` : "", O.status(run.consistent, run.matched, run.tested)));
+    const w = run[odds.target];
+    const n = run.consistent;
+    if (n) {
+      const inRooms = [...w.spots.values()].reduce((a, b) => a + b, 0) / n;
+      const beyond = ([...w.exits.values()].reduce((a, b) => a + b, 0) + w.other) / n;
+      const parts = [O.inRooms(pct(inRooms)), O.beyond(pct(beyond))];
+      if (w.none) parts.push(O.noExit(pct(w.none / n)));
+      lines.push(el("p", { class: "odds-sum" }, parts.join(" · ")));
+      if (!run.busy && n < 200) lines.push(el("p", { class: "odds-warn" }, O.few));
+    } else if (!run.busy) {
+      lines.push(el("p", { class: "odds-warn" }, O.none));
+    }
+  }
+  panel.replaceChildren(
+    el("div", { class: "odds-head" }, el("strong", {}, O.title), targets.length > 1 ? el("label", { class: "check" }, O.target, " ", select) : ""),
+    el("p", { class: "odds-intro muted" }, O.intro),
+    ...lines,
+    el(
+      "div",
+      { class: "odds-buttons" },
+      button(O.more, () => oddsCount(true)),
+      button(O.next, oddsNextExample),
+      button(O.comedown, oddsComedown, O.comedownTip),
+      button(O.clear, () => {
+        odds.seen = new Set([0]);
+        odds.facts = new Map();
+        oddsChanged();
+      }),
+    ),
+    el("p", { class: "odds-legend muted" }, O.legend),
+  );
+}
+
+/** Shows the next counted layout that agrees with the marks (they move along with it). */
+async function oddsNextExample() {
+  const examples = (odds.run?.examples || []).filter((s) => BigInt(s) !== BigInt(`0x${current.layout.seed}`));
+  if (!examples.length) {
+    setStatus(T.odds.noMatch);
+    return;
+  }
+  const s = BigInt(examples[odds.exampleAt++ % examples.length]);
+  $("seed").value = formatSeed(isSwitch() ? s : Number(s));
+  await run();
+}
+
+/** Marks the unmarked spots of seen rooms inside the comedown outline as showing nothing. */
+function oddsComedown() {
+  const layout = current.layout;
+  const ship = layout.objects.find((o) => o.kind === "ship");
+  if (!ship) return;
+  const poly = placeCorners(ship.x, ship.z, ship.angle ?? 0, comedownCorners());
+  const inside = (x, z) => {
+    let hit = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, zi] = poly[i];
+      const [xj, zj] = poly[j];
+      if (zi > z !== zj > z && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) hit = !hit;
+    }
+    return hit;
+  };
+  const shipIndex = layout.spawnpoints.findIndex((sp) => sp.group === 7 && Math.hypot(sp.x - ship.x, sp.z - ship.z) < 1);
+  layout.spawnpoints.forEach((sp, i) => {
+    if (i !== shipIndex && odds.seen.has(sp.unit) && !odds.facts.has(i) && inside(sp.x, sp.z)) odds.facts.set(i, "v");
+  });
+  oddsChanged();
+}
+
+/** Draws the odds over the map: dims unseen rooms, colors spots and labels exits. */
+function drawOdds(ctx, layout, cell, toPx, label, toCanvas) {
+  const O = T.odds;
+  odds.hits = [];
+  odds.transform = ctx.getTransform();
+  odds.cell = cell;
+  const run = odds.run;
+  const w = run && run[odds.target];
+  const n = run ? run.consistent : 0;
+  const seen = (u) => odds.seen.has(u);
+
+  ctx.save();
+  ctx.fillStyle = "rgba(0, 0, 0, 0.62)";
+  layout.units.forEach((u, i) => !seen(i) && ctx.fillRect(u.x * cell, u.z * cell, u.w * cell, u.h * cell));
+  ctx.strokeStyle = "#4dd2ff";
+  ctx.lineWidth = Math.max(1.5, cell / 14);
+  layout.units.forEach((u, i) => seen(i) && ctx.strokeRect(u.x * cell, u.z * cell, u.w * cell, u.h * cell));
+
+  // Exits of the seen rooms, with the chance the target is beyond each.
+  (layout.doors || []).forEach((d, i) => {
+    if (!seen(d.unit) || d.adjacent === null || seen(layout.doors[d.adjacent].unit)) return;
+    const p = n ? (w.exits.get(i) || 0) / n : null;
+    const [dx, dz] = [[0, -1], [1, 0], [0, 1], [-1, 0]][d.dir];
+    const x = toPx(d.x);
+    const z = toPx(d.z);
+    const color = p === null ? "#bbb" : heat(p, 1);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(2, cell / 10);
+    arrow(ctx, x - dx * cell * 0.1, z - dz * cell * 0.1, x + dx * cell * 0.4, z + dz * cell * 0.4, Math.max(5, cell * 0.16));
+    if (p !== null) {
+      const lx = x + dx * cell * 0.72;
+      const lz = z + dz * cell * 0.72;
+      label(pct(p), lx, lz, color, Math.max(10, cell * 0.3));
+      const at = toCanvas(lx, lz);
+      hitTargets.push({ ...at, r: Math.max(10, cell * 0.3), label: O.exitTip(pct(p)) });
+    }
+  });
+
+  // Spots in seen rooms: candidates (alcoves and dead ends) as heat circles, the rest as dots
+  // (they can still be marked).
+  const shipObj = layout.objects.find((o) => o.kind === "ship");
+  (layout.spawnpoints || []).forEach((sp, i) => {
+    if (!seen(sp.unit)) return;
+    if (shipObj && sp.group === 7 && Math.hypot(sp.x - shipObj.x, sp.z - shipObj.z) < 1) return;
+    const x = toPx(sp.x);
+    const z = toPx(sp.z);
+    const count = w ? w.spots.get(i) || 0 : 0;
+    const candidate = sp.group === 4 || sp.group === 9 || count > 0;
+    const fact = odds.facts.get(i);
+    const r = candidate ? Math.max(6, cell * 0.3) : Math.max(3, cell * 0.11);
+    const p = n ? count / n : null;
+    ctx.beginPath();
+    ctx.arc(x, z, r, 0, Math.PI * 2);
+    ctx.fillStyle = candidate ? (p === null ? "rgba(200, 200, 200, 0.45)" : p > 0 ? heat(p) : "rgba(90, 90, 90, 0.6)") : "rgba(220, 220, 220, 0.75)";
+    ctx.fill();
+    ctx.lineWidth = Math.max(1, cell / 28);
+    ctx.strokeStyle = fact ? "#4dd2ff" : "rgba(0, 0, 0, 0.8)";
+    ctx.stroke();
+    if (candidate && p !== null) label(pct(p), x, z, "#fff", Math.max(9, cell * 0.24));
+    if (fact) label(FACT_MARKS[fact], x + r * 0.9, z - r * 0.9, "#4dd2ff", Math.max(9, cell * 0.24));
+    const at = toCanvas(x, z);
+    const parts = [O.spotTip(i, sp.group)];
+    if (candidate && p !== null) parts.push(`${O[odds.target]} ${pct(p)}`);
+    if (fact) parts.push(O.factShort[fact]);
+    hitTargets.push({ ...at, r: Math.max(r, 8), label: parts.join(" · ") });
+    odds.hits.push({ ...at, r: Math.max(r, 9), index: i });
+  });
+  ctx.restore();
+}
+
+// Short marks drawn beside marked spots.
+const FACT_MARKS = { e: "∅", o: "●", v: "◌", h: "★", n: "✕", g: "★", x: "✕" };
+
+/** The map unit under a point of the drawn map (CSS pixels of the map canvas), or -1. */
+function oddsUnitAt(x, y) {
+  if (!odds.transform || !current) return -1;
+  const dpr = window.devicePixelRatio || 1;
+  const p = odds.transform.inverse().transformPoint(new DOMPoint(x * dpr, y * dpr));
+  const gx = p.x / odds.cell;
+  const gz = p.y / odds.cell;
+  return current.layout.units.findIndex((u) => gx >= u.x && gx < u.x + u.w && gz >= u.z && gz < u.z + u.h);
+}
+
+function closeOddsMenu() {
+  $("odds-menu").hidden = true;
+}
+
+/** Clicking the map with odds on: a menu of marks for a spot, or for a room. */
+function oddsClick(clientX, clientY) {
+  const at = mainViewer.toContent(clientX, clientY);
+  const k = mainViewer.cscale / mainViewer.scale;
+  let best = null;
+  let bestDist = Infinity;
+  for (const h of odds.hits) {
+    const d = Math.hypot(h.x - at.x, h.z - at.y);
+    if (d <= Math.max(h.r, 10 * k) && d < bestDist) {
+      best = h;
+      bestDist = d;
+    }
+  }
+  const O = T.odds;
+  const layout = current.layout;
+  const items = [];
+  const item = (text, active, fn) => {
+    const b = el("button", { type: "button", class: active ? "active" : "" }, text);
+    b.addEventListener("click", () => {
+      closeOddsMenu();
+      fn();
+      oddsChanged();
+    });
+    items.push(b);
+  };
+  const hasGeyser = oddsTargets(layout).includes("geyser");
+  const hasHole = oddsTargets(layout).includes("hole");
+  if (best) {
+    const i = best.index;
+    const now = odds.facts.get(i);
+    const codes = ["e", "o", "v", ...(hasHole ? ["h", "n"] : []), ...(hasGeyser ? ["g", "x"] : [])];
+    for (const c of codes) item(O.fact[c], now === c, () => odds.facts.set(i, c));
+    item(O.fact.clear, !now, () => odds.facts.delete(i));
+  } else {
+    const u = oddsUnitAt(at.x, at.y);
+    if (u < 0) return closeOddsMenu();
+    const spots = layout.spawnpoints.map((sp, i) => [sp, i]).filter(([sp]) => sp.unit === u);
+    if (!odds.seen.has(u)) {
+      item(O.roomSeen, false, () => odds.seen.add(u));
+    } else {
+      const exitSpots = spots.filter(([sp]) => sp.group === 4 || sp.group === 9);
+      if (hasHole && exitSpots.length) item(O.roomNoHole, false, () => exitSpots.forEach(([, i]) => odds.facts.set(i, "n")));
+      if (hasGeyser && exitSpots.length) item(O.roomNoGeyser, false, () => exitSpots.forEach(([, i]) => odds.facts.set(i, "x")));
+      item(O.roomClear, false, () => spots.forEach(([, i]) => odds.facts.delete(i)));
+      if (u !== 0) {
+        item(O.roomUnseen, false, () => {
+          odds.seen.delete(u);
+          spots.forEach(([, i]) => odds.facts.delete(i));
+        });
+      }
+    }
+  }
+  const menu = $("odds-menu");
+  menu.replaceChildren(...items);
+  menu.hidden = false;
+  $("tooltip").hidden = true;
+  const wrap = $("map-scroll").getBoundingClientRect();
+  const left = Math.min(clientX - wrap.left + 8, wrap.width - menu.offsetWidth - 4);
+  menu.style.left = `${Math.max(4, left)}px`;
+  menu.style.top = `${Math.max(4, Math.min(clientY - wrap.top + 8, wrap.height - menu.offsetHeight - 4))}px`;
+}
+
+function setupOdds() {
+  $("odds-toggle").addEventListener("click", async () => {
+    odds.on = !odds.on;
+    closeOddsMenu();
+    oddsSaveUrl();
+    if (odds.on && current && !current.layout.spawnpoints) {
+      await run(); // the spawn points and doors come with the details
+      return;
+    }
+    if (odds.on && current) oddsClean(current.layout);
+    showOddsPanel();
+    if (current) await render(current.layout);
+    if (odds.on) oddsCount();
+    else odds.token++;
+  });
+  // The pane takes the pointer while it's down (for dragging), so clicks land on it, not the canvas.
+  $("map-scroll").addEventListener("click", (e) => {
+    if (!odds.on || !current || mainViewer.dragged || e.target.closest("#odds-menu")) return;
+    oddsClick(e.clientX, e.clientY);
+  });
+  document.addEventListener("keydown", (e) => e.key === "Escape" && closeOddsMenu());
+  document.addEventListener("pointerdown", (e) => {
+    if (!$("odds-menu").hidden && !e.target.closest("#odds-menu")) closeOddsMenu();
+  });
 }
 
 // ---- Summary ----
@@ -2191,11 +2745,25 @@ async function generateAndShow({ newCave = false } = {}) {
     const judged = judgeType ? await command("judge", sublevel, judgeType, seed, ...rngArgs(seed)) : null;
     const judge = judged ? { type: judgeType, score: judged.score, skips: judged.skips || [] } : null;
     const refit = !current || current.sublevel !== sublevel;
+    // Hole odds marks follow the layout when its seen rooms match, and are cleared otherwise.
+    const prev = current?.layout;
+    let oddsNote = null;
+    if (odds.on) {
+      oddsNote = await oddsFollow(prev, layout);
+      oddsClean(layout);
+      oddsSaveUrl();
+    } else if (prev && (prev.sublevel !== layout.sublevel || prev.seed !== layout.seed)) {
+      odds.seen = new Set([0]);
+      odds.facts = new Map();
+    }
     current = { layout, cave, floor, ms, sublevel, judge };
     $("result").hidden = false;
     $("tooltip").hidden = true;
+    closeOddsMenu();
     await showCurrent(refit);
     updateUrl(cave, floor, seed);
+    if (oddsNote) setStatus(oddsNote);
+    if (odds.on) oddsCount();
     if ($("caveinfo-box").open) await showCaveInfo();
   } catch (e) {
     console.error(e);
@@ -2209,6 +2777,7 @@ async function showCurrent(refit = false) {
   const { layout, cave, floor, ms } = current;
   const title = layout.floors > 1 || cave.name !== "Colossal Caverns" ? T.floorName(caveName(cave), floor) : caveName(cave);
   $("title").textContent = `${title} · ${layout.seed}`;
+  showOddsPanel();
   await render(layout, refit);
   await renderSummary(layout);
   setStatus("");
@@ -2689,6 +3258,7 @@ function applyLanguage() {
   if ($("search-go")) $("search-go").textContent = search && !search.done ? T.stop : T.searchButton;
   if ($("judge")) fillJudges();
   if (T.pageTitle[page]) document.title = T.pageTitle[page];
+  if ($("odds-toggle")) $("odds-toggle").title = T.odds.buttonTip;
   const toggle = $("lang-toggle");
   toggle.textContent = T.otherLang;
   toggle.setAttribute("aria-label", T.otherLangLabel);
@@ -2812,6 +3382,7 @@ async function init() {
   const viewParam = VIEWS.includes(params.get("view")) ? params.get("view") : params.get("landing") === "1" || params.get("comedown") === "1" ? "pod" : null;
   if (viewParam) for (const v of VIEWS) $(`view-${v}`).checked = v === viewParam;
   // The comedown-visible filter is kept in the link, so a shared link shows the same objects.
+  oddsLoadUrl();
   if (params.has("comedownVisible")) $("opt-comedownVisible").checked = params.get("comedownVisible") === "1";
   setUrlFlag("comedownVisible", $("opt-comedownVisible").checked);
   // "judge=judge2" picks the judge for this link (over the saved one); "judge=none" turns it off.
@@ -2939,6 +3510,7 @@ async function init() {
     }
   });
   setupTooltips();
+  setupOdds();
 
   await run();
 }

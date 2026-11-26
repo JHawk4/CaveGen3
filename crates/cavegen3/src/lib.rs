@@ -7,6 +7,7 @@ pub mod caveinfo;
 pub mod data;
 pub mod error;
 pub mod generate;
+pub mod hole_odds;
 pub mod jhawk_judge;
 pub mod layout;
 pub mod math;

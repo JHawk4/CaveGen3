@@ -441,3 +441,38 @@ main.narrow h2 { padding-bottom: 2px; border-bottom: 2px solid var(--sun); displ
 .advanced-col.map-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .map-col .map-options { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 420px) { .advanced-col.map-col { grid-template-columns: minmax(0, 1fr); } }
+
+/* Hole odds: the panel over the map and the menu of marks. */
+.map-toolbar button.odds-toggle.on { border-color: var(--accent); background: var(--accent); color: var(--panel); }
+.odds-panel { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 0.88rem; display: grid; gap: 6px; }
+.odds-panel p { margin: 0; }
+.odds-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.odds-head select { min-height: 28px; }
+.odds-intro, .odds-legend { font-size: 0.82rem; }
+.odds-sum { font-weight: 600; }
+.odds-warn { color: var(--error); }
+.odds-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+.odds-buttons button { min-height: 30px; padding: 3px 10px; font-size: 0.86rem; }
+.odds-menu {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 4px;
+  border-radius: 8px;
+  background: rgba(20, 22, 19, 0.96);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+.odds-menu button {
+  text-align: left;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #f2f3ef;
+  font-size: 0.86rem;
+  min-height: 0;
+}
+.odds-menu button:hover, .odds-menu button:focus-visible { background: rgba(255, 255, 255, 0.14); }
+.odds-menu button.active { color: #4dd2ff; font-weight: 600; }

@@ -159,6 +159,41 @@ cutscene's draw flags in the game files, the decomp and run videos) is in
 The seed buttons can step through the game's RNG instead of counting by one (CaveGen's
 `-consecutiveSeeds`); the seed search and the aggregator offer the same.
 
+### Hole odds
+
+**Hole odds** (above the map) is for runs where the seed isn't known, as in Challenge Mode: it
+shows how likely the hole (or the geyser) is to be at each spot, given what you've seen.
+
+![Hole odds on Concrete Maze 1 with two rooms seen and one alcove ruled out](docs/img/hole-odds-ch12.jpg)
+
+1. Find a seed whose pod room looks like yours (same room, pod on the same spot; the map may be
+   turned). Only the pod's room counts as seen at first; the other rooms are dimmed.
+2. Click a room you've walked into to mark it seen (it must match yours: use **Next matching
+   layout** to step through layouts that agree so far until the next room does). Click a spot
+   to say what you saw there: empty, something there, nothing visible in the comedown, hole or
+   geyser here or not. Clicking a seen room can also rule out the hole in all of it.
+   **Comedown: nothing else seen** marks every unmarked spot of the seen rooms inside the
+   comedown outline as showing nothing then (teki can still be there: the comedown hides them).
+3. Each alcove and dead end in the seen rooms gets its chance; each exit of the seen rooms gets
+   the chance the hole is beyond it (the exit nearest to it by walking distance).
+
+How it's counted: the page generates random layouts of the sublevel (20,000 at a time; **More
+layouts** adds more) and keeps those that agree with what you marked: the pod in the same room
+at the same spot, every seen room in the same place relative to the pod and the same way round,
+and every marked spot as you said. Where the hole is in those layouts gives the odds, so they
+include everything the generator does: in Challenge Mode the hole goes in an empty alcove or
+dead end with weight sqrt(unit score) + 10 before any teki or treasure is placed, and teki then
+keep 150 or 200 units from it, so a teki you see also pushes the hole away. In story mode the
+hole is at the farthest spot, which works the same way. Limits: the odds are only as fine as the
+number of agreeing layouts (the panel shows it; with many rooms marked few layouts agree); gates
+and seam teki can't be marked; seeds count as equally likely; and a room you mark seen must be
+the room the shown layout has there. The marks are kept in the link: `odds=1&seen=0,3&facts=12e,40h`
+(units and spawn points of the shown layout; e empty, o something, v nothing in the comedown,
+h/n hole or not, g/x geyser or not; `oddsTarget=geyser` shows the geyser). The generator
+command is `hole_odds` (see `crates/cavegen3-web`) and the code is
+`crates/cavegen3/src/hole_odds.rs`; `cargo run --release -p cavegen3 --example hole_odds CH12-1`
+prints the odds with only the pod's room seen.
+
 ### Aggregator
 
 `aggregator.html` recreates CaveGen's Aggregator: it generates many seeds of a sublevel, groups
@@ -341,6 +376,10 @@ What the tests check:
 - `crates/cavegen3/tests/jhawk_judge_vs_cavegen.rs`: 72,500 judge scores match CaveGen.
 - `crates/cavegen3/tests/judge2.rs`: judge2 scores and skip chances for fixed seeds, from the
   program it was fitted with (16,308 layouts of the 54 Pay off Debt sublevels matched exactly).
+- `crates/cavegen3/tests/hole_odds.rs`: hole odds with only the pod's room seen equal a direct
+  count over the same seeds; ruling a spot out gives it 0 and renormalizes the rest; the counts
+  agree with the hole's weighted pick (sqrt(score) + 10); a seen hard teki keeps the hole 200
+  units away; marks carry over between matching layouts.
 - `crates/cavegen3/tests/switch.rs`: every vanilla sublevel generates 200 Switch layouts without
   error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, and the f32
   rounding of `randFloat` and `randInt`.
