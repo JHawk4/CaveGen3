@@ -161,16 +161,33 @@ The seed buttons can step through the game's RNG instead of counting by one (Cav
 
 ### Hole odds
 
-**Hole odds** (under Scores in the advanced options, `holeOdds=1`) is for Challenge Mode, where
-the seed isn't known: it writes on each alcove and dead end the chance that the hole (or the
-geyser, on a final floor) is there, given what's on the shown map.
+**Hole odds** (under Scores in the advanced options, `holeOdds=1` in a link) is for Challenge
+Mode, where the seed isn't known: it writes on each alcove and dead end the chance that the hole
+(or the geyser, on a final floor) is there, given everything else on the shown map.
 
 The game places the exit right after the pod, before any teki or treasure: in an empty alcove or
-dead end, picked at random with weight sqrt(unit score) + 10 (the green hole score). So each spot's chance is its weight over the total of the spots that could
-still have it: spots that hold something else are left out, and so are spots within 200 units of
-a hard teki or 150 of a special teki, since those teki keep that far from the exit. The code is
-`crates/cavegen3/src/hole_odds.rs`; the CLI draws it too (`--show holeOdds`). Story floors get
-no odds: there the best score always wins.
+dead end, picked at random with weight sqrt(unit score) + 10 (the green hole score). Everything
+placed afterwards had one spot fewer to choose from, so each spot's weight is multiplied by how
+likely the rest of the map is with the exit there (Bayes' rule):
+
+- Spots holding something else can't have it.
+- Hard and special teki pick uniformly among their spots at least 200 or 150 from the exit: one
+  that close rules a spot out, and an exit that leaves them fewer spots makes the teki seen likelier.
+- Treasures are drawn one at a time, weighted, from the empty room treasure spots and item
+  alcoves. An exit in an item alcove takes it out of the draw, so an empty alcove the treasures
+  passed up is likelier to hold it. This is worked out exactly for the whole set of treasures.
+- Cap teki go into item alcoves after the treasures. Which alcoves they took is treated as random
+  (the game goes in unit order, which you can't see while playing), so an exit alcove leaves them
+  one fewer; where they come with filler, every item alcove they left empty must hold the exit.
+- Gates go first in front of item alcoves holding a treasure, the exit or a grounded cap teki,
+  then on each room's lowest-scored door, then on room doors weighted towards low scores, then
+  anywhere. The chance of the whole set of gates is worked out for each spot, so a gate in front
+  of an alcove that looks empty usually puts the exit there.
+
+Checked against the generator over every Challenge Mode floor: the real exit is never ruled out,
+and the odds are calibrated (the real exit gets 77% on average, as predicted, against 55% from
+the hole weights alone). Story floors get no odds: there the best score always wins. The code is
+`crates/cavegen3/src/hole_odds.rs`; the CLI draws it too (`--show holeOdds`).
 
 ### Aggregator
 
@@ -354,9 +371,9 @@ What the tests check:
 - `crates/cavegen3/tests/jhawk_judge_vs_cavegen.rs`: 72,500 judge scores match CaveGen.
 - `crates/cavegen3/tests/judge2.rs`: judge2 scores and skip chances for fixed seeds, from the
   program it was fitted with (16,308 layouts of the 54 Pay off Debt sublevels matched exactly).
-- `crates/cavegen3/tests/hole_odds.rs`: hole odds add up to 1, only on empty alcoves and dead
-  ends clear of hard and special teki, are the hole scores renormalized, and never leave out the
-  real hole or geyser; story floors get none.
+- `crates/cavegen3/tests/hole_odds.rs`: over every Challenge Mode floor, hole odds add up to 1,
+  sit only on empty alcoves and dead ends clear of hard and special teki, never rule out the real
+  hole or geyser, are calibrated, and beat the hole weights alone; story floors get none.
 - `crates/cavegen3/tests/switch.rs`: every vanilla sublevel generates 200 Switch layouts without
   error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, and the f32
   rounding of `randFloat` and `randInt`.
