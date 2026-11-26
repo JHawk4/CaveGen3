@@ -513,6 +513,18 @@ fn room_failure_run<'a>(
     (odds, shares, closed_maps)
 }
 
+/// The rooms a seed's map places, in placement order (the start room first), stopping as soon as
+/// every room is placed: fewer than the caveinfo's room count if the map closed early. Room
+/// placement is decided before anything spawns, so this answers "does the map have room X" (e.g.
+/// SCx-7's tower) much faster than generating the whole layout.
+pub fn placed_rooms(rng: Rng, caveinfo: &CaveInfo) -> Vec<&CaveUnit> {
+    let mut g = Generator::new(rng, caveinfo);
+    g.early_stop = true;
+    g.sort_units_and_allocate_teki();
+    g.place_map_units();
+    g.units.iter().filter(|u| u.unit.room_type == RoomType::Room).map(|u| u.unit).collect()
+}
+
 /// Like [`rooms_placed`], printing each placement step to stderr (for studying odd maps).
 pub fn trace_rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
     let mut g = Generator::new(rng, caveinfo);
@@ -864,7 +876,12 @@ impl<'a> Generator<'a> {
             }
             for qi in 0..self.queue(room_type).len() {
                 let id = self.queue(room_type)[qi];
-                if let Some(c) = self.try_unit_doors_in_random_order(destination, id) {
+                let found = self.try_unit_doors_in_random_order(destination, id);
+                if self.trace && room_type == RoomType::Room {
+                    let u = self.unit(id);
+                    eprintln!("    try {} rot {}: {}", u.unit_folder_name, u.rotation, if found.is_some() { "fits" } else { "no" });
+                }
+                if let Some(c) = found {
                     return Some(c);
                 }
             }
