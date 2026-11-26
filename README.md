@@ -177,6 +177,20 @@ shows how likely the hole (or the geyser) is to be at each spot, given what you'
 3. Each alcove and dead end in the seen rooms gets its chance; each exit of the seen rooms gets
    the chance the hole is beyond it (the exit nearest to it by walking distance).
 
+**Work out** picks one of two ways:
+
+- **From this layout** (the default, instant): no other layouts are generated. The shown layout
+  is taken to be yours, and its hole candidates get the game's own weights (sqrt(unit score) + 10
+  in Challenge Mode, using the unit scores from before teki are placed; in story mode the
+  best-scored spots). Each spot's chance is its weight over the total, after dropping the spots
+  your marks rule out (seen empty or holding something, or within 200 of a seen hard teki or 150
+  of a special teki) and renormalizing. The geyser is picked after the hole from the spots left,
+  so its odds sum over where the hole went. Spots in rooms you haven't seen count toward the
+  nearest exit, so the exit odds depend on the shown layout's unseen rooms being like yours; the
+  odds for spots in the rooms you've seen don't depend much on that.
+- **Count random layouts**: described next. It averages over every way the unseen rooms can be,
+  at the cost of generating thousands of layouts (a few seconds).
+
 How it's counted: the page generates random layouts of the sublevel (20,000 at a time; **More
 layouts** adds more) and keeps those that agree with what you marked: the pod in the same room
 at the same spot, every seen room in the same place relative to the pod and the same way round,
@@ -187,12 +201,12 @@ keep 150 or 200 units from it, so a teki you see also pushes the hole away. In s
 hole is at the farthest spot, which works the same way. Limits: the odds are only as fine as the
 number of agreeing layouts (the panel shows it; with many rooms marked few layouts agree); gates
 and seam teki can't be marked; seeds count as equally likely; and a room you mark seen must be
-the room the shown layout has there. The marks are kept in the link: `odds=1&seen=0,3&facts=12e,40h`
+the room the shown layout has there. The marks are kept in the link: `odds=1&seen=0,3&facts=12e,40h` (`oddsMethod=count` for counting)
 (units and spawn points of the shown layout; e empty, o something, v nothing in the comedown,
 h/n hole or not, g/x geyser or not; `oddsTarget=geyser` shows the geyser). The generator
-command is `hole_odds` (see `crates/cavegen3-web`) and the code is
+commands are `hole_weights` and `hole_odds` (see `crates/cavegen3-web`) and the code is
 `crates/cavegen3/src/hole_odds.rs`; `cargo run --release -p cavegen3 --example hole_odds CH12-1`
-prints the odds with only the pod's room seen.
+prints the odds with only the pod's room seen, both ways.
 
 ### Aggregator
 
@@ -379,7 +393,10 @@ What the tests check:
 - `crates/cavegen3/tests/hole_odds.rs`: hole odds with only the pod's room seen equal a direct
   count over the same seeds; ruling a spot out gives it 0 and renormalizes the rest; the counts
   agree with the hole's weighted pick (sqrt(score) + 10); a seen hard teki keeps the hole 200
-  units away; marks carry over between matching layouts.
+  units away; marks carry over between matching layouts. The weight-based odds use the same
+  candidates and weights as the generator, renormalize exactly when a spot is ruled out, and are
+  calibrated: over 3,000 seeds each of several floors (hole and geyser), the chance given to the
+  real spot averages to what the odds predict.
 - `crates/cavegen3/tests/switch.rs`: every vanilla sublevel generates 200 Switch layouts without
   error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, and the f32
   rounding of `randFloat` and `randInt`.

@@ -181,6 +181,10 @@ impl Web {
     ///   [`cavegen3::hole_odds`]; seen units are "0,3", facts "12e,40h", either "-" for none).
     ///   `{"tested", "matched", "consistent", "hole": {"spots": [[spawn point, n]], "exits":
     ///   [[door, n]], "other", "none"}, "geyser": {...}, "examples": ["seed"]}`.
+    /// - `hole_weights <sublevel> <seed> <seen units> <facts> [gc|switch]`: the same odds worked
+    ///   out from that layout's own hole weights, with no other layouts generated (see
+    ///   [`hole_odds::weighted`]); the counts are probabilities and `consistent` is 1 (0 if the
+    ///   facts rule out every spot).
     /// - `hole_remap <sublevel> <reference seed> <seen units> <facts> <other seed> [gc|switch]`:
     ///   the same observations in terms of another layout whose seen rooms match:
     ///   `{"seen": [units], "facts": "12e,40h"}`, or `{"seen": null}` if they don't.
@@ -301,26 +305,16 @@ impl Web {
                 let examples = args.get(8).and_then(|a| a.trim().parse().ok()).unwrap_or(0);
                 let seeds = (0..count).map(|i| seed_in(generator, "r", start, i));
                 let t = hole_odds::tally(&reference, &obs, ci, generator, seeds, examples);
-                let place = |w: &hole_odds::Where| {
-                    let pairs = |m: &BTreeMap<u32, f64>| m.iter().map(|(k, v)| format!("[{k},{}]", fnum(*v))).collect::<Vec<_>>().join(",");
-                    format!(
-                        "{{\"spots\":[{}],\"exits\":[{}],\"other\":{},\"none\":{}}}",
-                        pairs(&w.spots),
-                        pairs(&w.exits),
-                        fnum(w.other),
-                        fnum(w.none)
-                    )
-                };
-                let examples: Vec<String> = t.examples.iter().map(|s| format!("\"{s}\"")).collect();
-                Ok(format!(
-                    "{{\"tested\":{},\"matched\":{},\"consistent\":{},\"hole\":{},\"geyser\":{},\"examples\":[{}]}}",
-                    t.tested,
-                    t.matched,
-                    t.consistent,
-                    place(&t.hole),
-                    place(&t.geyser),
-                    examples.join(",")
-                ))
+                Ok(tally_json(&t))
+            }
+            "hole_weights" => {
+                let (_, ci) = caveinfo(1)?;
+                let generator = parse_generator(args.get(5))?;
+                // Stopped after the exits, so the unit scores are the ones the hole was picked with.
+                let rng = cavegen3::rng::Rng::with(generator, num(2)?);
+                let layout = cavegen3::generate::generate_partly(rng, ci, None, true).ok_or("couldn't generate")?;
+                let obs = Observations::parse(arg(3)?, arg(4)?)?;
+                Ok(tally_json(&hole_odds::weighted(&layout, &obs)))
             }
             "hole_remap" => {
                 let (_, ci) = caveinfo(1)?;
@@ -400,6 +394,30 @@ fn parse_query(text: &str, sublevel: &cavegen3::Sublevel, data: &GameData) -> Re
         }
         Err(e) => Err(e.to_string()),
     }
+}
+
+/// A [`hole_odds::Tally`] as JSON (see `hole_odds` in [`Web::query`]).
+fn tally_json(t: &hole_odds::Tally) -> String {
+    let place = |w: &hole_odds::Where| {
+        let pairs = |m: &BTreeMap<u32, f64>| m.iter().map(|(k, v)| format!("[{k},{}]", num6(*v))).collect::<Vec<_>>().join(",");
+        format!("{{\"spots\":[{}],\"exits\":[{}],\"other\":{},\"none\":{}}}", pairs(&w.spots), pairs(&w.exits), num6(w.other), num6(w.none))
+    };
+    let examples: Vec<String> = t.examples.iter().map(|s| format!("\"{s}\"")).collect();
+    format!(
+        "{{\"tested\":{},\"matched\":{},\"consistent\":{},\"hole\":{},\"geyser\":{},\"examples\":[{}]}}",
+        t.tested,
+        t.matched,
+        t.consistent,
+        place(&t.hole),
+        place(&t.geyser),
+        examples.join(",")
+    )
+}
+
+/// A count or probability as JSON, to 6 decimals.
+fn num6(v: f64) -> String {
+    let r = (v * 1e6).round() / 1e6;
+    if r.is_finite() { format!("{r}") } else { "null".into() }
 }
 
 /// An optional generator argument ("gc" or "switch"); GameCube when it's missing or empty.
@@ -956,6 +974,9 @@ mod tests {
         let moved = web.command(&format!("hole_remap\tCH12-1\t305419896\t0\t-\t{example}")).unwrap();
         assert!(moved.starts_with("{\"seen\":[0],\"facts\":\"\"}"), "{moved}");
         assert!(web.command("hole_odds\tCH12-1\t305419896\t-\t12q\t0\t10").is_err());
+        // From the layout's own weights: the north room's alcove, with the pod room's ruled out.
+        let weights = web.command("hole_weights\tCH12-1\t305419896\t0,1\t2n").unwrap();
+        assert!(weights.starts_with("{\"tested\":1,\"matched\":1,\"consistent\":1,\"hole\":{\"spots\":[[27,0.08]],"), "{weights}");
         // A romhack sublevel's query, with or without naming the sublevel, stays in that romhack
         // (251's SS is Subterranean Sands; vanilla has no SS).
         for q in ["hole carry dist < 1500", "ss2 hole carry dist < 1500"] {

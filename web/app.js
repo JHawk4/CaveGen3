@@ -279,8 +279,15 @@ const STRINGS = {
       title: "Hole odds",
       intro:
         "For runs where the seed is unknown. Find a seed whose pod room looks like yours, then click rooms you've seen to add them, and spots to say what you saw there. " +
-        "The odds come from random layouts whose seen rooms match (around the pod, either way round) and that agree with every mark.",
+        "Work out picks how: from this layout's own hole weights (instant), or by counting random layouts whose seen rooms match and that agree with every mark.",
       target: "Show odds for",
+      method: "Work out",
+      methodWeights: "From this layout (instant)",
+      methodCount: "Count random layouts",
+      methodTip:
+        "From this layout: each alcove's weight (√unit score + 10, as the game picks) over the total, minus the spots your marks rule out; the rooms you haven't seen are taken to be as shown. " +
+        "Count random layouts: generates thousands of layouts whose seen rooms match yours, so the unseen part is averaged over every way it can be.",
+      weightsStatus: "From this layout's hole weights (√unit score + 10). Unseen rooms are taken to be as shown; switch to Count random layouts to average over them.",
       hole: "Hole",
       geyser: "Geyser",
       more: "More layouts",
@@ -602,8 +609,15 @@ const STRINGS = {
       title: "穴の確率",
       intro:
         "シードが分からないプレイ向けです。ポッドのある部屋が自分のと同じシードを探し、見た部屋をクリックして追加し、各スポットで見たものを記録してください。" +
-        "確率は、見た部屋がポッドから見て同じ配置（向きは問わない）で、すべての記録と合うランダムなレイアウトから数えています。",
+        "計算方法は、このレイアウトの穴の重みから（すぐ）か、見た部屋が一致してすべての記録と合うランダムなレイアウトを数えるかを選べます。",
       target: "対象",
+      method: "計算方法",
+      methodWeights: "このレイアウトから（すぐ）",
+      methodCount: "ランダムなレイアウトを数える",
+      methodTip:
+        "このレイアウトから：各くぼみの重み（√ユニットスコア＋10、ゲームと同じ）を合計で割り、記録で除外したスポットを除きます。見ていない部屋は表示どおりとみなします。" +
+        "ランダムなレイアウトを数える：見た部屋が一致するレイアウトを何千個も生成し、見ていない部分をすべての可能性で平均します。",
+      weightsStatus: "このレイアウトの穴の重み（√ユニットスコア＋10）から計算。見ていない部屋は表示どおりとみなします。平均するには「ランダムなレイアウトを数える」に切り替えてください。",
       hole: "穴",
       geyser: "間欠泉",
       more: "レイアウトを追加",
@@ -2011,6 +2025,7 @@ const odds = {
   seen: new Set([0]),
   facts: new Map(), // spawn point index -> fact code
   target: "hole",
+  method: "weights", // "weights" (this layout's hole weights) or "count" (random layouts)
   run: null, // the count in progress or done, for the current marks
   token: 0,
   hits: [], // clickable spots on the map: {x, z, r, index}
@@ -2034,12 +2049,13 @@ function layoutSeedArgs(layout) {
 
 function oddsSaveUrl() {
   const p = new URLSearchParams(location.search);
-  for (const k of ["odds", "seen", "facts", "oddsTarget"]) p.delete(k);
+  for (const k of ["odds", "seen", "facts", "oddsTarget", "oddsMethod"]) p.delete(k);
   if (odds.on) {
     p.set("odds", "1");
     if (odds.seen.size > 1) p.set("seen", oddsSeenText());
     if (odds.facts.size) p.set("facts", oddsFactsText());
     if (odds.target !== "hole") p.set("oddsTarget", odds.target);
+    if (odds.method !== "weights") p.set("oddsMethod", odds.method);
   }
   history.replaceState(null, "", `?${p.toString()}`);
 }
@@ -2054,6 +2070,7 @@ function oddsLoadUrl() {
     if (m && FACT_CODES.includes(m[2])) odds.facts.set(Number(m[1]), m[2]);
   }
   odds.target = params.get("oddsTarget") === "geyser" ? "geyser" : "hole";
+  odds.method = params.get("oddsMethod") === "count" ? "count" : "weights";
 }
 
 /** Which exits the layout has: the target menu offers only those. */
@@ -2109,7 +2126,25 @@ function emptyPlace() {
 async function oddsCount(more = false) {
   if (!odds.on || !current?.layout.spawnpoints) return;
   const layout = current.layout;
-  const key = `${layout.sublevel}|${layout.seed}|${layout.rng}|${oddsSeenText()}|${oddsFactsText()}`;
+  const key = `${odds.method}|${layout.sublevel}|${layout.seed}|${layout.rng}|${oddsSeenText()}|${oddsFactsText()}`;
+  if (odds.method === "weights") {
+    // One quick calculation from this layout's own hole weights.
+    const token = ++odds.token;
+    const [seed, rng] = layoutSeedArgs(layout);
+    try {
+      const r = await command("hole_weights", layout.sublevel, seed, oddsSeenText(), oddsFactsText(), rng);
+      if (r.error) throw new Error(r.error);
+      if (token !== odds.token) return;
+      const place = (w) => ({ spots: new Map(w.spots), exits: new Map(w.exits), other: w.other, none: w.none });
+      odds.run = { key, weights: true, tested: 1, matched: 1, consistent: r.consistent, hole: place(r.hole), geyser: place(r.geyser), examples: [] };
+    } catch (e) {
+      console.error(e);
+      setStatus(T.cantGenerate(e.message), true);
+    }
+    showOddsPanel();
+    await mainViewer.refresh();
+    return;
+  }
   if (!more || !odds.run || odds.run.key !== key) {
     odds.run = { key, start: 0, goal: 0, tested: 0, matched: 0, consistent: 0, hole: emptyPlace(), geyser: emptyPlace(), examples: [] };
   }
@@ -2211,8 +2246,15 @@ function showOddsPanel() {
     return b;
   };
   const lines = [];
+  const method = el("select", { id: "odds-method", "aria-label": O.method });
+  method.append(el("option", { value: "weights" }, O.methodWeights), el("option", { value: "count" }, O.methodCount));
+  method.value = odds.method;
+  method.addEventListener("change", () => {
+    odds.method = method.value;
+    oddsChanged();
+  });
   if (run) {
-    lines.push(el("p", { class: "odds-status" }, run.busy ? `${O.running} ` : "", O.status(run.consistent, run.matched, run.tested)));
+    lines.push(el("p", { class: "odds-status" }, run.weights ? O.weightsStatus : `${run.busy ? `${O.running} ` : ""}${O.status(run.consistent, run.matched, run.tested)}`));
     const w = run[odds.target];
     const n = run.consistent;
     if (n) {
@@ -2221,20 +2263,26 @@ function showOddsPanel() {
       const parts = [O.inRooms(pct(inRooms)), O.beyond(pct(beyond))];
       if (w.none) parts.push(O.noExit(pct(w.none / n)));
       lines.push(el("p", { class: "odds-sum" }, parts.join(" · ")));
-      if (!run.busy && n < 200) lines.push(el("p", { class: "odds-warn" }, O.few));
+      if (!run.weights && !run.busy && n < 200) lines.push(el("p", { class: "odds-warn" }, O.few));
     } else if (!run.busy) {
       lines.push(el("p", { class: "odds-warn" }, O.none));
     }
   }
   panel.replaceChildren(
-    el("div", { class: "odds-head" }, el("strong", {}, O.title), targets.length > 1 ? el("label", { class: "check" }, O.target, " ", select) : ""),
+    el(
+      "div",
+      { class: "odds-head" },
+      el("strong", {}, O.title),
+      el("label", { class: "check", title: O.methodTip }, O.method, " ", method),
+      targets.length > 1 ? el("label", { class: "check" }, O.target, " ", select) : "",
+    ),
     el("p", { class: "odds-intro muted" }, O.intro),
     ...lines,
     el(
       "div",
       { class: "odds-buttons" },
-      button(O.more, () => oddsCount(true)),
-      button(O.next, oddsNextExample),
+      odds.method === "count" ? button(O.more, () => oddsCount(true)) : "",
+      odds.method === "count" ? button(O.next, oddsNextExample) : "",
       button(O.comedown, oddsComedown, O.comedownTip),
       button(O.clear, () => {
         odds.seen = new Set([0]);

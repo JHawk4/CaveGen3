@@ -465,3 +465,200 @@ pub fn tally(
     }
     t
 }
+
+// ---------------------------------------------------------------------------------------------
+// Odds from the hole's own weights, without generating other layouts.
+
+/// Where the hole and geyser can go in `layout` and each spot's weight, as `place_hole` picks
+/// them: empty alcoves (group 4, except within 150 of the pod in its own unit) and dead ends
+/// (group 9) in rooms and caps, or hallways if there are none. In Challenge Mode the weight is
+/// sqrt(unit score) + 10; in story mode only the highest score can win, so those spots weigh 1.
+///
+/// `layout` must be generated with `exits_only` ([`generate_partly`]): the unit scores are then
+/// still the ones the game had when it placed the hole (before teki raise them).
+pub fn exit_candidates(layout: &Layout) -> Vec<(u32, f64)> {
+    let scores = candidate_scores(layout);
+    pick_weights(layout, &scores.iter().collect::<Vec<_>>())
+}
+
+/// The weights `place_hole` gives `cands` (spawn point, score): the score itself in Challenge
+/// Mode, else 1 for the highest score and 0 for the rest.
+fn pick_weights(layout: &Layout, cands: &[&(u32, i32)]) -> Vec<(u32, f64)> {
+    if layout.caveinfo.is_challenge_mode() {
+        cands.iter().map(|&&(i, w)| (i, w.max(0) as f64)).collect()
+    } else {
+        let best = cands.iter().map(|c| c.1).max().unwrap_or(0);
+        cands.iter().map(|&&(i, w)| (i, if w == best { 1.0 } else { 0.0 })).collect()
+    }
+}
+
+/// The hole candidates of `layout` and their scores (see [`exit_candidates`]).
+fn candidate_scores(layout: &Layout) -> Vec<(u32, i32)> {
+    use crate::{caveinfo::RoomType, math};
+    let challenge = layout.caveinfo.is_challenge_mode();
+    let Some(ship) = layout.ship else { return Vec::new() };
+    let ship_sp = &layout.spawnpoints[ship as usize];
+    let mut out: Vec<(u32, i32)> = Vec::new();
+    for room_type in [RoomType::Room, RoomType::DeadEnd, RoomType::Hallway] {
+        if room_type == RoomType::Hallway && !out.is_empty() {
+            continue;
+        }
+        for (ui, unit) in layout.units.iter().enumerate() {
+            if unit.unit.room_type != room_type {
+                continue;
+            }
+            let score = if challenge {
+                let root = if unit.total_score > 0 {
+                    math::sqrt(unit.total_score as f32)
+                } else {
+                    0.0
+                };
+                root as i32 + 10
+            } else {
+                unit.total_score
+            };
+            for si in unit.spawnpoint_indices() {
+                let sp = &layout.spawnpoints[si];
+                // The hole and geyser are the only things placed yet; their spots were empty.
+                if sp.contains.iter().any(|so| matches!(so, SpawnObject::Ship)) {
+                    continue;
+                }
+                let g = sp.group();
+                let usable = (g == 4 && (ui as u32 != ship_sp.unit || ship_sp.pos.p2_dist(&sp.pos) >= 150.0)) || g == 9;
+                if usable {
+                    out.push((si as u32, score));
+                }
+            }
+        }
+    }
+    out
+}
+
+/// Whether the hole (`geyser` false) or geyser could be at spawn point `i` of `layout` given the
+/// facts: not at a spot seen empty or holding something else, nor near a seen hard teki (200) or
+/// special teki (150), which keep that far from both.
+fn allowed(layout: &Layout, facts: &[(u32, Fact)], i: u32, geyser: bool) -> bool {
+    let pos = layout.spawnpoints[i as usize].pos;
+    facts.iter().all(|&(fi, fact)| {
+        let here = fi == i;
+        match fact {
+            Fact::Empty | Fact::Occupied | Fact::NothingVisible => {
+                if here {
+                    return false;
+                }
+                // A seen teki in a hard (1) or special (8) teki spot.
+                let sp = &layout.spawnpoints[fi as usize];
+                let gap = match (fact, sp.group()) {
+                    (Fact::Occupied, 1) => 200.0,
+                    (Fact::Occupied, 8) => 150.0,
+                    _ => return true,
+                };
+                sp.pos.p2_dist(&pos) >= gap
+            }
+            Fact::Hole => !geyser || !here,
+            Fact::Geyser => geyser || !here,
+            Fact::NoHole => geyser || !here,
+            Fact::NoGeyser => !geyser || !here,
+        }
+    })
+}
+
+/// Odds from `layout`'s own hole weights, treating it as the runner's layout: each candidate's
+/// weight over the total, after dropping the spots the facts rule out (renormalizing the rest).
+/// The geyser is picked after the hole from the spots left, so its odds sum over where the hole
+/// went. Spots in unseen units count toward the nearest exit of the seen ones, as in [`tally`].
+///
+/// `layout` must be generated with `exits_only` (see [`exit_candidates`]). Facts outside the seen
+/// units are ignored. The counts in the result are probabilities (`consistent` is 1, or 0 when
+/// the facts rule everything out).
+pub fn weighted(layout: &Layout, obs: &Observations) -> Tally {
+    let units = obs.seen_units();
+    let facts: Vec<(u32, Fact)> = obs
+        .facts
+        .iter()
+        .copied()
+        .filter(|&(i, _)| layout.spawnpoints.get(i as usize).is_some_and(|sp| units.contains(&sp.unit)))
+        .collect();
+    let scores = candidate_scores(layout);
+    let cands = exit_candidates(layout);
+    let has_hole = !layout.caveinfo.is_final_floor;
+    let has_geyser = layout.caveinfo.is_final_floor || layout.caveinfo.has_geyser;
+    let must = |f: Fact| facts.iter().find(|x| x.1 == f).map(|x| x.0);
+    let (hole_at, geyser_at) = (must(Fact::Hole), must(Fact::Geyser));
+    let ok_hole = |i: u32| allowed(layout, &facts, i, false) && hole_at.is_none_or(|h| h == i);
+    let ok_geyser = |i: u32| allowed(layout, &facts, i, true) && geyser_at.is_none_or(|g| g == i);
+
+    // Joint odds of (hole spot, geyser spot): the game picks the hole with its weights, then the
+    // geyser with the same weights among the rest; facts drop the pairs they rule out.
+    let total: f64 = cands.iter().map(|c| c.1).sum();
+    let mut hole_p: BTreeMap<u32, f64> = BTreeMap::new();
+    let mut geyser_p: BTreeMap<u32, f64> = BTreeMap::new();
+    let mut sum = 0.0;
+    let holes: Vec<(Option<u32>, f64)> = if has_hole {
+        cands
+            .iter()
+            .map(|&(i, w)| (Some(i), if total > 0.0 { w / total } else { 0.0 }))
+            .collect()
+    } else {
+        vec![(None, 1.0)]
+    };
+    for (h, ph) in holes {
+        if ph == 0.0 || h.is_some_and(|h| !ok_hole(h)) {
+            continue;
+        }
+        if !has_geyser {
+            *hole_p.entry(h.unwrap()).or_default() += ph;
+            sum += ph;
+            continue;
+        }
+        // In story mode the geyser takes the best score the hole left, so weigh the rest again.
+        let left = pick_weights(layout, &scores.iter().filter(|c| Some(c.0) != h).collect::<Vec<_>>());
+        let rest: f64 = left.iter().map(|c| c.1).sum();
+        if rest <= 0.0 {
+            continue;
+        }
+        for &(g, w) in &left {
+            let p = ph * w / rest;
+            if p == 0.0 || !ok_geyser(g) {
+                continue;
+            }
+            if let Some(h) = h {
+                *hole_p.entry(h).or_default() += p;
+            }
+            *geyser_p.entry(g).or_default() += p;
+            sum += p;
+        }
+    }
+
+    let mut t = Tally {
+        tested: 1,
+        matched: 1,
+        ..Tally::default()
+    };
+    if sum <= 0.0 {
+        return t;
+    }
+    t.consistent = 1;
+    let exits: Vec<(u32, usize)> = seen_exits(layout, &units).iter().map(|&(rd, _, _)| (rd, rd as usize)).collect();
+    for (probs, w, present) in [(&hole_p, &mut t.hole, has_hole), (&geyser_p, &mut t.geyser, has_geyser)] {
+        if !present {
+            w.none = 1.0;
+            continue;
+        }
+        for (&i, &p) in probs {
+            let p = p / sum;
+            if units.contains(&layout.spawnpoints[i as usize].unit) {
+                *w.spots.entry(i).or_default() += p;
+                continue;
+            }
+            let nearest = nearest_exits(layout, &units, &exits, i as usize);
+            if nearest.is_empty() {
+                w.other += p;
+            }
+            for rd in &nearest {
+                *w.exits.entry(*rd).or_default() += p / nearest.len() as f64;
+            }
+        }
+    }
+    t
+}

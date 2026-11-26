@@ -4,7 +4,9 @@
 use cavegen3::{
     GameData, Generator, Layout, SpawnObject,
     caveinfo::CaveInfo,
-    hole_odds::{Fact, Observations, Tally, match_units, remap, tally},
+    generate::generate_partly,
+    hole_odds::{Fact, Observations, Tally, exit_candidates, match_units, remap, tally, weighted},
+    rng::Rng,
 };
 
 const N: u64 = 4000;
@@ -222,4 +224,137 @@ fn facts_parse() {
     assert!(Observations::parse("-", "-").unwrap().facts.is_empty());
     assert!(Observations::parse("x", "-").is_err());
     assert!(Observations::parse("-", "12q").is_err());
+}
+
+// ---- Odds from one layout's own weights (`weighted`) ----
+
+/// The layout as it was when the hole was picked (unit scores before teki).
+fn at_exits(seed: u32, ci: &CaveInfo) -> Layout<'_> {
+    generate_partly(Rng::new(seed), ci, None, true).unwrap()
+}
+
+fn all_seen(l: &Layout) -> Observations {
+    Observations {
+        seen: (0..l.units.len() as u32).collect(),
+        facts: vec![],
+    }
+}
+
+/// The candidates and weights are the ones the generator used: in Challenge Mode the spots that
+/// got a hole score, with it as the weight; the hole and geyser always land on one.
+#[test]
+fn weights_are_the_generators() {
+    let data = GameData::bundled().unwrap();
+    for name in ["CH1-1", "CH12-1", "CH20-1", "CH5-2"] {
+        let ci = caveinfo(&data, name);
+        for seed in 0..300u32 {
+            let l = at_exits(seed, ci);
+            let mut cands = exit_candidates(&l);
+            cands.sort_by_key(|c| c.0);
+            let scored: Vec<(u32, f64)> = l
+                .spawnpoints
+                .iter()
+                .enumerate()
+                .filter(|(_, sp)| sp.hole_score > 0)
+                .map(|(i, sp)| (i as u32, sp.hole_score as f64))
+                .collect();
+            assert_eq!(cands, scored, "{name} {seed:#X}");
+            for exit in [l.hole, l.geyser].into_iter().flatten() {
+                assert!(cands.iter().any(|c| c.0 == exit && c.1 > 0.0), "{name} {seed:#X}");
+            }
+        }
+    }
+    // Story mode: the hole is on one of the best-scored spots.
+    let ci = caveinfo(&data, "SCx-6");
+    for seed in 0..300u32 {
+        let l = at_exits(seed, ci);
+        let hole = l.hole.unwrap();
+        assert!(exit_candidates(&l).iter().any(|c| c.0 == hole && c.1 == 1.0), "{seed:#X}");
+    }
+}
+
+/// With every room seen, each spot gets weight / total; ruling one out renormalizes the rest
+/// exactly; saying the hole is somewhere gives it 1.
+#[test]
+fn weighted_conditioning() {
+    let data = GameData::bundled().unwrap();
+    let ci = caveinfo(&data, "CH12-1");
+    let l = at_exits(0x1234_5678, ci);
+    let obs = all_seen(&l);
+    let cands = exit_candidates(&l);
+    let total: f64 = cands.iter().map(|c| c.1).sum();
+    let t = weighted(&l, &obs);
+    assert_eq!(t.consistent, 1);
+    assert!(t.hole.exits.is_empty());
+    for &(i, w) in &cands {
+        assert!((t.hole.spots[&i] - w / total).abs() < 1e-12);
+    }
+    let (out, w_out) = cands[0];
+    let mut ruled = obs.clone();
+    ruled.facts.push((out, Fact::NoHole));
+    let t2 = weighted(&l, &ruled);
+    assert!(!t2.hole.spots.contains_key(&out));
+    for &(i, w) in &cands[1..] {
+        assert!((t2.hole.spots[&i] - w / (total - w_out)).abs() < 1e-12);
+    }
+    let mut here = obs.clone();
+    here.facts.push((out, Fact::Hole));
+    let t3 = weighted(&l, &here);
+    assert_eq!(t3.hole.spots.len(), 1);
+    assert!((t3.hole.spots[&out] - 1.0).abs() < 1e-12);
+    // Ruling out every spot leaves nothing consistent.
+    let mut none = obs.clone();
+    none.facts.extend(cands.iter().map(|c| (c.0, Fact::Empty)));
+    assert_eq!(weighted(&l, &none).consistent, 0);
+    // Only the pod's room seen: the rest goes to its exits, and it all sums to 1.
+    let t4 = weighted(&l, &Observations::default());
+    let sum: f64 = t4.hole.spots.values().chain(t4.hole.exits.values()).sum::<f64>() + t4.hole.other;
+    assert!((sum - 1.0).abs() < 1e-9);
+    assert!(t4.hole.exits.keys().all(|&d| l.doors[d as usize].unit == 0));
+}
+
+/// The weights are calibrated against real generation: over many seeds, the chance each layout
+/// gave its actual hole spot averages to the sum of its squared chances (what it should be if the
+/// odds are right). Also for the geyser on a final floor, and on a floor with both, where the
+/// geyser's odds depend on where the hole went.
+#[test]
+fn weighted_odds_are_calibrated() {
+    let data = GameData::bundled().unwrap();
+    let both = data
+        .caves()
+        .iter()
+        .filter(|c| c.is_challenge_mode && c.game == "pikmin2")
+        .flat_map(|c| data.floors(c).unwrap().iter())
+        .find(|ci| ci.has_geyser && !ci.is_final_floor)
+        .map(|ci| ci.name());
+    let mut names = vec!["CH12-1".to_string(), "CH5-2".to_string(), "CH20-1".to_string()];
+    names.extend(both);
+    for name in names {
+        let ci = caveinfo(&data, &name);
+        let (mut hit, mut expect, mut var) = ([0.0; 2], [0.0; 2], [0.0; 2]);
+        for seed in seeds(3000) {
+            let l = at_exits(seed as u32, ci);
+            let t = weighted(&l, &all_seen(&l));
+            for (k, (w, actual)) in [(&t.hole, l.hole), (&t.geyser, l.geyser)].into_iter().enumerate() {
+                let Some(actual) = actual else { continue };
+                let sq: f64 = w.spots.values().map(|p| p * p).sum();
+                let p = w.spots.get(&actual).copied().unwrap_or(0.0);
+                assert!(p > 0.0, "{name} {seed:#X}: the real spot had no chance");
+                hit[k] += p;
+                expect[k] += sq;
+                var[k] += w.spots.values().map(|p| p * p * p).sum::<f64>() - sq * sq;
+            }
+        }
+        for k in 0..2 {
+            if expect[k] > 0.0 {
+                let sd = var[k].max(0.0).sqrt();
+                assert!(
+                    (hit[k] - expect[k]).abs() < 5.0 * sd + 1e-6,
+                    "{name} {k}: {:.2} vs {:.2} (sd {sd:.2})",
+                    hit[k],
+                    expect[k]
+                );
+            }
+        }
+    }
 }
