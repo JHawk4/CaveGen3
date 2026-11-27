@@ -201,8 +201,8 @@ const STRINGS = {
       opt: {
         treasures: "Treasure icons",
         hideBuried: "Hide treasures that start completely under the ground (as CaveGen's -drawNoBuriedItems)",
-        teki: "Teki icons, with what they carry and whether they fall when approached",
-        plants: "Plant icons",
+        teki: "Teki icons, with what they carry and whether they fall when approached. Plants aren't teki here, wherever they spawned; Candypop Buds, Pellet Posies and hazards are",
+        plants: "Plant icons: Clovers, Glowcaps, Glowstems, Figworts, Shoots, Margarets and the like, also when the cave put one in a teki spot",
         gates: "Gates",
         gateHealth: "Each gate's HP, written on the gate",
         exits: "The pod, the hole or geyser, and Onions",
@@ -481,8 +481,8 @@ const STRINGS = {
       opt: {
         treasures: "お宝のアイコン",
         hideBuried: "最初から完全に地中に埋まっているお宝を隠します（CaveGenの -drawNoBuriedItems）",
-        teki: "原生生物のアイコン（持っているお宝、近づくと落ちてくるかも表示）",
-        plants: "植物のアイコン",
+        teki: "原生生物のアイコン（持っているお宝、近づくと落ちてくるかも表示）。植物はどこに出ても含みません。ポンガシグサ、ペレット草、火・電気・ガスの仕掛けは含みます",
+        plants: "植物のアイコン（クローバー、ヒカリキノコ、ヒカリエノキ、モモフグリ、若芽、マーガレットなど）。原生生物の地点に出た植物も含みます",
         gates: "ゲート",
         gateHealth: "各ゲートの体力をゲートの上に表示します",
         exits: "ポッド、穴か間欠泉、オニヨン",
@@ -1300,12 +1300,20 @@ function tintedIcon(img, color) {
   return tintCache.get(key);
 }
 
-// Teki the game draws even in cutscenes (their managers are EnemyMgrBaseAlwaysMovieActor):
-// the plants and the fire, electric and gas hazards. Lowercase internal names.
-const COMEDOWN_VISIBLE_TEKI = new Set([
-  "chiyogami", "clover", "diodered", "diodegreen", "hikarikinoko", "kareooinu_l", "kareooinu_s", "margaret", "nekojarashi",
-  "ooinu_l", "ooinu_s", "tanpopo", "tukushi", "wakame_l", "wakame_s", "watage", "zenmai", "hiba", "elechiba", "gashiba",
+// What a teki is, by internal name (lowercase), not by the spawn group it was placed in: caveinfo
+// sometimes puts plants in teki spots and teki in plant spots. The same lists as the cavegen3
+// crate's teki_kind.rs (a test checks): the decomp's Plants managers, spelled as in caveinfo
+// (DaiodoRed, Magaret), and the fire, electric and gas hazards. Candypop Buds, Pellet Posies
+// and Skitter Leaves are teki.
+const PLANT_TEKI = new Set([
+  "chiyogami", "clover", "daiodogreen", "daiodored", "hikarikinoko", "kareooinu_l", "kareooinu_s", "magaret", "nekojarashi",
+  "ooinu_l", "ooinu_s", "tanpopo", "tukushi", "wakame_l", "wakame_s", "watage", "zenmai",
 ]);
+const HAZARD_TEKI = new Set(["hiba", "elechiba", "gashiba"]);
+
+function isPlant(name) {
+  return PLANT_TEKI.has(String(name).toLowerCase());
+}
 
 /**
  * Whether the game draws an object while the pod comes down. The cave intro cutscene
@@ -1316,7 +1324,9 @@ const COMEDOWN_VISIBLE_TEKI = new Set([
  * is the same.
  */
 function comedownVisible(o) {
-  return o.kind !== "teki" || COMEDOWN_VISIBLE_TEKI.has(String(o.name).toLowerCase());
+  if (o.kind !== "teki") return true;
+  const name = String(o.name).toLowerCase();
+  return PLANT_TEKI.has(name) || HAZARD_TEKI.has(name);
 }
 
 function objectShown(o, opts) {
@@ -1325,7 +1335,7 @@ function objectShown(o, opts) {
     case "treasure":
       return opts.treasures && !(opts.hideBuried && o.buried);
     case "teki":
-      return o.group === 6 ? opts.plants : opts.teki;
+      return isPlant(o.name) ? opts.plants : opts.teki;
     case "gate":
       return opts.gates;
     default:
