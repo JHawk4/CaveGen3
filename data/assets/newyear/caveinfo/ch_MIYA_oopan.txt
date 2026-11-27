@@ -7,20 +7,20 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 12 # EntityTotal
-	{f003} 4 4 # TreasureTotal
-	{f004} 4 0 # GateTotal
+	{f002} 4 15 # EntityTotal
+	{f003} 4 10 # TreasureTotal
+	{f004} 4 3 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_4x4c_tree.txt # UnitFile
+	{f008} -1 2_units_4x4c_2_tree.txt # UnitFile
 	{f009} -1 normal_light_lv0.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -28,15 +28,17 @@
 }
 # TekiInfo
 {
-	6 # num
+	7 # num
 	Kogane 20 # weight
 	0 # type
 	ShijimiChou 10 # weight
 	1 # type
+	YellowKochappy 50 # weight
+	1 # type
 	Qurione 20 # weight
 	0 # type
-	BluePom 30 # weight
-	5 # type
+	ShijimiChou 10 # weight
+	0 # type
 	DaiodoGreen 2 # weight
 	6 # type
 	DaiodoRed 2 # weight
@@ -44,15 +46,28 @@
 }
 # ItemInfo
 {
-	4 # num
+	10 # num
 	key 10 # weight
 	flower_red 10 # weight
 	ichigo 10 # weight
 	ichigo_l 10 # weight
+	leaf_yellow 10 # weight
+	donutschoco 10 # weight
+	donutsichigo 10 # weight
+	futa_a_silver 10 # weight
+	donutswhite_s 10 # weight
+	momiji_kare 10 # weight
+	
 }
 # GateInfo
 {
-	0 # num
+	3 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
 }
 # CapInfo
 {
@@ -62,11 +77,11 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 14 # EntityTotal
-	{f003} 4 5 # TreasureTotal
+	{f002} 4 20 # EntityTotal
+	{f003} 4 8 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_pool_tree.txt # UnitFile
 	{f009} -1 normal_light_lv0.ini # LightFile
@@ -75,7 +90,7 @@
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -83,26 +98,33 @@
 }
 # TekiInfo
 {
-	5 # num
+	7 # num
 	Tadpole 50 # weight
 	0 # type
 	Frog 10 # weight
 	1 # type
 	MaroFrog 10 # weight
 	1 # type
+	Catfish 20 # weight
+	1 # type
+	$Egg 30 # weight
+	1 # type
+	$Egg 20 # weight
+	5 # type
 	HikariKinoko 5 # weight
 	6 # type
-	BluePom 20 # weight
-	5 # type
 }
 # ItemInfo
 {
-	5 # num
+	8 # num
 	key 10 # weight
 	kuri 10 # weight
 	leaf_kare 10 # weight
 	apple 10 # weight
 	dia_a_red 10 # weight
+	donguri 10 # weight
+	donguri_l 10 # weight
+	cookie_m_l 10 # weight
 }
 # GateInfo
 {
@@ -110,17 +132,20 @@
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	BluePom 10 # weight
+	1 # type
 }
 # FloorInfo
 {
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
-	{f002} 4 18 # EntityTotal
+	{f002} 4 17 # EntityTotal
 	{f003} 4 7 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_cent_tree.txt # UnitFile
 	{f009} -1 normal_light_lv0.ini # LightFile
@@ -129,7 +154,7 @@
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -146,8 +171,8 @@
 	0 # type
 	Hanachirashi 10 # weight
 	0 # type
-	BlackPom 20 # weight
-	5 # type
+	Chappy 10 # weight
+	0 # type
 	Clover 10 # weight
 	6 # type
 }
@@ -175,10 +200,10 @@
 	{f000} 4 3 # CurrentSublevelIndex
 	{f001} 4 3 # CurrentSublevelIndex
 	{f002} 4 28 # EntityTotal
-	{f003} 4 4 # TreasureTotal
+	{f003} 4 9 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_MAT_ikeflooded_tree.txt # UnitFile
 	{f009} -1 normal_light_lv0.ini # LightFile
@@ -187,7 +212,7 @@
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -211,11 +236,16 @@
 }
 # ItemInfo
 {
-	4 # num
+	9 # num
 	key 10 # weight
 	leaf_normal 10 # weight
 	momiji_red 10 # weight
 	kinoko 10 # weight
+	dia_a_red 10 # weight
+	momiji_red 10 # weight
+	flower_red 10 # weight
+	ichigo 10 # weight
+	ichigo_l 10 # weight
 }
 # GateInfo
 {
@@ -229,20 +259,20 @@
 {
 	{f000} 4 4 # CurrentSublevelIndex
 	{f001} 4 4 # CurrentSublevelIndex
-	{f002} 4 29 # EntityTotal
-	{f003} 4 6 # TreasureTotal
+	{f002} 4 31 # EntityTotal
+	{f003} 4 9 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 4 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 3_MAT_4x4_tree.txt # UnitFile
-	{f009} -1 muraon_light_lv0.ini # LightFile
+	{f009} -1 normal_light_cha.ini # LightFile
 	{f00A} -1 treehouse # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -250,11 +280,13 @@
 }
 # TekiInfo
 {
-	7 # num
+	8 # num
 	UjiA 50 # weight
 	0 # type
 	UjiB 50 # weight
 	0 # type
+	Chappy 20 # weight
+	1 # type
 	Armor 20 # weight
 	1 # type
 	Hana 20 # weight
@@ -268,13 +300,16 @@
 }
 # ItemInfo
 {
-	6 # num
+	9 # num
 	key 10 # weight
 	chocolate 10 # weight
 	chocolate_l 10 # weight
 	chocoichigo 10 # weight
 	chocowhite 10 # weight
 	chocowhite_l 10 # weight
+	flower_red 10 # weight
+	ichigo 10 # weight
+	ichigo_l 10 # weight
 }
 # GateInfo
 {

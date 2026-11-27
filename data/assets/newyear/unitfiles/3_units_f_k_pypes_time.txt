@@ -28,10 +28,10 @@
 	2 0 0 	# dir/offs/wpindex
 	0 	# door links
 }
-# way3_kusachi
+# way3_time2
 {
 	1 	# version
-	way3_kusachi 	# foldername
+	way3_time2 	# foldername
 	1 1 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags
@@ -52,10 +52,10 @@
 	170.004532 0 1 	# dist/door-id/tekiflag
 	170.004532 1 1 	# dist/door-id/tekiflag
 }
-# way4_metal
+# way4_time
 {
 	1 	# version
-	way4_metal 	# foldername
+	way4_time 	# foldername
 	1 1 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags
@@ -119,10 +119,10 @@
 	1 	# door links
 	170.004532 0 1 	# dist/door-id/tekiflag
 }
-# way2x2_toy
+# way2x2_time2
 {
 	1 	# version
-	way2x2_toy 	# foldername
+	way2x2_time2 	# foldername
 	1 2 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags

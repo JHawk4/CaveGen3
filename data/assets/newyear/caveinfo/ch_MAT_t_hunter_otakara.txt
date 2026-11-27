@@ -7,7 +7,7 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 3 # EntityTotal
+	{f002} 4 5 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 1 # RoomTotal
@@ -28,7 +28,7 @@
 }
 # TekiInfo
 {
-	4 # num
+	5 # num
 	FireOtakara 10 # weight
 	0 # type
 	ElecOtakara 10 # weight
@@ -37,6 +37,8 @@
 	0 # type
 	GasOtakara 10 # weight
 	0 # type
+	Magaret 2 # weight
+	6 # type
 }
 # ItemInfo
 {
@@ -56,8 +58,8 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 3 # EntityTotal
-	{f003} 4 6 # TreasureTotal
+	{f002} 4 5 # EntityTotal
+	{f003} 4 7 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
 	{f006} 4 0.120000 # CorridorRatio
@@ -66,7 +68,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 tatami # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -77,12 +79,8 @@
 }
 # TekiInfo
 {
-	9 # num
-	MiniHoudai_kan 10 # weight
-	1 # type
-	Houdai_key 10 # weight
-	1 # type
-	KingChappy_key 10 # weight
+	7 # num
+	MiniHoudai_key 10 # weight
 	1 # type
 	BombSarai_juji_key_fc 10 # weight
 	1 # type
@@ -99,13 +97,14 @@
 }
 # ItemInfo
 {
-	6 # num
+	7 # num
 	toy_gentle 10 # weight
 	dia_b_red 10 # weight
 	donutsichigo_s 10 # weight
 	donutswhite 10 # weight
 	robot_head 10 # weight
 	bane_blue 10 # weight
+	kan 10 # weight
 }
 # GateInfo
 {
@@ -129,7 +128,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -177,7 +176,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 tatami # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -225,20 +224,20 @@
 {
 	{f000} 4 4 # CurrentSublevelIndex
 	{f001} 4 4 # CurrentSublevelIndex
-	{f002} 4 10 # EntityTotal
-	{f003} 4 13 # TreasureTotal
+	{f002} 4 12 # EntityTotal
+	{f003} 4 14 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_sara_sara2_toy.txt # UnitFile
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 flooring # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -246,17 +245,22 @@
 }
 # TekiInfo
 {
-	3 # num
-	PanModoki 40 # weight
+	5 # num
+	PanModoki 10 # weight
 	0 # type
-	OoPanModoki_key 10 # weight
+	OoPanModoki 10 # weight
+	0 # type
+	ElecBug_matu_bokkuri 30 # weight
 	0 # type
 	Egg 50 # weight
 	1 # type
+	Watage 10 # weight
+	6 # type
 }
 # ItemInfo
 {
-	13 # num
+	14 # num
+	key 10 # weight
 	ichigo 10 # weight
 	momiji_red 10 # weight
 	donutschoco 10 # weight
@@ -283,17 +287,17 @@
 {
 	{f000} 4 5 # CurrentSublevelIndex
 	{f001} 4 5 # CurrentSublevelIndex
-	{f002} 4 37 # EntityTotal
+	{f002} 4 34 # EntityTotal
 	{f003} 4 6 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 3 # RoomTotal
-	{f006} 4 0.150000 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_big2_kusachi.txt # UnitFile
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 hiroba # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -307,7 +311,7 @@
 	13 # num
 	Queen_key 10 # weight
 	8 # type
-	Sokkuri 100 # weight
+	Sokkuri 20 # weight
 	0 # type
 	Kogane 10 # weight
 	0 # type
@@ -315,17 +319,17 @@
 	0 # type
 	Fart 10 # weight
 	0 # type
-	UjiA 50 # weight
+	UjiA 20 # weight
 	1 # type
-	UjiB 50 # weight
+	UjiB 20 # weight
 	1 # type
-	Tobi 50 # weight
+	Tobi 20 # weight
 	1 # type
-	TamagoMushi 20 # weight
-	1 # type
-	Sarai 20 # weight
+	ShijimiChou 10 # weight
 	5 # type
-	Demon 20 # weight
+	Sarai 10 # weight
+	5 # type
+	Demon 10 # weight
 	5 # type
 	Clover 10 # weight
 	6 # type
@@ -348,26 +352,23 @@
 }
 # CapInfo
 {
-	1 # num
-	0 # captype
-	ShijimiChou 2 # weight
-	1 # type
+	0 # num
 }
 # FloorInfo
 {
 	{f000} 4 6 # CurrentSublevelIndex
 	{f001} 4 6 # CurrentSublevelIndex
-	{f002} 4 1 # EntityTotal
+	{f002} 4 6 # EntityTotal
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 1 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_white_metal.txt # UnitFile
-	{f009} -1 forest_3_light.ini # LightFile
+	{f009} -1 yakushima_2_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -378,9 +379,11 @@
 }
 # TekiInfo
 {
-	1 # num
+	2 # num
 	BigTreasure_key 10 # weight
 	1 # type
+	Clover 5 # weight
+	6 # type
 }
 # ItemInfo
 {

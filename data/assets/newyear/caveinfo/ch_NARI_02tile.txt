@@ -11,16 +11,16 @@
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 flooded_kusachi.txt # UnitFile
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 hiroba # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -28,7 +28,7 @@
 }
 # TekiInfo
 {
-	10 # num
+	9 # num
 	Jigumo_key 10 # weight
 	0 # type
 	Jigumo 10 # weight
@@ -47,8 +47,6 @@
 	6 # type
 	Wakame_l 5 # weight
 	6 # type
-	ElecHiba 20 # weight
-	5 # type
 }
 # ItemInfo
 {
@@ -72,16 +70,16 @@
 	{f003} 4 4 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_nobo_flooded_metal.txt # UnitFile
 	{f009} -1 metal_light_lv0.ini # LightFile
 	{f00A} -1 ice # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 1 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -133,16 +131,16 @@
 	{f003} 4 4 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_spiral_flooded_conc.txt # UnitFile
 	{f009} -1 sniper_light_lv0.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -197,7 +195,7 @@
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -246,10 +244,10 @@
 	{f009} -1 sirohana_light_lv0.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)

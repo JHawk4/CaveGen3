@@ -7,13 +7,13 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 27 # EntityTotal
+	{f002} 4 40 # EntityTotal
 	{f003} 4 17 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 7 # RoomTotal
+	{f005} 4 5 # RoomTotal
 	{f006} 4 0.5 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_units_north_snow.txt # UnitFile
+	{f008} -1 1_units_north_renga.txt # UnitFile
 	{f009} -1 forest_2_siro_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
@@ -28,16 +28,14 @@
 }
 # TekiInfo
 {
-	12 # num
-	KumaChappy 20 # weight
+	14 # num
+	KumaChappy 10 # weight
 	0 # type
 	KumaKochappy 40 # weight
 	0 # type
 	PanModoki 20 # weight
 	1 # type
 	OoPanModoki 10 # weight
-	1 # type
-	MiniHoudai 10 # weight
 	1 # type
 	MiniHoudai_key 10 # weight
 	1 # type
@@ -53,6 +51,12 @@
 	1 # type
 	GasOtakara 10 # weight
 	1 # type
+	Tukushi 50 # weight
+	5 # type
+	KareOoinu_s 50 # weight
+	5 # type
+	KareOoinu_l 50 # weight
+	5 # type
 }
 # ItemInfo
 {

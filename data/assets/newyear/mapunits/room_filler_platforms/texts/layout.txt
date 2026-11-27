@@ -1,0 +1,11 @@
+# BaseGen file
+1 	 # num gens
+# basegen 0
+{
+	7 	# type [Start]
+	-653.000000 -253.000000 -1451.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

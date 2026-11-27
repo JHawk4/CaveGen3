@@ -7,17 +7,17 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 19 # EntityTotal
-	{f003} 4 5 # TreasureTotal
+	{f002} 4 20 # EntityTotal
+	{f003} 4 4 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_big2_desert.txt # UnitFile
 	{f009} -1 desert_light.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -28,13 +28,15 @@
 }
 # TekiInfo
 {
-	5 # num
+	6 # num
 	Rkabuto 20 # weight
 	0 # type
 	Demon 10 # weight
 	1 # type
 	MiniHoudai_key 10 # weight
 	0 # type
+	ShijimiChou 10 # weight
+	1 # type
 	Bomb 50 # weight
 	1 # type
 	Zenmai 10 # weight
@@ -42,12 +44,11 @@
 }
 # ItemInfo
 {
-	5 # num
+	4 # num
 	dia_c_red 10 # weight
 	dia_a_red 10 # weight
 	tape_blue 10 # weight
 	uji_jisyaku 10 # weight
-	makigai 10 # weight
 }
 # GateInfo
 {
@@ -61,17 +62,17 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 26 # EntityTotal
+	{f002} 4 39 # EntityTotal
 	{f003} 4 5 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_big2_desert.txt # UnitFile
 	{f009} -1 jyoou_light_lv1.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -82,7 +83,7 @@
 }
 # TekiInfo
 {
-	7 # num
+	9 # num
 	Mar 10 # weight
 	0 # type
 	Hanachirashi 10 # weight
@@ -91,11 +92,15 @@
 	1 # type
 	OniKurage_key 10 # weight
 	1 # type
+	ElecOtakara 30 # weight
+	1 # type
 	ElecHiba 100 # weight
 	5 # type
 	Tanpopo 5 # weight
 	6 # type
 	Watage 5 # weight
+	6 # type
+	Zenmai 10 # weight
 	6 # type
 }
 # ItemInfo
@@ -122,17 +127,17 @@
 {
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
-	{f002} 4 28 # EntityTotal
+	{f002} 4 39 # EntityTotal
 	{f003} 4 5 # TreasureTotal
 	{f004} 4 3 # GateTotal
-	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_big2_desert.txt # UnitFile
 	{f009} -1 chikahimi_metal_light_lv4.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -143,12 +148,14 @@
 }
 # TekiInfo
 {
-	7 # num
+	9 # num
 	MaroFrog 20 # weight
 	0 # type
 	Armor 20 # weight
 	0 # type
 	KumaKochappy 30 # weight
+	0 # type
+	Damagumo_silver_medal 10 # weight
 	0 # type
 	Demon_key 10 # weight
 	1 # type
@@ -157,6 +164,8 @@
 	ElecBug 60 # weight
 	1 # type
 	HikariKinoko 10 # weight
+	6 # type
+	Zenmai 10 # weight
 	6 # type
 }
 # ItemInfo

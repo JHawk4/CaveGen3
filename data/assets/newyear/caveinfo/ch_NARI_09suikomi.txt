@@ -7,17 +7,17 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 24 # EntityTotal
+	{f002} 4 22 # EntityTotal
 	{f003} 4 5 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 5 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_4x4a_sewer.txt # UnitFile
+	{f008} -1 3_units_4x4a_sewer.txt # UnitFile
 	{f009} -1 muraon_light_lv3.ini # LightFile
 	{f00A} -1 sewer # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -28,20 +28,24 @@
 }
 # TekiInfo
 {
-	7 # num
-	WaterOtakara 50 # weight
-	0 # type
-	Sarai 10 # weight
-	1 # type
+	9 # num
 	Armor_key 10 # weight
 	0 # type
 	Armor 20 # weight
 	0 # type
+	WaterOtakara 50 # weight
+	0 # type
+	Sarai 10 # weight
+	1 # type
 	Tobi 50 # weight
 	1 # type
 	ElecHiba 50 # weight
 	5 # type
-	Tukushi 5 # weight
+	Jigumo 1 # weight
+	6 # type
+	PanModoki 1 # weight
+	6 # type
+	Wealthy 1 # weight
 	6 # type
 }
 # ItemInfo
@@ -65,17 +69,17 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 25 # EntityTotal
-	{f003} 4 5 # TreasureTotal
+	{f002} 4 30 # EntityTotal
+	{f003} 4 4 # TreasureTotal
 	{f004} 4 5 # GateTotal
-	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_ootakara_sewer.txt # UnitFile
-	{f009} -1 vs_7_light.ini # LightFile
-	{f00A} -1 sewer # Skybox
+	{f008} -1 3_units_ootakara_sewer.txt # UnitFile
+	{f009} -1 sewer_light.ini # LightFile
+	{f00A} -1 sewer2 # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -86,29 +90,30 @@
 }
 # TekiInfo
 {
-	7 # num
+	8 # num
 	Wtank 50 # weight
 	0 # type
+	$Kurage_key 10 # weight
+	1 # type
 	ElecBug 50 # weight
 	1 # type
 	WaterOtakara 30 # weight
 	0 # type
 	Hana 10 # weight
 	1 # type
-	$Kurage_key 10 # weight
-	1 # type
 	Ooinu_s 5 # weight
 	6 # type
 	Ooinu_l 5 # weight
 	6 # type
+	Tukushi 5 # weight
+	6 # type
 }
 # ItemInfo
 {
-	5 # num
+	4 # num
 	ahiru 10 # weight
 	toy_cat 10 # weight
 	haniwa 10 # weight
-	sinjyu 10 # weight
 	denchi_3_black 10 # weight
 }
 # GateInfo

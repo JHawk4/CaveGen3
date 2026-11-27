@@ -8,16 +8,16 @@
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
 	{f002} 4 15 # EntityTotal
-	{f003} 4 7 # TreasureTotal
+	{f003} 4 6 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.500000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_MAT_mid2_sky.txt # UnitFile
 	{f009} -1 sky_light.ini # LightFile
 	{f00A} -1 sky # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -33,7 +33,7 @@
 	0 # type
 	Demon 20 # weight
 	0 # type
-	BombSarai 10 # weight
+	BombSarai_key 10 # weight
 	0 # type
 	Wakame_s 5 # weight
 	6 # type
@@ -42,8 +42,7 @@
 }
 # ItemInfo
 {
-	7 # num
-	key 10 # weight
+	6 # num
 	donguri 10 # weight
 	donguri_l 10 # weight
 	baum_kuchen_s 10 # weight
@@ -63,17 +62,17 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 19 # EntityTotal
-	{f003} 4 6 # TreasureTotal
+	{f002} 4 20 # EntityTotal
+	{f003} 4 4 # TreasureTotal
 	{f004} 4 3 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_MAT_lake_sky.txt # UnitFile
-	{f009} -1 jyoou_light_lv0.ini # LightFile
-	{f00A} -1 sky # Skybox
+	{f008} -1 2_MAT_bridge_sky.txt # UnitFile
+	{f009} -1 skysunset_light.ini # LightFile
+	{f00A} -1 skysunset # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -84,26 +83,28 @@
 }
 # TekiInfo
 {
-	6 # num
+	8 # num
 	Mar 10 # weight
 	0 # type
-	Hanachirashi 10 # weight
+	Hanachirashi_key 10 # weight
 	0 # type
 	Fuefuki 10 # weight
 	1 # type
 	Wealthy 10 # weight
 	1 # type
-	ElecHiba 50 # weight
+	Hana 10 # weight
+	1 # type
+	Hiba 50 # weight
 	5 # type
-	Clover 10 # weight
+	Magaret 5 # weight
+	6 # type
+	Clover 5 # weight
 	6 # type
 }
 # ItemInfo
 {
-	6 # num
-	key 10 # weight
+	4 # num
 	bey_goma 10 # weight
-	toy_ring_b_blue 10 # weight
 	kan_iwate 10 # weight
 	kan_kyokuyo 10 # weight
 	bell 10 # weight
@@ -126,17 +127,17 @@
 {
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
-	{f002} 4 16 # EntityTotal
-	{f003} 4 7 # TreasureTotal
+	{f002} 4 17 # EntityTotal
+	{f003} 4 5 # TreasureTotal
 	{f004} 4 3 # GateTotal
-	{f005} 4 1 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_MAT_lake_sky.txt # UnitFile
-	{f009} -1 chikahimi_metal_light_lv4.ini # LightFile
-	{f00A} -1 medieval # Skybox
+	{f008} -1 3_MAT_lake_mid_sky.txt # UnitFile
+	{f009} -1 skynight_light.ini # LightFile
+	{f00A} -1 skynight # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -147,7 +148,7 @@
 }
 # TekiInfo
 {
-	5 # num
+	6 # num
 	Kochappy 20 # weight
 	0 # type
 	Chappy 10 # weight
@@ -155,20 +156,20 @@
 	Jigumo 20 # weight
 	0 # type
 	ShijimiChou 10 # weight
+	0 # type
+	OniKurage_key 10 # weight
 	1 # type
 	Watage 10 # weight
 	6 # type
 }
 # ItemInfo
 {
-	7 # num
-	key 10 # weight
+	5 # num
 	donutschoco 10 # weight
 	donutsichigo 10 # weight
 	chess_queen_white 10 # weight
 	milk_cap 10 # weight
 	bell_blue 10 # weight
-	diamond_blue 10 # weight
 }
 # GateInfo
 {

@@ -18,8 +18,12 @@
 //! Colossal Caverns, from CaveGen's `colossal` files (3 onions, no extra units).
 //! `data/cavegen_expected_251.txt.gz` and `data/cavegen_expected_newyear.txt.gz` cover
 //! 20 seeds of every Pikmin 251 and Pikmin 2: New Year sublevel, made the same way with
-//! `none both -num 20 -seed 0 -consecutiveSeeds -251` (or `-newYear`). New Year's CH28
-//! is left out: its third floor names a unit file the hack's data doesn't include.
+//! `none both -num 20 -seed 0 -consecutiveSeeds -251` (or `-newYear`). The New Year file is
+//! version 1.38, CH28 included. CaveGen ran on a copy of the imported data with the layout.txt
+//! numbers written like `-5.6.000000` changed to the value the game's `sscanf` reads (`-5.6`), and
+//! over-stated spawn point counts lowered to the number of entries: Java can't parse the
+//! numbers, and CaveGen can't read past the end of a file. CaveGen3 and Caveripper read them the
+//! same way. The game reads leftover memory for the missing entries.
 //! CaveGen's `-expectTest` only covers the vanilla game, so this file came from a
 //! normal `cave colossal 1 -num 100 -seed 0x00000000 -consecutiveSeeds` run with
 //! `Memo.outputSublevelForExpect` called for each layout and an onion line added.
@@ -264,7 +268,7 @@ thread_local! {
 // challenge cave (normal-mode hole, treasure and gate rules). With CaveGen's `-storyMode` they
 // match. Every other sublevel of these romhacks matches CaveGen.
 const KNOWN_DIFFERENCES_251: &[&str] = &[];
-const KNOWN_DIFFERENCES_NEWYEAR: &[&str] = &["CH-2", "CH-4"];
+const KNOWN_DIFFERENCES_NEWYEAR: &[&str] = &["CH-1", "CH-2", "CH-4"];
 
 #[test]
 fn matches_cavegen_251_output() {

@@ -13,11 +13,11 @@
 	{f005} 4 1 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_units_nobo_metal.txt # UnitFile
-	{f009} -1 hiroba_light.ini # LightFile
-	{f00A} -1 disco # Skybox
+	{f008} -1 1_units_nobo_disco.txt # UnitFile
+	{f009} -1 normal_light_lv0.ini # LightFile
+	{f00A} -1 disconight # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 1 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -57,7 +57,7 @@
 {
 	1 # num
 	0 # captype
-	RandPom 1 # weight
+	RandPom 10 # weight
 	1 # type
 }
 # FloorInfo
@@ -66,12 +66,12 @@
 	{f001} 4 1 # CurrentSublevelIndex
 	{f002} 4 25 # EntityTotal
 	{f003} 4 1 # TreasureTotal
-	{f004} 4 0 # GateTotal
+	{f004} 4 2 # GateTotal
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 3_MAT_a_h_m_renga.txt # UnitFile
-	{f009} -1 normal_light_lv0.ini # LightFile
+	{f009} -1 tutorial_1_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
@@ -85,8 +85,10 @@
 }
 # TekiInfo
 {
-	6 # num
-	YellowChappy 20 # weight
+	7 # num
+	YellowChappy 10 # weight
+	0 # type
+	YellowChappy 10 # weight
 	0 # type
 	YellowKochappy 50 # weight
 	0 # type
@@ -106,11 +108,18 @@
 }
 # GateInfo
 {
-	0 # num
+	2 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	Egg 20 # weight
+	1 # type
 }
 # FloorInfo
 {
@@ -123,8 +132,8 @@
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 3_MAT_d_g_m_renga.txt # UnitFile
-	{f009} -1 normal_light_lv0.ini # LightFile
-	{f00A} -1 none # Skybox
+	{f009} -1 tutorial_1_light.ini # LightFile
+	{f00A} -1 test # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
@@ -137,7 +146,7 @@
 }
 # TekiInfo
 {
-	7 # num
+	8 # num
 	Miulin 20 # weight
 	0 # type
 	YellowChappy 10 # weight
@@ -150,6 +159,8 @@
 	1 # type
 	GasOtakara 10 # weight
 	0 # type
+	$Egg 20 # weight
+	5 # type
 	Tukushi 10 # weight
 	6 # type
 }
@@ -177,8 +188,8 @@
 	{f006} 4 0.200000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_unit_ike2_garden.txt # UnitFile
-	{f009} -1 normal_light_lv0.ini # LightFile
-	{f00A} -1 garden # Skybox
+	{f009} -1 garden_light.ini # LightFile
+	{f00A} -1 garden2 # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
@@ -191,7 +202,7 @@
 }
 # TekiInfo
 {
-	7 # num
+	9 # num
 	Hana 10 # weight
 	0 # type
 	Frog 10 # weight
@@ -201,6 +212,10 @@
 	Tadpole 50 # weight
 	0 # type
 	Catfish 30 # weight
+	1 # type
+	UmiMushiBlind 10 # weight
+	1 # type
+	Miulin 10 # weight
 	1 # type
 	Wakame_s 5 # weight
 	6 # type
@@ -218,7 +233,10 @@
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	Egg 20 # weight
+	1 # type
 }
 # FloorInfo
 {
@@ -294,7 +312,7 @@
 	{f009} -1 kusachi_light_cha.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -305,7 +323,7 @@
 }
 # TekiInfo
 {
-	8 # num
+	10 # num
 	ShijimiChou 10 # weight
 	0 # type
 	Fuefuki 10 # weight
@@ -318,6 +336,10 @@
 	1 # type
 	Sokkuri 50 # weight
 	0 # type
+	Rock 20 # weight
+	5 # type
+	Zenmai 10 # weight
+	6 # type
 	Tanpopo 5 # weight
 	6 # type
 	Watage 5 # weight
@@ -345,13 +367,13 @@
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 4 # RoomTotal
-	{f006} 4 0.150000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 3_ABE_5X5a_ike_big_kusachi.txt # UnitFile
 	{f009} -1 kusachi_light_lv0.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -362,7 +384,7 @@
 }
 # TekiInfo
 {
-	9 # num
+	10 # num
 	BlueChappy 10 # weight
 	1 # type
 	BlueKochappy 50 # weight
@@ -376,6 +398,8 @@
 	Kabuto 10 # weight
 	1 # type
 	Hana 10 # weight
+	1 # type
+	ShijimiChou 10 # weight
 	1 # type
 	Magaret 5 # weight
 	6 # type
@@ -393,7 +417,10 @@
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	Egg 20 # weight
+	1 # type
 }
 # FloorInfo
 {
@@ -420,7 +447,7 @@
 }
 # TekiInfo
 {
-	9 # num
+	11 # num
 	Sarai 20 # weight
 	0 # type
 	Demon 10 # weight
@@ -432,6 +459,10 @@
 	ElecBug 20 # weight
 	1 # type
 	Fart 10 # weight
+	1 # type
+	MaroFrog 10 # weight
+	1 # type
+	Frog 10 # weight
 	1 # type
 	ElecHiba 50 # weight
 	5 # type
@@ -468,7 +499,7 @@
 	{f009} -1 normal_light_lv0.ini # LightFile
 	{f00A} -1 autumn # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -510,13 +541,16 @@
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	Egg 30 # weight
+	1 # type
 }
 # FloorInfo
 {
 	{f000} 4 9 # CurrentSublevelIndex
 	{f001} 4 9 # CurrentSublevelIndex
-	{f002} 4 34 # EntityTotal
+	{f002} 4 44 # EntityTotal
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
@@ -526,7 +560,7 @@
 	{f009} -1 volcano_light.ini # LightFile
 	{f00A} -1 volcano # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -537,7 +571,7 @@
 }
 # TekiInfo
 {
-	5 # num
+	7 # num
 	$BombOtakara 10 # weight
 	0 # type
 	$BombOtakara 10 # weight
@@ -548,6 +582,10 @@
 	0 # type
 	Hiba 100 # weight
 	1 # type
+	KareOoinu_s 5 # weight
+	6 # type
+	KareOoinu_l 5 # weight
+	6 # type
 }
 # ItemInfo
 {
@@ -579,7 +617,7 @@
 	{f009} -1 volcano_light.ini # LightFile
 	{f00A} -1 volcano # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -632,13 +670,13 @@
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 4 # RoomTotal
-	{f006} 4 0.050000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_MAT_water_volcano.txt # UnitFile
+	{f008} -1 2_MAT_water2_volcano.txt # UnitFile
 	{f009} -1 volcano_light.ini # LightFile
 	{f00A} -1 volcano # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -664,11 +702,11 @@
 	1 # type
 	GasOtakara 10 # weight
 	1 # type
-	Hiba 50 # weight
+	Hiba 30 # weight
 	5 # type
-	ElecHiba 50 # weight
+	ElecHiba 30 # weight
 	5 # type
-	GasHiba 50 # weight
+	GasHiba 30 # weight
 	5 # type
 }
 # ItemInfo
@@ -688,18 +726,18 @@
 {
 	{f000} 4 12 # CurrentSublevelIndex
 	{f001} 4 12 # CurrentSublevelIndex
-	{f002} 4 33 # EntityTotal
+	{f002} 4 34 # EntityTotal
 	{f003} 4 0 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 4 # RoomTotal
-	{f006} 4 0.500000 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_MAT_north_volcano.txt # UnitFile
+	{f008} -1 2_MAT_candypop_volcano.txt # UnitFile
 	{f009} -1 volcano_light.ini # LightFile
 	{f00A} -1 volcano # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
-	{f012} 4 1 # MusicType
+	{f011} 4 2 # Unknown
+	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
@@ -711,23 +749,23 @@
 {
 	10 # num
 	RedPom 10 # weight
-	5 # type
+	8 # type
 	YellowPom 10 # weight
-	5 # type
+	8 # type
 	BluePom 10 # weight
-	5 # type
+	8 # type
 	WhitePom 10 # weight
-	5 # type
+	8 # type
 	BlackPom 10 # weight
-	5 # type
+	8 # type
 	RandPom 10 # weight
-	5 # type
+	8 # type
 	Qurione 50 # weight
-	0 # type
+	1 # type
 	Egg 50 # weight
-	1 # type
+	0 # type
 	$Egg 50 # weight
-	1 # type
+	0 # type
 	HikariKinoko 10 # weight
 	6 # type
 }
@@ -743,14 +781,14 @@
 {
 	1 # num
 	0 # captype
-	RandPom 2 # weight
+	RandPom 20 # weight
 	1 # type
 }
 # FloorInfo
 {
 	{f000} 4 13 # CurrentSublevelIndex
 	{f001} 4 13 # CurrentSublevelIndex
-	{f002} 4 3 # EntityTotal
+	{f002} 4 17 # EntityTotal
 	{f003} 4 0 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 1 # RoomTotal
@@ -760,7 +798,7 @@
 	{f009} -1 volcano_light.ini # LightFile
 	{f00A} -1 volcano # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 1 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -771,13 +809,25 @@
 }
 # TekiInfo
 {
-	3 # num
+	9 # num
 	BigTreasure 10 # weight
 	1 # type
+	FireOtakara 10 # weight
+	0 # type
+	ElecOtakara 10 # weight
+	0 # type
+	WaterOtakara 10 # weight
+	0 # type
+	GasOtakara 10 # weight
+	0 # type
+	KareOoinu_s 5 # weight
+	6 # type
+	KareOoinu_l 5 # weight
+	6 # type
 	KareOoinu_s 1 # weight
-	6 # type
+	8 # type
 	KareOoinu_l 1 # weight
-	6 # type
+	8 # type
 }
 # ItemInfo
 {

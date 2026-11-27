@@ -17,7 +17,7 @@
 	{f009} -1 space_light.ini # LightFile
 	{f00A} -1 space # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 1 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -35,7 +35,7 @@
 	0 # type
 	Hana 10 # weight
 	0 # type
-	DangoMushi_key 10 # weight
+	KingChappy_key 10 # weight
 	1 # type
 	HikariKinoko 3 # weight
 	6 # type
@@ -63,13 +63,13 @@
 	{f003} 4 7 # TreasureTotal
 	{f004} 4 3 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.500000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_MAT_mid2_sky.txt # UnitFile
-	{f009} -1 sky_light.ini # LightFile
+	{f009} -1 skynight_light.ini # LightFile
 	{f00A} -1 wireframe # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -127,13 +127,13 @@
 	{f003} 4 5 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_MAT_north_volcano.txt # UnitFile
 	{f009} -1 space_light.ini # LightFile
 	{f00A} -1 space # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 1 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal

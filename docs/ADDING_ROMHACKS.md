@@ -123,7 +123,5 @@ Gzip it into `testdata/cavegen_expected_<game>.txt.gz` and add a test next to
 
 ## Known gaps
 
-- **New Year's Timeless Realm (CH28)**: its third floor names `3_units_boss_time.txt`, which
-  isn't in the hack's files, so the cave can't be generated.
 - A few Pikmin 251 and New Year sublevels generate differently in CaveGen and Caveripper;
   CaveGen3 follows Caveripper. They're listed in `crates/cavegen3/tests/cavegen_expect.rs`.

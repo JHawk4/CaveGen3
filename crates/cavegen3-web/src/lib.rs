@@ -932,8 +932,7 @@ mod tests {
         // which in the browser would stop the page).
         web.add_files(&bundle(root, &["assets/newyear", "assets/newyearkaizo", "assets/colossal", "assets/216", "assets/bikmin", "assets/torture"])).unwrap();
         for cave in data.caves().iter() {
-            // New Year's Timeless Realm is missing a unit file.
-            let Ok(floors) = data.floors(cave) else { continue };
+            let floors = data.floors(cave).unwrap();
             for floor in 1..=floors.len() {
                 let name = format!("{}:{}-{floor}", cave.game, cave.short_name());
                 for seed in [0u32, 0x1234_5678, 0xFFFF_FFFF] {

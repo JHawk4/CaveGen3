@@ -10,15 +10,15 @@
 	{f002} 4 45 	# 敵最大数
 	{f003} 4 0 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
+	{f014} 4 100 	# キャップ最大数
 	{f005} 4 3 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
 	{f008} -1 vs_5_conc.txt 	# 使用ユニット
 	{f009} -1 normal_light_cha.ini 	# 使用ライト
-	{f00A} -1 none 	# VRBOX
+	{f00A} -1 treehouse2 	# VRBOX
 	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 2 	# α属性
+	{f011} 4 0 	# α属性
 	{f012} 4 0 	# β属性
 	{f013} 4 0 	# 隠し床
 	{f015} 4 1 	# Version
@@ -29,16 +29,16 @@
 # TekiInfo
 {
 	5 	# num
-	Pelplant 100 	# weight
-	0 	# type
-	Pelplant 2 	# weight
+	Pelplant 10 	# weight
 	6 	# type
-	YellowKochappy 30 	# weight
-	1 	# type
-	UjiA 1 	# weight
-	0 	# type
 	Egg 50 	# weight
 	5 	# type
+	FireOtakara 50 	# weight
+	1 	# type
+	WaterOtakara 50 	# weight
+	1 	# type
+	Damagumo 10 	# weight
+	0 	# type
 }
 # ItemInfo
 {

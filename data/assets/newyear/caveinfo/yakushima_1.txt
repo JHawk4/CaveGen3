@@ -32,7 +32,7 @@
 	Sokkuri 50 # weight
 	0 # type
 	FireOtakara 40 # weight
-	0 # type
+	1 # type
 	KareOoinu_s 5 # weight
 	6 # type
 	KareOoinu_l 5 # weight
@@ -259,7 +259,7 @@
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 1 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_boss_tree.txt # UnitFile
 	{f009} -1 oootakara_light.ini # LightFile
@@ -268,7 +268,7 @@
 	{f011} 4 0 # Unknown
 	{f012} 4 1 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)

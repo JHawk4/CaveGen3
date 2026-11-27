@@ -7,14 +7,14 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 10 # EntityTotal
+	{f002} 4 30 # EntityTotal
 	{f003} 4 1 # TreasureTotal
-	{f004} 4 1 # GateTotal
+	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.100000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_MAT_sak1_sak2_snow.txt # UnitFile
-	{f009} -1 light.ini # LightFile
+	{f009} -1 toy_light_lv0.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
@@ -28,13 +28,17 @@
 }
 # TekiInfo
 {
-	3 # num
+	5 # num
 	YellowChappy 10 # weight
 	0 # type
 	YellowKochappy 30 # weight
 	0 # type
 	ElecHiba 50 # weight
 	5 # type
+	KareOoinu_s 10 # weight
+	6 # type
+	KareOoinu_l 10 # weight
+	6 # type
 }
 # ItemInfo
 {
@@ -43,15 +47,13 @@
 }
 # GateInfo
 {
-	1 # num
-	gate 1000 # life
-	1 # weight
+	0 # num
 }
 # CapInfo
 {
 	1 # num
 	0 # captype
-	YellowChappy 10 # weight
+	YellowChappy 1 # weight
 	1 # type
 }
 # FloorInfo
@@ -66,9 +68,9 @@
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_exterior2_medi.txt # UnitFile
 	{f009} -1 king_light.ini # LightFile
-	{f00A} -1 medieval # Skybox
+	{f00A} -1 medievaltower2 # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -104,13 +106,13 @@
 {
 	3 # num
 	0 # captype
-	RedPom 10 # weight
+	RedPom 1 # weight
 	1 # type
 	0 # captype
-	WhitePom 10 # weight
+	WhitePom 1 # weight
 	1 # type
 	0 # captype
-	BlackPom 10 # weight
+	BlackPom 1 # weight
 	1 # type
 }
 # FloorInfo
@@ -124,10 +126,10 @@
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_nobo2_medi.txt # UnitFile
-	{f009} -1 normal_light_lv0.ini # LightFile
-	{f00A} -1 medieval # Skybox
+	{f009} -1 medievalbright_light.ini # LightFile
+	{f00A} -1 medievaltower # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -138,7 +140,7 @@
 }
 # TekiInfo
 {
-	8 # num
+	7 # num
 	FireOtakara 10 # weight
 	0 # type
 	ElecOtakara 10 # weight
@@ -153,8 +155,6 @@
 	6 # type
 	Wakame_l 5 # weight
 	6 # type
-	BlackPom 10 # weight
-	5 # type
 }
 # ItemInfo
 {
@@ -171,7 +171,10 @@
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	BlackPom 10 # weight
+	1 # type
 }
 # FloorInfo
 {
@@ -185,9 +188,9 @@
 	{f007} 4 0 # Geyser
 	{f008} -1 3_MAT_castle_medi.txt # UnitFile
 	{f009} -1 toy_light_cha.ini # LightFile
-	{f00A} -1 medieval # Skybox
+	{f00A} -1 medievaltower2 # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -236,9 +239,9 @@
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_exterior_medi.txt # UnitFile
 	{f009} -1 muraon_light_lv0.ini # LightFile
-	{f00A} -1 medieval # Skybox
+	{f00A} -1 medievaltower2 # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -293,7 +296,7 @@
 	{f009} -1 jyoou_light_lv2.ini # LightFile
 	{f00A} -1 medieval # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -336,13 +339,13 @@
 {
 	3 # num
 	0 # captype
-	WhitePom 10 # weight
+	WhitePom 1 # weight
 	1 # type
 	0 # captype
-	BlackPom 10 # weight
+	BlackPom 1 # weight
 	1 # type
 	0 # captype
-	Egg 30 # weight
+	Egg 3 # weight
 	1 # type
 }
 # FloorInfo
@@ -359,7 +362,7 @@
 	{f009} -1 king_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 1 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal

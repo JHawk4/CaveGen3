@@ -180,12 +180,7 @@ fn every_game_has_its_images() {
     let p = painter();
     let data = cavegen3::GameData::from_dir(default_data_dir()).unwrap();
     let mut missing_icons = Vec::new();
-    // New Year's Timeless Realm needs a unit file the romhack doesn't ship (the other tests skip it too).
-    for cave in data
-        .caves()
-        .iter()
-        .filter(|c| data.has_game(&c.game) && !(c.game == "newyear" && c.full_name == "Timeless Realm"))
-    {
+    for cave in data.caves().iter().filter(|c| data.has_game(&c.game)) {
         let name = format!("{}:{}-1", cave.game, cave.short_name());
         let layout = p.layout(&name, 1, false).unwrap_or_else(|e| panic!("{name}: {e}"));
         for u in &layout.units {

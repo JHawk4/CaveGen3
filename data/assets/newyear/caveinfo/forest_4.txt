@@ -7,7 +7,7 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 8 # EntityTotal
+	{f002} 4 12 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 1 # RoomTotal
@@ -33,7 +33,7 @@
 	0 # type
 	Hana 10 # weight
 	1 # type
-	Tukushi 2 # weight
+	Tukushi 6 # weight
 	6 # type
 }
 # ItemInfo
@@ -54,17 +54,17 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 28 # EntityTotal
+	{f002} 4 48 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.150000 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_ABE_units_5x5a_mid_kusachi.txt # UnitFile
-	{f009} -1 kusachi_light_cha.ini # LightFile
+	{f008} -1 2_ABE_units_rocket_kusachi.txt # UnitFile
+	{f009} -1 normal_light_cha.ini # LightFile
 	{f00A} -1 snow # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -75,8 +75,10 @@
 }
 # TekiInfo
 {
-	5 # num
-	YellowChappy 20 # weight
+	8 # num
+	YellowChappy 10 # weight
+	0 # type
+	YellowChappy 10 # weight
 	0 # type
 	YellowKochappy 50 # weight
 	0 # type
@@ -85,6 +87,10 @@
 	Tobi 50 # weight
 	1 # type
 	Tukushi 10 # weight
+	6 # type
+	KareOoinu_s 10 # weight
+	6 # type
+	KareOoinu_l 10 # weight
 	6 # type
 }
 # ItemInfo
@@ -120,11 +126,11 @@
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_MAT_lake_sky.txt # UnitFile
+	{f008} -1 3_MAT_lake_sky.txt # UnitFile
 	{f009} -1 sky_light.ini # LightFile
 	{f00A} -1 sky # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -135,7 +141,7 @@
 }
 # TekiInfo
 {
-	10 # num
+	9 # num
 	SnakeCrow 10 # weight
 	0 # type
 	Kurage 10 # weight
@@ -148,8 +154,6 @@
 	0 # type
 	YellowKochappy 30 # weight
 	0 # type
-	BluePom 20 # weight
-	5 # type
 	Clover 5 # weight
 	6 # type
 	KareOoinu_s 5 # weight
@@ -170,7 +174,7 @@
 {
 	1 # num
 	0 # captype
-	BluePom 10 # weight
+	BluePom 30 # weight
 	1 # type
 }
 # FloorInfo
@@ -180,11 +184,11 @@
 	{f002} 4 22 # EntityTotal
 	{f003} 4 3 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 2 # RoomTotal
-	{f006} 4 0.200000 # CorridorRatio
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_mid2_ice.txt # UnitFile
-	{f009} -1 vs_2_light.ini # LightFile
+	{f009} -1 ice_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
@@ -241,11 +245,11 @@
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.200000 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_MAT_lake_sky.txt # UnitFile
+	{f008} -1 2_MAT_lake_mid_sky.txt # UnitFile
 	{f009} -1 skysunset_light.ini # LightFile
 	{f00A} -1 skysunset # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -256,7 +260,7 @@
 }
 # TekiInfo
 {
-	10 # num
+	9 # num
 	SnakeCrow 10 # weight
 	0 # type
 	Hanachirashi 10 # weight
@@ -267,8 +271,6 @@
 	1 # type
 	Catfish 20 # weight
 	1 # type
-	BluePom 20 # weight
-	5 # type
 	Qurione 20 # weight
 	5 # type
 	ElecHiba 50 # weight
@@ -292,7 +294,7 @@
 {
 	1 # num
 	0 # captype
-	BluePom 10 # weight
+	BluePom 30 # weight
 	1 # type
 }
 # FloorInfo
@@ -305,11 +307,11 @@
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_MAT_bridge_sky.txt # UnitFile
-	{f009} -1 space_light.ini # LightFile
-	{f00A} -1 space # Skybox
+	{f008} -1 2_MAT_bridge_sky.txt # UnitFile
+	{f009} -1 skynight_light.ini # LightFile
+	{f00A} -1 skynight # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -373,7 +375,7 @@
 	{f009} -1 forest_2_siro_light.ini # LightFile
 	{f00A} -1 snow # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 1 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal

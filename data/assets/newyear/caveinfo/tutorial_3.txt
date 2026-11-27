@@ -11,7 +11,7 @@
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 4 # RoomTotal
-	{f006} 4 0.150000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_cent3_tsuchi.txt # UnitFile
 	{f009} -1 muraon_light_lv1.ini # LightFile
@@ -71,16 +71,16 @@
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_big2_desert.txt # UnitFile
 	{f009} -1 jyoou_light_lv0.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -88,7 +88,7 @@
 }
 # TekiInfo
 {
-	6 # num
+	7 # num
 	Jigumo 20 # weight
 	0 # type
 	PanModoki 10 # weight
@@ -101,6 +101,8 @@
 	0 # type
 	Hiba 50 # weight
 	5 # type
+	Zenmai 10 # weight
+	6 # type
 }
 # ItemInfo
 {
@@ -124,16 +126,16 @@
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.05 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_MAT_mid2_metal.txt # UnitFile
+	{f008} -1 1_MAT_mid2_bridge.txt # UnitFile
 	{f009} -1 kumomei_light_cha.ini # LightFile
 	{f00A} -1 sandstorm # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -186,16 +188,16 @@
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.150000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_big2_desert.txt # UnitFile
 	{f009} -1 jyoou_light_lv2.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -203,7 +205,7 @@
 }
 # TekiInfo
 {
-	11 # num
+	12 # num
 	Sarai 20 # weight
 	0 # type
 	Demon 20 # weight
@@ -214,6 +216,8 @@
 	1 # type
 	MiniHoudai 10 # weight
 	1 # type
+	Zenmai 5 # weight
+	6 # type
 	Tanpopo 5 # weight
 	6 # type
 	Watage 5 # weight
@@ -252,16 +256,16 @@
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 1 # Geyser
 	{f008} -1 1_units_big2_desert.txt # UnitFile
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -269,7 +273,7 @@
 }
 # TekiInfo
 {
-	5 # num
+	6 # num
 	Miulin 40 # weight
 	0 # type
 	ShijimiChou 10 # weight
@@ -278,6 +282,8 @@
 	1 # type
 	Egg 50 # weight
 	1 # type
+	Zenmai 10 # weight
+	6 # type
 	Magaret 10 # weight
 	6 # type
 }
@@ -311,16 +317,16 @@
 	{f003} 4 3 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_units_big2_desert.txt # UnitFile
+	{f008} -1 3_ABE_5X5a_ike_big_kusachi.txt # UnitFile
 	{f009} -1 jyoou_light_lv1.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)
@@ -328,7 +334,7 @@
 }
 # TekiInfo
 {
-	7 # num
+	8 # num
 	Hana 20 # weight
 	0 # type
 	Rkabuto 30 # weight
@@ -342,6 +348,8 @@
 	GasHiba 50 # weight
 	5 # type
 	Magaret 15 # weight
+	6 # type
+	Zenmai 10 # weight
 	6 # type
 }
 # ItemInfo
@@ -373,7 +381,7 @@
 	{f009} -1 kusachi_light_lv0.ini # LightFile
 	{f00A} -1 desert # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -384,7 +392,7 @@
 }
 # TekiInfo
 {
-	6 # num
+	7 # num
 	KumaKochappy 50 # weight
 	0 # type
 	KumaChappy 10 # weight
@@ -393,6 +401,8 @@
 	1 # type
 	BlueChappy 10 # weight
 	1 # type
+	Zenmai 10 # weight
+	6 # type
 	Tanpopo 5 # weight
 	6 # type
 	Watage 5 # weight
@@ -438,7 +448,7 @@
 	{f011} 4 0 # Unknown
 	{f012} 4 1 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 50 # DeadEndTotal
+    {f014} 4 100 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
 	{f017} 4 0 # Seesaw(1=True)

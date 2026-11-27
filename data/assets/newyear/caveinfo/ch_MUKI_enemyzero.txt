@@ -55,11 +55,11 @@
 	{f005} 4 2 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_NARI_hit6x7_toy.txt # UnitFile
+	{f008} -1 1_NARI_hit6x6_toy.txt # UnitFile
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 snow # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -120,7 +120,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 snow # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -244,7 +244,7 @@
 	{f009} -1 normal_light_lv0.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal

@@ -17,7 +17,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 windows # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -84,7 +84,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 windowsstart # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 200 # DeadEndTotal
@@ -137,7 +137,7 @@
 	{f009} -1 forest_3_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal

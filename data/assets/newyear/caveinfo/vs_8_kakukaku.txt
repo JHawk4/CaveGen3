@@ -10,13 +10,13 @@
 	{f002} 4 50 	# 敵最大数
 	{f003} 4 0 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 50 	# キャップ最大数
+	{f014} 4 100 	# キャップ最大数
 	{f005} 4 3 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
 	{f008} -1 vs_8_spiral_conc.txt 	# 使用ユニット
-	{f009} -1 vs_8_light.ini 	# 使用ライト
-	{f00A} -1 none 	# VRBOX
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 medieval 	# VRBOX
 	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
 	{f011} 4 2 	# α属性
 	{f012} 4 0 	# β属性
@@ -31,7 +31,7 @@
 	8 	# num
 	Pelplant 100 	# weight
 	0 	# type
-	UjiA 100 	# weight
+	UjiA 20 	# weight
 	0 	# type
 	KumaKochappy 100 	# weight
 	0 	# type
@@ -39,7 +39,7 @@
 	1 	# type
 	Pelplant 3 	# weight
 	0 	# type
-	BigFoot 10 	# weight
+	KumaChappy 10 	# weight
 	8 	# type
 	$1Egg 50 	# weight
 	1 	# type
@@ -52,7 +52,7 @@
 }
 # GateInfo
 {
-	0 	# num
+	3 	# num
 }
 # CapInfo
 {

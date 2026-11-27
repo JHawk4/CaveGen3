@@ -1,0 +1,123 @@
+# CaveInfo
+{
+	{c000} 4 2 	# SublevelCount
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 14 # EntityTotal
+	{f003} 4 0 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 3_MAT_4x4_tree.txt # UnitFile
+	{f009} -1 toy_light_lv1.ini # LightFile
+	{f00A} -1 treehouse # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	10 # num
+	Kochappy 20 # weight
+	0 # type
+	Chappy 10 # weight
+	0 # type
+	BlueKochappy 20 # weight
+	0 # type
+	BlueChappy 10 # weight
+	0 # type
+	YellowKochappy 20 # weight
+	0 # type
+	YellowChappy 10 # weight
+	0 # type
+	KumaKochappy 20 # weight
+	1 # type
+	KumaChappy 10 # weight
+	1 # type
+	LeafChappy 10 # weight
+	1 # type
+	FireChappy 10 # weight
+	1 # type
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 14 # EntityTotal
+	{f003} 4 0 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_units_saka_tree.txt # UnitFile
+	{f009} -1 toy_light_lv1.ini # LightFile
+	{f00A} -1 treehouse # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	10 # num
+	Kochappy 20 # weight
+	0 # type
+	Chappy 10 # weight
+	0 # type
+	BlueKochappy 20 # weight
+	0 # type
+	BlueChappy 10 # weight
+	0 # type
+	YellowKochappy 20 # weight
+	0 # type
+	YellowChappy 10 # weight
+	0 # type
+	KumaKochappy 20 # weight
+	1 # type
+	KumaChappy 10 # weight
+	1 # type
+	LeafChappy 10 # weight
+	1 # type
+	FireChappy 10 # weight
+	1 # type
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

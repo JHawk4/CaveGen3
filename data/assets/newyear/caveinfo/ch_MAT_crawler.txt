@@ -17,7 +17,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 sky # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -68,7 +68,7 @@
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
 	{f002} 4 21 # EntityTotal
-	{f003} 4 8 # TreasureTotal
+	{f003} 4 7 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.050000 # CorridorRatio
@@ -77,7 +77,7 @@
 	{f009} -1 medieval_light.ini # LightFile
 	{f00A} -1 space # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -114,14 +114,13 @@
 }
 # ItemInfo
 {
-	8 # num
+	7 # num
 	toy_ring_c_blue 20 # weight
 	toy_teala 10 # weight
 	ichigo 10 # weight
 	g_futa_hiruzen 10 # weight
 	dia_c_blue 10 # weight
 	flask 10 # weight
-	akagai 10 # weight
 	sensya 10 # weight
 }
 # GateInfo
@@ -136,17 +135,17 @@
 {
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
-	{f002} 4 19 # EntityTotal
+	{f002} 4 24 # EntityTotal
 	{f003} 4 9 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 3 # RoomTotal
+	{f005} 4 2 # RoomTotal
 	{f006} 4 0.050000 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_exterior2_medi.txt # UnitFile
-	{f009} -1 medieval_light.ini # LightFile
+	{f008} -1 2_units_exterior3_medi.txt # UnitFile
+	{f009} -1 key_light_lv1.ini # LightFile
 	{f00A} -1 medieval # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -157,7 +156,9 @@
 }
 # TekiInfo
 {
-	11 # num
+	12 # num
+	Kogane 50 # weight
+	5 # type
 	$5Tank 10 # weight
 	0 # type
 	$5Wtank 10 # weight
@@ -206,17 +207,17 @@
 {
 	{f000} 4 3 # CurrentSublevelIndex
 	{f001} 4 3 # CurrentSublevelIndex
-	{f002} 4 23 # EntityTotal
+	{f002} 4 28 # EntityTotal
 	{f003} 4 8 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 3 # RoomTotal
+	{f005} 4 2 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_exterior2_medi.txt # UnitFile
-	{f009} -1 medieval_light.ini # LightFile
+	{f008} -1 2_units_exterior3_medi.txt # UnitFile
+	{f009} -1 hiroba_light.ini # LightFile
 	{f00A} -1 medieval # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -227,7 +228,9 @@
 }
 # TekiInfo
 {
-	12 # num
+	13 # num
+	Kogane 50 # weight
+	5 # type
 	$5KumaKochappy 20 # weight
 	0 # type
 	$5KumaChappy 10 # weight

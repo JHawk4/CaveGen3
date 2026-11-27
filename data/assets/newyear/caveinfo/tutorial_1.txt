@@ -7,7 +7,7 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 15 # EntityTotal
+	{f002} 4 20 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
@@ -17,7 +17,7 @@
 	{f009} -1 tutorial_1_light.ini # LightFile
 	{f00A} -1 hiroba # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -28,9 +28,11 @@
 }
 # TekiInfo
 {
-	3 # num
+	4 # num
 	BlueKochappy 50 # weight
 	0 # type
+	Sokkuri 50 # weight
+	1 # type
 	Wakame_s 5 # weight
 	6 # type
 	Wakame_l 5 # weight
@@ -57,10 +59,10 @@
 	{f002} 4 14 # EntityTotal
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 1 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_units_purple14x14_tsuchi.txt # UnitFile
+	{f008} -1 2_units_purple_bamboo.txt # UnitFile
 	{f009} -1 tutorial_1_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
@@ -79,9 +81,9 @@
 	BlueKochappy 30 # weight
 	0 # type
 	BlueKochappy 40 # weight
-	8 # type
-	BlackPom 20 # weight
 	1 # type
+	BlackPom 20 # weight
+	8 # type
 	Wakame_s 5 # weight
 	6 # type
 }

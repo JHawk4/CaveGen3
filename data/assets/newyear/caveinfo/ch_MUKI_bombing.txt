@@ -7,19 +7,19 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 14 # EntityTotal
-	{f003} 4 3 # TreasureTotal
+	{f002} 4 17 # EntityTotal
+	{f003} 4 6 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 1 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_sara_sara2_toy.txt # UnitFile
+	{f008} -1 2_units_small2_mid2_arcade.txt # UnitFile
 	{f009} -1 arcade_light.ini # LightFile
 	{f00A} -1 arcade # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
-	{f013} 4 0 # SolidPlane
+	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{f016} 4 0 # WaterwraithTimer
@@ -41,8 +41,8 @@
 	1 # type
 	ElecHiba 20 # weight
 	5 # type
-	GasHiba 20 # weight
-	5 # type
+	Clover 5 # weight
+	6 # type
 	Chiyogami 5 # weight
 	6 # type
 }
@@ -65,17 +65,17 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 14 # EntityTotal
-	{f003} 4 2 # TreasureTotal
+	{f002} 4 25 # EntityTotal
+	{f003} 4 5 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_small2_mid2_arcade.txt # UnitFile
-	{f009} -1 oootakara_light.ini # LightFile
+	{f008} -1 2_units_small_large2_arcade.txt # UnitFile
+	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 arcade # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -86,23 +86,30 @@
 }
 # TekiInfo
 {
-	5 # num
+	8 # num
 	Sokkuri 50 # weight
 	0 # type
 	Wealthy 20 # weight
 	0 # type
-	YellowChappy 10 # weight
-	1 # type
 	SnakeCrow_key 10 # weight
 	1 # type
+	YellowKochappy 30 # weight
+	1 # type
+	Kochappy 30 # weight
+	1 # type
+	YellowChappy 10 # weight
+	1 # type
+	Magaret 5 # weight
+	6 # type
 	Chiyogami 5 # weight
 	6 # type
 }
 # ItemInfo
 {
-	2 # num
-	donutschoco_s 30 # weight
+	3 # num
 	toy_cat 10 # weight
+	juji_key 10 # weight
+	donutschoco_s 30 # weight
 }
 # GateInfo
 {
@@ -116,17 +123,17 @@
 {
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
-	{f002} 4 9 # EntityTotal
-	{f003} 4 2 # TreasureTotal
+	{f002} 4 15 # EntityTotal
+	{f003} 4 7 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 3_units_small2_small_mid_toy.txt # UnitFile
+	{f008} -1 2_units_small2_mid2_arcade.txt # UnitFile
 	{f009} -1 sniper_light_lv0.ini # LightFile
 	{f00A} -1 checkerboard # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -137,17 +144,26 @@
 }
 # TekiInfo
 {
-	3 # num
+	5 # num
 	ShijimiChou 10 # weight
 	1 # type
 	BlackMan_key 10 # weight
 	0 # type
+	BlackMan_donutswhite 10 # weight
+	0 # type
+	Clover 5 # weight
+	6 # type
 	Chiyogami 5 # weight
 	6 # type
 }
 # ItemInfo
 {
-	2 # num
+	7 # num
+	j_block_blue 10 # weight
+	j_block_yellow 10 # weight
+	j_block_green 10 # weight
+	j_block_red 10 # weight
+	j_block_white 10 # weight
 	donutsichigo_s 10 # weight
 	robot_head 10 # weight
 }

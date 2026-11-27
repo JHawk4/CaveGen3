@@ -7,8 +7,8 @@ replacement files) into CaveGen3's layout.
 `data/assets/<game>/`. Needs Wiimms SZS Tools (`wszst` and `wimgt`) on PATH to unpack the
 `.szs` archives and decode BTI images.
 
-With `--base pikmin2`, map units the unit files use but <root> doesn't contain are copied from
-`data/assets/pikmin2`. Romhacks shipped as file replacements (Pikmin 216) only include the
+With `--base pikmin2`, unit files the caveinfo names and map units the unit files use, when <root>
+doesn't contain them, are copied from `data/assets/pikmin2`. Romhacks shipped as file replacements (Pikmin 216) only include the
 units they change.
 
 Caveinfo files are renamed to the exact case `data/resources/caveinfo_config.txt` uses. Only
@@ -141,11 +141,17 @@ def units_named(unitfile):
     return re.findall(r"^\s*(\S+)\s*#\s*foldername", text, re.M)
 
 
+def unitfiles_named(caveinfo):
+    """Unit file names a caveinfo file refers to (`{f008} -1 <name> # UnitFile`)."""
+    text = caveinfo.read_bytes().decode("shift_jis", errors="replace")
+    return re.findall(r"\{f008\}\s+-?\d+\s+(\S+)", text)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("root", type=Path)
     ap.add_argument("game")
-    ap.add_argument("--base", help="game in data/assets to take missing map units from")
+    ap.add_argument("--base", help="game in data/assets to take missing unit files and map units from")
     args = ap.parse_args()
 
     mapunits = args.root / "user/Mukki/mapunits"
@@ -198,8 +204,17 @@ def main():
                 if (tmp / "pellets" / cfg).is_file():
                     copy(tmp / "pellets" / cfg, out / cfg)
 
-    borrowed = 0
+    borrowed = borrowed_files = 0
     if args.base:
+        # Unit files the caveinfo names but the romhack doesn't include are the base game's.
+        base_units = ROOT / "data/assets" / args.base / "unitfiles"
+        have = {p.name.lower() for p in (out / "unitfiles").iterdir()}
+        for name in sorted({u for f in (out / "caveinfo").glob("*.txt") for u in unitfiles_named(f)}):
+            src = next((p for p in base_units.iterdir() if p.name.lower() == name.lower()), None)
+            if name.lower() not in have and src is not None:
+                copy(src, out / "unitfiles" / src.name)
+                borrowed_files += 1
+
         base = ROOT / "data/assets" / args.base / "mapunits"
         wanted = {u for f in (out / "unitfiles").glob("*.txt") for u in units_named(f)}
         have = {p.name.lower() for p in (out / "mapunits").iterdir()}
@@ -214,7 +229,7 @@ def main():
             borrowed += 1
 
     print(f"{out}: {len(found)} caveinfo files, {units} map units"
-          f"{f' (+{borrowed} from {args.base})' if args.base else ''}, {teki} teki icons, {treasures} treasure icons")
+          f"{f' (+{borrowed} and {borrowed_files} unit files from {args.base})' if args.base else ''}, {teki} teki icons, {treasures} treasure icons")
 
 
 if __name__ == "__main__":

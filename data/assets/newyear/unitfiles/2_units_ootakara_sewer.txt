@@ -3,7 +3,7 @@
 #	units definition file
 #
 #
-9 	# number of units
+10 	# number of units
 # way3_pipe
 {
 	1 	# version
@@ -136,17 +136,22 @@
 	1 	# door links
 	170.004532 0 1 	# dist/door-id/tekiflag
 }
-# room_oootakara_flooded_tile
+# room_ud4x4_2_tile
 {
 	1 	# version
-	room_oootakara_flooded_tile 	# foldername
-	9 9 	# dX/dZ ; cell size
+	room_ud4x4_2_sewer 	# foldername
+	4 4 	# dX/dZ ; cell size
 	1 	# room type
 	0 1 	# room Flags
-	1 	# num doors
+	2 	# num doors
 	0 	# index
-	0 5 0 	# dir/offs/wpindex
-	0 	# door links
+	1 0 0 	# dir/offs/wpindex
+	1 	# door links
+	2071.171143 1 1 	# dist/door-id/tekiflag
+	1 	# index
+	3 3 1 	# dir/offs/wpindex
+	1 	# door links
+	2071.171143 0 1 	# dist/door-id/tekiflag
 }
 # room_pool5x5_5_sewer
 {
@@ -191,4 +196,16 @@
 	1360.053589 1 1 	# dist/door-id/tekiflag
 	927.016602 2 1 	# dist/door-id/tekiflag
 	680.035400 3 1 	# dist/door-id/tekiflag
+}
+# room_oootakara_flooded2_tile
+{
+	1 	# version
+	room_oootakara_flooded2_tile 	# foldername
+	9 9 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	0 5 0 	# dir/offs/wpindex
+	0 	# door links
 }

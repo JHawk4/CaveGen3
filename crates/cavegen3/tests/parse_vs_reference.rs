@@ -113,12 +113,13 @@ fn parsing_matches_caveripper() {
     let mgr = FsAssetManager::init().unwrap();
     let mut checked = 0;
     let mut failures = Vec::new();
-    // New Year's Timeless Realm (CH28) names a unit file its data doesn't include. Caveripper
-    // can't parse Lands of Torture's Bulblax Kingdom (a CapInfo missing its `{`), and it drops the
+    // New Year 1.38's Elemental River and Season Den use a unit file with a unit missing its `}`
+    // (1_units_big2_rocket_desert.txt, 1_MAT_boss_volcano.txt), which the game ignores. Caveripper can't parse Lands of Torture's Bulblax Kingdom (a CapInfo missing its `{`), and it drops the
     // two spawn points missing their `{` in room_dangomushi_tile, which only Cavern of Chaos
     // floor 10 uses. cavegen_expect checks those against CaveGen instead.
     let skip = |c: &cavegen3::data::CaveConfig| {
-        (c.game == "newyear" && c.full_name == "Timeless Realm") || (c.game == "torture" && c.full_name == "Bulblax Kingdom")
+        (c.game == "torture" && c.full_name == "Bulblax Kingdom")
+            || (c.game == "newyear" && (c.full_name == "Elemental River" || c.full_name == "Season Den"))
     };
     for cfg in data.caves().iter().filter(|c| data.has_game(&c.game) && !skip(c)) {
         let ours = data.floors(cfg).unwrap_or_else(|e| panic!("{e}"));

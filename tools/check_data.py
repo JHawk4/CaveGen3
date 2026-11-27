@@ -18,9 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "data/assets"
 
 # Files the data refers to that the romhack itself doesn't include.
-KNOWN_MISSING = {
-    "data/assets/newyear/unitfiles/3_units_boss_time.txt",  # Timeless Realm (CH28) floor 3
-}
+KNOWN_MISSING = set()
 
 
 def resolve(folder, name, fix, problems, what):

@@ -7,17 +7,17 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 34 # EntityTotal
+	{f002} 4 44 # EntityTotal
 	{f003} 4 11 # TreasureTotal
 	{f004} 4 4 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_ABE_vshit67_toy.txt # UnitFile
-	{f009} -1 forest_3_light.ini # LightFile
+	{f009} -1 houdai_light.ini # LightFile
 	{f00A} -1 flooring # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 1 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -28,7 +28,7 @@
 }
 # TekiInfo
 {
-	14 # num
+	16 # num
 	$BombOtakara 20 # weight
 	0 # type
 	$2BombOtakara 20 # weight
@@ -57,6 +57,10 @@
 	0 # type
 	Bomb 20 # weight
 	5 # type
+	DaiodoRed 5 # weight
+	6 # type
+	DaiodoGreen 5 # weight
+	6 # type
 }
 # ItemInfo
 {
@@ -97,13 +101,13 @@
 	{f003} 4 10 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_NARI_hit6x6_toy.txt # UnitFile
-	{f009} -1 forest_3_light.ini # LightFile
+	{f009} -1 jyoou_light_lv2.ini # LightFile
 	{f00A} -1 hiroba # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -115,16 +119,16 @@
 # TekiInfo
 {
 	5 # num
-	MiniHoudai 20 # weight
+	MiniHoudai 10 # weight
 	0 # type
 	Fkabuto_key 10 # weight
 	1 # type
+	Demon 10 # weight
+	1 # type
 	Bomb 100 # weight
 	5 # type
-	DaiodoRed 5 # weight
+	Nekojarashi 5 # weight
 	6 # type
-	Demon 20 # weight
-	1 # type
 }
 # ItemInfo
 {

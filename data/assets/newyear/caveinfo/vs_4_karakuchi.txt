@@ -10,13 +10,13 @@
 	{f002} 4 50 	# 敵最大数
 	{f003} 4 0 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 70 	# キャップ最大数
+	{f014} 4 100 	# キャップ最大数
 	{f005} 4 4 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
 	{f008} -1 vs_4_metal.txt 	# 使用ユニット
-	{f009} -1 metal_light_cha.ini 	# 使用ライト
-	{f00A} -1 build 	# VRBOX
+	{f009} -1 space_light.ini 	# 使用ライト
+	{f00A} -1 space 	# VRBOX
 	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
 	{f011} 4 1 	# α属性
 	{f012} 4 0 	# β属性
@@ -33,9 +33,7 @@
 	1 	# type
 	Pelplant 80 	# weight
 	0 	# type
-	Tank 20 	# weight
-	1 	# type
-	Wtank 20 	# weight
+	OniKurage 10 	# weight
 	1 	# type
 	ElecBug 80 	# weight
 	0 	# type
@@ -43,6 +41,8 @@
 	5 	# type
 	Bomb 1 	# weight
 	0 	# type
+	Houdai 10 	# weight
+	8 	# type
 }
 # ItemInfo
 {

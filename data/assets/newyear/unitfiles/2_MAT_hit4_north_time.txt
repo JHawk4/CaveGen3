@@ -4,10 +4,10 @@
 #
 #
 8 	# number of units
-# item_cap_metal
+# item_cap_time
 {
 	1 	# version
-	item_cap_metal 	# foldername
+	item_cap_time 	# foldername
 	1 1 	# dX/dZ ; cell size
 	0 	# room type
 	0 0 	# room Flags
@@ -16,10 +16,10 @@
 	2 0 0 	# dir/offs/wpindex
 	0 	# door links
 }
-# way3_metal
+# way3_time
 {
 	1 	# version
-	way3_metal 	# foldername
+	way3_time 	# foldername
 	1 1 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags
@@ -40,10 +40,10 @@
 	170.004532 0 1 	# dist/door-id/tekiflag
 	170.004532 1 1 	# dist/door-id/tekiflag
 }
-# way4_metal
+# way4_time
 {
 	1 	# version
-	way4_metal 	# foldername
+	way4_time 	# foldername
 	1 1 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags
@@ -73,10 +73,10 @@
 	170.004532 1 1 	# dist/door-id/tekiflag
 	170.004532 2 1 	# dist/door-id/tekiflag
 }
-# wayl_metal
+# wayl_time
 {
 	1 	# version
-	wayl_metal 	# foldername
+	wayl_time 	# foldername
 	1 1 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags
@@ -90,10 +90,10 @@
 	1 	# door links
 	136.006516 0 1 	# dist/door-id/tekiflag
 }
-# way2_metal
+# way2_time
 {
 	1 	# version
-	way2_metal 	# foldername
+	way2_time 	# foldername
 	1 1 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags
@@ -107,10 +107,10 @@
 	1 	# door links
 	170.004532 0 1 	# dist/door-id/tekiflag
 }
-# way2x2_metal
+# way2x2_time
 {
 	1 	# version
-	way2x2_metal 	# foldername
+	way2x2_time 	# foldername
 	1 2 	# dX/dZ ; cell size
 	2 	# room type
 	0 0 	# room Flags

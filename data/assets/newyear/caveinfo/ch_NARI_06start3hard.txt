@@ -13,7 +13,7 @@
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 3_units_small_mid_large_toy.txt # UnitFile
+	{f008} -1 3_units_bluezone_toy.txt # UnitFile
 	{f009} -1 bluezone_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole

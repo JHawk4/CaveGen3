@@ -11,12 +11,12 @@
 	{f003} 4 0	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
 	{f014} 4 100 	# キャップ最大数
-	{f005} 4 4 	# ルーム数
-	{f006} 4 0.150000 	# ルートの割合
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
 	{f008} -1 vs_3_toy.txt 	# 使用ユニット
-	{f009} -1 normal_light_cha.ini 	# 使用ライト
-	{f00A} -1 tatami 	# VRBOX
+	{f009} -1 arcade_light.ini 	# 使用ライト
+	{f00A} -1 arcade 	# VRBOX
 	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
 	{f011} 4 5 	# α属性
 	{f012} 4 0 	# β属性
@@ -28,26 +28,20 @@
 }
 # TekiInfo
 {
-	10 	# num
+	7 	# num
 	Pelplant 100 	# weight
 	0 	# type
-	BlueKochappy 100 	# weight
+	Kochappy 100 	# weight
 	1 	# type
-	Mar 20 	# weight
-	8 	# type
 	Pelplant 2 	# weight
 	1 	# type
-	Kochappy 2 	# weight
-	0 	# type
-	Egg 51 	# weight
-	0 	# type
-	UjiA 1 	# weight
-	0 	# type
+	Frog 20 	# weight
+	1 	# type
+	MaroFrog 20 	# weight
+	1 	# type
 	Egg 1 	# weight
 	5 	# type
-	UjiA 1 	# weight
-	5 	# type
-	Rock 1 	# weight
+	Fuefuki 10 	# weight
 	1 	# type
 }
 # ItemInfo

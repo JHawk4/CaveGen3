@@ -15,9 +15,9 @@
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_4x4a_sewer.txt # UnitFile
 	{f009} -1 hiroba_light.ini # LightFile
-	{f00A} -1 sewer # Skybox
+	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -61,7 +61,7 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 11 # EntityTotal
+	{f002} 4 13 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 3 # GateTotal
 	{f005} 4 4 # RoomTotal
@@ -69,9 +69,9 @@
 	{f007} 4 0 # Geyser
 	{f008} -1 3_units_tako_sewer.txt # UnitFile
 	{f009} -1 sewer_light.ini # LightFile
-	{f00A} -1 sewer # Skybox
+	{f00A} -1 sewer2 # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -82,7 +82,7 @@
 }
 # TekiInfo
 {
-	4 # num
+	5 # num
 	Chappy 10 # weight
 	0 # type
 	BombSarai 10 # weight
@@ -91,6 +91,8 @@
 	1 # type
 	Hiba 50 # weight
 	5 # type
+	FireOtakara 20 # weight
+	8 # type
 }
 # ItemInfo
 {
@@ -126,13 +128,13 @@
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 2 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_units_pype4x4_sewer.txt # UnitFile
-	{f009} -1 sewer_light.ini # LightFile
-	{f00A} -1 sewer # Skybox
+	{f008} -1 2_units_pype4x4_flooded_sewer.txt # UnitFile
+	{f009} -1 sewer2_light.ini # LightFile
+	{f00A} -1 sewer2 # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -147,7 +149,7 @@
 	PanModoki 10 # weight
 	0 # type
 	Fart_bolt_l 10 # weight
-	1 # type
+	0 # type
 	Rkabuto_nut 10 # weight
 	1 # type
 	Rkabuto 10 # weight
@@ -155,11 +157,11 @@
 	Kabuto 20 # weight
 	1 # type
 	Tank 20 # weight
-	1 # type
+	0 # type
 	Wtank 20 # weight
-	1 # type
+	0 # type
 	Hanachirashi 10 # weight
-	1 # type
+	0 # type
 	Fuefuki 10 # weight
 	0 # type
 	ElecHiba 100 # weight
@@ -199,11 +201,11 @@
 	{f005} 4 1 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 1 # Geyser
-	{f008} -1 1_MAT_manp_conc.txt # UnitFile
+	{f008} -1 1_units_white_sewer.txt # UnitFile
 	{f009} -1 oootakara_light.ini # LightFile
 	{f00A} -1 medieval # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 2 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -214,7 +216,7 @@
 }
 # TekiInfo
 {
-	5 # num
+	9 # num
 	Qurione 20 # weight
 	0 # type
 	ShijimiChou 10 # weight
@@ -225,6 +227,14 @@
 	6 # type
 	KareOoinu_l 2 # weight
 	6 # type
+	RandPom 10 # weight
+	8 # type
+	WhitePom 20 # weight
+	8 # type
+	BlackPom 20 # weight
+	8 # type
+	BluePom 10 # weight
+	8 # type
 }
 # ItemInfo
 {
@@ -237,19 +247,7 @@
 }
 # CapInfo
 {
-	4 # num
-	0 # captype
-	RandPom 10 # weight
-	1 # type
-	0 # captype
-	WhitePom 20 # weight
-	1 # type
-	0 # captype
-	BlackPom 20 # weight
-	1 # type
-	0 # captype
-	BluePom 10 # weight
-	1 # type
+	0 # num
 }
 # FloorInfo
 {
@@ -263,9 +261,9 @@
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_pool_sewer.txt # UnitFile
 	{f009} -1 sewer_light.ini # LightFile
-	{f00A} -1 sewer # Skybox
+	{f00A} -1 sewer2 # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -295,7 +293,7 @@
 	0 # type
 	Clover 5 # weight
 	6 # type
-	Zenmai 5 # weight
+	KareOoinu_s 5 # weight
 	6 # type
 }
 # ItemInfo
@@ -336,10 +334,10 @@
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_ootakara_sewer.txt # UnitFile
-	{f009} -1 sewer_light.ini # LightFile
-	{f00A} -1 sewer # Skybox
+	{f009} -1 sewer2_light.ini # LightFile
+	{f00A} -1 sewer2 # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -393,11 +391,11 @@
 	{f005} 4 1 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_units_large_toy.txt # UnitFile
+	{f008} -1 1_units_large_8_toy.txt # UnitFile
 	{f009} -1 forest_2_siro_light.ini # LightFile
 	{f00A} -1 autumn # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 1 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -410,7 +408,7 @@
 {
 	3 # num
 	Houdai_fue_pullout 10 # weight
-	0 # type
+	8 # type
 	DaiodoGreen 5 # weight
 	6 # type
 	DaiodoRed 5 # weight

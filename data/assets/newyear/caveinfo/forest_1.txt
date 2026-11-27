@@ -7,11 +7,11 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 20 # EntityTotal
+	{f002} 4 40 # EntityTotal
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.050000 # CorridorRatio
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_mid2_snow.txt # UnitFile
 	{f009} -1 tutorial_1_light.ini # LightFile
@@ -28,15 +28,19 @@
 }
 # TekiInfo
 {
-	4 # num
+	6 # num
 	UjiA 50 # weight
-	0 # type
+	1 # type
 	UjiB 50 # weight
+	1 # type
+	KareOoinu_s 10 # weight
+	6 # type
+	KareOoinu_l 10 # weight
+	6 # type
+	KareOoinu_s 50 # weight
 	0 # type
-	KareOoinu_s 5 # weight
-	6 # type
-	KareOoinu_l 5 # weight
-	6 # type
+	KareOoinu_l 50 # weight
+	0 # type
 }
 # ItemInfo
 {
@@ -55,7 +59,7 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 15 # EntityTotal
+	{f002} 4 35 # EntityTotal
 	{f003} 4 0 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
@@ -76,7 +80,7 @@
 }
 # TekiInfo
 {
-	6 # num
+	10 # num
 	BlackPom 20 # weight
 	5 # type
 	Egg 20 # weight
@@ -88,6 +92,14 @@
 	Mar 10 # weight
 	1 # type
 	Tukushi 8 # weight
+	6 # type
+	Watage 5 # weight
+	6 # type
+	Nekojarashi 5 # weight
+	6 # type
+	KareOoinu_s 5 # weight
+	6 # type
+	KareOoinu_l 5 # weight
 	6 # type
 }
 # ItemInfo
@@ -106,7 +118,7 @@
 {
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
-	{f002} 4 23 # EntityTotal
+	{f002} 4 31 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
@@ -127,7 +139,7 @@
 }
 # TekiInfo
 {
-	4 # num
+	7 # num
 	Hiba 60 # weight
 	5 # type
 	Hiba 50 # weight
@@ -136,6 +148,12 @@
 	0 # type
 	FireOtakara 20 # weight
 	1 # type
+	Tukushi 4 # weight
+	6 # type
+	DaiodoGreen 2 # weight
+	6 # type
+	DaiodoRed 2 # weight
+	6 # type
 }
 # ItemInfo
 {
@@ -155,11 +173,11 @@
 {
 	{f000} 4 3 # CurrentSublevelIndex
 	{f001} 4 3 # CurrentSublevelIndex
-	{f002} 4 13 # EntityTotal
+	{f002} 4 55 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 3_MAT_mid1_mid2_uzu1_snow.txt # UnitFile
 	{f009} -1 tutorial_1_light.ini # LightFile
@@ -176,7 +194,7 @@
 }
 # TekiInfo
 {
-	6 # num
+	11 # num
 	Miulin 10 # weight
 	0 # type
 	Kogane 10 # weight
@@ -189,6 +207,16 @@
 	1 # type
 	Hiba 40 # weight
 	5 # type
+	Tukushi 2 # weight
+	6 # type
+	KareOoinu_s 15 # weight
+	6 # type
+	KareOoinu_l 15 # weight
+	6 # type
+	KareOoinu_s 50 # weight
+	0 # type
+	KareOoinu_l 50 # weight
+	0 # type
 }
 # ItemInfo
 {
@@ -211,10 +239,10 @@
 	{f002} 4 9 # EntityTotal
 	{f003} 4 0 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 1 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_units_boss_tsuchi.txt # UnitFile
+	{f008} -1 2_MAT_mid3_tsuchi.txt # UnitFile
 	{f009} -1 houdai_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
@@ -231,7 +259,7 @@
 {
 	2 # num
 	Queen_radar_a 10 # weight
-	1 # type
+	8 # type
 	HikariKinoko 8 # weight
 	6 # type
 }

@@ -7,17 +7,17 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 26 # EntityTotal
-	{f003} 4 10 # TreasureTotal
+	{f002} 4 34 # EntityTotal
+	{f003} 4 11 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 4 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_north_pool_tile.txt # UnitFile
 	{f009} -1 sirohana_light_lv1.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -29,13 +29,9 @@
 # TekiInfo
 {
 	9 # num
-	BluePom 50 # weight
+	Wtank 30 # weight
 	0 # type
-	Damagumo_key 10 # weight
-	1 # type
-	Wtank 50 # weight
-	0 # type
-	Mar 20 # weight
+	Mar 10 # weight
 	0 # type
 	Qurione 50 # weight
 	1 # type
@@ -43,14 +39,19 @@
 	0 # type
 	KumaKochappy 40 # weight
 	1 # type
-	KumaChappy 10 # weight
+	KumaChappy_flower_red 10 # weight
 	1 # type
 	TamagoMushi 20 # weight
 	1 # type
+	Wakame_s 5 # weight
+	6 # type
+	Wakame_l 5 # weight
+	6 # type
 }
 # ItemInfo
 {
-	10 # num
+	11 # num
+	key 10 # weight
 	toy_teala 10 # weight
 	kan 10 # weight
 	hotate 10 # weight
@@ -68,7 +69,10 @@
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	BluePom 20 # weight
+	1 # type
 }
 # FloorInfo
 {
@@ -95,17 +99,15 @@
 }
 # TekiInfo
 {
-	5 # num
+	4 # num
+	Sokkuri 20 # weight
+	1 # type
 	DangoMushi_key 10 # weight
-	0 # type
-	SnakeCrow 20 # weight
-	1 # type
-	TamagoMushi 50 # weight
-	1 # type
-	KumaKochappy 20 # weight
-	0 # type
-	KumaChappy 10 # weight
-	0 # type
+	0 # type	
+	Wakame_s 3 # weight
+	6 # type
+	Wakame_l 3 # weight
+	6 # type
 }
 # ItemInfo
 {

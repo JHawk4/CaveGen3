@@ -15,9 +15,9 @@
 	{f007} 4 0 # Geyser
 	{f008} -1 2_MAT_5x5_mid_kusachi.txt # UnitFile
 	{f009} -1 kusachi_light_cha.ini # LightFile
-	{f00A} -1 hiroba # Skybox
+	{f00A} -1 spring # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -28,7 +28,7 @@
 }
 # TekiInfo
 {
-	13 # num
+	15 # num
 	Wakame_l 20 # weight
 	6 # type
 	Ooinu_s 15 # weight
@@ -47,7 +47,11 @@
 	6 # type
 	Magaret 20 # weight
 	6 # type
-	BlackMan 30 # weight
+	BlackMan 10 # weight
+	0 # type
+	BlackMan 10 # weight
+	0 # type
+	BlackMan 10 # weight
 	0 # type
 	BlackMan 20 # weight
 	1 # type

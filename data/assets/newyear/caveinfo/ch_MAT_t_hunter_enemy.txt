@@ -8,10 +8,10 @@
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
 	{f002} 4 22 # EntityTotal
-	{f003} 4 1 # TreasureTotal
+	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_NARI_north4_tsuchi.txt # UnitFile
 	{f009} -1 forest_3_light.ini # LightFile
@@ -29,9 +29,9 @@
 # TekiInfo
 {
 	4 # num
-	Qurione 100 # weight
+	Qurione 30 # weight
 	0 # type
-	Qurione 100 # weight
+	Qurione 30 # weight
 	1 # type
 	DaiodoRed 1 # weight
 	6 # type
@@ -40,8 +40,9 @@
 }
 # ItemInfo
 {
-	1 # num
+	2 # num
 	key 10 # weight
+	turi_uki 10 # weight
 }
 # GateInfo
 {
@@ -55,17 +56,17 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 41 # EntityTotal
-	{f003} 4 6 # TreasureTotal
+	{f002} 4 51 # EntityTotal
+	{f003} 4 10 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 3_units_small2_small_mid_toy.txt # UnitFile
 	{f009} -1 forest_3_light.ini # LightFile
-	{f00A} -1 none # Skybox
-	{f010} 4 1 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f00A} -1 autumn # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -76,25 +77,33 @@
 }
 # TekiInfo
 {
-	4 # num
+	6 # num
+	$BombOtakara_key 10 # weight
+	1 # type
 	Rock 100 # weight
 	0 # type
 	Rock 100 # weight
 	1 # type
 	Rock 100 # weight
 	5 # type
-	$BombOtakara_key 10 # weight
-	1 # type
+	KareOoinu_s 5 # weight
+	6 # type
+	KareOoinu_l 5 # weight
+	6 # type
 }
 # ItemInfo
 {
-	6 # num
+	10 # num
 	key 10 # weight
-	suit_fire 10 # weight
-	suit_powerup 10 # weight
+	flower_red 10 # weight
+	flower_blue 10 # weight
 	fue_b 10 # weight
-	dashboots 10 # weight
-	chess_king_black 10 # weight
+	kan_b_gold 10 # weight
+	haniwa 10 # weight
+	toy_ring_c_red 10 # weight
+	cookie_s 10 # weight
+	cookie_u 10 # weight
+	momiji_normal 10 # weight
 }
 # GateInfo
 {
@@ -104,7 +113,7 @@
 {
 	1 # num
 	0 # captype
-	Rock 100 # weight
+	Rock 10 # weight
 	1 # type
 }
 # FloorInfo
@@ -121,7 +130,7 @@
 	{f009} -1 forest_3_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -160,13 +169,13 @@
 {
 	8 # num
 	key 10 # weight
-	doll 10 # weight
-	doll 10 # weight
-	doll 10 # weight
-	doll 10 # weight
-	doll 10 # weight
-	doll 10 # weight
-	doll 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_blue 10 # weight
 }
 # GateInfo
 {
@@ -190,8 +199,8 @@
 {
 	{f000} 4 3 # CurrentSublevelIndex
 	{f001} 4 3 # CurrentSublevelIndex
-	{f002} 4 5 # EntityTotal
-	{f003} 4 3 # TreasureTotal
+	{f002} 4 25 # EntityTotal
+	{f003} 4 9 # TreasureTotal
 	{f004} 4 12 # GateTotal
 	{f005} 4 5 # RoomTotal
 	{f006} 4 0.2 # CorridorRatio
@@ -200,7 +209,7 @@
 	{f009} -1 forest_2_siro_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -211,24 +220,28 @@
 }
 # TekiInfo
 {
-	5 # num
-	DaiodoRed 1 # weight
-	6 # type
-	DaiodoGreen 1 # weight
-	6 # type
-	$2KumaChappy 10 # weight
-	0 # type
-	$4KumaChappy 10 # weight
-	1 # type
+	4 # num
 	$KumaChappy 10 # weight
-	1 # type
+	0 # type
+	$KumaChappy 10 # weight
+	0 # type
+	DaiodoRed 10 # weight
+	6 # type
+	DaiodoGreen 10 # weight
+	6 # type
 }
 # ItemInfo
 {
-	3 # num
+	9 # num
 	key 10 # weight
-	doll 10 # weight
-	saru_head 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_blue 10 # weight
+	dia_b_red 10 # weight
+	dia_b_blue 10 # weight
+	be_dama_red 10 # weight
+	be_dama_yellow 10 # weight
+	be_dama_blue 10 # weight
+	momiji_normal 10 # weight
 }
 # GateInfo
 {
@@ -266,17 +279,17 @@
 {
 	{f000} 4 4 # CurrentSublevelIndex
 	{f001} 4 4 # CurrentSublevelIndex
-	{f002} 4 26 # EntityTotal
-	{f003} 4 8 # TreasureTotal
+	{f002} 4 31 # EntityTotal
+	{f003} 4 2 # TreasureTotal
 	{f004} 4 1 # GateTotal
-	{f005} 4 2 # RoomTotal
-	{f006} 4 0.2 # CorridorRatio
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_nobo2_metal.txt # UnitFile
-	{f009} -1 forest_3_light.ini # LightFile
-	{f00A} -1 none # Skybox
+	{f009} -1 timeless_light.ini # LightFile
+	{f00A} -1 void # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 3 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 100 # DeadEndTotal
@@ -288,28 +301,22 @@
 # TekiInfo
 {
 	5 # num
-	$KumaChappy 10 # weight
-	0 # type
-	Hiba 50 # weight
-	5 # type
-	ElecHiba 50 # weight
-	5 # type
-	GasHiba 50 # weight
-	5 # type
-	Rock 100 # weight
+	Hiba 30 # weight
 	1 # type
+	ElecHiba 30 # weight
+	1 # type
+	GasHiba 30 # weight
+	1 # type
+	Rock 50 # weight
+	0 # type
+	HikariKinoko 5 # weight
+	6 # type
 }
 # ItemInfo
 {
-	8 # num
+	2 # num
 	key 10 # weight
-	saru_head 10 # weight
-	saru_head 10 # weight
-	saru_head 10 # weight
-	saru_head 10 # weight
-	saru_head 10 # weight
-	saru_head 10 # weight
-	saru_head 10 # weight
+	dia_b_blue 10 # weight
 }
 # GateInfo
 {
@@ -319,5 +326,8 @@
 }
 # CapInfo
 {
-	0 # num
+	1 # num
+	0 # captype
+	RandPom 10 # weight
+	1 # type
 }

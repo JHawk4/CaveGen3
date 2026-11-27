@@ -10,15 +10,15 @@
 	{f002} 4 60 	# 敵最大数
 	{f003} 4 0 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 50 	# キャップ最大数
-	{f005} 4 4 	# ルーム数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 6 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
 	{f008} -1 vs_2_snow.txt 	# 使用ユニット
-	{f009} -1 vs_2_light.ini 	# 使用ライト
-	{f00A} -1 none 	# VRBOX
+	{f009} -1 toy_light_cha.ini 	# 使用ライト
+	{f00A} -1 ice 	# VRBOX
 	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 0 	# α属性
+	{f011} 4 4 	# α属性
 	{f012} 4 0 	# β属性
 	{f013} 4 0 	# 隠し床
 	{f015} 4 1 	# Version
@@ -28,18 +28,22 @@
 }
 # TekiInfo
 {
-	6 	# num
-	Kochappy_be_dama_yellow_l 40 	# weight
+	8 	# num
+	Kochappy_be_dama_yellow_l 1 	# weight
 	1 	# type
-	Pelplant 100 	# weight
-	0 	# type
-	Kabuto 20 	# weight
-	1 	# type
-	Egg 100 	# weight
-	5 	# type
-	YellowKochappy 3 	# weight
+	Pelplant 20 	# weight
+	6 	# type
+	SnakeCrow 10 	# weight
+	8 	# type
+	YellowKochappy 1 	# weight
 	0 	# type
 	Kochappy 1 	# weight
+	1 	# type
+	Miulin 20 	# weight
+	1 	# type
+	YellowChappy 20 	# weight
+	1 	# type
+	Egg 20 	# weight
 	1 	# type
 }
 # ItemInfo
@@ -52,8 +56,5 @@
 }
 # CapInfo
 {
-	1 	# num
-	0 	# captype
-	Egg 11 	# weight
-	1 	# type
+	0 	# num
 }

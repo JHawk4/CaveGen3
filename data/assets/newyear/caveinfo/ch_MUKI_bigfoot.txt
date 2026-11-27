@@ -7,14 +7,14 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 30 # EntityTotal
+	{f002} 4 33 # EntityTotal
 	{f003} 4 4 # TreasureTotal
 	{f004} 4 3 # GateTotal
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_unit_cents_garden.txt # UnitFile
-	{f009} -1 garden_light.ini # LightFile
+	{f008} -1 3_ABE_4x4c_garden.txt # UnitFile
+	{f009} -1 normal_light_lv0.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
@@ -28,7 +28,7 @@
 }
 # TekiInfo
 {
-	9 # num
+	12 # num
 	PanModoki 10 # weight
 	0 # type
 	Kogane 10 # weight
@@ -39,12 +39,18 @@
 	0 # type
 	FireOtakara 10 # weight
 	0 # type
+	MaroFrog 10 # weight
+	0 # type
+	KoChappy 30 # weight
+	0 # type
 	UjiA 50 # weight
 	1 # type
 	UjiB 50 # weight
 	1 # type
 	Tobi 50 # weight
 	1 # type
+	GasHiba 50 # weight
+	5 # type
 	Clover 10 # weight
 	6 # type
 }
@@ -52,9 +58,9 @@
 {
 	4 # num
 	key 10 # weight
-	dia_a_green 50 # weight
 	flower_blue 20 # weight
 	momiji_red 10 # weight
+	dia_a_green 20 # weight
 }
 # GateInfo
 {
@@ -74,14 +80,14 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 35 # EntityTotal
+	{f002} 4 38 # EntityTotal
 	{f003} 4 4 # TreasureTotal
 	{f004} 4 3 # GateTotal
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 1_unit_ike2_garden.txt # UnitFile
-	{f009} -1 garden_light.ini # LightFile
+	{f008} -1 1_unit_ike3_garden.txt # UnitFile
+	{f009} -1 normal_light_lv2.ini # LightFile
 	{f00A} -1 garden # Skybox
 	{f010} 4 0 # CloggedHole
 	{f011} 4 0 # Unknown
@@ -95,7 +101,7 @@
 }
 # TekiInfo
 {
-	8 # num
+	10 # num
 	Sarai 10 # weight
 	0 # type
 	Demon 10 # weight
@@ -104,7 +110,11 @@
 	0 # type
 	ElecBug 60 # weight
 	0 # type
+	BlueKoChappy 30 # weight
+	0 # type
 	Sokkuri 100 # weight
+	1 # type
+	UmiMushiBlind 10 # weight
 	1 # type
 	Ooinu_s 5 # weight
 	6 # type
@@ -117,9 +127,9 @@
 {
 	4 # num
 	key 10 # weight
-	dia_a_green 50 # weight
 	kouseki_suisyou 20 # weight
 	flask 10 # weight
+	dia_a_green 20 # weight
 }
 # GateInfo
 {

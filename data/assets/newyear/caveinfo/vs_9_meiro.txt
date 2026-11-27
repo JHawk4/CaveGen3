@@ -10,13 +10,13 @@
 	{f002} 4 35 	# 敵最大数
 	{f003} 4 0 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
+	{f014} 4 100 	# キャップ最大数
 	{f005} 4 8 	# ルーム数
 	{f006} 4 0.020000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
 	{f008} -1 vs_9_tsuchi.txt 	# 使用ユニット
-	{f009} -1 muraon_light_lv4.ini 	# 使用ライト
-	{f00A} -1 none 	# VRBOX
+	{f009} -1 garden_light.ini 	# 使用ライト
+	{f00A} -1 garden 	# VRBOX
 	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
 	{f011} 4 0 	# α属性
 	{f012} 4 0 	# β属性
@@ -28,7 +28,7 @@
 }
 # TekiInfo
 {
-	5 	# num
+	10 	# num
 	Pelplant 100 	# weight
 	0 	# type
 	Pelplant 3 	# weight
@@ -39,6 +39,16 @@
 	0 	# type
 	Egg 50 	# weight
 	1 	# type
+	Catfish 40 	# weight
+	1 	# type
+	Frog 1 	# weight
+	8 	# type
+	YellowKochappy 42 	# weight
+	0 	# type
+	Sokkuri 8 	# weight
+	6 	# type
+	MiniHoudai 10 	# weight
+	0 	# type
 }
 # ItemInfo
 {

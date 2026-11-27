@@ -66,5 +66,5 @@ and what each test checks. This file only adds what isn't there.
   treats braces as whitespace, so `parse::sections` reads text that a `}` closes as a section.
 - Treasure order matters for spawning: keep caveinfo order wherever treasures are listed.
 - 12 romhack sublevels once differed between CaveGen and Caveripper; 10 were CaveGen3 bugs, fixed
-  against the decomp. New Year CH-2 and CH-4 remain different, because CaveGen treats the short
+  against the decomp. New Year CH-1, CH-2 and CH-4 remain different, because CaveGen treats the short
   name "CH" as challenge mode. They're listed in `crates/cavegen3/tests/cavegen_expect.rs`.

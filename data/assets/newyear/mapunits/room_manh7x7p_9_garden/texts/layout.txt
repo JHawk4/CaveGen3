@@ -1,5 +1,5 @@
 # BaseGen file
-29 	 # num gens
+28 	 # num gens
 # basegen 0
 {
 	7 	# type [Start]
@@ -183,22 +183,13 @@
 # basegen 20
 {
 	0 	# type [Teki A]
-	510.000000 0.000000 -490.000000 	# pos
-	180.000000 	# ang
-	50.000000 	# radius
-	1 	# min num
-	2 	# max num
-}
-# basegen 21
-{
-	0 	# type [Teki A]
 	385.000000 0.000000 60.000000 	# pos
 	180.000000 	# ang
 	85.000000 	# radius
 	2 	# min num
 	3 	# max num
 }
-# basegen 22
+# basegen 21
 {
 	0 	# type [Teki A]
 	325.000000 0.000000 -250.000000 	# pos
@@ -207,7 +198,7 @@
 	1 	# min num
 	3 	# max num
 }
-# basegen 23
+# basegen 22
 {
 	0 	# type [Teki A]
 	115.000000 35.000000 -55.000000 	# pos
@@ -216,7 +207,7 @@
 	2 	# min num
 	4 	# max num
 }
-# basegen 24
+# basegen 23
 {
 	0 	# type [Teki A]
 	-5.000000 0.000000 -365.000000 	# pos
@@ -225,7 +216,7 @@
 	1 	# min num
 	3 	# max num
 }
-# basegen 25
+# basegen 24
 {
 	0 	# type [Teki A]
 	-55.000000 35.000000 115.000000 	# pos
@@ -234,7 +225,7 @@
 	2 	# min num
 	4 	# max num
 }
-# basegen 26
+# basegen 25
 {
 	6 	# type [Plant]
 	-235.000000 35.000000 -215.000000 	# pos
@@ -243,7 +234,7 @@
 	1 	# min num
 	4 	# max num
 }
-# basegen 27
+# basegen 26
 {
 	6 	# type [Plant]
 	-100.000000 35.000000 310.000000 	# pos
@@ -252,7 +243,7 @@
 	1 	# min num
 	1 	# max num
 }
-# basegen 28
+# basegen 27
 {
 	6 	# type [Plant]
 	310.000000 35.000000 -40.000000 	# pos

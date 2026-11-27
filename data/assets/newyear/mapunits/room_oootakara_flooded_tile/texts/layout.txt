@@ -1,5 +1,5 @@
 # BaseGen file
-11 	 # num gens
+12 	 # num gens
 # basegen 0
 {
 	7 	# type [Start]
@@ -68,44 +68,44 @@
 	0 	# type [Item]
 	193.000000 -80.000000 -147.000000 	# pos
 	45.000000 	# ang
-	85.000000 	# radius
+	0.000000 	# radius
 	1 	# min num
-	4 	# max num
+	1 	# max num
 }
 # basegen 8
 {
 	0 	# type [Item]
 	503.000000 -6.000000 198.000000 	# pos
 	45.000000 	# ang
-	85.000000 	# radius
+	0.000000 	# radius
 	1 	# min num
-	4 	# max num
+	1 	# max num
 }
 # basegen 9
 {
 	0 	# type [Plant]
 	501.000000 -7.000000 -255.000000 	# pos
 	45.000000 	# ang
-	85.000000 	# radius
+	20.000000 	# radius
 	1 	# min num
-	4 	# max num
+	1 	# max num
 }
 # basegen 10
 {
 	0 	# type [Plant]
 	-217.000000 -9.000000 -444.000000 	# pos
 	45.000000 	# ang
-	85.000000 	# radius
+	20.000000 	# radius
 	1 	# min num
-	4 	# max num
+	1 	# max num
 }
 # basegen 11
 {
 	0 	# type [Plant]
 	-250.000000 -9.000000 407.000000 	# pos
 	45.000000 	# ang
-	85.000000 	# radius
+	20.000000 	# radius
 	1 	# min num
-	4 	# max num
+	1 	# max num
 }
 

@@ -7,17 +7,17 @@
 {
 	{f000} 4 0 # CurrentSublevelIndex
 	{f001} 4 0 # CurrentSublevelIndex
-	{f002} 4 10 # EntityTotal
+	{f002} 4 20 # EntityTotal
 	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
-	{f006} 4 0.000000 # CorridorRatio
+	{f006} 4 0 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 2_ABE_nor1_cen2_metal.txt # UnitFile
-	{f009} -1 kusachi_light_cha.ini # LightFile
+	{f008} -1 2_ABE_nor1_hitode5_metal.txt # UnitFile
+	{f009} -1 jyoou_light_lv2.ini # LightFile
 	{f00A} -1 wireframe # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 1 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -28,11 +28,23 @@
 }
 # TekiInfo
 {
-	2 # num
-	UjiA 50 # weight
+	8 # num
+	UjiA 20 # weight
 	0 # type
-	UjiB 50 # weight
+	UjiB 20 # weight
 	0 # type
+	UjiA 20 # weight
+	1 # type
+	UjiB 20 # weight
+	1 # type
+	UjiA 10 # weight
+	5 # type
+	UjiB 10 # weight
+	5 # type
+	DaiodoGreen 5 # weight
+	6 # type
+	DaiodoRed 5 # weight
+	6 # type
 }
 # ItemInfo
 {
@@ -51,7 +63,7 @@
 {
 	{f000} 4 1 # CurrentSublevelIndex
 	{f001} 4 1 # CurrentSublevelIndex
-	{f002} 4 4 # EntityTotal
+	{f002} 4 13 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
@@ -61,7 +73,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 windows # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -72,9 +84,15 @@
 }
 # TekiInfo
 {
-	1 # num
-	Tank 20 # weight
+	4 # num
+	Tank 10 # weight
 	0 # type
+	Tank 10 # weight
+	0 # type
+	Tobi 20 # weight
+	1 # type
+	Hiba 50 # weight
+	5 # type
 }
 # ItemInfo
 {
@@ -88,9 +106,12 @@
 }
 # CapInfo
 {
-	1 # num
+	2 # num
 	0 # captype
-	BlackPom 20 # weight
+	BlackPom 2 # weight
+	1 # type
+	0 # captype
+	Egg 20 # weight
 	1 # type
 }
 # FloorInfo
@@ -103,11 +124,11 @@
 	{f005} 4 1 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 windows_95_white.txt # UnitFile
+	{f008} -1 1_units_DKumo_windows.txt # UnitFile
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 windowsstart # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -120,9 +141,9 @@
 {
 	5 # num
 	WhitePom 30 # weight
-	1 # type
-	Qurione 20 # weight
 	8 # type
+	Qurione 20 # weight
+	1 # type
 	DaiodoGreen 10 # weight
 	0 # type
 	DaiodoGreen 6 # weight
@@ -147,7 +168,7 @@
 {
 	{f000} 4 3 # CurrentSublevelIndex
 	{f001} 4 3 # CurrentSublevelIndex
-	{f002} 4 13 # EntityTotal
+	{f002} 4 15 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 2 # RoomTotal
@@ -157,7 +178,7 @@
 	{f009} -1 forest_2_siro_light.ini # LightFile
 	{f00A} -1 none # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -168,13 +189,17 @@
 }
 # TekiInfo
 {
-	4 # num
-	MaroFrog 20 # weight
+	6 # num
+	MaroFrog 10 # weight
+	0 # type
+	MaroFrog 10 # weight
 	0 # type
 	UjiA 20 # weight
 	1 # type
 	UjiB 20 # weight
 	1 # type
+	GasOtakara 20 # weight
+	0 # type
 	GasHiba 50 # weight
 	5 # type
 }
@@ -190,9 +215,12 @@
 }
 # CapInfo
 {
-	1 # num
+	2 # num
 	0 # captype
-	WhitePom 20 # weight
+	WhitePom 2 # weight
+	1 # type
+	0 # captype
+	Egg 20 # weight
 	1 # type
 }
 # FloorInfo
@@ -209,7 +237,7 @@
 	{f009} -1 toy_light_cha.ini # LightFile
 	{f00A} -1 windows # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 1 # MusicType
 	{f013} 4 0 # SolidPlane
     {f014} 4 50 # DeadEndTotal

@@ -17,7 +17,7 @@
 	{f009} -1 forest_2_siro_light.ini # LightFile
 	{f00A} -1 autumn # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 4 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -73,10 +73,10 @@
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_opan_toy.txt # UnitFile
-	{f009} -1 normal_light_lv0.ini # LightFile
+	{f009} -1 arcadedark_light.ini # LightFile
 	{f00A} -1 arcade # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -121,17 +121,17 @@
 {
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
-	{f002} 4 35 # EntityTotal
+	{f002} 4 40 # EntityTotal
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
-	{f005} 4 3 # RoomTotal
-	{f006} 4 0.12 # CorridorRatio
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.00 # CorridorRatio
 	{f007} 4 0 # Geyser
-	{f008} -1 3_units_small_mid_large_toy.txt # UnitFile
-	{f009} -1 vs_10_light.ini # LightFile
+	{f008} -1 2_units_mid_large_arcade.txt # UnitFile
+	{f009} -1 arcade2_light.ini # LightFile
 	{f00A} -1 arcade # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -142,7 +142,7 @@
 }
 # TekiInfo
 {
-	14 # num
+	15 # num
 	PanModoki 20 # weight
 	0 # type
 	Miulin 10 # weight
@@ -171,6 +171,8 @@
 	6 # type
 	Chiyogami 2 # weight
 	6 # type
+	Egg 50 # weight
+	8 # type
 }
 # ItemInfo
 {
@@ -200,13 +202,13 @@
 	{f003} 4 2 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
-	{f006} 4 0.150000 # CorridorRatio
+	{f006} 4 0.1500000 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_small2_mid2_arcade.txt # UnitFile
 	{f009} -1 arcade_light.ini # LightFile
 	{f00A} -1 checkerboard # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -259,10 +261,10 @@
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 1_units_sara_toy.txt # UnitFile
-	{f009} -1 vs_10_light.ini # LightFile
+	{f009} -1 arcade_light.ini # LightFile
 	{f00A} -1 arcade # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
@@ -322,10 +324,10 @@
 	{f006} 4 0.12 # CorridorRatio
 	{f007} 4 0 # Geyser
 	{f008} -1 2_units_hit47_hit67_toy.txt # UnitFile
-	{f009} -1 metal_light_lv0.ini # LightFile
-	{f00A} -1 wireframe # Skybox
+	{f009} -1 space_light.ini # LightFile
+	{f00A} -1 wireframe2 # Skybox
 	{f010} 4 0 # CloggedHole
-	{f011} 4 0 # Unknown
+	{f011} 4 5 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 1 # SolidPlane
     {f014} 4 50 # DeadEndTotal
