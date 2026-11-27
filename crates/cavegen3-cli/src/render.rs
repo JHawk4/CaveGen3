@@ -332,7 +332,9 @@ impl Options {
         }
         match o.kind.as_str() {
             "treasure" => self.treasures && !(self.hide_buried && o.buried),
-            "teki" if o.group() == Some(6) => self.plants,
+            // By what the teki is, not by its spawn group: caveinfo sometimes puts plants in
+            // teki spots and teki in plant spots.
+            "teki" if cavegen3::teki_kind::is_plant(o.name()) => self.plants,
             "teki" => self.teki,
             "gate" => self.gates,
             _ => self.exits,
@@ -342,46 +344,20 @@ impl Options {
 
 // ---- The landing and comedown views ----
 
-/// Teki the game draws even in cutscenes: their managers are `EnemyMgrBaseAlwaysMovieActor`.
-/// The plants (`plantsMgr.h`) and the fire, electric and gas hazards (`Hiba`, `ElecHiba`,
-/// `GasHiba`). Lowercase internal names.
-pub const COMEDOWN_VISIBLE_TEKI: &[&str] = &[
-    "chiyogami",
-    "clover",
-    "diodered",
-    "diodegreen",
-    "hikarikinoko",
-    "kareooinu_l",
-    "kareooinu_s",
-    "margaret",
-    "nekojarashi",
-    "ooinu_l",
-    "ooinu_s",
-    "tanpopo",
-    "tukushi",
-    "wakame_l",
-    "wakame_s",
-    "watage",
-    "zenmai",
-    "hiba",
-    "elechiba",
-    "gashiba",
-];
-
 /// Whether the game draws an object while the pod comes down: its kind ("treasure", "teki",
 /// "gate", "hole", "geyser", "ship", "onion") and, for teki, its internal name.
 ///
 /// The cave intro cutscene s0B_cv_coursein has draw flags 5 in `/user/Mukki/movie/demos.txt`:
 /// Pikmin (1) and pellets (4), not enemies (2) or captains (8). `MoviePlayer::setPauseAndDraw`
 /// passes those to each manager, and with enemies off `EnemyMgrBase` draws only the cutscene's
-/// own actors. Plants and the Hiba hazards always count as actors ([`COMEDOWN_VISIBLE_TEKI`]), so
+/// own actors. Plants and the Hiba hazards always count as actors ([`cavegen3::teki_kind::comedown_visible`]), so
 /// they show; every other teki doesn't, eggs and Candypop Buds included, and neither does a
 /// treasure a teki carries, which only becomes a pellet when it dies. Treasures are pellets and
 /// show (a buried one as its dirt mound); gates, the hole, the geyser and Onions are items, which
 /// cutscenes don't hide. Checked in run videos: EC-1's first treasure shows; on HoB-4 the
 /// glowcaps around the pod glow but the Red Bulborb beside it isn't there.
 pub fn comedown_visible(kind: &str, name: &str) -> bool {
-    kind != "teki" || COMEDOWN_VISIBLE_TEKI.contains(&name.to_ascii_lowercase().as_str())
+    kind != "teki" || cavegen3::teki_kind::comedown_visible(name)
 }
 
 /// A camera looking the way the pod faces: `dist` units back from its target, `angle` degrees

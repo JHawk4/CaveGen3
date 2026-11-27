@@ -96,7 +96,7 @@ fn comedown_visible_leaves_off_teki() {
     assert!(!comedown_visible("teki", "Chappy"));
     assert!(!comedown_visible("teki", "Egg"));
     assert!(!comedown_visible("teki", "BlackPom"));
-    for name in ["HikariKinoko", "Hikarikinoko", "Clover", "KareOoinu_s", "Hiba", "ElecHiba", "GasHiba"] {
+    for name in ["HikariKinoko", "Hikarikinoko", "Clover", "KareOoinu_s", "DaiodoRed", "DaiodoGreen", "Magaret", "Hiba", "ElecHiba", "GasHiba"] {
         assert!(comedown_visible("teki", name), "{name}");
     }
     for kind in ["treasure", "gate", "hole", "geyser", "ship", "onion"] {
@@ -220,5 +220,31 @@ fn every_game_has_its_images() {
         "onion0",
     ] {
         assert!(p.assets.special(name).is_some(), "no {name}");
+    }
+}
+
+/// The teki and plant toggles go by what an object is, not by its spawn group. FC-1's caveinfo
+/// puts withered Figworts (KareOoinu) in teki groups and a Doodlebug (Fart) in the plant
+/// group 6, so a seed has both.
+#[test]
+fn plant_toggle_goes_by_the_object() {
+    let p = painter();
+    let group = |o: &cavegen3_cli::render::Object| o.group.as_ref().and_then(|g| g.as_i64());
+    let teki = |o: &&cavegen3_cli::render::Object| o.kind == "teki";
+    let (seed, layout) = (0..500u64)
+        .map(|s| (s, p.layout("FC-1", s, false).unwrap()))
+        .find(|(_, l)| {
+            let plant_in_teki_spot = l.objects.iter().filter(teki).any(|o| cavegen3::teki_kind::is_plant(o.name.as_deref().unwrap_or("")) && group(o) != Some(6));
+            let teki_in_plant_spot = l.objects.iter().filter(teki).any(|o| !cavegen3::teki_kind::is_plant(o.name.as_deref().unwrap_or("")) && group(o) == Some(6));
+            plant_in_teki_spot && teki_in_plant_spot
+        })
+        .expect("an FC-1 seed with swapped spots");
+    let no_teki = Options { teki: false, ..Options::default() };
+    let no_plants = Options { plants: false, ..Options::default() };
+    for o in layout.objects.iter().filter(teki) {
+        let name = o.name.as_deref().unwrap();
+        let plant = cavegen3::teki_kind::is_plant(name);
+        assert_eq!(no_teki.shows(o), plant, "seed {seed}: {name} in group {:?}", group(o));
+        assert_eq!(no_plants.shows(o), !plant, "seed {seed}: {name} in group {:?}", group(o));
     }
 }

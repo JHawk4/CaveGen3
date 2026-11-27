@@ -1,0 +1,171 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 3 	# Floor Count
+	{_eof} 
+}
+3 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 50 	# Teki Spawns
+	{f003} 4 2 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_5x5_mid_kusachi.txt 	# Units File
+	{f009} -1 tutorial_1_light.ini 	# Lighting File
+	{f00A} -1 hiroba 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 4 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	KumaKochappy 40 	# weight
+	0 	# type
+	BlueKochappy 30 	# weight
+	1 	# type
+	MaroFrog 20 	# weight
+	1 	# type
+	Jigumo 40 	# weight
+	5 	# type
+	BlueKochappy 20 	# weight
+	1 	# type
+	Wakame_l 10 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Egg 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# Floor Start
+	{f001} 4 1 	# Floor End
+	{f002} 4 40 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MAT_ike_garden.txt 	# Units File
+	{f009} -1 garden_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	12 	# num
+	Fuefuki 10 	# weight
+	0 	# type
+	$2KumaKochappy 120 	# weight
+	5 	# type
+	Rkabuto 10 	# weight
+	0 	# type
+	$2KumaKochappy 50 	# weight
+	5 	# type
+	Wakame_s 5 	# weight
+	6 	# type
+	Chappy 10 	# weight
+	1 	# type
+	Hanachirashi_dia_a_green 10 	# weight
+	8 	# type
+	Jigumo 7 	# weight
+	6 	# type
+	Chappy 10 	# weight
+	0 	# type
+	$2Rkabuto 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	0 	# type
+	Hanachirashi 01 	# weight
+	8 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 2 	# Floor Start
+	{f001} 4 2 	# Floor End
+	{f002} 4 45 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 70 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MAT_ike_garden.txt 	# Units File
+	{f009} -1 gardenfairy_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	FireChappy_map02 10 	# weight
+	0 	# type
+	Houdai_map01 10 	# weight
+	8 	# type
+	BlackPom 10 	# weight
+	1 	# type
+	KumaKochappy 70 	# weight
+	0 	# type
+	$1Egg 01 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}

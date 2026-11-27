@@ -16,6 +16,7 @@ The game data it needs is included, so there's nothing to extract.
 | Pikmin 2 | `pikmin2` | Story and challenge mode. |
 | Pikmin 251 | `251` | |
 | Pikmin 2: New Year | `newyear` | Timeless Realm (CH28) floor 3 is missing a unit file in the hack's own data. |
+| Pikmin 2: New Year Kaizo | `newyearkaizo` | Salem's harder edition of New Year, version 1.4. Same caves and names as New Year, with new spawns and layouts. |
 | Colossal Caverns | `colossal` | |
 | Pikmin 216 | `216` | Version 1.3. Its generation code is assumed to be vanilla's; only the data has been checked. |
 | Bikmin 269 | `bikmin` | DX definitive v1.1. Its main.dol differs from retail; generation is assumed to be vanilla's, and only the data has been checked. |
@@ -65,7 +66,9 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 **Advanced options** brings over much of the CaveGen GUI:
 
 - **Objects**, **View**, **Generation details** and **Scores**: hide treasures (or only the
-  fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants,
+  fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants
+  (by what the object is, not its spawn spot: a Clover in an easy teki spot is a plant, a
+  Bomb-rock in a plant spot is a teki; Candypop Buds, Pellet Posies and hazards count as teki),
   gates, gate HP (written on each gate) or exits; show only one landing or comedown view,
   the landing and comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
   for plants, rings for easy teki), spawn order (CaveGen's `-drawSpawnOrder`), carry distances

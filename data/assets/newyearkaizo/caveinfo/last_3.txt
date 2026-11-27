@@ -1,0 +1,3296 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 50 	# Floor Count
+	{_eof} 
+}
+50 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 100 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_nobo_disco.txt 	# Units File
+	{f009} -1 hiroba_light.ini 	# Lighting File
+	{f00A} -1 disco 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	10 	# num
+	FminiHoudai 10 	# weight
+	0 	# type
+	Armor 01 	# weight
+	5 	# type
+	FminiHoudai 10 	# weight
+	0 	# type
+	SnakeCrow 50 	# weight
+	5 	# type
+	Sarai 11 	# weight
+	5 	# type
+	Hanachirashi 01 	# weight
+	1 	# type
+	FminiHoudai 10 	# weight
+	0 	# type
+	Mar 10 	# weight
+	0 	# type
+	Sarai 01 	# weight
+	0 	# type
+	Demon 50 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	2 	# num
+	0 	# captype
+	$5FminiHoudai_medama_yaki 10 	# weight
+	1 	# type
+	0 	# captype
+	Fuefuki 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# Floor Start
+	{f001} 4 1 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 2 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 3_MAT_a_h_m_renga.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	Hanachirashi 01 	# weight
+	8 	# type
+	BigFoot_g_futa_kyosin 10 	# weight
+	8 	# type
+	Sarai 40 	# weight
+	1 	# type
+	GasHiba 01 	# weight
+	5 	# type
+	Armor 01 	# weight
+	1 	# type
+	Tank 3 	# weight
+	6 	# type
+	OniKurage 4 	# weight
+	6 	# type
+	Jigumo 4 	# weight
+	6 	# type
+	SnakeWhole 2 	# weight
+	6 	# type
+	SnakeCrow 20 	# weight
+	5 	# type
+	Fuefuki 2 	# weight
+	6 	# type
+	Fuefuki 20 	# weight
+	5 	# type
+	Demon 30 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	FminiHoudai 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# Floor Start
+	{f001} 4 2 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 3_MAT_d_g_m_renga.txt 	# Units File
+	{f009} -1 normal_light_lv2.ini 	# Lighting File
+	{f00A} -1 test 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	UmiMushi 10 	# weight
+	8 	# type
+	FireChappy 10 	# weight
+	1 	# type
+	Fuefuki 01 	# weight
+	8 	# type
+	GasOtakara 10 	# weight
+	0 	# type
+	FireChappy 10 	# weight
+	1 	# type
+	Catfish 01 	# weight
+	0 	# type
+	ElecBug 01 	# weight
+	5 	# type
+	FireChappy 10 	# weight
+	1 	# type
+	Sarai 5 	# weight
+	6 	# type
+	UmiMushiBlind 3 	# weight
+	6 	# type
+	Catfish 4 	# weight
+	6 	# type
+	$1Baby 01 	# weight
+	1 	# type
+	KumaChappy 10 	# weight
+	1 	# type
+	KumaChappy 10 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Bomb 01 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 3 	# Floor Start
+	{f001} 4 3 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.200000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 garden_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	Hana 70 	# weight
+	0 	# type
+	Frog 1 	# weight
+	6 	# type
+	MaroFrog 3 	# weight
+	6 	# type
+	Catfish 3 	# weight
+	6 	# type
+	UmiMushiBlind 20 	# weight
+	1 	# type
+	UmiMushi 10 	# weight
+	8 	# type
+	Miulin 10 	# weight
+	1 	# type
+	Wakame_l 3 	# weight
+	6 	# type
+	Wakame_l 4 	# weight
+	6 	# type
+	Mar 20 	# weight
+	0 	# type
+	$2Tank 01 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	2 	# num
+	0 	# captype
+	$2Wtank 01 	# weight
+	0 	# type
+	0 	# captype
+	$2Tank 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 4 	# Floor Start
+	{f001} 4 4 	# Floor End
+	{f002} 4 100 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.150000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 3_MAT_hit34_sak2_uzu1_tsuchi.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	20 	# num
+	TamagoMushi 20 	# weight
+	1 	# type
+	MiniHoudai 50 	# weight
+	0 	# type
+	Kurage 30 	# weight
+	1 	# type
+	OniKurage 01 	# weight
+	1 	# type
+	Houdai 10 	# weight
+	5 	# type
+	$5SnakeWhole_g_futa_kyodo 10 	# weight
+	8 	# type
+	Houdai 10 	# weight
+	5 	# type
+	Hanachirashi 01 	# weight
+	0 	# type
+	TamagoMushi 20 	# weight
+	1 	# type
+	Hiba 10 	# weight
+	6 	# type
+	GasHiba 01 	# weight
+	5 	# type
+	BlueChappy 20 	# weight
+	0 	# type
+	$2Bomb 2 	# weight
+	6 	# type
+	BlueKochappy 50 	# weight
+	0 	# type
+	$2Bomb 2 	# weight
+	6 	# type
+	Wtank 20 	# weight
+	0 	# type
+	BlueChappy 20 	# weight
+	1 	# type
+	BlueKochappy 50 	# weight
+	1 	# type
+	TamagoMushi 2 	# weight
+	6 	# type
+	Fkabuto 20 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Fkabuto 01 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 5 	# Floor Start
+	{f001} 4 5 	# Floor End
+	{f002} 4 125 	# Teki Spawns
+	{f003} 4 2 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_big2_desert.txt 	# Units File
+	{f009} -1 kusachi_light_cha.ini 	# Lighting File
+	{f00A} -1 desert 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	Fuefuki 10 	# weight
+	8 	# type
+	FireChappy 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Queen_cookie 10 	# weight
+	8 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Fuefuki 5 	# weight
+	6 	# type
+	Tank 40 	# weight
+	0 	# type
+	Wtank 20 	# weight
+	1 	# type
+	$1Bomb 01 	# weight
+	0 	# type
+	Fuefuki 10 	# weight
+	1 	# type
+	Fuefuki 20 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 6 	# Floor Start
+	{f001} 4 6 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_units_ari1_nor2_disco.txt 	# Units File
+	{f009} -1 kusachi_light_lv0.ini 	# Lighting File
+	{f00A} -1 disco 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	16 	# num
+	BlueChappy 30 	# weight
+	1 	# type
+	BlueKochappy 80 	# weight
+	0 	# type
+	MaroFrog 50 	# weight
+	1 	# type
+	Hana 01 	# weight
+	1 	# type
+	Hanachirashi 10 	# weight
+	0 	# type
+	Hanachirashi 10 	# weight
+	1 	# type
+	Hanachirashi 10 	# weight
+	0 	# type
+	DangoMushi 10 	# weight
+	0 	# type
+	Catfish 40 	# weight
+	1 	# type
+	DaiodoRed 7 	# weight
+	6 	# type
+	DaiodoGreen 7 	# weight
+	6 	# type
+	DangoMushi_g_futa_koiwai 10 	# weight
+	0 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	Hiba 10 	# weight
+	6 	# type
+	Mar 20 	# weight
+	1 	# type
+	SnakeCrow 30 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 7 	# Floor Start
+	{f001} 4 7 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 2 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_units_pool_tree.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 treehouse 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 50.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	Sarai 20 	# weight
+	0 	# type
+	Demon 10 	# weight
+	0 	# type
+	Tank 20 	# weight
+	0 	# type
+	ElecOtakara 10 	# weight
+	1 	# type
+	ElecBug 100 	# weight
+	1 	# type
+	BlackMan 100 	# weight
+	1 	# type
+	Fart 10 	# weight
+	1 	# type
+	MaroFrog 40 	# weight
+	1 	# type
+	Frog 10 	# weight
+	1 	# type
+	ElecHiba 50 	# weight
+	5 	# type
+	KareOoinu_s 5 	# weight
+	6 	# type
+	KareOoinu_l 5 	# weight
+	6 	# type
+	ElecBug 01 	# weight
+	1 	# type
+	ElecBug 01 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 8 	# Floor Start
+	{f001} 4 8 	# Floor End
+	{f002} 4 50 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MAT_ike_kusachi.txt 	# Units File
+	{f009} -1 forest_3_light.ini 	# Lighting File
+	{f00A} -1 autumn 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	18 	# num
+	Tyre 10 	# weight
+	1 	# type
+	$1Mar 10 	# weight
+	1 	# type
+	Sarai 50 	# weight
+	1 	# type
+	Hanachirashi 40 	# weight
+	1 	# type
+	Kogane 10 	# weight
+	1 	# type
+	Wealthy 10 	# weight
+	1 	# type
+	$1ElecHiba 01 	# weight
+	5 	# type
+	Tyre 10 	# weight
+	5 	# type
+	HikariKinoko 5 	# weight
+	6 	# type
+	KareOoinu_s 5 	# weight
+	6 	# type
+	KareOoinu_l 5 	# weight
+	6 	# type
+	KumaChappy 10 	# weight
+	0 	# type
+	$1Mar 20 	# weight
+	1 	# type
+	SnakeCrow 40 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Tyre 10 	# weight
+	1 	# type
+	TamagoMushi 50 	# weight
+	5 	# type
+	Hana 50 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	MiniHoudai 01 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 9 	# Floor Start
+	{f001} 4 9 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 3_MAT_d_g_m_renga.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 ice 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 70.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	BigFoot 10 	# weight
+	0 	# type
+	Rkabuto 40 	# weight
+	1 	# type
+	Hiba 01 	# weight
+	1 	# type
+	Hiba 01 	# weight
+	0 	# type
+	Demon 01 	# weight
+	0 	# type
+	BigFoot 20 	# weight
+	1 	# type
+	TamagoMushi 40 	# weight
+	5 	# type
+	BlackMan 2 	# weight
+	6 	# type
+	Hiba 8 	# weight
+	6 	# type
+	BlackMan 20 	# weight
+	8 	# type
+	$2Rock 50 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	BigFoot 01 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 10 	# Floor Start
+	{f001} 4 10 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 2 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.150000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 forest_3_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 50.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	20 	# num
+	BlackMan 10 	# weight
+	0 	# type
+	Wtank 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	1 	# type
+	Mar 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	1 	# type
+	$2OniKurage 40 	# weight
+	1 	# type
+	Wtank 10 	# weight
+	0 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	1 	# type
+	$2FminiHoudai 10 	# weight
+	0 	# type
+	$2Tank 01 	# weight
+	8 	# type
+	$2BlueKochappy 01 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	1 	# type
+	Wtank 10 	# weight
+	0 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	$2FminiHoudai 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	1 	# type
+	Miulin 70 	# weight
+	5 	# type
+	$2BlueKochappy 01 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	ElecHiba 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 11 	# Floor Start
+	{f001} 4 11 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 1 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 all_units_water-ike4.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 50.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	16 	# num
+	BlackMan 10 	# weight
+	0 	# type
+	ElecBug 01 	# weight
+	1 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	GasHiba 01 	# weight
+	5 	# type
+	Hanachirashi 20 	# weight
+	1 	# type
+	$2Catfish 80 	# weight
+	1 	# type
+	BlueKochappy 20 	# weight
+	0 	# type
+	Hanachirashi 10 	# weight
+	1 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	Hiba 4 	# weight
+	6 	# type
+	$2BombSarai 01 	# weight
+	8 	# type
+	BlueKochappy 20 	# weight
+	1 	# type
+	$2Baby 01 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	DangoMushi 20 	# weight
+	1 	# type
+	$2Tank 20 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	ElecHiba 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 12 	# Floor Start
+	{f001} 4 12 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 5 	# Gate Spawns
+	{f014} 4 100 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MIYA_bunki_tile.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 void 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	Houdai 20 	# weight
+	1 	# type
+	Queen 20 	# weight
+	8 	# type
+	UmiMushi_whistle 1 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	1 	# num
+	gate 1000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 13 	# Floor Start
+	{f001} 4 13 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_nobo_disco.txt 	# Units File
+	{f009} -1 light.ini 	# Lighting File
+	{f00A} -1 disco 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	FminiHoudai 1 	# weight
+	6 	# type
+	Fkabuto 40 	# weight
+	0 	# type
+	Damagumo 40 	# weight
+	1 	# type
+	FminiHoudai 1 	# weight
+	6 	# type
+	Hanachirashi 01 	# weight
+	1 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	BlueKochappy 01 	# weight
+	0 	# type
+	FminiHoudai 1 	# weight
+	6 	# type
+	BlueKochappy 01 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 14 	# Floor Start
+	{f001} 4 14 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	21 	# num
+	Fkabuto 20 	# weight
+	1 	# type
+	Hanachirashi 20 	# weight
+	0 	# type
+	KingChappy 10 	# weight
+	0 	# type
+	SnakeWhole 01 	# weight
+	8 	# type
+	Fkabuto 10 	# weight
+	5 	# type
+	Fkabuto 20 	# weight
+	5 	# type
+	FireChappy 10 	# weight
+	0 	# type
+	Armor 3 	# weight
+	6 	# type
+	KingChappy 10 	# weight
+	0 	# type
+	FireChappy 10 	# weight
+	0 	# type
+	Fkabuto 40 	# weight
+	1 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Hanachirashi 20 	# weight
+	0 	# type
+	Kochappy 01 	# weight
+	0 	# type
+	MiniHoudai 10 	# weight
+	0 	# type
+	MiniHoudai 10 	# weight
+	0 	# type
+	Hiba 10 	# weight
+	6 	# type
+	GasHiba 7 	# weight
+	6 	# type
+	GasHiba 01 	# weight
+	5 	# type
+	Hiba 01 	# weight
+	5 	# type
+	Chappy 00 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Fkabuto 01 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 15 	# Floor Start
+	{f001} 4 15 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_houdai_disco.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	Houdai 10 	# weight
+	0 	# type
+	Rkabuto 10 	# weight
+	0 	# type
+	DangoMushi_yoyo_red 10 	# weight
+	1 	# type
+	Houdai 10 	# weight
+	0 	# type
+	Rkabuto 10 	# weight
+	0 	# type
+	Hiba 80 	# weight
+	6 	# type
+	Houdai 10 	# weight
+	0 	# type
+	Rkabuto 10 	# weight
+	0 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	Rkabuto 10 	# weight
+	0 	# type
+	Houdai 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 16 	# Floor Start
+	{f001} 4 16 	# Floor End
+	{f002} 4 85 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.001000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_nobo_disco.txt 	# Units File
+	{f009} -1 garden_light.ini 	# Lighting File
+	{f00A} -1 disco 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	BigFoot 10 	# weight
+	1 	# type
+	KingChappy 10 	# weight
+	0 	# type
+	FminiHoudai 1 	# weight
+	6 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	KingChappy 10 	# weight
+	0 	# type
+	FminiHoudai 1 	# weight
+	6 	# type
+	BigFoot 10 	# weight
+	1 	# type
+	KingChappy 10 	# weight
+	0 	# type
+	MaroFrog 01 	# weight
+	5 	# type
+	FminiHoudai 1 	# weight
+	6 	# type
+	BigFoot 10 	# weight
+	1 	# type
+	KingChappy 10 	# weight
+	0 	# type
+	Wakame_s 4 	# weight
+	6 	# type
+	Wakame_l 4 	# weight
+	6 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	$1Baby 01 	# weight
+	0 	# type
+	$1Baby 01 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 17 	# Floor Start
+	{f001} 4 17 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 5 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MIYA_bunki_tile.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 disco 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 15.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	12 	# num
+	FminiHoudai 10 	# weight
+	0 	# type
+	Fuefuki 10 	# weight
+	1 	# type
+	DangoMushi 1 	# weight
+	6 	# type
+	Fuefuki 10 	# weight
+	1 	# type
+	Hiba 01 	# weight
+	0 	# type
+	Hiba 01 	# weight
+	1 	# type
+	FminiHoudai 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	8 	# type
+	Queen 20 	# weight
+	8 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	1 	# type
+	FminiHoudai 20 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	1 	# num
+	gate 800.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 18 	# Floor Start
+	{f001} 4 18 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 100.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	2 	# num
+	$3Baby 01 	# weight
+	0 	# type
+	$3Baby 01 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	RandPom 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 19 	# Floor Start
+	{f001} 4 19 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.010000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_satellite_space.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 space 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	Queen 10 	# weight
+	8 	# type
+	DangoMushi 10 	# weight
+	8 	# type
+	MaroFrog 8 	# weight
+	6 	# type
+	Damagumo 20 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 20 	# Floor Start
+	{f001} 4 20 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 3_MAT_castle_medi.txt 	# Units File
+	{f009} -1 garden_light.ini 	# Lighting File
+	{f00A} -1 medieval 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 100.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	SnakeWhole 20 	# weight
+	1 	# type
+	SnakeWhole 20 	# weight
+	1 	# type
+	BlueChappy 20 	# weight
+	0 	# type
+	Damagumo 80 	# weight
+	5 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	SnakeWhole 2 	# weight
+	6 	# type
+	$1SnakeCrow 3 	# weight
+	6 	# type
+	Mar 10 	# weight
+	8 	# type
+	$2BlueKochappy 01 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	BlackMan 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 21 	# Floor Start
+	{f001} 4 21 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.010000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 vs_4_metal.txt 	# Units File
+	{f009} -1 key_light_lv0.ini 	# Lighting File
+	{f00A} -1 medievaltower2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	Hanachirashi 10 	# weight
+	1 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	Hiba 80 	# weight
+	6 	# type
+	Hanachirashi 10 	# weight
+	0 	# type
+	UmiMushiBlind 30 	# weight
+	0 	# type
+	UmiMushiBlind 40 	# weight
+	1 	# type
+	SnakeWhole 20 	# weight
+	0 	# type
+	Sarai 30 	# weight
+	1 	# type
+	OniKurage 30 	# weight
+	5 	# type
+	BigFoot 20 	# weight
+	5 	# type
+	Hanachirashi 10 	# weight
+	0 	# type
+	Hanachirashi 10 	# weight
+	1 	# type
+	SnakeWhole 20 	# weight
+	0 	# type
+	Damagumo 20 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	GasHiba 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 22 	# Floor Start
+	{f001} 4 22 	# Floor End
+	{f002} 4 100 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.040000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 4_units_b_f_g_h_conc.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	23 	# num
+	DangoMushi 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	0 	# type
+	DangoMushi 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	0 	# type
+	BombSarai 10 	# weight
+	0 	# type
+	MiniHoudai 20 	# weight
+	1 	# type
+	Tank 10 	# weight
+	0 	# type
+	BombSarai 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	0 	# type
+	BombSarai 10 	# weight
+	0 	# type
+	BombSarai 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	0 	# type
+	DangoMushi_denchi_2_black 10 	# weight
+	0 	# type
+	BombSarai 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	0 	# type
+	BombSarai 10 	# weight
+	0 	# type
+	KumaChappy 20 	# weight
+	5 	# type
+	MiniHoudai 20 	# weight
+	5 	# type
+	Houdai 01 	# weight
+	8 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	Hiba 50 	# weight
+	6 	# type
+	Catfish 01 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	GasHiba 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 23 	# Floor Start
+	{f001} 4 23 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_units_pool_tree.txt 	# Units File
+	{f009} -1 sky_light.ini 	# Lighting File
+	{f00A} -1 treehouse 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	Queen 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Houdai 10 	# weight
+	0 	# type
+	WaterOtakara 11 	# weight
+	1 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Houdai 10 	# weight
+	0 	# type
+	Wtank 11 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Kochappy 16 	# weight
+	6 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Houdai 10 	# weight
+	0 	# type
+	GasHiba 11 	# weight
+	5 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 24 	# Floor Start
+	{f001} 4 24 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 30.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	$2Rock 01 	# weight
+	0 	# type
+	$4BombOtakara_denchi_1_black 10 	# weight
+	8 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	Hiba 15 	# weight
+	6 	# type
+	$1Bomb 01 	# weight
+	0 	# type
+	GasHiba 01 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	BlackMan 40 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 25 	# Floor Start
+	{f001} 4 25 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 4_MAT_mid1_mid2_sak2_uzu1_snow.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 350.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	Damagumo 20 	# weight
+	0 	# type
+	DangoMushi 10 	# weight
+	0 	# type
+	Frog 50 	# weight
+	0 	# type
+	$1Bomb 40 	# weight
+	1 	# type
+	Damagumo 10 	# weight
+	1 	# type
+	Damagumo 10 	# weight
+	1 	# type
+	Frog 10 	# weight
+	0 	# type
+	Frog 10 	# weight
+	0 	# type
+	$1Bomb 14 	# weight
+	6 	# type
+	Damagumo 20 	# weight
+	0 	# type
+	SnakeCrow 10 	# weight
+	0 	# type
+	SnakeCrow 20 	# weight
+	0 	# type
+	DangoMushi 10 	# weight
+	0 	# type
+	DangoMushi 10 	# weight
+	1 	# type
+	$2YellowKochappy 14 	# weight
+	6 	# type
+	DangoMushi 10 	# weight
+	1 	# type
+	$2Rock 01 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 26 	# Floor Start
+	{f001} 4 26 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.040000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_north_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	20 	# num
+	FireChappy 10 	# weight
+	5 	# type
+	Tank 01 	# weight
+	1 	# type
+	Houdai 10 	# weight
+	1 	# type
+	BigFoot 20 	# weight
+	0 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	Wealthy 10 	# weight
+	0 	# type
+	Mar 10 	# weight
+	0 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	Mar 10 	# weight
+	0 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	Mar 10 	# weight
+	0 	# type
+	Houdai 10 	# weight
+	1 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	BigFoot 20 	# weight
+	0 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	Hiba 12 	# weight
+	5 	# type
+	Catfish 01 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	MiniHoudai 30 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 27 	# Floor Start
+	{f001} 4 27 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_lake_mid_sky.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 sky 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	Houdai 10 	# weight
+	0 	# type
+	MaroFrog 01 	# weight
+	8 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	SnakeWhole 10 	# weight
+	0 	# type
+	Miulin 20 	# weight
+	0 	# type
+	Tyre 30 	# weight
+	5 	# type
+	ElecHiba 03 	# weight
+	5 	# type
+	Hiba 01 	# weight
+	5 	# type
+	Houdai 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	MaroFrog 11 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 28 	# Floor Start
+	{f001} 4 28 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 15 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 15 	# Rooms Placed
+	{f006} 4 0.120000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 3_MAT_d_i_m_conc.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 void 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	BlackMan 20 	# weight
+	6 	# type
+	Mar 01 	# weight
+	8 	# type
+	$2Demon 01 	# weight
+	5 	# type
+	$2Rock 100 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	5 	# num
+	gate 5000.00 	# life
+	1 	# weight
+	gate 5000.00 	# life
+	1 	# weight
+	gate 5000.00 	# life
+	1 	# weight
+	gate 5000.00 	# life
+	1 	# weight
+	gate 5000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	BlackMan 01 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 29 	# Floor Start
+	{f001} 4 29 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_ABE_mid1_tsuchi.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 70.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	BlackMan 200 	# weight
+	0 	# type
+	$1Baby 01 	# weight
+	1 	# type
+	$4MaroFrog_dia_b_green 1 	# weight
+	6 	# type
+	Baby 01 	# weight
+	0 	# type
+	Baby 01 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	1 	# num
+	gate 10000.00 	# life
+	1 	# weight
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 30 	# Floor Start
+	{f001} 4 30 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_north_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	Hanachirashi 10 	# weight
+	1 	# type
+	DangoMushi 10 	# weight
+	0 	# type
+	SnakeWhole 20 	# weight
+	1 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	Hiba 20 	# weight
+	6 	# type
+	Hanachirashi 40 	# weight
+	1 	# type
+	SnakeWhole 10 	# weight
+	1 	# type
+	DangoMushi 10 	# weight
+	0 	# type
+	SnakeWhole 20 	# weight
+	1 	# type
+	GasHiba 01 	# weight
+	0 	# type
+	TamagoMushi 02 	# weight
+	0 	# type
+	MaroFrog 40 	# weight
+	0 	# type
+	KumaChappy 20 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Pelplant 01 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 31 	# Floor Start
+	{f001} 4 31 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_north_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	BigFoot 10 	# weight
+	0 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	GasHiba 01 	# weight
+	0 	# type
+	GasHiba 01 	# weight
+	5 	# type
+	Damagumo 10 	# weight
+	0 	# type
+	Damagumo 10 	# weight
+	0 	# type
+	Damagumo 10 	# weight
+	0 	# type
+	Damagumo 10 	# weight
+	0 	# type
+	Damagumo 10 	# weight
+	0 	# type
+	Damagumo 10 	# weight
+	0 	# type
+	Houdai 20 	# weight
+	1 	# type
+	Demon 01 	# weight
+	1 	# type
+	$1Sarai 01 	# weight
+	1 	# type
+	TamagoMushi 03 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 32 	# Floor Start
+	{f001} 4 32 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_sara_toy.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 snow 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	16 	# num
+	BigFoot 10 	# weight
+	1 	# type
+	Hiba 50 	# weight
+	6 	# type
+	TamagoMushi 01 	# weight
+	0 	# type
+	SnakeCrow 50 	# weight
+	0 	# type
+	Armor 01 	# weight
+	0 	# type
+	Sarai 20 	# weight
+	0 	# type
+	KumaChappy 10 	# weight
+	0 	# type
+	Hiba 01 	# weight
+	5 	# type
+	Hanachirashi 01 	# weight
+	8 	# type
+	Hanachirashi 10 	# weight
+	1 	# type
+	Mar 10 	# weight
+	1 	# type
+	Hanachirashi 10 	# weight
+	1 	# type
+	Mar 10 	# weight
+	1 	# type
+	KumaChappy 10 	# weight
+	0 	# type
+	Tank 80 	# weight
+	0 	# type
+	KingChappy 40 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 33 	# Floor Start
+	{f001} 4 33 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_DKumo_windows.txt 	# Units File
+	{f009} -1 light.ini 	# Lighting File
+	{f00A} -1 windowsstart 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	ElecBug 100 	# weight
+	0 	# type
+	BigFoot 20 	# weight
+	8 	# type
+	DangoMushi 01 	# weight
+	1 	# type
+	ElecBug 100 	# weight
+	0 	# type
+	KingChappy_apple_blue 10 	# weight
+	8 	# type
+	Houdai 20 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 34 	# Floor Start
+	{f001} 4 34 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 units.txt 	# Units File
+	{f009} -1 light.ini 	# Lighting File
+	{f00A} -1 void 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	Queen 20 	# weight
+	0 	# type
+	Houdai 01 	# weight
+	8 	# type
+	GasHiba 9 	# weight
+	6 	# type
+	TamagoMushi 8 	# weight
+	6 	# type
+	TamagoMushi 80 	# weight
+	1 	# type
+	Houdai 10 	# weight
+	1 	# type
+	Houdai 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 35 	# Floor Start
+	{f001} 4 35 	# Floor End
+	{f002} 4 75 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 garden_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	26 	# num
+	KingChappy 10 	# weight
+	5 	# type
+	SnakeCrow 3 	# weight
+	6 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	Tank 10 	# weight
+	1 	# type
+	Miulin 10 	# weight
+	5 	# type
+	SnakeCrow 10 	# weight
+	8 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	SnakeCrow 2 	# weight
+	6 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	KingChappy 10 	# weight
+	5 	# type
+	Armor 01 	# weight
+	1 	# type
+	Miulin 10 	# weight
+	5 	# type
+	SnakeCrow 1 	# weight
+	6 	# type
+	Miulin 10 	# weight
+	5 	# type
+	KingChappy 10 	# weight
+	5 	# type
+	SnakeCrow 1 	# weight
+	6 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	Miulin 10 	# weight
+	5 	# type
+	Tank 10 	# weight
+	1 	# type
+	Miulin 10 	# weight
+	5 	# type
+	KingChappy 10 	# weight
+	5 	# type
+	KingChappy 10 	# weight
+	5 	# type
+	SnakeCrow 1 	# weight
+	6 	# type
+	Tank 10 	# weight
+	1 	# type
+	Fuefuki 40 	# weight
+	1 	# type
+	Demon 40 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	SnakeCrow 11 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 36 	# Floor Start
+	{f001} 4 36 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 5 	# Rooms Placed
+	{f006} 4 0.030000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MAT_hit224_cap_icap_metal.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	10 	# num
+	Armor 70 	# weight
+	1 	# type
+	KingChappy 40 	# weight
+	5 	# type
+	Tobi 100 	# weight
+	0 	# type
+	MiniHoudai 40 	# weight
+	5 	# type
+	GasHiba 01 	# weight
+	0 	# type
+	GasHiba 01 	# weight
+	1 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	Demon 10 	# weight
+	6 	# type
+	Damagumo 50 	# weight
+	5 	# type
+	UmiMushi_g_futa_kitaama 10 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 37 	# Floor Start
+	{f001} 4 37 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 qchap_light.ini 	# Lighting File
+	{f00A} -1 medieval 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	$1MaroFrog 150 	# weight
+	0 	# type
+	$2MaroFrog 5 	# weight
+	6 	# type
+	UmiMushi_kan_iwate 10 	# weight
+	8 	# type
+	$1Bomb 01 	# weight
+	0 	# type
+	GasHiba 01 	# weight
+	5 	# type
+	Jigumo_ahiru 01 	# weight
+	1 	# type
+	MaroFrog 5 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	BombOtakara 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 38 	# Floor Start
+	{f001} 4 38 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MAT_manq_conc.txt 	# Units File
+	{f009} -1 vs_8_light.ini 	# Lighting File
+	{f00A} -1 medievaltower2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	Rkabuto 10 	# weight
+	0 	# type
+	Hanachirashi 10 	# weight
+	0 	# type
+	DangoMushi 10 	# weight
+	1 	# type
+	Hanachirashi 10 	# weight
+	0 	# type
+	Rkabuto 10 	# weight
+	0 	# type
+	Demon 40 	# weight
+	5 	# type
+	KingChappy_milk_cap 1 	# weight
+	6 	# type
+	Demon 20 	# weight
+	0 	# type
+	GasHiba 3 	# weight
+	6 	# type
+	Rkabuto 10 	# weight
+	0 	# type
+	Fuefuki 1 	# weight
+	6 	# type
+	ElecHiba 01 	# weight
+	5 	# type
+	SnakeWhole 1 	# weight
+	6 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 39 	# Floor Start
+	{f001} 4 39 	# Floor End
+	{f002} 4 100 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.040000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_nobo_disco.txt 	# Units File
+	{f009} -1 vs_8_light.ini 	# Lighting File
+	{f00A} -1 disco 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 35.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	22 	# num
+	BlackMan 10 	# weight
+	0 	# type
+	KingChappy 1 	# weight
+	6 	# type
+	SnakeCrow 10 	# weight
+	5 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	KingChappy 1 	# weight
+	6 	# type
+	Mar 70 	# weight
+	1 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	SnakeCrow 10 	# weight
+	5 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	SnakeCrow 10 	# weight
+	5 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	KingChappy 1 	# weight
+	6 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	KingChappy 1 	# weight
+	6 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	SnakeCrow 10 	# weight
+	5 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	KumaChappy 30 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	2 	# num
+	0 	# captype
+	BlackMan 10 	# weight
+	0 	# type
+	0 	# captype
+	BlackMan 10 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 40 	# Floor Start
+	{f001} 4 40 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_units_big2_desert.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 desert 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	Houdai 10 	# weight
+	0 	# type
+	Fkabuto 100 	# weight
+	1 	# type
+	$1BombOtakara 100 	# weight
+	0 	# type
+	Hanachirashi 50 	# weight
+	0 	# type
+	Houdai 01 	# weight
+	8 	# type
+	Hiba 01 	# weight
+	5 	# type
+	MiniHoudai 30 	# weight
+	0 	# type
+	Hiba 80 	# weight
+	6 	# type
+	Houdai 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 41 	# Floor Start
+	{f001} 4 41 	# Floor End
+	{f002} 4 90 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_unit_ike2_garden.txt 	# Units File
+	{f009} -1 garden_light.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	15 	# num
+	Sarai 50 	# weight
+	0 	# type
+	KumaChappy 10 	# weight
+	1 	# type
+	SnakeWhole 2 	# weight
+	6 	# type
+	Damagumo 10 	# weight
+	8 	# type
+	Fkabuto 70 	# weight
+	1 	# type
+	OoPanModoki 1 	# weight
+	6 	# type
+	Damagumo 10 	# weight
+	5 	# type
+	Demon 50 	# weight
+	0 	# type
+	KumaChappy 10 	# weight
+	0 	# type
+	OoPanModoki 10 	# weight
+	0 	# type
+	Damagumo 30 	# weight
+	5 	# type
+	Hana 80 	# weight
+	0 	# type
+	Damagumo 3 	# weight
+	6 	# type
+	GasHiba 01 	# weight
+	5 	# type
+	Mar 01 	# weight
+	8 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 42 	# Floor Start
+	{f001} 4 42 	# Floor End
+	{f002} 4 95 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MAT_ike_garden.txt 	# Units File
+	{f009} -1 normal_light_lv0.ini 	# Lighting File
+	{f00A} -1 garden2 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	10 	# num
+	MiniHoudai 01 	# weight
+	8 	# type
+	SnakeCrow 80 	# weight
+	5 	# type
+	GasHiba 01 	# weight
+	0 	# type
+	GasHiba 01 	# weight
+	1 	# type
+	Jigumo 80 	# weight
+	0 	# type
+	Damagumo 50 	# weight
+	0 	# type
+	Rkabuto 40 	# weight
+	1 	# type
+	Hiba 100 	# weight
+	0 	# type
+	Damagumo 50 	# weight
+	1 	# type
+	UmiMushi 20 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 43 	# Floor Start
+	{f001} 4 43 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_north_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	12 	# num
+	BigFoot 10 	# weight
+	0 	# type
+	KumaChappy 30 	# weight
+	0 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	BombSarai 70 	# weight
+	0 	# type
+	Fkabuto 11 	# weight
+	1 	# type
+	BigFoot 30 	# weight
+	0 	# type
+	Wtank 100 	# weight
+	0 	# type
+	BigFoot 30 	# weight
+	5 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	MaroFrog 11 	# weight
+	8 	# type
+	Hiba 11 	# weight
+	5 	# type
+	ElecHiba 11 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 44 	# Floor Start
+	{f001} 4 44 	# Floor End
+	{f002} 4 80 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_MAT_manq_conc.txt 	# Units File
+	{f009} -1 yakushima_3_16x17r_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	12 	# num
+	Mar 10 	# weight
+	0 	# type
+	$2OniKurage 10 	# weight
+	0 	# type
+	SnakeWhole_kan_imuraya 1 	# weight
+	6 	# type
+	ElecHiba 2 	# weight
+	6 	# type
+	$2OniKurage 10 	# weight
+	0 	# type
+	Mar 10 	# weight
+	0 	# type
+	ElecHiba 10 	# weight
+	1 	# type
+	MiniHoudai 30 	# weight
+	5 	# type
+	Houdai 1 	# weight
+	6 	# type
+	TamagoMushi 30 	# weight
+	0 	# type
+	$1KumaChappy 10 	# weight
+	0 	# type
+	$1KumaChappy 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Fuefuki 01 	# weight
+	0 	# type
+}
+# FloorInfo
+{
+	{f000} 4 45 	# Floor Start
+	{f001} 4 45 	# Floor End
+	{f002} 4 75 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_water_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 50.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	FireChappy 10 	# weight
+	5 	# type
+	UmiMushi 10 	# weight
+	0 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	SnakeCrow 40 	# weight
+	5 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	FireChappy 50 	# weight
+	5 	# type
+	Houdai 30 	# weight
+	1 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	UmiMushi 10 	# weight
+	0 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	Hiba 11 	# weight
+	5 	# type
+	BlackMan 10 	# weight
+	0 	# type
+	Rock 25 	# weight
+	6 	# type
+	Rock 250 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 46 	# Floor Start
+	{f001} 4 46 	# Floor End
+	{f002} 4 95 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_north_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	12 	# num
+	BigFoot 10 	# weight
+	0 	# type
+	MaroFrog 01 	# weight
+	1 	# type
+	BigFoot 10 	# weight
+	0 	# type
+	MiniHoudai 30 	# weight
+	0 	# type
+	Damagumo 10 	# weight
+	0 	# type
+	Tank 120 	# weight
+	0 	# type
+	UmiMushi 10 	# weight
+	1 	# type
+	FireOtakara 110 	# weight
+	0 	# type
+	BigFoot 10 	# weight
+	5 	# type
+	BigFoot 2 	# weight
+	6 	# type
+	Damagumo 20 	# weight
+	5 	# type
+	Sarai 50 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 47 	# Floor Start
+	{f001} 4 47 	# Floor End
+	{f002} 4 85 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 3 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_north_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	13 	# num
+	Damagumo 80 	# weight
+	0 	# type
+	Damagumo 70 	# weight
+	1 	# type
+	SnakeCrow 20 	# weight
+	5 	# type
+	BombSarai 50 	# weight
+	0 	# type
+	Damagumo 70 	# weight
+	5 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	FireChappy 10 	# weight
+	1 	# type
+	Damagumo 40 	# weight
+	5 	# type
+	FireChappy 10 	# weight
+	1 	# type
+	Damagumo 40 	# weight
+	1 	# type
+	FireChappy 10 	# weight
+	5 	# type
+	Damagumo 8 	# weight
+	6 	# type
+	Hiba 01 	# weight
+	5 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 48 	# Floor Start
+	{f001} 4 48 	# Floor End
+	{f002} 4 15 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 2 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 2_MAT_candypop_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 void 	# Skybox
+	{f010} 4 1 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	RandPom 50 	# weight
+	8 	# type
+	RedPom 20 	# weight
+	0 	# type
+	YellowPom 20 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 49 	# Floor Start
+	{f001} 4 49 	# Floor End
+	{f002} 4 25 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 0 	# Gate Spawns
+	{f014} 4 50 	# Dead End Percent
+	{f005} 4 1 	# Rooms Placed
+	{f006} 4 0.050000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 1_RAT_h4x4_volcano.txt 	# Units File
+	{f009} -1 volcano_light.ini 	# Lighting File
+	{f00A} -1 volcano 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 1 	# Echo Strength
+	{f012} 4 0 	# Music Type
+	{f013} 4 1 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	TamagoMushi 2 	# weight
+	6 	# type
+	DangoMushi 20 	# weight
+	5 	# type
+	Mar 1 	# weight
+	6 	# type
+	Mar_dashboots 10 	# weight
+	0 	# type
+	Houdai 2 	# weight
+	6 	# type
+	BigTreasure 4 	# weight
+	6 	# type
+	TamagoMushi 10 	# weight
+	0 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Mar 10 	# weight
+	1 	# type
+}
