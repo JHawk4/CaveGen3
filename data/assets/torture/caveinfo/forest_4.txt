@@ -1,0 +1,420 @@
+# CaveInfo
+{
+	{c000} 4 7 	# 階層
+	{_eof} 
+}
+7 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 8 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 1_units_torigoya_kusachi.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	FireChappy_be_dama_yellow_l 10 	# weight
+	8 	# type
+	SnakeCrow 10 	# weight
+	1 	# type
+	KingChappy_bird_hane 1 	# weight
+	6 	# type
+	Tobi 41 	# weight
+	0 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 72 	# 敵最大数
+	{f003} 4 6 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.050000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 3_ABE_5X5a_ike_big_kusachi.txt 	# 使用ユニット
+	{f009} -1 Sirohana_light_lv5.ini 	# 使用ライト
+	{f00A} -1 hiroba 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	12 	# num
+	Hana 70 	# weight
+	1 	# type
+	Armor 50 	# weight
+	1 	# type
+	SnakeCrow 50 	# weight
+	5 	# type
+	SnakeCrow 50 	# weight
+	1 	# type
+	Tobi 250 	# weight
+	0 	# type
+	KumaKochappy 250 	# weight
+	0 	# type
+	Tanpopo 3 	# weight
+	6 	# type
+	Magaret 8 	# weight
+	6 	# type
+	Clover 10 	# weight
+	6 	# type
+	Ooinu_s 10 	# weight
+	6 	# type
+	Ooinu_l 6 	# weight
+	6 	# type
+	Nekojarashi 3 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	ichigo_l 60 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	BlueChappy 30 	# weight
+	1 	# type
+	0 	# captype
+	$Ooinu_l 50 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 51 	# 敵最大数
+	{f003} 4 4 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 60 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.070000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 2_units_473_663_toy.txt 	# 使用ユニット
+	{f009} -1 Jyoou_light_lv2.ini 	# 使用ライト
+	{f00A} -1 flooring 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	SnakeWhole_apple_blue 20 	# weight
+	1 	# type
+	SnakeCrow 40 	# weight
+	1 	# type
+	PanModoki 6 	# weight
+	6 	# type
+	KumaKochappy 200 	# weight
+	0 	# type
+	Armor 100 	# weight
+	0 	# type
+	GasHiba 150 	# weight
+	5 	# type
+	DaiodoGreen 2 	# weight
+	6 	# type
+	DaiodoRed 2 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	futa_a_silver 40 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 12 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.050000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 3_ABE_mid2_hit446_hit344.txt 	# 使用ユニット
+	{f009} -1 metal_light_lv3.ini 	# 使用ライト
+	{f00A} -1 test 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	Kabuto 10 	# weight
+	1 	# type
+	$1Kabuto_uji_jisyaku 10 	# weight
+	1 	# type
+	Wtank 10 	# weight
+	1 	# type
+	Wtank 10 	# weight
+	1 	# type
+	BlueKochappy 21 	# weight
+	0 	# type
+	ElecHiba 30 	# weight
+	5 	# type
+	DaiodoRed 5 	# weight
+	6 	# type
+	DaiodoGreen 5 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	flower_red 10 	# weight
+	be_dama_red_l 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	$1Egg 30 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 75 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 300 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 1_units_houdai2_metal.txt 	# 使用ユニット
+	{f009} -1 Jyoou_light_lv2.ini 	# 使用ライト
+	{f00A} -1 test 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	SnakeWhole_whistle 10 	# weight
+	8 	# type
+	SnakeWhole_be_dama_blue_l 10 	# weight
+	8 	# type
+	Catfish 540 	# weight
+	0 	# type
+	SnakeCrow 70 	# weight
+	1 	# type
+	ElecHiba 60 	# weight
+	5 	# type
+	GasHiba 60 	# weight
+	5 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	KumaKochappy 100 	# weight
+	1 	# type
+	0 	# captype
+	$1GasHiba 100 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 5 	# 階はじめ
+	{f001} 4 5 	# 階おわり
+	{f002} 4 53 	# 敵最大数
+	{f003} 4 7 	# アイテム最大数
+	{f004} 4 4 	# ゲート最大数
+	{f014} 4 300 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 3_ABE_b_f_g_conc.txt 	# 使用ユニット
+	{f009} -1 muraon_light_lv3.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	SnakeCrow_chess_queen_white 10 	# weight
+	8 	# type
+	SnakeCrow_g_futa_kyodo 10 	# weight
+	8 	# type
+	SnakeCrow 10 	# weight
+	8 	# type
+	SnakeCrow 70 	# weight
+	1 	# type
+	Fuefuki 30 	# weight
+	1 	# type
+	$BlueKochappy 350 	# weight
+	0 	# type
+	GasHiba 50 	# weight
+	5 	# type
+	Clover 20 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	flower_blue 70 	# weight
+}
+# GateInfo
+{
+	1 	# num
+	gate 2500.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	3 	# num
+	0 	# captype
+	WhitePom 10 	# weight
+	1 	# type
+	0 	# captype
+	BluePom 10 	# weight
+	1 	# type
+	0 	# captype
+	$1Clover 100 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 6 	# 階はじめ
+	{f001} 4 6 	# 階おわり
+	{f002} 4 24 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 9 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 1_ABE_manp_boss_conc.txt 	# 使用ユニット
+	{f009} -1 Muraon_light_lv0.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	SnakeWhole_suit_powerup 10 	# weight
+	8 	# type
+	SnakeCrow_bey_goma 10 	# weight
+	1 	# type
+	SnakeCrow 150 	# weight
+	0 	# type
+	SnakeCrow 70 	# weight
+	1 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	1 	# num
+	gate 2500.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	3 	# num
+	0 	# captype
+	$RandPom 10 	# weight
+	1 	# type
+	0 	# captype
+	$Egg 30 	# weight
+	1 	# type
+	0 	# captype
+	Fuefuki 80 	# weight
+	1 	# type
+}

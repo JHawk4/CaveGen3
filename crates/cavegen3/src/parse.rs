@@ -28,7 +28,15 @@ pub(crate) struct Line<'a> {
 }
 
 /// Splits a file into sections. Comments run from `#` to the end of the line. Text between
-/// sections (such as the count before each `{`, stray `}`s or trailing garbage) is ignored.
+/// sections (such as the count before each `{`, stray `}`s or trailing garbage) is ignored,
+/// except text after the first section that a `}` closes before any `{` opens: that's a
+/// section missing its `{`.
+///
+/// The game reads these files as a stream of tokens and treats `{` and `}` as whitespace
+/// (`Stream::isSpace` in the pikmin2 decomp, src/sysCommonU/stream.cpp), so a missing brace
+/// doesn't matter to it. Lands of Torture has two: the last floor of Bulblax Kingdom
+/// (forest_3.txt) has a CapInfo with no `{`, and room_dangomushi_tile's layout.txt has two
+/// spawn points without one.
 pub(crate) fn sections(text: &str) -> Vec<Section<'_>> {
     let bytes = text.as_bytes();
     let mut out = Vec::new();
@@ -41,10 +49,32 @@ pub(crate) fn sections(text: &str) -> Vec<Section<'_>> {
                 out.push(section);
                 i = end;
             }
+            b'}' => i += 1,
+            b if is_separator(b) || matches!(b, b'\n' | b'\r') => i += 1,
+            // Not before the first section: New Year's 1_MAT_boss_volcano.txt has its unit count
+            // followed by a stray `}`.
+            _ if !out.is_empty() && closed_before_opened(bytes, i) => {
+                let (section, end) = read_section(text, i);
+                out.push(section);
+                i = end;
+            }
             _ => i += 1,
         }
     }
     out
+}
+
+/// Whether a `}` comes before the next `{` (ignoring comments), starting from `i`.
+fn closed_before_opened(bytes: &[u8], mut i: usize) -> bool {
+    while i < bytes.len() {
+        match bytes[i] {
+            b'#' => i = skip_comment(bytes, i),
+            b'}' => return true,
+            b'{' => return false,
+            _ => i += 1,
+        }
+    }
+    false
 }
 
 /// Skips to the end of the line. A lone `\r` ends a line too, as in Caveripper's grammar. This
@@ -497,4 +527,23 @@ fn split_identifier(combined: &str) -> Identifier {
         _ => (name, false),
     };
     Identifier { spawn_method, name, carrying, stationary }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::sections;
+
+    fn counts(text: &str) -> Vec<usize> {
+        sections(text).iter().map(|s| s.lines.len()).collect()
+    }
+
+    #[test]
+    fn section_missing_its_open_brace() {
+        // As in Lands of Torture's forest_3.txt and room_dangomushi_tile/layout.txt.
+        assert_eq!(counts("2 # num\n{\n a\n b\n}\n# next\n c\n d\n}\n{\n e\n}\n"), vec![2, 2, 1]);
+        // A count before the first section stays outside it, even with a stray `}` after it
+        // (New Year's 1_MAT_boss_volcano.txt).
+        assert_eq!(counts("7 # units\n}\n{\n a\n}\n"), vec![1]);
+        assert_eq!(counts("{\n a\n}\n}\n1 # trailing\n"), vec![1]);
+    }
 }

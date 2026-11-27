@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# item_way4_metal
+{
+	1 	# version
+	item_way4_metal 	# foldername
+	20 18 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	0 	# num doors
+}

@@ -45,6 +45,7 @@ const EXPECTED_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/c
 const EXPECTED_COLOSSAL_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_colossal.txt.gz");
 const EXPECTED_251_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_251.txt.gz");
 const EXPECTED_NEWYEAR_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_newyear.txt.gz");
+const EXPECTED_TORTURE_GZ: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/cavegen_expected_torture.txt.gz");
 
 /// Maximum number of mismatched layouts to print in full.
 const MAX_REPORTED: usize = 20;
@@ -273,6 +274,15 @@ fn matches_cavegen_251_output() {
 #[test]
 fn matches_cavegen_newyear_output() {
     check_against_cavegen("newyear", &load_expected(EXPECTED_NEWYEAR_GZ), KNOWN_DIFFERENCES_NEWYEAR);
+}
+
+/// Lands of Torture v1.9, every sublevel. CaveGen ran on the hack's files with the two missing
+/// `{`s added (forest_3.txt's last CapInfo, and two spawn points in room_dangomushi_tile's
+/// layout.txt): the game ignores braces, and CaveGen and Caveripper can't read the files
+/// without them. The cave names are CaveGen's vanilla ones, which are aliases in `torture`.
+#[test]
+fn matches_cavegen_torture_output() {
+    check_against_cavegen("torture", &load_expected(EXPECTED_TORTURE_GZ), &[]);
 }
 
 /// `game` is the game the cave names in `expected` belong to. Sublevels in `skip` aren't compared.
