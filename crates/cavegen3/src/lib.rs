@@ -15,6 +15,7 @@ mod parse;
 pub mod point;
 pub mod query;
 pub mod rng;
+pub mod teki_kind;
 pub mod waypoint;
 
 pub use data::{CaveConfig, GameData, Sublevel, Variant};

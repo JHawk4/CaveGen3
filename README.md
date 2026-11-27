@@ -64,7 +64,9 @@ their in-game names in either language. Hover over or tap an icon on the map to 
 **Advanced options** brings over much of the CaveGen GUI:
 
 - **Objects**, **View**, **Generation details** and **Scores**: hide treasures (or only the
-  fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants,
+  fully buried ones, as CaveGen's `-drawNoBuriedItems`: depth at least its height), teki, plants
+  (by what the object is, not its spawn spot: a Clover in an easy teki spot is a plant, a
+  Bomb-rock in a plant spot is a teki; Candypop Buds, Pellet Posies and hazards count as teki),
   gates, gate HP (written on each gate) or exits; show only one landing or comedown view,
   the landing and comedown outlines, water, a grid and the treasure gauge; and draw spawn points (with Caveripper's markers: a duck for treasures, a leaf
   for plants, rings for easy teki), spawn order (CaveGen's `-drawSpawnOrder`), carry distances
