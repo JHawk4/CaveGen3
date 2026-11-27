@@ -92,10 +92,19 @@ fn matches_reference() {
     let seeds = seeds(n);
 
     let mut floors = Vec::new();
-    // New Year's Timeless Realm (CH28) names a unit file its data doesn't include.
-    for cfg in data.caves().iter().filter(|c| data.has_game(&c.game) && !(c.game == "newyear" && c.full_name == "Timeless Realm")) {
+    // New Year's Timeless Realm (CH28) names a unit file its data doesn't include. Caveripper
+    // can't parse Lands of Torture's Bulblax Kingdom (a CapInfo missing its `{`), and it drops the
+    // two spawn points missing their `{` in room_dangomushi_tile, which only Cavern of Chaos
+    // floor 10 uses. cavegen_expect checks those against CaveGen instead.
+    let skip = |c: &cavegen3::data::CaveConfig| {
+        (c.game == "newyear" && c.full_name == "Timeless Realm") || (c.game == "torture" && c.full_name == "Bulblax Kingdom")
+    };
+    for cfg in data.caves().iter().filter(|c| data.has_game(&c.game) && !skip(c)) {
         let ref_cfg = mgr.cave_cfg.iter().find(|c| c.caveinfo_filename == cfg.caveinfo_filename && c.game == cfg.game).unwrap();
         for (i, ci) in data.floors(cfg).unwrap().iter().enumerate() {
+            if cfg.game == "torture" && cfg.full_name == "Cavern of Chaos" && i + 1 == 10 {
+                continue;
+            }
             let ref_ci = mgr.load_caveinfo(&RefSublevel::from_cfg(ref_cfg, i + 1)).unwrap();
             floors.push((ci, ref_ci));
         }

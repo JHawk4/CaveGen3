@@ -281,6 +281,7 @@ const STRINGS = {
       colossal: "Colossal Caverns",
       "216": "Pikmin 216",
       bikmin: "Bikmin 269",
+      torture: "Lands of Torture",
     },
   },
   ja: {
@@ -560,12 +561,13 @@ const STRINGS = {
       colossal: "Colossal Caverns",
       "216": "Pikmin 216",
       bikmin: "Bikmin 269",
+      torture: "Lands of Torture",
     },
   },
 };
 
 // Not Object.keys(gameNames): JavaScript lists number-like keys such as "251" first.
-const GAME_ORDER = ["pikmin2", "251", "newyear", "colossal", "216", "bikmin"];
+const GAME_ORDER = ["pikmin2", "251", "newyear", "colossal", "216", "bikmin", "torture"];
 
 // Teki whose icons aren't in the game's enemy icon set (same list as Caveripper).
 const SPECIAL_TEKI = {

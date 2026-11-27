@@ -19,6 +19,7 @@ The game data it needs is included, so there's nothing to extract.
 | Colossal Caverns | `colossal` | |
 | Pikmin 216 | `216` | Version 1.3. Its generation code is assumed to be vanilla's; only the data has been checked. |
 | Bikmin 269 | `bikmin` | DX definitive v1.1. Its main.dol differs from retail; generation is assumed to be vanilla's, and only the data has been checked. |
+| Pikmin 2: Lands of Torture | `torture` | Version 1.9, by Quote Balrog, included with permission. Its main.dol is retail USA's, so only the data differs. Nine caves are renamed (Hole of Demons, Error Den, ...); vanilla short names still work as aliases (`torture:HoB1`). |
 
 [docs/ADDING_ROMHACKS.md](docs/ADDING_ROMHACKS.md) explains how to add another romhack.
 
@@ -359,12 +360,14 @@ cargo test --release
 What the tests check:
 
 - `crates/cavegen3/tests/cavegen_expect.rs`: CaveGen3's layouts match CaveGen's output for
-  16,400 vanilla layouts, 100 Colossal Caverns layouts and about 8,000 Pikmin 251 and New Year
-  layouts. A handful of romhack sublevels where CaveGen and Caveripper disagree are listed
-  there and skipped; CaveGen3 follows Caveripper on them.
+  16,400 vanilla layouts, 100 Colossal Caverns layouts, about 8,000 Pikmin 251 and New Year
+  layouts and 3,780 Lands of Torture layouts. A handful of romhack sublevels where CaveGen and
+  Caveripper disagree are listed there and skipped; CaveGen3 follows Caveripper on them.
 - `crates/cavegen3/tests/vs_reference.rs`: CaveGen3 and Caveripper produce identical layouts
   (units, scores, door scores, and every object's exact position) for 600 seeds of every
-  floor of every game. Set `VS_REFERENCE_SEEDS` for more.
+  floor of every game. Set `VS_REFERENCE_SEEDS` for more. Caveripper can't read two Lands of
+  Torture files that are missing a `{` (the game treats braces as whitespace), so Bulblax
+  Kingdom and Cavern of Chaos floor 10 are checked only against CaveGen.
 - `crates/cavegen3/tests/parse_vs_reference.rs`: both parse every included cave identically.
 - `crates/cavegen3/tests/waypoints_vs_reference.rs`: waypoint graphs and carry paths match.
 - `crates/cavegen3/tests/query_vs_reference.rs`: queries give the same answers on every seed tested.

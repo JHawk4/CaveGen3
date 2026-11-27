@@ -113,13 +113,22 @@ fn parsing_matches_caveripper() {
     let mgr = FsAssetManager::init().unwrap();
     let mut checked = 0;
     let mut failures = Vec::new();
-    // New Year's Timeless Realm (CH28) names a unit file its data doesn't include.
-    for cfg in data.caves().iter().filter(|c| data.has_game(&c.game) && !(c.game == "newyear" && c.full_name == "Timeless Realm")) {
+    // New Year's Timeless Realm (CH28) names a unit file its data doesn't include. Caveripper
+    // can't parse Lands of Torture's Bulblax Kingdom (a CapInfo missing its `{`), and it drops the
+    // two spawn points missing their `{` in room_dangomushi_tile, which only Cavern of Chaos
+    // floor 10 uses. cavegen_expect checks those against CaveGen instead.
+    let skip = |c: &cavegen3::data::CaveConfig| {
+        (c.game == "newyear" && c.full_name == "Timeless Realm") || (c.game == "torture" && c.full_name == "Bulblax Kingdom")
+    };
+    for cfg in data.caves().iter().filter(|c| data.has_game(&c.game) && !skip(c)) {
         let ours = data.floors(cfg).unwrap_or_else(|e| panic!("{e}"));
         let ref_cfg = mgr.cave_cfg.iter().find(|c| c.caveinfo_filename == cfg.caveinfo_filename && c.game == cfg.game).unwrap();
         let theirs = r::CaveInfo::parse_from(ref_cfg, &mgr).unwrap();
         assert_eq!(ours.len(), theirs.len(), "{} floor count", cfg.full_name);
-        for (a, b) in ours.iter().zip(&theirs) {
+        for (i, (a, b)) in ours.iter().zip(&theirs).enumerate() {
+            if cfg.game == "torture" && cfg.full_name == "Cavern of Chaos" && i + 1 == 10 {
+                continue;
+            }
             if let Err(e) = check_floor(a, b) {
                 failures.push(format!("{}: {e}", a.name()));
             }

@@ -1,0 +1,478 @@
+# CaveInfo
+{
+	{c000} 4 7 	# 階層
+	{_eof} 
+}
+7 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 48 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 70 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.230000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 1_NARI_4x4c_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	10 	# num
+	Armor 60 	# weight
+	1 	# type
+	Tobi 170	# weight
+	0	# type
+	Tank 20 	# weight
+	1 	# type
+	Wtank 20 	# weight
+	1 	# type
+	ElecOtakara 40 	# weight
+	5 	# type
+	WaterOtakara 40 	# weight
+	5 	# type
+	FireOtakara 40 	# weight
+	5 	# type
+	GasOtakara 40 	# weight
+	5 	# type
+	$2BombOtakara 50 	# weight
+	5 	# type
+	Clover 27 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	leaf_normal 30 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	$ElecOtakara 60 	# weight
+	1 	# type
+	0 	# captype
+	Jigumo 60 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 65 	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 4 	# ゲート最大数
+	{f014} 4 350 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.470000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 2_ABE_blk_cent2_tsuchi.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	15 	# num
+	Chappy 20 	# weight
+	8 	# type
+	MaroFrog_g_futa_titiyas 30 	# weight
+	1 	# type
+	FireChappy 10 	# weight
+	1 	# type
+	MaroFrog 20 	# weight
+	1 	# type
+	Hiba 40 	# weight
+	1 	# type
+	BlueKochappy 100 	# weight
+	0 	# type
+	ElecOtakara 50 	# weight
+	0 	# type
+	WaterOtakara 50 	# weight
+	0 	# type
+	FireOtakara 50 	# weight
+	0 	# type
+	GasOtakara 50 	# weight
+	0 	# type
+	Hiba 100 	# weight
+	0 	# type
+	Hiba 80 	# weight
+	5 	# type
+	$2BombOtakara 50 	# weight
+	5 	# type
+	KareOoinu_s 8 	# weight
+	6 	# type
+	Zenmai 6 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	kan_b_gold 10 	# weight
+}
+# GateInfo
+{
+	1 	# num
+	gate 4000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Sarai 60 	# weight
+	1 	# type
+	0 	# captype
+	$1Egg 40 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 48 	# 敵最大数
+	{f003} 4 9 	# アイテム最大数
+	{f004} 4 3 	# ゲート最大数
+	{f014} 4 300 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.150000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 3_ABE_5X5a_ike_mid_kusachi.txt 	# 使用ユニット
+	{f009} -1 kumomei_light_cha.ini 	# 使用ライト
+	{f00A} -1 hiroba 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	15 	# num
+	Damagumo_ahiru_head 20 	# weight
+	5 	# type
+	PanModoki 10 	# weight
+	1 	# type
+	Frog 60 	# weight
+	1 	# type
+	Tank 20 	# weight
+	1 	# type
+	BombSarai 50 	# weight
+	1 	# type
+	FireOtakara 60 	# weight
+	0 	# type
+	ElecOtakara 60 	# weight
+	0 	# type
+	WaterOtakara 60 	# weight
+	0 	# type
+	GasOtakara 60 	# weight
+	0 	# type
+	$2BombOtakara 80 	# weight
+	5 	# type
+	KareOoinu_s 5 	# weight
+	6 	# type
+	NekoJarashi 2 	# weight
+	6 	# type
+	Tukushi 4 	# weight
+	6 	# type
+	DaiodoGreen 6 	# weight
+	6 	# type
+	DaiodoGreen 6 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	ahiru_head 90 	# weight
+}
+# GateInfo
+{
+	2 	# num
+	gate 4500.000000 	# life
+	1 	# weight
+	gate 4000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Fkabuto 30 	# weight
+	1 	# type
+	0 	# captype
+	$1Hanachirashi 30 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 61 	# 敵最大数
+	{f003} 4 8 	# アイテム最大数
+	{f004} 4 4 	# ゲート最大数
+	{f014} 4 120 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.230000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 1_units_a_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	12 	# num
+	Sarai 40 	# weight
+	1 	# type
+	Demon 40 	# weight
+	1 	# type
+	Tank 20 	# weight
+	1 	# type
+	Wtank 20 	# weight
+	1 	# type
+	FireOtakara 60 	# weight
+	0 	# type
+	ElecOtakara 60 	# weight
+	0 	# type
+	WaterOtakara 60 	# weight
+	0 	# type
+	GasOtakara 60 	# weight
+	0 	# type
+	ElecBug 140 	# weight
+	0 	# type
+	$2BombOtakara 80 	# weight
+	5 	# type
+	Jigumo 30 	# weight
+	5 	# type
+	HikariKinoko 15 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	sinjyu 30 	# weight
+	kan_nichiro 50 	# weight
+}
+# GateInfo
+{
+	1 	# num
+	gate 4200.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	3 	# num
+	0 	# captype
+	RandPom 10 	# weight
+	1 	# type
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+	0 	# captype
+	$1Demon 30 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 60 	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 4 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 6 	# ルーム数
+	{f006} 4 0.230000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 3_ABE_d_pypen_dani_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	BlueChappy_chocolate 30 	# weight
+	1 	# type
+	FireOtakara 80 	# weight
+	0 	# type
+	ElecOtakara 80 	# weight
+	0 	# type
+	WaterOtakara 80 	# weight
+	0 	# type
+	GasOtakara 80 	# weight
+	0 	# type
+	BlueKochappy 60 	# weight
+	0 	# type
+	$2Baby 60 	# weight
+	5 	# type
+	$4Baby 50 	# weight
+	5 	# type
+	MaroFrog 50 	# weight
+	1 	# type
+	KumaKochappy 30 	# weight
+	1 	# type
+	KareOoinu_l 22 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	locket 50 	# weight
+}
+# GateInfo
+{
+	1 	# num
+	gate 4250.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	$Catfish 90 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 5 	# 階はじめ
+	{f001} 4 5 	# 階おわり
+	{f002} 4 87 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 1_units_DKumo_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 1 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	10 	# num
+	Damagumo_key 10 	# weight
+	1 	# type
+	Houdai_tape_blue 10 	# weight
+	1 	# type
+	BigFoot_diamond_blue 10 	# weight
+	1 	# type
+	FireOtakara 90 	# weight
+	0 	# type
+	ElecOtakara 90 	# weight
+	0 	# type
+	WaterOtakara 90 	# weight
+	0 	# type
+	GasOtakara 100 	# weight
+	0 	# type
+	DangoMushi 10 	# weight
+	8 	# type
+	PanModoki 20 	# weight
+	8 	# type
+	Clover 3 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 6 	# 階はじめ
+	{f001} 4 6 	# 階おわり
+	{f002} 4 12 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 1_units_torigoya_kusachi.txt 	# 使用ユニット
+	{f009} -1 Sirohana_light_lv5.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	BigFoot 10 	# weight
+	1 	# type
+	FireChappy 10 	# weight
+	8 	# type
+	SnakeCrow 100 	# weight
+	0 	# type
+	DangoMushi 1 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
