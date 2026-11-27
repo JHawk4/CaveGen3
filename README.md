@@ -213,6 +213,12 @@ radar image. In vanilla Pikmin 2 these include the four-way junctions, the cross
 Frontier Cavern's four-way room) and straight hallways. Their spawn points don't always line up
 after a turn, so a group with such a room overlays the spawn spots of each way it was turned.
 
+### CMAL guide
+
+`cmal/` is a static page for Challenge Mode any% low (CMAL) runners: where the key and the exit
+can be on each Challenge Mode floor, with spot maps for the fixed-layout floors. It was made once
+from generated layouts; the page and its map pictures are checked in as they are, with no build step.
+
 ### Suggestion box
 
 `suggest.html` sends suggestions to the same Google Form as the Pikmin WR mirror (the form's
