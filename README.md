@@ -215,7 +215,7 @@ after a turn, so a group with such a room overlays the spawn spots of each way i
 
 ### CMAL guide
 
-`cmal/` is a static page for Challenge Mode any% low (CMAL) runners: where the key and the exit
+`cmal/` is a static page for CMAL runners (Challenge Mode, all levels): where the key and the exit
 can be on each Challenge Mode floor, with spot maps for the fixed-layout floors. It was made once
 from generated layouts; the page and its map pictures are checked in as they are, with no build step.
 
