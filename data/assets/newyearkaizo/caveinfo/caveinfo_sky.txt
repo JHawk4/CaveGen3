@@ -1,0 +1,54 @@
+# CaveInfo
+{
+	{c000} 4 1 	# SublevelCount
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 18 # EntityTotal
+	{f003} 4 0 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_MAT_lake_sky.txt # UnitFile
+	{f009} -1 sky_light.ini # LightFile
+	{f00A} -1 sky # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	5 # num
+	Tank 20 # weight
+	0 # type
+	Wtank 20 # weight
+	0 # type
+	Mar 20 # weight
+	1 # type
+	Hanachirashi 20 # weight
+	1 # type
+	Clover 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

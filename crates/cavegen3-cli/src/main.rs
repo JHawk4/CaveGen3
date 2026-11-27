@@ -69,7 +69,7 @@ enum Cmd {
     Generate(GenerateArgs),
     /// List the caves and their sublevel names, for one game or all.
     Caves {
-        /// pikmin2, 251, newyear, colossal, 216 or bikmin.
+        /// pikmin2, 251, newyear, newyearkaizo, colossal, 216 or bikmin.
         game: Option<String>,
     },
     /// What a sublevel can generate: its limits, teki, treasures, gates, alcove teki and units.

@@ -87,6 +87,50 @@ newyear,    Hocotate Airlines,     true,  ch_MAT_flier.txt,                 CH27
 newyear,    Timeless Realm,        true,  ch_MIYA_trap.txt,                 CH28, tr
 newyear,    Midway Arcade,         true,  ch_MUKI_bombing.txt,              CH29, ma
 newyear,    Boss All Stars,        true,  ch_MUKI_king.txt,                 CH30, bas
+newyearkaizo, Bamboo Garden,         false,  tutorial_1.txt,                  BG
+newyearkaizo, Satellite Koppai,      false,  tutorial_2.txt,                  SK,
+newyearkaizo, Cave With No Name,     false,  tutorial_3.txt,                  CWNN
+newyearkaizo, Snowy Descent,         false,  forest_1.txt,                    SnD
+newyearkaizo, Commodore House,       false,  forest_2.txt,                    CH
+newyearkaizo, Royal Highlands,       false,  forest_3.txt,                    RH
+newyearkaizo, Snagret Skies,         false,  forest_4.txt,                    SS
+newyearkaizo, Spider Attic,          false,  yakushima_1.txt,                 SA
+newyearkaizo, Alph's Arcade,         false,  yakushima_2.txt,                 AA
+newyearkaizo, Sewer Room,            false,  yakushima_3.txt,                 SeR, sr
+newyearkaizo, Timeless Castle,       false,  yakushima_4.txt,                 TC
+newyearkaizo, Elemental River,       false,  last_1.txt,                      ER
+newyearkaizo, Colosseum Garden,      false,  last_2.txt,                      CG
+newyearkaizo, Season Den,            false,  last_3.txt,                      SD, sed
+newyearkaizo, Carrot Garden,         true,  ch_ABEM_tutorial.txt,             CH1, cg
+newyearkaizo, Mamuta Town,           true,  ch_NARI_07whitepurple.txt,        CH2, mt
+newyearkaizo, Attic Maze,            true,  ch_NARI_03toy.txt,                CH3, am
+newyearkaizo, Elemental Crossroads,  true,  ch_NARI_01kusachi.txt,            CH4, ec, emc, ecr
+newyearkaizo, Antenna Beetle's Bakery, true, ch_ABEM_LeafChappy.txt,          CH5, abb
+newyearkaizo, Evaporated Castle,     true,  ch_NARI_05start3easy.txt,         CH6, evc
+newyearkaizo, Bomb Facility,         true,  ch_MUKI_metal.txt,                CH7, bfc
+newyearkaizo, Closed Pool,           true,  ch_MAT_limited_time.txt,          CH8, cp
+newyearkaizo, Tranquility Garden,    true,  ch_MAT_t_hunter_hana.txt,         CH9, tg
+newyearkaizo, Subterranean Seasons,  true,  ch_MUKI_damagumo.txt,             CH10, sts
+newyearkaizo, Timeless Void,         true,  ch_MAT_t_hunter_enemy.txt,        CH11, tv
+newyearkaizo, Battlefield,           true,  ch_MAT_conc_cave.txt,             CH12, bf
+newyearkaizo, Windy Radio Station,   true,  ch_NARI_04series.txt,             CH13, wrs
+newyearkaizo, Bulbmin House,         true,  ch_MAT_t_hunter_otakara.txt,      CH14, bh
+newyearkaizo, Bug Garden,            true,  ch_MUKI_bigfoot.txt,              CH15, bg
+newyearkaizo, Glutton's Treehouse,   true,  ch_MIYA_oopan.txt,                CH16, gt
+newyearkaizo, Sector PNF,            true,  ch_MAT_yellow_purple_white.txt,   CH17, spnf
+newyearkaizo, Cacti Highway,         true,  ch_MUKI_redblue.txt,              CH18, chw
+newyearkaizo, Pikmin Ninety-Five,    true,  ch_NARI_08tobasare.txt,           CH19, pnf
+newyearkaizo, Flooded Memories,      true,  ch_NARI_02tile.txt,               CH20, fm
+newyearkaizo, Castle Navel,          true,  ch_MAT_crawler.txt,               CH21, cn
+newyearkaizo, Volcanic Depths,       true,  ch_MAT_route_rover.txt,           CH22, vd
+newyearkaizo, Glistening Sanctuary,  true,  ch_MUKI_enemyzero.txt,            CH23, gs
+newyearkaizo, Steam Pipe Castle,     true,  ch_NARI_09suikomi.txt,            CH24, spc
+newyearkaizo, Galaxy Gazer,          true,  ch_MUKI_houdai.txt,               CH25, gg
+newyearkaizo, Blue Zone,             true,  ch_NARI_06start3hard.txt,         CH26, bz
+newyearkaizo, Hocotate Airlines,     true,  ch_MAT_flier.txt,                 CH27, ha
+newyearkaizo, Timeless Realm,        true,  ch_MIYA_trap.txt,                 CH28, tr
+newyearkaizo, Midway Arcade,         true,  ch_MUKI_bombing.txt,              CH29, ma
+newyearkaizo, Boss All Stars,        true,  ch_MUKI_king.txt,                 CH30, bas
 251,        Abandoned Toybox,      false, Abandoned_Toybox.txt,             AT
 251,        Aquatic Depths,        false, Aquatic_Depths.txt,               AD, aqd
 251,        Flaming Trench,        false, Flaming_Trench.txt,               FT

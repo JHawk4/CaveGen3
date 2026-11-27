@@ -278,6 +278,7 @@ const STRINGS = {
       pikmin2: "Pikmin 2",
       "251": "Pikmin 251",
       newyear: "Pikmin 2: New Year",
+      newyearkaizo: "Pikmin 2: New Year Kaizo",
       colossal: "Colossal Caverns",
       "216": "Pikmin 216",
       bikmin: "Bikmin 269",
@@ -557,6 +558,7 @@ const STRINGS = {
       pikmin2: "ピクミン2",
       "251": "Pikmin 251",
       newyear: "Pikmin 2: New Year",
+      newyearkaizo: "Pikmin 2: New Year Kaizo",
       colossal: "Colossal Caverns",
       "216": "Pikmin 216",
       bikmin: "Bikmin 269",
@@ -565,7 +567,7 @@ const STRINGS = {
 };
 
 // Not Object.keys(gameNames): JavaScript lists number-like keys such as "251" first.
-const GAME_ORDER = ["pikmin2", "251", "newyear", "colossal", "216", "bikmin"];
+const GAME_ORDER = ["pikmin2", "251", "newyear", "newyearkaizo", "colossal", "216", "bikmin"];
 
 // Teki whose icons aren't in the game's enemy icon set (same list as Caveripper).
 const SPECIAL_TEKI = {

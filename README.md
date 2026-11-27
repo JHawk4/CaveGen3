@@ -16,6 +16,7 @@ The game data it needs is included, so there's nothing to extract.
 | Pikmin 2 | `pikmin2` | Story and challenge mode. |
 | Pikmin 251 | `251` | |
 | Pikmin 2: New Year | `newyear` | Timeless Realm (CH28) floor 3 is missing a unit file in the hack's own data. |
+| Pikmin 2: New Year Kaizo | `newyearkaizo` | Salem's harder edition of New Year, version 1.4. Same caves and names as New Year, with new spawns and layouts. |
 | Colossal Caverns | `colossal` | |
 | Pikmin 216 | `216` | Version 1.3. Its generation code is assumed to be vanilla's; only the data has been checked. |
 | Bikmin 269 | `bikmin` | DX definitive v1.1. Its main.dol differs from retail; generation is assumed to be vanilla's, and only the data has been checked. |
