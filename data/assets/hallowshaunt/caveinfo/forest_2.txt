@@ -1,0 +1,420 @@
+# CaveInfo
+{
+	{c000} 4 6 	# 階層
+	{_eof} 
+}
+6 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 120 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 3 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 3_ABE_mid1_blk1_nor3_tsuchi.txt 	# 使用ユニット
+	{f009} -1 muraon_light_lv2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	LeafChappy_juji_key_fc 10 	# weight
+	0 	# type
+	GasHiba 30 	# weight
+	1 	# type
+	Armor 30 	# weight
+	1 	# type
+	YellowKochappy 40 	# weight
+	0 	# type
+	ElecOtakara 10 	# weight
+	0 	# type
+	ElecOtakara 10 	# weight
+	0 	# type
+	WaterOtakara 10 	# weight
+	1 	# type
+	YellowChappy 10 	# weight
+	1 	# type
+	YellowChappy 10 	# weight
+	1 	# type
+	GasHiba 20 	# weight
+	5 	# type
+    Sokkuri 5 	# weight
+	6 	# type
+	Tanpopo 4 	# weight
+	6 	# type
+	Nekojarashi 2 	# weight
+	6 	# type
+	KareOoinu_l 2 	# weight
+	6 	# type
+	Tanpopo 4 	# weight
+	1 	# type
+	Nekojarashi 2 	# weight
+	0 	# type
+	KareOoinu_l 2 	# weight
+	1 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	halloween 10 	# weight
+	bane_blue 10 	# weight
+}
+# GateInfo
+{
+	2 	# num
+	gate 1300.000000 	# life
+	10 	# weight
+	gate 600.000000 	# life
+	10 	# weight
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 20 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 33 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 RoomNEWWAATER.txt  	# 使用ユニット
+	{f009} -1 sirohana_light_lv0.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	Catfish 40 	# weight
+	0 	# type
+	ElecBug 30 	# weight
+	0 	# type
+	Frog 10 	# weight
+	1 	# type
+	Jigumo 20 	# weight
+	8 	# type
+	MaroFrog 10 	# weight
+	1 	# type
+	Tadpole 100 	# weight
+	0 	# type
+	Magaret 4 	# weight
+	6 	# type
+	Wakame_l 2 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	3 	# num
+	nut_l 10 	# weight
+	cookie_m_l 10 	# weight
+	cookie_u 10 	# weight
+}
+# GateInfo
+{
+    2 	# num
+	gate 200.000000 	# life
+	10 	# weight
+	gate 600.000000 	# life
+	10 	# weight
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+	0 	# captype
+	$BluePom 30 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 20 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 treeunit2NEW.txt  	# 使用ユニット
+	{f009} -1 treelight2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	LeafChappy 10 	# weight
+	0 	# type
+	Kochappy 90     # weight
+    0     # type
+    BlueKochappy 90     # weight
+    0     # type
+    YellowKochappy 60     # weight
+    0     # type
+    PanModoki 10     # weight
+    0     # type
+	SnakeCrow_fue_b 10 	# weight
+	8 	# type
+	SnakeCrow 10 	# weight
+	8 	# type
+	Jigumo 10 	# weight
+	0 	# type
+	Miulin 10 	# weight
+	0 	# type
+	Miulin 10 	# weight
+	0 	# type
+	Fkabuto 30 	# weight
+	1 	# type
+	KareOoinu_l 4 	# weight
+	6 	# type
+	Nekojarashi 2 	# weight
+	6 	# type
+	Wakame_l 2 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	3 	# num
+	kinoko_tubu 10 	# weight
+	saru_head 10 	# weight
+	tape_blue 10     # weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 44     # 敵最大数
+    {f003} 4 3     # アイテム最大数
+    {f004} 4 0     # ゲート最大数
+    {f014} 4 0     # キャップ最大数
+    {f005} 4 3     # ルーム数
+    {f006} 4 0.000000     # ルートの割合
+    {f007} 4 0     # 帰還噴水(1=あり)
+    {f008} -1 treeunit3NEW.txt     # 使用ユニット
+    {f009} -1 treelight1.ini     # 使用ライト
+    {f00A} -1 none     # VRBOX
+    {f010} 4 0     # 階段を壊す岩で隠す(0=オフ 1=オン)
+    {f011} 4 2     # α属性
+    {f012} 4 0     # β属性
+    {f013} 4 0     # 隠し床
+    {f015} 4 1     # Version
+    {f016} 4 0.000000     # BlackManTimer
+    {f017} 4 0     # 沈む壁
+    {_eof} 
+}
+#TekiInfo
+{
+    12 	# num
+	LeafChappy 10 	# weight
+	0 	# type
+	UjiA 70     # weight
+    0     # type
+    UjiB 90     # weight
+    0     # type
+    Tobi 70     # weight
+    0     # type
+    UjiB 50     # weight
+    0     # type
+	ElecBug 110 	# weight
+	8 	# type
+	Fart 10 	# weight
+	8 	# type
+	Armor 30 	# weight
+	1 	# type
+	Miulin 20 	# weight
+	1 	# type
+	Ooinu_l 8 	# weight
+	6 	# type
+	Nekojarashi 7 	# weight
+	6 	# type
+	Wakame_s 3 	# weight
+	6 	# type
+}
+#ItemInfo
+{
+    3     # num
+    g_futa_sakotani 10     # weight
+    castanets 10     # weight
+    otama 10     # weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 44 	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 Seantreenew.txt 	# 使用ユニット
+	{f009} -1 treeblack.ini 	# 使用ライト
+	{f00A} -1 test 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	17 	# num
+	MiniHoudai 10 	# weight
+	1 	# type
+	UjiB 10 	# weight
+	1 	# type
+	WaterOtakara 20 	# weight
+	1 	# type
+	ElecOtakara 20 	# weight
+	1 	# type
+	Tobi 30 	# weight
+	1 	# type
+	Sokkuri 30 	# weight
+	1 	# type
+	BlueChappy 10 	# weight
+	0 	# type
+	Chappy 10 	# weight
+	0 	# type
+	YellowChappy 10 	# weight
+	0 	# type
+	Miulin 20 	# weight
+	0 	# type
+	Kabuto 20 	# weight
+	8 	# type
+	Rkabuto 20 	# weight
+	8 	# type
+	KareOoinu_l 2 	# weight
+	6 	# type
+	DaiodoGreen 2 	# weight
+	6 	# type
+	KareOoinu_l 3 	# weight
+	6	# type
+	Nekojarashi 3 	# weight
+	6	# type
+	Ooinu_s 4 	# weight
+	6	# type
+}
+# ItemInfo
+{
+	5 	# num
+	akagai 10 	# weight
+	dia_c_green 10 	# weight
+	toy_ring_b_blue 10 	# weight
+	makigai 10 	# weight
+	leaf_yellow	 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 5 	# 階はじめ
+	{f001} 4 5 	# 階おわり
+	{f002} 4 6 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 NEWTREE_BOSS.txt 	# 使用ユニット
+	{f009} -1 treelight2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	Queen_donutsichigo_s 10 	# weight
+	8 	# type
+	BlackPom 20 	# weight
+	0 	# type
+	WhitePom 20 	# weight
+	0 	# type
+	RandPom 20 	# weight
+	0 	# type
+	KareOoinu_s 2 	# weight
+	6 	# type
+	KareOoinu_l 2 	# weight
+	6	# type
+	Nekojarashi 2 	# weight
+	6	# type
+	Ooinu_s 4 	# weight
+	6	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

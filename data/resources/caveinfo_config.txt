@@ -280,3 +280,95 @@ torture,    Cave of Pain,          true,  ch_MAT_flier.txt,                 CH27
 torture,    Bully Den,             true,  ch_MIYA_trap.txt,                 CH28, BD
 torture,    Sniper Room,           true,  ch_MUKI_bombing.txt,              CH29, SR, snr
 torture,    Emperor's Realm,       true,  ch_MUKI_king.txt,                 CH30, ER
+piki2,      Dual Subterranean,     false, tutorial_1.txt,                   DS, EC
+piki2,      Metallic Zone,         false, tutorial_2.txt,                   MZ, SCx, stc
+piki2,      Poisonous Cavern,      false, tutorial_3.txt,                   PC, FC
+piki2,      Teeming Hole,          false, forest_1.txt,                     TH, HoB
+piki2,      Gassy Toxic Hole,      false, forest_2.txt,                     GTH, WFG
+piki2,      Electric Voltage,      false, forest_3.txt,                     EV, BK
+piki2,      Snagret Domain,        false, forest_4.txt,                     SD, SH
+piki2,      Dweevil House,         false, yakushima_1.txt,                  DH, CoS
+piki2,      Cavern of Breadbug,    false, yakushima_2.txt,                  CoB, GK
+piki2,      Slippery Room,         false, yakushima_3.txt,                  SR
+piki2,      Hole of Hell,          false, yakushima_4.txt,                  HoHe, SC, smc
+piki2,      Infected Hole,         false, last_1.txt,                       IH, CoC
+piki2,      Deadly Underground,    false, last_2.txt,                       DU, HoH
+piki2,      Nightmarish Cave,      false, last_3.txt,                       NC, DD
+piki2,      Explorer's Cave,       true,  ch_ABEM_tutorial.txt,             CH1, EC, exc
+piki2,      Novice Training,       true,  ch_NARI_07whitepurple.txt,        CH2, NT
+piki2,      Lost Toy Box,          true,  ch_NARI_03toy.txt,                CH3, LTB
+piki2,      Creator's Garden,      true,  ch_NARI_01kusachi.txt,            CH4, CG
+piki2,      Green Hole,            true,  ch_ABEM_LeafChappy.txt,           CH5, GH
+piki2,      Hot House,             true,  ch_NARI_05start3easy.txt,         CH6, HH
+piki2,      Brawny Abyss,          true,  ch_MUKI_metal.txt,                CH7, BA
+piki2,      Red Chasm,             true,  ch_MAT_limited_time.txt,          CH8, RC
+piki2,      Trampled Garden,       true,  ch_MAT_t_hunter_hana.txt,         CH9, TG
+piki2,      Twilight Garden,       true,  ch_MUKI_damagumo.txt,             CH10, TG, twg, tlg
+piki2,      Cryptic Cavern,        true,  ch_MAT_t_hunter_enemy.txt,        CH11, CC
+piki2,      Concrete Maze,         true,  ch_MAT_conc_cave.txt,             CH12, CM
+piki2,      Collector's Room,      true,  ch_NARI_04series.txt,             CH13, CR
+piki2,      Dweevil Nest,          true,  ch_MAT_t_hunter_otakara.txt,      CH14, DN
+piki2,      Cavernous Abyss,       true,  ch_MUKI_bigfoot.txt,              CH15, CA
+piki2,      Snack Pit,             true,  ch_MIYA_oopan.txt,                CH16, SP
+piki2,      Three Color Training,  true,  ch_MAT_yellow_purple_white.txt,   CH17, TCT
+piki2,      Hazard Training,       true,  ch_MUKI_redblue.txt,              CH18, HT
+piki2,      Cave of Snarls,        true,  ch_NARI_08tobasare.txt,           CH19, CoS, csn, cosn
+piki2,      Giant's Bath,          true,  ch_NARI_02tile.txt,               CH20, GB, tgb
+piki2,      Rumbling Grotto,       true,  ch_MAT_crawler.txt,               CH21, RG
+piki2,      Subterranean Lair,     true,  ch_MAT_route_rover.txt,           CH22, SL, stl
+piki2,      Hidden Garden,         true,  ch_MUKI_enemyzero.txt,            CH23, HG
+piki2,      Abduction Den,         true,  ch_NARI_09suikomi.txt,            CH24, AD
+piki2,      Secret Testing Range,  true,  ch_MUKI_houdai.txt,               CH25, STR
+piki2,      Breeding Ground,       true,  ch_NARI_06start3hard.txt,         CH26, BG
+piki2,      Cave of Pain,          true,  ch_MAT_flier.txt,                 CH27, CoP, cp
+piki2,      Bully Den,             true,  ch_MIYA_trap.txt,                 CH28, BD
+piki2,      Sniper Room,           true,  ch_MUKI_bombing.txt,              CH29, SR, snr
+piki2,      Emperor's Realm,       true,  ch_MUKI_king.txt,                 CH30, ER
+hallowshaunt, Creeping Hollow,     false, tutorial_1.txt,                   CrH, EC
+hallowshaunt, Forgotten Playroom,  false, tutorial_2.txt,                   FP, SCx, stc
+hallowshaunt, Spookwood Grotto,    false, tutorial_3.txt,                   SG, FC
+hallowshaunt, Iron Flower Reactor, false, forest_1.txt,                     IFR, HoB
+hallowshaunt, Terrifying Treetops, false, forest_2.txt,                     TT, WFG
+hallowshaunt, Ghoulish Boneyard,   false, forest_3.txt,                     GB, BK
+hallowshaunt, Phantom Sanctum,     false, forest_4.txt,                     PS, SH
+hallowshaunt, Paranormal Nexus,    false, yakushima_1.txt,                  PN, CoS
+hallowshaunt, Philosopher's Asylum, false, yakushima_2.txt,                 PA, GK
+hallowshaunt, Guardian Gauntlet,   false, yakushima_3.txt,                  GG, SR
+hallowshaunt, Ghostly Galleons,    false, yakushima_4.txt,                  GGa, SC, smc
+hallowshaunt, Confection Cavern,   false, last_1.txt,                       CC, CoC
+hallowshaunt, Sheargrub's Domain,  false, last_2.txt,                       SD, HoH
+hallowshaunt, Swampy Bottom,       false, last_3.txt,                       SB, DD
+hallowshaunt, Rotwood Labyrinth,   false, c_1.txt,                          RL
+hallowshaunt, Miracle Garden,      false, c_2.txt,                          MG
+hallowshaunteasy, Creeping Hollow,     false, tutorial_1.txt,                   CrH, EC
+hallowshaunteasy, Forgotten Playroom,  false, tutorial_2.txt,                   FP, SCx, stc
+hallowshaunteasy, Spookwood Grotto,    false, tutorial_3.txt,                   SG, FC
+hallowshaunteasy, Iron Flower Reactor, false, forest_1.txt,                     IFR, HoB
+hallowshaunteasy, Terrifying Treetops, false, forest_2.txt,                     TT, WFG
+hallowshaunteasy, Ghoulish Boneyard,   false, forest_3.txt,                     GB, BK
+hallowshaunteasy, Phantom Sanctum,     false, forest_4.txt,                     PS, SH
+hallowshaunteasy, Paranormal Nexus,    false, yakushima_1.txt,                  PN, CoS
+hallowshaunteasy, Philosopher's Asylum, false, yakushima_2.txt,                 PA, GK
+hallowshaunteasy, Guardian Gauntlet,   false, yakushima_3.txt,                  GG, SR
+hallowshaunteasy, Ghostly Galleons,    false, yakushima_4.txt,                  GGa, SC, smc
+hallowshaunteasy, Confection Cavern,   false, last_1.txt,                       CC, CoC
+hallowshaunteasy, Sheargrub's Domain,  false, last_2.txt,                       SD, HoH
+hallowshaunteasy, Swampy Bottom,       false, last_3.txt,                       SB, DD
+hallowshaunteasy, Rotwood Labyrinth,   false, c_1.txt,                          RL
+hallowshaunteasy, Miracle Garden,      false, c_2.txt,                          MG
+hallowshaunthard, Creeping Hollow,     false, tutorial_1.txt,                   CrH, EC
+hallowshaunthard, Forgotten Playroom,  false, tutorial_2.txt,                   FP, SCx, stc
+hallowshaunthard, Spookwood Grotto,    false, tutorial_3.txt,                   SG, FC
+hallowshaunthard, Iron Flower Reactor, false, forest_1.txt,                     IFR, HoB
+hallowshaunthard, Terrifying Treetops, false, forest_2.txt,                     TT, WFG
+hallowshaunthard, Ghoulish Boneyard,   false, forest_3.txt,                     GB, BK
+hallowshaunthard, Phantom Sanctum,     false, forest_4.txt,                     PS, SH
+hallowshaunthard, Paranormal Nexus,    false, yakushima_1.txt,                  PN, CoS
+hallowshaunthard, Philosopher's Asylum, false, yakushima_2.txt,                 PA, GK
+hallowshaunthard, Guardian Gauntlet,   false, yakushima_3.txt,                  GG, SR
+hallowshaunthard, Ghostly Galleons,    false, yakushima_4.txt,                  GGa, SC, smc
+hallowshaunthard, Confection Cavern,   false, last_1.txt,                       CC, CoC
+hallowshaunthard, Sheargrub's Domain,  false, last_2.txt,                       SD, HoH
+hallowshaunthard, Swampy Bottom,       false, last_3.txt,                       SB, DD
+hallowshaunthard, Rotwood Labyrinth,   false, c_1.txt,                          RL
+hallowshaunthard, Miracle Garden,      false, c_2.txt,                          MG

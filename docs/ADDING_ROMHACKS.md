@@ -53,6 +53,25 @@ Pick one of these:
   Bikmin 269 ships as an xdelta patch, which only applies cleanly to the full-size retail
   Pikmin 2 USA dump (1,459,978,240 bytes; convert an `.rvz` with `DolphinTool convert -f iso`).
   Trimmed or rebuilt ISOs move the files, and the patched ISO comes out scrambled.
+
+  Romhacks that ship as an xdelta patch can be built and unpacked without running the
+  patcher that comes with them:
+
+  ```
+  python tools/apply_xdelta.py <retail.iso> <hack.xdelta> <hack.iso>
+  python tools/extract_gcm.py <hack.iso> <out> user message
+  python tools/import_game_files.py <out>/files <game> --base pikmin2
+  ```
+
+  `apply_xdelta.py` checks every window's checksum, so a wrong source ISO stops with an error.
+  Piki 2 and Hallow's Haunt were added this way, from their patches applied to the retail USA
+  disc (md5 `66f8d886afa0742cd9901d1bfe3b114f`). The importer also reads two archive quirks
+  Hallow's Haunt has and wszst doesn't: Yay0 compression, and RARC headers that claim more
+  bytes than the data holds.
+
+  Cave names come from the romhack's `message/mesRes_eng.szs` (`pikmin2.bmg`, read with
+  `read_bmg` in `tools/extract_names.py`): vanilla messages 8392-8416 hold the course and cave
+  names, so a romhack's new names sit at the same numbers.
 - **From a CaveGen folder.** If the romhack is already set up for JHawk's CaveGen (see its
   `Adding_New_Romhacks.md`, which covers extracting an ISO with Dolphin and Wiimms SZS Tools),
   convert CaveGen's folder:

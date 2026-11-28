@@ -1,0 +1,57 @@
+# Caveinfo - Made with Drought Ender's Cave Creator
+{
+	{c000} 4 1 	# Floor Count
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# Floor Start
+	{f001} 4 0 	# Floor End
+	{f002} 4 45 	# Teki Spawns
+	{f003} 4 0 	# Treasure Spawns
+	{f004} 4 4 	# Gate Spawns
+	{f014} 4 0 	# Dead End Percent
+	{f005} 4 4 	# Rooms Placed
+	{f006} 4 0.000000 	# Corridor Chance
+	{f007} 4 0 	# Place Geyser
+	{f008} -1 4_units_mid1_mid2_hit1_sak1_tsuchi.txt 	# Units File
+	{f009} -1 tutorial_1_light.ini 	# Lighting File
+	{f00A} -1 none 	# Skybox
+	{f010} 4 0 	# Clog Hole
+	{f011} 4 0 	# Echo Strength
+	{f012} 4 1 	# Music Type
+	{f013} 4 0 	# Skybox Plane
+	{f015} 4 1 	# Use Capinfo
+	{f016} 4 0.000000 	# Waterwraith Timer
+	{f017} 4 0 	# Spawn Seesaw
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	Pelplant 100 	# weight
+	0 	# type
+	SnakeCrow 20 	# weight
+	1 	# type
+	BombSarai 30 	# weight
+	1 	# type
+	Kabuto 30 	# weight
+	1 	# type
+	BlueKochappy 80 	# weight
+	1 	# type
+}
+# Iteminfo
+{
+	0 	# num
+}
+# Gateinfo
+{
+	0 	# num
+}
+# Capinfo
+{
+	1 	# num
+	0 	# captype
+	Egg 21 	# weight
+	1 	# type
+}

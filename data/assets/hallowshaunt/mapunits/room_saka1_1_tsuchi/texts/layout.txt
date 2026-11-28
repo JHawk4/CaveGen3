@@ -1,0 +1,218 @@
+# BaseGen file
+24 	 # num gens
+# basegen 0
+{
+	8 	# type Teki F
+	200 30 165	# pos
+	155 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 1
+{
+	2 	# type Item
+	40 85 50	# pos
+	330 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 2
+{
+	4 	# type Hole/Geyser
+	-200 0 150	# pos
+	55 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 3
+{
+	1 	# type Teki B
+	-45 0 -100	# pos
+	245 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 4
+{
+	1 	# type Teki B
+	-115 0 225	# pos
+	15 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 5
+{
+	1 	# type Teki B
+	-170 0 65	# pos
+	80 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 6
+{
+	1 	# type Teki B
+	40 0 200	# pos
+	285 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 7
+{
+	0 	# type Teki A
+	-120 0 -170	# pos
+	345 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 8
+{
+	0 	# type Teki A
+	-120 0 170	# pos
+	180 	# ang
+	85 	# radius
+	2 	# min num
+	4 	# max num
+}
+# basegen 9
+{
+	0 	# type Teki A
+	-140 0 -40	# pos
+	0 	# ang
+	60 	# radius
+	2 	# min num
+	3 	# max num
+}
+# basegen 10
+{
+	0 	# type Teki A
+	170 15 -190	# pos
+	0 	# ang
+	35 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 11
+{
+	0 	# type Teki A
+	125 0 -30	# pos
+	180 	# ang
+	35 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 12
+{
+	6 	# type Plant
+	-240 0 30	# pos
+	160 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 13
+{
+	6 	# type Plant
+	100 0 230	# pos
+	300 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 14
+{
+	6 	# type Plant
+	-15 0 295	# pos
+	245 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 15
+{
+	6 	# type Plant
+	85 15 -100	# pos
+	270 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 16
+{
+	6 	# type Plant
+	5 85 15	# pos
+	225 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 17
+{
+	6 	# type Plant
+	260 35 60	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 18
+{
+	6 	# type Plant
+	200 25 -100	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 19
+{
+	6 	# type Plant
+	0 10 -240	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 20
+{
+	6 	# type Plant
+	80 0 160	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 21
+{
+	6 	# type Plant
+	-225 0 85	# pos
+	35 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 22
+{
+	6 	# type Plant
+	130 0 -125	# pos
+	240 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 23
+{
+	6 	# type Plant
+	150 0 -25	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}

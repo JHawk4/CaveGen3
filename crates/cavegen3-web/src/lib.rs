@@ -930,7 +930,7 @@ mod tests {
 
         // Every pikmin2 sublevel works with details on (the waypoint graph and paths can panic,
         // which in the browser would stop the page).
-        web.add_files(&bundle(root, &["assets/newyear", "assets/newyearkaizo", "assets/colossal", "assets/216", "assets/bikmin", "assets/torture"])).unwrap();
+        web.add_files(&bundle(root, &["assets/newyear", "assets/newyearkaizo", "assets/colossal", "assets/216", "assets/bikmin", "assets/torture", "assets/piki2", "assets/hallowshaunt", "assets/hallowshaunteasy", "assets/hallowshaunthard"])).unwrap();
         for cave in data.caves().iter() {
             let floors = data.floors(cave).unwrap();
             for floor in 1..=floors.len() {

@@ -1,0 +1,392 @@
+#--------------------------------------------------
+#	お宝定義ファイル
+#--------------------------------------------------
+12	# size of configs
+{
+	name		fue_a
+	archive		fue_a.szs
+	bmd		eq_pwr_punch.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		55
+	p_radius		55
+	height		48
+	inertiascaling		1000
+	particletype		simple
+	numparticles		8
+	particlesize		1
+	friction		0.1
+	min		20
+	max		30
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		80
+	unique		yes
+	depth		0
+	depth_max		48
+	depth_a		55
+	depth_b		55
+	depth_c		55
+	depth_d		55
+	message		0009_00
+	code	0
+	dictionary	190
+	end
+}
+{
+	name		fue_b
+	archive		fue_b.szs
+	bmd		eq_elec_helmet.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		20
+	p_radius		17
+	height		15
+	inertiascaling		200
+	particletype		simple
+	numparticles		8
+	particlesize		1
+	friction		0.1
+	min		8
+	max		16
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		80
+	unique		yes
+	depth		0
+	depth		0
+	depth_max		8
+	depth_a		20
+	depth_b		20
+	depth_c		20
+	depth_d		20
+	message		0010_00
+	code	0
+	dictionary	177
+	end
+}
+{
+	name		fue_wide
+	archive		fue_wide.szs
+	bmd		eq_wide_pipe.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		50
+	p_radius		30
+	height		34
+	inertiascaling		1000
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		20
+	max		30
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		60
+	unique		yes
+	depth		0
+	depth_max		34
+	depth_a		50
+	depth_b		50
+	depth_c		25
+	depth_d		25
+	message		0011_00
+	code	0
+	dictionary	178
+	end
+}
+{
+	name		fue_pullout
+	archive		fue_pullout.szs
+	bmd		eq_pull_pipe.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		35
+	p_radius		25
+	height		15
+	inertiascaling		600
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		15
+	max		25
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		80
+	unique		yes
+	depth		0
+	depth_max		15
+	depth_a		25
+	depth_b		25
+	depth_c		25
+	depth_d		25
+	message		0012_00
+	code	0
+	dictionary	61
+	end
+}
+{
+	name		light_a
+	archive		light_a.szs
+	bmd		eq_flashlight.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		25
+	p_radius		20
+	height		60
+	inertiascaling		400
+	particletype		simple
+	numparticles		4
+	particlesize		1.0
+	friction		0.1
+	min		5
+	max		10
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		600
+	unique		yes
+	depth		0
+	depth_max		14
+	depth_a		10
+	depth_b		10
+	depth_c		10
+	depth_d		10
+	message		0013_00
+	code	0
+	dictionary	93 
+	end
+}
+{
+	name		suit_powerup
+	archive		suit_powerup.szs
+	bmd		eq_pwr_helmet.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		25
+	p_radius		25
+	height		15
+	inertiascaling		250
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		20
+	max		30
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		100
+	unique		yes
+	indirect		use
+	depth		0
+	depth_max		52
+	depth_a		20
+	depth_b		20
+	depth_c		20
+	depth_d		20
+	message		0014_00
+	code	2
+	dictionary	94 
+	end
+}
+{
+	name		suit_fire
+	archive		suit_fire.szs
+	bmd		eq_fire_helmet.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		35
+	p_radius		25
+	height		15
+	inertiascaling		250
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		20
+	max		30
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		100
+	unique		yes
+	indirect		use
+	depth		0
+	depth_max		42
+	depth_a		50
+	depth_b		50
+	depth_c		50
+	depth_d		50
+	message		0015_00
+	code	2
+	dictionary	63
+	end
+}
+{
+	name		dashboots
+	archive		dashboots.szs
+	bmd		eq_dashboots.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		50
+	p_radius		45
+	height		45
+	inertiascaling		800
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		20
+	max		30
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		50
+	unique		yes
+	depth		0
+	depth_max		54
+	depth_a		50
+	depth_b		50
+	depth_c		50
+	depth_d		50
+	message		0016_00
+	code	0
+	dictionary	104
+	end
+}
+{
+	name		radar_a
+	archive		radar_a.szs
+	bmd		eq_rader_a.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		55
+	p_radius		55
+	height		10
+	inertiascaling		1000
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		65
+	max		85
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		25
+	unique		yes
+	depth		0
+	depth_max		35
+	depth_a		50
+	depth_b		50
+	depth_c		50
+	depth_d		50
+	message		0017_00
+	code	0
+	dictionary	181
+	end
+}
+{
+	name		radar_b
+	archive		radar_b.szs
+	bmd		eq_rader_b.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		45
+	p_radius		45
+	height		6
+	inertiascaling		450
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		15
+	max		25
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		25
+	unique		yes
+	depth		0
+	depth_max		8
+	depth_a		20
+	depth_b		20
+	depth_c		20
+	depth_d		20
+	message		0018_00
+	code	0
+	dictionary	176
+	end
+}
+{
+	name		map01
+	archive		map01.szs
+	bmd		us_eq_map01.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		20
+	p_radius		20
+	height		6
+	inertiascaling		150
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		5
+	max		10
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		100
+	unique		yes
+	depth		0
+	depth_max		6
+	depth_a		10
+	depth_b		20
+	depth_c		20
+	depth_d		20
+	message		0019_00
+	code	0
+	dictionary	180
+	end
+}
+{
+	name		map02
+	archive		map02.szs
+	bmd		us_eq_map02.bmd
+	animmgr		animmgr.txt
+	colltree		collInfo.txt
+	radius		52
+	p_radius		52
+	height		50
+	inertiascaling		750
+	particletype		simple
+	numparticles		8
+	particlesize		1.0
+	friction		0.1
+	min		30
+	max		60
+	pikicountmax		0
+	pikicountmin		0
+	dynamics		lod
+	money		100
+	unique		yes
+	depth		3
+	depth_max		60
+	depth_a		52
+	depth_b		52
+	depth_c		52
+	depth_d		52
+	message		0020_00
+	code	0
+	dictionary	175
+	end
+}
+}

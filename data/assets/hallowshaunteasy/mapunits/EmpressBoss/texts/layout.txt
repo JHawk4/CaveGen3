@@ -1,0 +1,128 @@
+# BaseGen file
+13      # num gens
+# basegen 0
+{
+	7     # ship spawn
+	-3.587816 -43.756471 874.872973         # pos
+	180.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 0
+{
+	4     # hole/geyser
+	822.709221 -43.756528 125.327413         # pos
+	180.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 1
+{
+	1     # enemy B
+	-507.202086 73.999567 -288.359459         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 2
+{
+	1     # enemy B
+	-370.411087 143.953161 -577.213514         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 3
+{
+	0     # enemy A
+	-112.817014 247.469901 -770.406371         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 4
+{
+	0     # enemy A
+	194.229363 375.60333 -779.608687         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 5
+{
+	0     # enemy A
+	450.675576 459.733708 -657.722587         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 6
+{
+	1     # enemy B
+	684.092151 537.659715 -422.012162         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 7
+{
+	8     # enemy C
+	38.923436 580.37151874 -196.688224         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 8
+{
+	6     # plants
+	-309.34303 580.371521 -219.1639         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 9
+{
+	6     # plants
+	438.946762 580.371521 63.732239        # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 10
+{
+	6     # plants
+	-113.665752 580.371521 333.367761       # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 11
+{
+	6     # plants
+	-320.742042 -43.756502 491.1639         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 12
+{
+	6     # plants
+	858.787486 -43.756566 -374.959266         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+

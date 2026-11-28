@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# DOCOTRWRAITH
+{
+	1 	# version
+	DOCOTRWRAITH 	# foldername
+	9 17 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

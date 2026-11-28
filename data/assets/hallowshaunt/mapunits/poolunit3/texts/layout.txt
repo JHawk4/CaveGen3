@@ -1,0 +1,407 @@
+# BaseGen file
+45 	 # num gens
+# basegen 0
+{
+	7 	# type Start
+	-1247.2 244.37 -989.4	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 1
+{
+	2 	# type Item
+	368.1 66.44 65.05	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 2
+{
+	2 	# type Item
+	637.5 66.44 -271.3	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 3
+{
+	2 	# type Item
+	-722.7 154.54 -587.95	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 4
+{
+	2 	# type Item
+	-446.1 154.54 587.85	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 5
+{
+	2 	# type Item
+	-587 154.54 -68.15	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 6
+{
+	2 	# type Item
+	-588.15 154.54 72.15	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 7
+{
+	2 	# type Item
+	-718.6 154.54 590.35	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 8
+{
+	2 	# type Item
+	-121.1 154.54 415.35	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 9
+{
+	4 	# type Hole/Geyser
+	629.9 66.44 551.25	# pos
+	180 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 10
+{
+	0 	# type Teki A
+	638.7 66.44 191.65	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 11
+{
+	0 	# type Teki A
+	393.8 66.44 -267.15	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 12
+{
+	0 	# type Teki A
+	347.3 66.44 417.95	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 13
+{
+	0 	# type Teki A
+	-375 154.54 -453.15	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 14
+{
+	0 	# type Teki A
+	-846.2 154.54 -741.45	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 15
+{
+	0 	# type Teki A
+	-464.9 154.54 -735.25	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 16
+{
+	0 	# type Teki A
+	-847.8 154.54 203.65	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 17
+{
+	0 	# type Teki A
+	-845.6 154.54 465.45	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 18
+{
+	0 	# type Teki A
+	-715.8 154.54 454.45	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 19
+{
+	0 	# type Teki A
+	-135 154.54 300.45	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 20
+{
+	0 	# type Teki A
+	-139.4 154.54 546.85	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 21
+{
+	0 	# type Teki A
+	-509 154.54 725.05	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 22
+{
+	0 	# type Teki A
+	-986.4 154.54 698.65	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 23
+{
+	0 	# type Teki A
+	-977.6 154.54 -172.55	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 24
+{
+	0 	# type Teki A
+	67.4 154.54 -713.75	# pos
+	0 	# ang
+	50 	# radius
+	1 	# min num
+	2 	# max num
+}
+# basegen 25
+{
+	1 	# type Teki B
+	615.8 66.44 -46.35	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 26
+{
+	1 	# type Teki B
+	-549 154.54 -208.75	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 27
+{
+	1 	# type Teki B
+	-411.8 154.54 205.65	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 28
+{
+	1 	# type Teki B
+	-151.4 154.54 732.05	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 29
+{
+	1 	# type Teki B
+	-162.6 154.54 -735.15	# pos
+	0 	# ang
+	0 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 30
+{
+	6 	# type Plant
+	-1161.7471 244.37341 -855.0975	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 31
+{
+	6 	# type Plant
+	-1511.2324 244.3736 -1086.3005	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 32
+{
+	6 	# type Plant
+	-196.63876 154.54262 -21.246552	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 33
+{
+	6 	# type Plant
+	832.76465 154.5422 588.3941	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 34
+{
+	6 	# type Plant
+	555.9439 154.54306 -727.51294	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 35
+{
+	6 	# type Plant
+	48.13156 154.54245 206.40295	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 36
+{
+	6 	# type Plant
+	-190.25772 154.54282 -367.12463	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 37
+{
+	6 	# type Plant
+	-379.75073 154.5423 451.76556	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 38
+{
+	6 	# type Plant
+	-726.65454 154.54256 46.758423	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 39
+{
+	6 	# type Plant
+	-590.09607 154.543 -614.3457	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 40
+{
+	6 	# type Plant
+	-321.97595 154.54263 -80.45337	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 41
+{
+	6 	# type Plant
+	355.91815 154.54213 699.2272	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 42
+{
+	6 	# type Plant
+	649.76245 66.438225 -462.224	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 43
+{
+	6 	# type Plant
+	261.35645 66.43777 241.96149	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 44
+{
+	6 	# type Plant
+	660.047 66.437675 381.0761	# pos
+	0 	# ang
+	48 	# radius
+	1 	# min num
+	1 	# max num
+}
