@@ -350,6 +350,7 @@ treasures and teki show their internal names.
 | `crates/cavegen3` | The core library. |
 | `crates/cavegen3-web` | The library compiled to WebAssembly for the web page. |
 | `crates/cavegen3-cli` | The `cavegen3` command, which saves layouts as PNG images. |
+| `crates/missing-treasure-analysis` | Odds and seed hunts for maps that close early and miss a treasure or boss (see its README). It uses the core library's `internals` feature, which is off in normal builds. |
 | `crates/caveripper-ref` | Caveripper's library with our fixes, kept only as a test reference. |
 | `web/` | The web page. |
 | `data/assets/<game>` | Game data, one folder per game. |
@@ -387,8 +388,8 @@ What the tests check:
   sit only on empty alcoves and dead ends clear of hard and special teki, never rule out the real
   hole or geyser, are calibrated, and beat the hole weights alone; story floors get none.
 - `crates/cavegen3/tests/switch.rs`: every vanilla sublevel generates 200 Switch layouts without
-  error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, and the f32
-  rounding of `randFloat` and `randInt`.
+  error. `rng.rs`'s tests check the Switch stream against musl's formula, `advance`, `jump`, and
+  the f32 rounding of `randFloat` and `randInt`.
 - `crates/caveripper-ref/tests`: the reference passes CaveGen's expect tests and 72,500
   judge scores.
 

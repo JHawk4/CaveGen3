@@ -162,6 +162,20 @@ impl Web {
         Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
     }
 
+    /// Like [`Web::generate_json`], for a layout `make` generates from the sublevel's caveinfo
+    /// some other way (such as the steered maps of the missing-treasure-analysis crate).
+    pub fn layout_json_with<F>(&self, sublevel: &str, flags: u32, make: F) -> Result<String, String>
+    where
+        F: for<'c> FnOnce(&'c cavegen3::caveinfo::CaveInfo) -> Layout<'c>,
+    {
+        let data = self.data()?;
+        let sublevel = data.sublevel(sublevel).map_err(|e| e.to_string())?;
+        let caveinfo = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
+        let num_floors = data.floors(&sublevel.cfg).map_err(|e| e.to_string())?.len();
+        let layout = make(caveinfo);
+        Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
+    }
+
     /// Runs one tab-separated command and returns JSON:
     ///
     /// - `judge <sublevel> <type> <seed> [gc|switch]`: `{"score": n}` (the seed in decimal; 64-bit

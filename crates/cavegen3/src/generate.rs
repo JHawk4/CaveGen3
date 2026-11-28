@@ -9,6 +9,10 @@
 
 use std::cmp::{max, min};
 
+#[cfg(feature = "internals")]
+#[doc(hidden)]
+pub mod internals;
+
 use crate::{
     caveinfo::{CapInfo, CaveInfo, CaveUnit, ItemInfo, RoomType, TekiInfo},
     layout::{Layout, PlacedDoor, PlacedSpawnPoint, PlacedUnit, Placement, SpawnObject},
@@ -147,22 +151,26 @@ pub fn trace_rooms_placed(rng: Rng, caveinfo: &CaveInfo) -> (u32, u32) {
 }
 
 pub(crate) fn generate(rng: Rng, caveinfo: &CaveInfo) -> Layout<'_> {
-    let seed = rng.state();
-    let generator = rng.generator();
     let mut g = Generator::new(rng, caveinfo);
     g.run();
-    Layout {
-        caveinfo,
-        seed,
-        generator,
-        units: g.units,
-        doors: g.doors,
-        spawnpoints: g.spawnpoints,
-        spawn_order: g.spawn_order,
-        ship: g.ship,
-        hole: g.hole,
-        geyser: g.geyser,
-        waypoints: Default::default(),
+    g.into_layout()
+}
+
+impl<'a> Generator<'a> {
+    fn into_layout(self) -> Layout<'a> {
+        Layout {
+            caveinfo: self.ci,
+            seed: self.seed,
+            generator: self.rng.generator(),
+            units: self.units,
+            doors: self.doors,
+            spawnpoints: self.spawnpoints,
+            spawn_order: self.spawn_order,
+            ship: self.ship,
+            hole: self.hole,
+            geyser: self.geyser,
+            waypoints: Default::default(),
+        }
     }
 }
 
@@ -261,6 +269,11 @@ impl<'a> Generator<'a> {
     fn run(&mut self) {
         self.sort_units_and_allocate_teki();
         self.place_map_units();
+        self.finish();
+    }
+
+    /// Everything after map unit placement.
+    fn finish(&mut self) {
         self.create_spawnpoints_and_recenter();
         self.place_ship();
         self.set_score();

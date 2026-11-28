@@ -57,6 +57,28 @@ impl std::str::FromStr for Generator {
     }
 }
 
+#[cfg(feature = "tape")]
+impl Tape {
+    #[cold]
+    fn next(&mut self, generator: Generator) -> u32 {
+        if self.pos == self.values.len() {
+            // splitmix64
+            self.fresh = self.fresh.wrapping_add(0x9E3779B97F4A7C15);
+            let mut z = self.fresh;
+            z = (z ^ (z >> 30)).wrapping_mul(0xBF58476D1CE4E5B9);
+            z = (z ^ (z >> 27)).wrapping_mul(0x94D049BB133111EB);
+            z ^= z >> 31;
+            let v = match generator {
+                Generator::Gc => (z >> 49) as u32,
+                Generator::Switch => (z >> 33) as u32,
+            };
+            self.values.push(v);
+        }
+        self.pos += 1;
+        self.values[self.pos - 1]
+    }
+}
+
 /// The game's linear congruential generator.
 ///
 /// A layout's "seed" is this generator's state when the game starts generating the cave: 32 bits
@@ -65,6 +87,20 @@ impl std::str::FromStr for Generator {
 pub struct Rng {
     state: u64,
     generator: Generator,
+    /// When set, `rand()` plays these values instead of stepping the LCG.
+    #[cfg(feature = "tape")]
+    tape: Option<Box<Tape>>,
+}
+
+/// A list of `rand()` values to play back, for studying what a generator would have to return:
+/// past its end, fresh values come from a private random stream and are added to it. Only with
+/// the `tape` feature, so normal builds' `rand()` has no extra branch.
+#[cfg(feature = "tape")]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Tape {
+    pub values: Vec<u32>,
+    pub pos: usize,
+    fresh: u64,
 }
 
 const A: u32 = 0x41C6_4E6D;
@@ -75,7 +111,64 @@ const C64: u64 = 1;
 impl Rng {
     /// The GC generator at state `seed`.
     pub fn new(seed: u32) -> Self {
-        Self { state: seed as u64, generator: Generator::Gc }
+        Self {
+            state: seed as u64,
+            generator: Generator::Gc,
+            #[cfg(feature = "tape")]
+            tape: None,
+        }
+    }
+
+    /// Plays `values` as `rand()`'s results with `generator`'s arithmetic, then fresh random
+    /// values drawn from a stream seeded by `fresh` (recorded onto the tape).
+    #[cfg(feature = "tape")]
+    pub fn tape(generator: Generator, values: Vec<u32>, fresh: u64) -> Self {
+        Self { state: 0, generator, tape: Some(Box::new(Tape { values, pos: 0, fresh })) }
+    }
+
+    /// The tape, if this plays one.
+    #[cfg(feature = "tape")]
+    pub fn tape_ref(&self) -> Option<&Tape> {
+        self.tape.as_deref()
+    }
+
+    /// Replaces where fresh tape values come from (so clones diverge).
+    #[cfg(feature = "tape")]
+    pub fn reseed_fresh(&mut self, fresh: u64) {
+        if let Some(t) = self.tape.as_mut() {
+            t.fresh = fresh;
+        }
+    }
+
+    /// The (multiplier, increment) that steps `generator`'s state `n` times at once: state
+    /// becomes `state * mul + add` (wrapping, cut to 32 bits on GC). For [`Rng::jump`].
+    pub fn jump_coefficients(generator: Generator, n: u64) -> (u64, u64) {
+        let (mut a, mut c) = match generator {
+            Generator::Gc => (A as u64, C as u64),
+            Generator::Switch => (A64, C64),
+        };
+        let (mut mul, mut add) = (1u64, 0u64);
+        let mut n = n;
+        while n > 0 {
+            if n & 1 == 1 {
+                mul = mul.wrapping_mul(a);
+                add = add.wrapping_mul(a).wrapping_add(c);
+            }
+            c = c.wrapping_mul(a).wrapping_add(c);
+            a = a.wrapping_mul(a);
+            n >>= 1;
+        }
+        (mul, add)
+    }
+
+    /// Steps the state as many times as `jump_coefficients` was given, in one go (a tape is
+    /// left alone).
+    #[inline]
+    pub fn jump(&mut self, (mul, add): (u64, u64)) {
+        self.state = self.state.wrapping_mul(mul).wrapping_add(add);
+        if self.generator == Generator::Gc {
+            self.state &= 0xFFFF_FFFF;
+        }
     }
 
     /// `generator` at state `seed` (only the low 32 bits count on GC).
@@ -84,7 +177,12 @@ impl Rng {
             Generator::Gc => seed as u32 as u64,
             Generator::Switch => seed,
         };
-        Self { state, generator }
+        Self {
+            state,
+            generator,
+            #[cfg(feature = "tape")]
+            tape: None,
+        }
     }
 
     pub fn generator(&self) -> Generator {
@@ -105,6 +203,10 @@ impl Rng {
     /// on Switch.
     #[inline]
     pub fn rand_raw(&mut self) -> u32 {
+        #[cfg(feature = "tape")]
+        if let Some(t) = self.tape.as_mut() {
+            return t.next(self.generator);
+        }
         match self.generator {
             Generator::Gc => {
                 let s = (self.state as u32).wrapping_mul(A).wrapping_add(C);
@@ -228,6 +330,21 @@ mod test {
     use flate2::read::GzDecoder;
 
     use super::{Generator, Rng};
+
+    #[test]
+    fn jump_matches_stepping() {
+        for generator in [Generator::Gc, Generator::Switch] {
+            for n in [0u64, 1, 2, 47, 1000, 123_457] {
+                let mut stepped = Rng::with(generator, 0xDEAD_BEEF_1234_5678);
+                for _ in 0..n {
+                    stepped.rand_raw();
+                }
+                let mut jumped = Rng::with(generator, 0xDEAD_BEEF_1234_5678);
+                jumped.jump(Rng::jump_coefficients(generator, n));
+                assert_eq!(stepped.state(), jumped.state(), "{generator:?} {n}");
+            }
+        }
+    }
 
     const TEST_SEED: u32 = 0x12345678;
 
