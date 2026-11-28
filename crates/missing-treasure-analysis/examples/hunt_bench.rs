@@ -2,11 +2,8 @@
 //! start room, and a check that the fast filter never rules out a seed it shouldn't:
 //! `hunt_bench SUBLEVEL [gc|switch] [seeds]`.
 
-use cavegen3::{
-    GameData, Generator,
-    generate::{ClosureFilter, closes_with_rooms, profile_closes_with_rooms, rooms_after_steps, rooms_placed},
-    rng::Rng,
-};
+use cavegen3::{GameData, Generator, generate::rooms_placed, rng::Rng};
+use missing_treasure_analysis::closure::{ClosureFilter, closes_with_rooms, profile_closes_with_rooms, rooms_after_steps};
 
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
@@ -25,11 +22,10 @@ fn main() {
     let (t, steps) = profile_closes_with_rooms(ci, generator, n, 1);
     let us = |x: f64| x * 1e6 / n as f64;
     println!(
-        "stages (us/seed): new {:.2}, sort+teki {:.2}, start room {:.2}, steps {:.2}; {steps:.1} steps/seed",
+        "stages (us/seed): setup {:.2}, start room {:.2}, steps {:.2}; {steps:.1} steps/seed",
         us(t[0]),
         us(t[1]),
-        us(t[2]),
-        us(t[3])
+        us(t[2])
     );
 
     let t = std::time::Instant::now();

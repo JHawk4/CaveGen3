@@ -7,7 +7,8 @@
 //! is its cost in bits. The total is roughly how many bits of seed the map needs, which says
 //! whether a 64-bit Switch seed with it can exist and be found by lattice reduction.
 
-use cavegen3::{GameData, Generator, generate::steer, rng::Rng};
+use cavegen3::{GameData, Generator, rng::Rng};
+use missing_treasure_analysis::steer;
 use rayon::prelude::*;
 
 fn main() {

@@ -15,9 +15,14 @@ pest = "2.5"
 pest_derive = "2.5"
 rayon = "1.6"
 
+[features]
+# `rand()` playback from a list of chosen values (`rng::Tape`), for analysis tools.
+tape = []
+# The generator's step-by-step state (`generate::internals`), for the missing-treasure-analysis
+# crate. Not a stable API.
+internals = ["tape"]
+
 [dev-dependencies]
 flate2 = "1.0"
-# A faster allocator for the seed-hunting examples (the Windows one is slow).
-mimalloc = { version = "0.1", default-features = false }
 # Caveripper's library, used only to check this crate gives the same results.
 caveripper-ref = { path = "../caveripper-ref" }

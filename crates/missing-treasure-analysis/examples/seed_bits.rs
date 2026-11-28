@@ -1,7 +1,8 @@
 //! How tightly a real seed's rand() values are pinned by its map closing short of rooms:
 //! `seed_bits SR-7 31D70855`. For each call up to the end of treasure placement, the widest run
 //! of values (others unchanged) that still closes short; prints the bits per call range.
-use cavegen3::{GameData, Generator, generate::steer, rng::Rng};
+use cavegen3::{GameData, Generator, rng::Rng};
+use missing_treasure_analysis::steer;
 use rayon::prelude::*;
 fn main() {
     let a: Vec<String> = std::env::args().collect();

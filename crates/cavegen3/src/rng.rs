@@ -57,6 +57,7 @@ impl std::str::FromStr for Generator {
     }
 }
 
+#[cfg(feature = "tape")]
 impl Tape {
     #[cold]
     fn next(&mut self, generator: Generator) -> u32 {
@@ -87,11 +88,14 @@ pub struct Rng {
     state: u64,
     generator: Generator,
     /// When set, `rand()` plays these values instead of stepping the LCG.
+    #[cfg(feature = "tape")]
     tape: Option<Box<Tape>>,
 }
 
 /// A list of `rand()` values to play back, for studying what a generator would have to return:
-/// past its end, fresh values come from a private random stream and are added to it.
+/// past its end, fresh values come from a private random stream and are added to it. Only with
+/// the `tape` feature, so normal builds' `rand()` has no extra branch.
+#[cfg(feature = "tape")]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Tape {
     pub values: Vec<u32>,
@@ -107,21 +111,29 @@ const C64: u64 = 1;
 impl Rng {
     /// The GC generator at state `seed`.
     pub fn new(seed: u32) -> Self {
-        Self { state: seed as u64, generator: Generator::Gc, tape: None }
+        Self {
+            state: seed as u64,
+            generator: Generator::Gc,
+            #[cfg(feature = "tape")]
+            tape: None,
+        }
     }
 
     /// Plays `values` as `rand()`'s results with `generator`'s arithmetic, then fresh random
     /// values drawn from a stream seeded by `fresh` (recorded onto the tape).
+    #[cfg(feature = "tape")]
     pub fn tape(generator: Generator, values: Vec<u32>, fresh: u64) -> Self {
         Self { state: 0, generator, tape: Some(Box::new(Tape { values, pos: 0, fresh })) }
     }
 
     /// The tape, if this plays one.
+    #[cfg(feature = "tape")]
     pub fn tape_ref(&self) -> Option<&Tape> {
         self.tape.as_deref()
     }
 
     /// Replaces where fresh tape values come from (so clones diverge).
+    #[cfg(feature = "tape")]
     pub fn reseed_fresh(&mut self, fresh: u64) {
         if let Some(t) = self.tape.as_mut() {
             t.fresh = fresh;
@@ -149,7 +161,8 @@ impl Rng {
         (mul, add)
     }
 
-    /// Steps the state as many times as `jump_coefficients` was given, in one go (no tape).
+    /// Steps the state as many times as `jump_coefficients` was given, in one go (a tape is
+    /// left alone).
     #[inline]
     pub fn jump(&mut self, (mul, add): (u64, u64)) {
         self.state = self.state.wrapping_mul(mul).wrapping_add(add);
@@ -164,7 +177,12 @@ impl Rng {
             Generator::Gc => seed as u32 as u64,
             Generator::Switch => seed,
         };
-        Self { state, generator, tape: None }
+        Self {
+            state,
+            generator,
+            #[cfg(feature = "tape")]
+            tape: None,
+        }
     }
 
     pub fn generator(&self) -> Generator {
@@ -185,6 +203,7 @@ impl Rng {
     /// on Switch.
     #[inline]
     pub fn rand_raw(&mut self) -> u32 {
+        #[cfg(feature = "tape")]
         if let Some(t) = self.tape.as_mut() {
             return t.next(self.generator);
         }

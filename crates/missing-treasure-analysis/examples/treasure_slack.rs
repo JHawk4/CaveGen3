@@ -1,5 +1,5 @@
 //! How close each sublevel comes to running out of treasure spots:
-//! `cargo run --release -p cavegen3 --example treasure_slack -- [seeds per sublevel] [story|challenge|all]`.
+//! `cargo run --release -p missing-treasure-analysis --example treasure_slack -- [seeds per sublevel] [story|challenge|all]`.
 //! A treasure goes in an empty room treasure spot (group 2) or an empty item alcove, and the game
 //! stops placing treasures at the first one with no spot left. For random GC seeds, prints the
 //! smallest number of spare spots seen, how often each small number came up, and how many

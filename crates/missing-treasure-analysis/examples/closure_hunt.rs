@@ -4,7 +4,7 @@
 //!
 //! Seeds are a hash of a counter, so they spread over the whole seed space (all 2^64 on Switch).
 //! Each batch is 2^28 seeds; after each it prints the next batch, to resume from there. Most
-//! seeds are ruled out by [`ClosureFilter`]'s one-multiply test of the first corridor roll; the
+//! seeds are ruled out by [`ClosureFilter`]'s tests of the first two placement steps; the
 //! rest are generated until a second room is placed or the map closes. Closed maps are generated
 //! in full and their treasures counted.
 
@@ -13,12 +13,8 @@ use std::{
     sync::atomic::{AtomicU64, Ordering},
 };
 
-use cavegen3::{
-    GameData, Generator, Layout,
-    generate::{ClosureFilter, closes_with_rooms},
-    layout::SpawnObject,
-    rng::Rng,
-};
+use cavegen3::{GameData, Generator, Layout, layout::SpawnObject, rng::Rng};
+use missing_treasure_analysis::closure::{ClosureFilter, closes_with_rooms};
 use rayon::prelude::*;
 
 #[global_allocator]

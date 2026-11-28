@@ -30,6 +30,11 @@ and what each test checks. This file only adds what isn't there.
 - `crates/cavegen3-cli`: the `cavegen3` binary (`main.rs`, clap). `render.rs` draws everything
   with tiny-skia, mirroring `web/app.js`'s canvas drawing. When you change a map option, change
   both.
+- `crates/missing-treasure-analysis`: closure odds, seed hunts and `rand()` steering. It drives
+  the generator step by step through `cavegen3`'s `internals` feature (`generate::internals`,
+  plus the `tape` RNG playback). Both features are off by default, so the generator's hot path
+  has no tape branch. A workspace-wide `cargo build` or `cargo test` turns them on for every
+  crate (Cargo unifies features), so time the generator with `-p cavegen3`.
 - `web/`: plain HTML, CSS and JS, no build step. `tools/build_site.py` assembles `site/` (the
   wasm, data bundles, icons, pretty tiles).
 - Sublevel names: `BK-4`, `251:AT-2`, and Colossal variants as suffixes

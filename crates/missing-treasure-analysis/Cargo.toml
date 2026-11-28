@@ -1,0 +1,22 @@
+[package]
+name = "missing-treasure-analysis"
+version = "0.1.0"
+description = "Odds and seed hunts for Pikmin 2 cave maps that close early and miss a treasure"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+# The generator's step-by-step state and the rand() tape are behind these features, so the main
+# crate's normal builds don't carry them.
+cavegen3 = { path = "../cavegen3", features = ["internals"] }
+
+[dev-dependencies]
+rayon = "1.6"
+# A faster allocator for the seed-hunting examples (the Windows one is slow).
+mimalloc = { version = "0.1", default-features = false }
+# For drawing steered maps (`draw_tape`).
+cavegen3-cli = { path = "../cavegen3-cli" }
+cavegen3-web = { path = "../cavegen3-web" }
+serde_json = "1.0"

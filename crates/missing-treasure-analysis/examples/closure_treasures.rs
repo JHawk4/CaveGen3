@@ -5,7 +5,8 @@
 
 use std::sync::Mutex;
 
-use cavegen3::{GameData, Generator, SpawnObject, generate::room_failure_layouts};
+use cavegen3::{GameData, Generator, SpawnObject};
+use missing_treasure_analysis::splitting::room_failure_layouts;
 use rayon::prelude::*;
 
 fn main() {

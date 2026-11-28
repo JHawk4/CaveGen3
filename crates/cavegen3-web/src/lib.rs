@@ -162,14 +162,17 @@ impl Web {
         Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
     }
 
-    /// Like [`Web::generate_json`], for the layout a tape of chosen `rand()` values generates
-    /// (see `cavegen3::generate::steer`). The seed shown is 0.
-    pub fn generate_tape_json(&self, sublevel: &str, generator: Generator, values: &[u32], flags: u32) -> Result<String, String> {
+    /// Like [`Web::generate_json`], for a layout `make` generates from the sublevel's caveinfo
+    /// some other way (such as the steered maps of the missing-treasure-analysis crate).
+    pub fn layout_json_with<F>(&self, sublevel: &str, flags: u32, make: F) -> Result<String, String>
+    where
+        F: for<'c> FnOnce(&'c cavegen3::caveinfo::CaveInfo) -> Layout<'c>,
+    {
         let data = self.data()?;
         let sublevel = data.sublevel(sublevel).map_err(|e| e.to_string())?;
         let caveinfo = data.caveinfo(&sublevel).map_err(|e| e.to_string())?;
         let num_floors = data.floors(&sublevel.cfg).map_err(|e| e.to_string())?.len();
-        let layout = cavegen3::generate::steer::layout_from_tape(caveinfo, generator, values);
+        let layout = make(caveinfo);
         Ok(layout_json(&layout, &sublevel, num_floors, data, flags & DETAILS != 0))
     }
 
