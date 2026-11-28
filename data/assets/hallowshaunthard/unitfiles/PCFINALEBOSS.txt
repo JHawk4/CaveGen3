@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# PCFINALEBOSS
+{
+	1 	# version
+	PCFINALEBOSS 	# foldername
+	17 27 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

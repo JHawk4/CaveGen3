@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# BulborbSub2
+{
+	1 	# version
+	BulborbSub2 	# foldername
+	15 10 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

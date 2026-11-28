@@ -1,0 +1,91 @@
+# BaseGen file
+11	# num gens
+# basegenn
+{
+	0 	# type [TekiA Zako]
+	-221.5 1.9e-05 -24.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	243.5 1.9e-05 -33.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-338.5 8e-06 -127.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-115.5 2.7e-05 77.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	115.5 1e-05 -95.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	225.5 2.6e-05 64.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	375.5 7e-06 -125.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-138.5 7e-06 -111.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	7 	# type [Start]
+	0.95 2e-05 1.35 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	1 	# type [TekiB Hard]
+	-327.95 1.2e-05 -105.25 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	1 	# type [TekiB Hard]
+	327.25 9e-06 -120.85 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

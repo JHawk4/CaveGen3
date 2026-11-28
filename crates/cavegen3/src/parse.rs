@@ -172,10 +172,14 @@ impl Line<'_> {
     pub fn item<T: FromStr>(&self, idx: usize) -> Result<T> {
         let item = self.items.get(idx).ok_or_else(|| Error::new(format!("missing item {idx}")))?;
         item.parse::<T>().or_else(|_| {
-            // Some New Year floats are written like "5.6.0000"; the game reads them as "5.6".
-            // This also lets integer fields accept values written as "1.000000".
-            item.rsplit_once('.')
-                .and_then(|(first, _)| first.parse().ok())
+            // The game reads numbers with sscanf, which stops at the first character that doesn't
+            // fit, so take the longest prefix that parses. Some New Year floats are written like
+            // "5.6.0000" (read as 5.6), Hallow's Haunt has "3-20.05" (read as 3), and integer
+            // fields can hold values written as "1.000000".
+            (1..item.len())
+                .rev()
+                .filter(|&end| item.is_char_boundary(end))
+                .find_map(|end| item[..end].parse().ok())
                 .ok_or_else(|| Error::new(format!("can't parse {item:?} as {}", std::any::type_name::<T>())))
         })
     }
@@ -186,14 +190,31 @@ pub(crate) fn parse_cave(cfg: &CaveConfig, data: &GameData, variant: Variant) ->
     let path = format!("assets/{}/caveinfo/{}", cfg.game, cfg.caveinfo_filename);
     let text = data.read_text(&path)?;
     let all = sections(&text);
-    // The first section is the CaveInfo header; then each floor has 5 sections.
+    // The first section is the CaveInfo header; then each floor has 5 sections, starting with
+    // its FloorInfo: teki, items, gates and caps. The game reads them in order as a stream of
+    // tokens (Game::Cave::CaveInfo::read), so a floor is its FloorInfo and the sections after it,
+    // taken in order, up to the next FloorInfo. Hallow's Haunt has both kinds of mistake:
+    // - Ghoulish Boneyard floor 5 has a second CapInfo. Parameters::read skips its text while
+    //   looking for the next floor's tags, so it's ignored.
+    // - Paranormal Nexus floor 4 has no ItemInfo. The game reads its GateInfo as the items and
+    //   its CapInfo as the gates (both are empty there), then reads the cap count from the next
+    //   floor's first tag, which isn't a number; take it as no caps.
     let floors = &all[1.min(all.len())..];
-    if floors.is_empty() || floors.len() % 5 != 0 {
+    let is_floor_info = |s: &Section| s.lines.iter().any(|l| l.tag.is_some_and(|t| t.eq_ignore_ascii_case("{f000}")));
+    let starts: Vec<usize> = (0..floors.len()).filter(|&i| is_floor_info(&floors[i])).collect();
+    if starts.first() != Some(&0) || starts.windows(2).any(|w| w[1] - w[0] < 4) || starts.last().is_some_and(|&i| i + 5 > floors.len()) {
         return Err(Error::new(format!("{path}: expected 5 sections per floor, found {}", floors.len())));
     }
-    let mut out = floors
-        .chunks(5)
-        .map(|chunk| parse_floor(cfg, data, chunk, variant).map_err(|e| e.context(&path)))
+    let empty = Section { lines: vec![Line { tag: None, items: vec!["0"] }] };
+    let mut out = starts
+        .iter()
+        .enumerate()
+        .map(|(n, &i)| {
+            let end = starts.get(n + 1).copied().unwrap_or(floors.len()).min(i + 5);
+            let mut chunk = floors[i..end].to_vec();
+            chunk.resize(5, empty.clone());
+            parse_floor(cfg, data, &chunk, variant).map_err(|e| e.context(&path))
+        })
         .collect::<Result<Vec<_>>>()?;
     out.last_mut().unwrap().is_final_floor = true;
     Ok(out)
@@ -328,7 +349,7 @@ fn parse_caveunit(section: &Section, cfg: &CaveConfig, data: &GameData) -> Resul
 
     let mut spawnpoints = match unit_file("layout.txt") {
         // As with unit files, the game reads only the count given at the top (BaseGen::read).
-        Ok(text) => sections(&text).iter().take(leading_count(&text).unwrap_or(usize::MAX)).map(parse_spawnpoint).collect::<Result<Vec<_>>>().map_err(|e| e.context(format!("{name}/layout.txt")))?,
+        Ok(text) => layout_spawnpoints(&text).map_err(|e| e.context(format!("{name}/layout.txt")))?,
         Err(_) => Vec::new(),
     };
     let waterboxes = match unit_file("waterbox.txt") {
@@ -382,6 +403,32 @@ fn parse_door(lines: &[Line]) -> Result<DoorUnit> {
     })
 }
 
+/// A layout.txt's spawn points. The game (BaseGen::read) reads the count, then 8 numbers per spawn
+/// point, as a stream of tokens in which `{` and `}` are whitespace, so a spawn point missing a
+/// brace still counts (Piki 2's room_uzu1_1_tsuchi and Hallow's Haunt's BLACK_VOID have a first
+/// spawn point with no `{`). Files with no count up front are read section by section.
+fn layout_spawnpoints(text: &str) -> Result<Vec<SpawnPoint>> {
+    let Some(count) = leading_count(text) else {
+        return sections(text).iter().map(parse_spawnpoint).collect();
+    };
+    let tokens: Vec<&str> = text
+        .split(['\n', '\r'])
+        .flat_map(|line| line.split('#').next().unwrap_or_default().split(|c: char| c.is_whitespace() || c == '{' || c == '}'))
+        .filter(|t| !t.is_empty())
+        .skip(1)
+        .collect();
+    tokens
+        .chunks_exact(8)
+        .take(count)
+        .map(|t| {
+            fn line<'a>(items: &[&'a str]) -> Line<'a> {
+                Line { tag: None, items: items.to_vec() }
+            }
+            parse_spawnpoint(&Section { lines: vec![line(&t[0..1]), line(&t[1..4]), line(&t[4..5]), line(&t[5..6]), line(&t[6..7]), line(&t[7..8])] })
+        })
+        .collect()
+}
+
 fn parse_spawnpoint(section: &Section) -> Result<SpawnPoint> {
     Ok(SpawnPoint {
         group: section.line(0)?.item(0)?,
@@ -394,6 +441,12 @@ fn parse_spawnpoint(section: &Section) -> Result<SpawnPoint> {
 }
 
 fn parse_waterboxes(section: &Section) -> Result<Vec<Waterbox>> {
+    // Hallow's Haunt's Seantreenew ends its waterbox.txt right after the `{`. The game
+    // (SeaMgr::read) would read the count from whatever follows the file in memory; take it
+    // as no water.
+    if section.lines.is_empty() {
+        return Ok(Vec::new());
+    }
     let count: usize = section.line(0)?.item(0)?;
     (1..=count)
         .map(|i| {
@@ -547,3 +600,4 @@ mod tests {
         assert_eq!(counts("{\n a\n}\n}\n1 # trailing\n"), vec![1]);
     }
 }
+

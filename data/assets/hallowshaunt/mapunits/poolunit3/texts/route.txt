@@ -1,0 +1,168 @@
+28 # waypoint count
+{
+	0 # index
+	1 # numLinks
+	1 # link 0
+	-1679.8 244.37335 -721.55 50
+}
+{
+	1 # index
+	1 # numLinks
+	2 # link 0
+	-1684.1693 244.3735 -992.6841 50
+}
+{
+	2 # index
+	0 # numLinks
+	-1246.6276 244.37352 -995.46747 50
+}
+{
+	3 # index
+	1 # numLinks
+	0 # link 0
+	-991.8 154.54306 -729.55 50
+}
+{
+	4 # index
+	1 # numLinks
+	3 # link 0
+	-982.2 154.54288 -451.15 50
+}
+{
+	5 # index
+	1 # numLinks
+	4 # link 0
+	-988.6 154.54272 -209.55 50
+}
+{
+	6 # index
+	1 # numLinks
+	5 # link 0
+	-983.8 154.54247 200.05 50
+}
+{
+	7 # index
+	1 # numLinks
+	6 # link 0
+	-985.4 154.5423 456.05 50
+}
+{
+	8 # index
+	1 # numLinks
+	7 # link 0
+	-988.6 154.54214 713.65 50
+}
+{
+	9 # index
+	1 # numLinks
+	4 # link 0
+	-631.8 154.54288 -457.55 50
+}
+{
+	10 # index
+	1 # numLinks
+	9 # link 0
+	-201.4 154.5429 -465.55 50
+}
+{
+	11 # index
+	1 # numLinks
+	19 # link 0
+	-203 154.54272 -219.15 50
+}
+{
+	12 # index
+	1 # numLinks
+	18 # link 0
+	-207.8 154.54245 211.25 50
+}
+{
+	13 # index
+	1 # numLinks
+	17 # link 0
+	-199.8 154.5423 454.45 50
+}
+{
+	14 # index
+	1 # numLinks
+	8 # link 0
+	-198.2 154.54213 736.05 50
+}
+{
+	15 # index
+	1 # numLinks
+	14 # link 0
+	48.2 154.54213 724.85 50
+}
+{
+	16 # index
+	1 # numLinks
+	20 # link 0
+	57.8 154.54306 -731.15 50
+}
+{
+	17 # index
+	1 # numLinks
+	7 # link 0
+	-614.2 154.5423 457.65 50
+}
+{
+	18 # index
+	1 # numLinks
+	6 # link 0
+	-593.4 154.54245 208.05 50
+}
+{
+	19 # index
+	1 # numLinks
+	5 # link 0
+	-612.6 154.54272 -209.55 50
+}
+{
+	20 # index
+	1 # numLinks
+	3 # link 0
+	-583.8 154.54306 -732.75 50
+}
+{
+	21 # index
+	1 # numLinks
+	15 # link 0
+	84.5 154.54222 565.15 50
+}
+{
+	22 # index
+	1 # numLinks
+	21 # link 0
+	387.4 66.4376 497.45 100
+}
+{
+	23 # index
+	1 # numLinks
+	16 # link 0
+	409.1 66.43812 -297.35 200
+}
+{
+	24 # index
+	1 # numLinks
+	4 # link 0
+	-728.4 154.54292 -508.65 20
+}
+{
+	25 # index
+	1 # numLinks
+	27 # link 0
+	-723.05 154.54227 508.1 20
+}
+{
+	26 # index
+	1 # numLinks
+	17 # link 0
+	-455.45 154.54225 509.9 20
+}
+{
+	27 # index
+	1 # numLinks
+	7 # link 0
+	-774.65 154.5423 456.5 20
+}

@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# SE_sub1
+{
+	1 	# version
+	SE_sub1 	# foldername
+	12 14 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

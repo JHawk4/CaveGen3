@@ -117,9 +117,18 @@ fn parsing_matches_caveripper() {
     // (1_units_big2_rocket_desert.txt, 1_MAT_boss_volcano.txt), which the game ignores. Caveripper can't parse Lands of Torture's Bulblax Kingdom (a CapInfo missing its `{`), and it drops the
     // two spawn points missing their `{` in room_dangomushi_tile, which only Cavern of Chaos
     // floor 10 uses. cavegen_expect checks those against CaveGen instead.
+    // Caveripper also can't read these Piki 2 and Hallow's Haunt caves, whose files have quirks the
+    // game reads through: spawn points missing a `{` (room_uzu1_1_tsuchi, BLACK_VOID), a section
+    // missing its `}`, a floor with no ItemInfo or a second CapInfo, "3-20.05" for a number
+    // (Seantreenew) and a waterbox.txt with no braces (SecretCave3). parse.rs says how CaveGen3
+    // reads each; they aren't in CaveGen.
     let skip = |c: &cavegen3::data::CaveConfig| {
         (c.game == "torture" && c.full_name == "Bulblax Kingdom")
             || (c.game == "newyear" && (c.full_name == "Elemental River" || c.full_name == "Season Den"))
+            || (c.game == "piki2" && ["Teeming Hole", "Electric Voltage", "Slippery Room"].contains(&c.full_name.as_str()))
+            || (c.game.starts_with("hallowshaunt")
+                && ["Creeping Hollow", "Terrifying Treetops", "Ghoulish Boneyard", "Paranormal Nexus", "Rotwood Labyrinth"]
+                    .contains(&c.full_name.as_str()))
     };
     for cfg in data.caves().iter().filter(|c| data.has_game(&c.game) && !skip(c)) {
         let ours = data.floors(cfg).unwrap_or_else(|e| panic!("{e}"));

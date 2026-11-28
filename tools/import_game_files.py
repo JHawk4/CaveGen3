@@ -40,8 +40,83 @@ def copy(src, dst):
 
 
 def unpack(szs, dest):
-    """Extracts an SZS (Yaz0-compressed RARC) archive into `dest`."""
-    subprocess.run(["wszst", "extract", "-q", "-o", szs.as_posix(), "-d", dest.as_posix()], check=True)
+    """Extracts an SZS (Yaz0-compressed RARC) archive into `dest`.
+
+    Two kinds wszst can't read are decompressed here first: Yay0 archives, which the game also
+    reads (Hallow's Haunt's enemytex), and RARCs whose header claims a few more bytes than the
+    data holds (some of Hallow's Haunt's map units), which wszst lists as empty. Those are
+    padded with zeros to the size their header gives."""
+    import struct
+
+    data = szs.read_bytes()
+    if data[:4] != b"Yay0":
+        subprocess.run(["wszst", "extract", "-q", "-o", szs.as_posix(), "-d", dest.as_posix()], check=True)
+        if dest.is_dir() and any(p.is_file() for p in dest.rglob("*")):
+            return
+    rarc = yay0(data) if data[:4] == b"Yay0" else yaz0(data) if data[:4] == b"Yaz0" else data
+    declared = struct.unpack(">I", rarc[4:8])[0] if rarc[:4] == b"RARC" else 0
+    rarc += bytes(max(0, declared - len(rarc)))
+    tmp = dest.parent / (dest.name + ".rarc")
+    tmp.parent.mkdir(parents=True, exist_ok=True)
+    tmp.write_bytes(rarc)
+    subprocess.run(["wszst", "extract", "-q", "-o", tmp.as_posix(), "-d", dest.as_posix()], check=True)
+
+
+def yaz0(data):
+    """Decompresses Yaz0: a code byte per 8 chunks, each a literal byte or a back reference."""
+    import struct
+
+    size, pos, out = struct.unpack(">I", data[4:8])[0], 16, bytearray()
+    while len(out) < size:
+        code = data[pos]
+        pos += 1
+        for bit in range(8):
+            if len(out) >= size:
+                break
+            if code & (0x80 >> bit):
+                out.append(data[pos])
+                pos += 1
+                continue
+            b1, b2 = data[pos], data[pos + 1]
+            pos += 2
+            dist, n = ((b1 & 0xF) << 8 | b2) + 1, b1 >> 4
+            if n == 0:
+                n = data[pos] + 0x12
+                pos += 1
+            else:
+                n += 2
+            for _ in range(n):
+                out.append(out[-dist])
+    return bytes(out)
+
+
+def yay0(data):
+    """Decompresses Yay0 (JKRDecomp::decodeSZP): a bit mask stream, then 16-bit back
+    references at the link offset, then literal and long-count bytes at the chunk offset."""
+    import struct
+
+    size, link, chunk = struct.unpack(">III", data[4:16])
+    mask_pos, out, mask, bits = 16, bytearray(), 0, 0
+    while len(out) < size:
+        if bits == 0:
+            mask, bits = struct.unpack(">I", data[mask_pos:mask_pos + 4])[0], 32
+            mask_pos += 4
+        if mask & 0x80000000:
+            out.append(data[chunk])
+            chunk += 1
+        else:
+            v = struct.unpack(">H", data[link:link + 2])[0]
+            link += 2
+            dist, n = (v & 0xFFF) + 1, v >> 12
+            if n == 0:
+                n = data[chunk] + 0x12
+                chunk += 1
+            else:
+                n += 2
+            for _ in range(n):
+                out.append(out[-dist])
+        mask, bits = (mask << 1) & 0xFFFFFFFF, bits - 1
+    return bytes(out)
 
 
 def bti_to_png(bti, png):
@@ -54,7 +129,8 @@ def bti_to_png(bti, png):
 
 def decode_bti(bti, png):
     """Fallback for the BTI files wimgt refuses or skips (some romhacks write unusual header
-    fields). Handles I4/I8/IA4/IA8 and CMPR and writes an RGBA PNG. Returns False for other
+    fields, such as a palette format on a texture with no palette). Handles I4/I8/IA4/IA8,
+    RGB565/RGB5A3/RGBA8 and CMPR and writes an RGBA PNG. Returns False for other
     formats."""
     import struct
     import zlib
@@ -92,9 +168,17 @@ def decode_bti(bti, png):
                         for x in range(4):
                             put(bx + (sub % 2) * 4 + x, by + (sub // 2) * 4 + y, pal[(row >> (6 - 2 * x)) & 3])
                     pos += 8
+    elif fmt == 6:  # RGBA8: 4x4 blocks, 32 bytes of AR pairs then 32 of GB pairs
+        for by in range(0, h, 4):
+            for bx in range(0, w, 4):
+                for k in range(16):
+                    a, r = data[pos + 2 * k], data[pos + 2 * k + 1]
+                    g, b = data[pos + 32 + 2 * k], data[pos + 33 + 2 * k]
+                    put(bx + k % 4, by + k // 4, (r, g, b, a))
+                pos += 64
     else:
         # (block width, block height, bits per pixel)
-        blocks = {0: (8, 8, 4), 1: (8, 4, 8), 2: (8, 4, 8), 3: (4, 4, 16)}
+        blocks = {0: (8, 8, 4), 1: (8, 4, 8), 2: (8, 4, 8), 3: (4, 4, 16), 4: (4, 4, 16), 5: (4, 4, 16)}
         if fmt not in blocks:
             return False
         bw, bh, bpp = blocks[fmt]
@@ -110,8 +194,17 @@ def decode_bti(bti, png):
                         elif fmt == 2:  # IA4
                             byte = data[pos + y * bw + x]
                             i, a = (byte & 0xF) * 17, (byte >> 4) * 17
-                        else:  # IA8
+                        elif fmt == 3:  # IA8
                             a, i = data[pos + 2 * (y * bw + x)], data[pos + 2 * (y * bw + x) + 1]
+                        else:
+                            c = struct.unpack(">H", data[pos + 2 * (y * bw + x):pos + 2 * (y * bw + x) + 2])[0]
+                            if fmt == 4:  # RGB565
+                                put(bx + x, by + y, rgb565(c) + (255,))
+                            elif c & 0x8000:  # RGB5A3, opaque: RGB555
+                                put(bx + x, by + y, ((c >> 10 & 31) * 255 // 31, (c >> 5 & 31) * 255 // 31, (c & 31) * 255 // 31, 255))
+                            else:  # RGB5A3, translucent: A3 RGB444
+                                put(bx + x, by + y, ((c >> 8 & 15) * 17, (c >> 4 & 15) * 17, (c & 15) * 17, (c >> 12 & 7) * 255 // 7))
+                            continue
                         put(bx + x, by + y, (i, i, i, a))
                 pos += bw * bh * bpp // 8
     raw = b"".join(b"\0" + bytes(c for px in row for c in px) for row in pixels)

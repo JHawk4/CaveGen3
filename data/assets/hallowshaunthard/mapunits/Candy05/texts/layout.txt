@@ -1,0 +1,675 @@
+# BaseGen file
+84	# num gens
+# basegenn
+{
+	0 	# type [TekiA Zako]
+	-85.45 7.737864 562.65 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-238.85 7.737895 792.75 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-381.85 7.737867 589.95 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-258.35 7.737836 391.05 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-563.2 7.737827 353.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-376.2 7.737806 230.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-587.4 7.7378 164.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-455.4 7.737761 -16.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-523.6 7.737732 -207.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-497.2 7.737701 -390.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-347.6 7.737733 -218.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-39.6 7.737893 771.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-475.2 7.737852 498.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-277.2 26.136258 -416.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-382.8 30.022619 -590.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-257.4 51.240667 -720.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-121.0 62.223315 -592.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	11.0 87.622305 -755.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	127.6 98.708941 -693.8 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	312.4 109.134245 -744.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	459.8 109.134261 -649.8 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	598.4 110.098827 -471.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	816.2 109.134265 -610.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	937.2 109.180372 -733.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	803.0 109.134227 -883.0 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	605.0 109.375316 -900.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-200.5 7.737873 629.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	132.3 -4.603415 669.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	132.3 -12.994979 806.7 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-659.1 9.925892 -293.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	0 	# type [TekiA Zako]
+	-678.7 7.737817 328.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	1 	# type [TekiB Hard]
+	-384.5 7.737835 396.3 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	1 	# type [TekiB Hard]
+	-442.1 7.73772 -298.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	1 	# type [TekiB Hard]
+	599.05 113.861758 -272.95 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	2 	# type [Treasure]
+	692.1 195.963621 29.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	4 	# type [Hole or Geyser]
+	-918.0 12.465146 -270.9 # Position 
+	90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	7 	# type [Start]
+	551.4 -32.820747 850.1 # Position 
+	-117.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	7 	# type [Start]
+	765.0 -32.820726 977.5 # Position 
+	-117.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	8 	# type [TekiF Boss]
+	686.65 109.134239 -803.85 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	8 	# type [TekiF Boss]
+	593.05 109.134255 -693.35 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	8 	# type [TekiF Boss]
+	742.55 109.134254 -686.85 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	666.8 113.525477 -354.9 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	579.8 113.861785 -82.9 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	890.35 110.72115 -573.25 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	947.55 110.89496 -833.25 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	661.55 110.528857 -967.15 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	473.05 109.13424 -805.95 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	332.65 110.079475 -603.15 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-30.05 85.770294 -825.45 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-357.65 42.334011 -726.65 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-548.75 15.402264 -573.25 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-764.55 12.46513 -341.85 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-859.45 12.465158 -202.75 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-621.55 10.061601 -70.15 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-323.85 8.171354 -48.05 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-195.15 19.360869 -237.85 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-684.8 8.813173 182.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-732.8 9.665555 364.8 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-542.4 10.453535 524.8 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-387.2 9.473374 790.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-292.8 11.147432 916.8 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	12.8 9.194482 846.4 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	60.8 11.193195 548.8 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-132.8 9.559474 395.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-294.4 8.974556 265.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-60.4 69.907485 -555.2 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	161.8 101.490082 -647.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	183.8 109.211509 -823.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	678.8 113.861762 -198.8 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	802.0 113.861811 74.0 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	500.6 113.861738 -372.6 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	242.9 -20.64175 621.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	542.1 -30.963623 591.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	676.5 -30.862267 717.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	842.9 -31.516721 949.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	770.9 -29.669434 1104.7 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	585.3 -32.820719 1024.7 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	420.5 -29.205923 1101.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	294.1 -30.331984 1023.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	202.9 -30.707692 909.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-157.1 7.737885 717.5 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-469.1 7.737818 303.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-408.3 12.913347 -420.1 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+{
+	6 	# type [Plant]
+	-965.5 12.465134 -309.3 # Position 
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

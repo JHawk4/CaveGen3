@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# LASTCOFFINCRAB
+{
+	1 	# version
+	LASTCOFFINCRAB	# foldername
+	14 9 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

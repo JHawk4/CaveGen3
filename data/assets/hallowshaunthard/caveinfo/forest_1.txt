@@ -1,0 +1,322 @@
+# CaveInfo
+{
+	{c000} 4 5 	# 階層
+	{_eof} 
+}
+5 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 16 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 newmetal.txt 	# 使用ユニット
+	{f009} -1 FogFactory1.ini 	# 使用ライト
+	{f00A} -1 ghost 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	WhitePom 30 	# weight
+	1 	# type
+	GasOtakara 40 	# weight
+	0 	# type
+	BombSarai 40 	# weight
+	0 	# type
+	GasHiba 50 	# weight
+	8 	# type
+	DaiodoGreen 10 	# weight
+	0 	# type
+	DaiodoRed 6 	# weight
+	6 	# type
+	KareOoinu_l 2 	# weight
+	6 	# type
+	Clover 2 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	sinkukan 10 	# weight
+	channel 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 22 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 4 	# ゲート最大数
+	{f014} 4 4 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 NewMetalXSnow.txt  	# 使用ユニット
+	{f009} -1 HARD_factory_green2.ini 	# 使用ライト
+	{f00A} -1 ghost 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	BombSarai 30 	# weight
+	1 	# type
+	GasOtakara 30 	# weight
+	1 	# type
+	Jigumo 30 	# weight
+	1 	# type
+	Catfish 80 	# weight
+	0 	# type
+	Bomb 50 	# weight
+	0 	# type
+	$Bomb 20 	# weight
+	0 	# type
+	GasHiba 40 	# weight
+	5 	# type
+	DaiodoRed 20 	# weight
+	6 	# type
+	DaiodoGreen 20 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	sinkukan_b 10 	# weight
+	doll 10 	# weight
+}
+# GateInfo
+{
+    2 	# num
+	gate 1500.000000 	# life
+	1 	# weight
+	gate 1000.000000 	# life
+	3 	# weight
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	WhitePom 20 	# weight
+	1 	# type
+	0 	# captype
+	$Bomb 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 64 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 newmetal1.txt 	# 使用ユニット
+	{f009} -1 FogFactory3.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	FireOtakara 30 	# weight
+	0 	# type
+	Tank 30 	# weight
+	0 	# type
+	FireChappy 20 	# weight
+	8 	# type
+	GasOtakara 30 	# weight
+	0 	# type
+	Fuefuki 10 	# weight
+	0 	# type
+	Miulin 40 	# weight
+	0 	# type
+	GasHiba 30 	# weight
+	1 	# type
+	Hiba 90 	# weight
+	1 	# type
+	DaiodoGreen 10 	# weight
+	6 	# type
+	Hiba 90 	# weight
+	6 	# type
+	DaiodoRed 20 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	3 	# num
+	gear_silver 10 	# weight
+	bolt_l 10 	# weight
+	kinoko_doku 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 64 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 3 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 METALSUB4HARD.txt  	# 使用ユニット
+	{f009} -1 HARD_factory_purple3.ini 	# 使用ライト
+	{f00A} -1 ghost 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{_eof} 
+}
+# TekiInfo
+{
+	14 	# num
+	Hanachirashi 40 	# weight
+	1 	# type
+	GasOtakara 20 	# weight
+	0 	# type
+	BombSarai 40 	# weight
+	1 	# type
+	GasOtakara 40 	# weight
+	0 	# type
+	YellowKochappy 110 	# weight
+	1 	# type
+	Sarai 30 	# weight
+	0 	# type
+	$Bomb 60 	# weight
+	0 	# type
+	Bomb 50 	# weight
+	0 	# type
+	$1Bomb 60 	# weight
+	0 	# type
+	$2Bomb 60 	# weight
+	0 	# type
+	GasHiba 50 	# weight
+	5 	# type
+	Hiba 9 	# weight
+	6 	# type
+	DaiodoGreen 20 	# weight
+	6 	# type
+	DaiodoRed 20 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	3 	# num
+	whistle 10 	# weight
+	kumakibori 10 	# weight
+	chocolate 10   # weight
+}
+# GateInfo
+{
+    2 	# num
+	gate 2500.000000 	# life
+	1 	# weight
+	gate 900.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	$YellowKochappy 40 	# weight
+	2 	# type
+	0 	# captype
+	$Bomb 40 	# weight
+	2 	# type
+	
+}
+# FloorInfo
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 10 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 METALBOSS123.txt 	# 使用ユニット
+	{f009} -1 FogFactory4.ini 	# 使用ライト
+	{f00A} -1 ghost 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{f016} 4 0.000000 	# BlackManTimer
+	{f017} 4 0 	# 沈む壁
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	Damagumo_radar_a 10 	# weight
+	8 	# type
+	OniKurage 20 	# weight
+	0 	# type
+	Kurage 90 	# weight
+	1 	# type
+	$Bomb 40 	# weight
+	1 	# type
+	DaiodoGreen 20 	# weight
+	6 	# type
+	DaiodoRed 20 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num

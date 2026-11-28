@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# EndofCCHard
+{
+	1 	# version
+	EndofCCHard 	# foldername
+	20 17 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

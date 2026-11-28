@@ -21,6 +21,8 @@ The game data it needs is included, so there's nothing to extract.
 | Pikmin 216 | `216` | Version 1.3. Its generation code is assumed to be vanilla's; only the data has been checked. |
 | Bikmin 269 | `bikmin` | DX definitive v1.1. Its main.dol differs from retail; generation is assumed to be vanilla's, and only the data has been checked. |
 | Pikmin 2: Lands of Torture | `torture` | Version 1.9, by Quote Balrog, included with permission. Its main.dol is retail USA's, so only the data differs. Nine caves are renamed (Hole of Demons, Error Den, ...); vanilla short names still work as aliases (`torture:HoB1`). |
+| Piki 2 | `piki2` | Version 3.0 (patcher of 2026-11-10, from the Drive folder linked under Anto's [trailer](https://www.youtube.com/watch?v=011XvRh17aI)), by Anto (Antopikmin), included with permission. Easy and Hard share the same cave data; their main.dol differs from retail, and generation is assumed to be vanilla's. Story caves are renamed (Dual Subterranean, Electric Voltage, ...) with vanilla short names as aliases (`piki2:BK1`); challenge mode keeps the vanilla names. Novice Training (CH2) numbers its only floor 13, so the game may not find it for floor 1; CaveGen3 generates it as floor 1. |
+| Pikmin 2: Hallow's Haunt | `hallowshaunt` | Remake version 3.4 (2026-11-09, from [itch.io](https://vivvyboy.itch.io/pikmin-2-hallows-haunt-remake)), by VivvyBoy with Cloober, Klondike Twelve, Dreamer and Salem FNIX, included with permission. Story mode only: 12 caves plus 4 one-floor secret caves (Phantom Sanctum, Ghostly Galleons, Rotwood Labyrinth, Miracle Garden). The game picks its caveinfo by difficulty, so Normal is `hallowshaunt` and Easy and Hard are `hallowshaunteasy` and `hallowshaunthard` (every story cave's spawns differ). Its main.dol differs from retail; generation is assumed to be vanilla's, and the optional enemy randomizer isn't modeled. Vanilla short names work as aliases (`hallowshaunt:GK11`). |
 
 [docs/ADDING_ROMHACKS.md](docs/ADDING_ROMHACKS.md) explains how to add another romhack.
 
@@ -376,7 +378,10 @@ What the tests check:
   (units, scores, door scores, and every object's exact position) for 600 seeds of every
   floor of every game. Set `VS_REFERENCE_SEEDS` for more. Caveripper can't read two Lands of
   Torture files that are missing a `{` (the game treats braces as whitespace), so Bulblax
-  Kingdom and Cavern of Chaos floor 10 are checked only against CaveGen.
+  Kingdom and Cavern of Chaos floor 10 are checked only against CaveGen. Nor can it read
+  three Piki 2 caves and five of each Hallow's Haunt difficulty's, whose files have quirks the
+  game reads through (listed in the test); those are checked by generating them, not against
+  another generator.
 - `crates/cavegen3/tests/parse_vs_reference.rs`: both parse every included cave identically.
 - `crates/cavegen3/tests/waypoints_vs_reference.rs`: waypoint graphs and carry paths match.
 - `crates/cavegen3/tests/query_vs_reference.rs`: queries give the same answers on every seed tested.

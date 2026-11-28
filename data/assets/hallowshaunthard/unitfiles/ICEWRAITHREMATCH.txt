@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# ICEWRAITHREMATCH
+{
+	1 	# version
+	ICEWRAITHREMATCH 	# foldername
+	19 14 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

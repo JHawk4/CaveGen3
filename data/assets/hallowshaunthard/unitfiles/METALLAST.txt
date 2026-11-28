@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# METALLAST
+{
+	1 	# version
+	METALLAST 	# foldername
+	13 12 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

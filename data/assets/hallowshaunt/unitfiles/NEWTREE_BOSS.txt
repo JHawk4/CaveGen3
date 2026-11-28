@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# NEWTREE_BOSS
+{
+	1 	# version
+	NEWTREE_BOSS 	# foldername
+	35 37 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	0 	# num doors
+}

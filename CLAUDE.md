@@ -64,6 +64,10 @@ and what each test checks. This file only adds what isn't there.
 - `all_units251.txt` has two units missing their closing `}`; the parser treats a bare `{` as a
   new section on purpose. Lands of Torture has the opposite (two sections with no `{`); the game
   treats braces as whitespace, so `parse::sections` reads text that a `}` closes as a section.
+- The game reads cave files as token streams, and romhacks lean on it. layout.txt is read as
+  tokens (count, then 8 per spawn point), and a caveinfo floor is its FloorInfo plus the
+  sections after it in order (Hallow's Haunt has a floor with no ItemInfo and one with two
+  CapInfos). Numbers are read like sscanf: the longest prefix that parses ("3-20.05" is 3).
 - Treasure order matters for spawning: keep caveinfo order wherever treasures are listed.
 - 12 romhack sublevels once differed between CaveGen and Caveripper; 10 were CaveGen3 bugs, fixed
   against the decomp. New Year CH-1, CH-2 and CH-4 remain different, because CaveGen treats the short

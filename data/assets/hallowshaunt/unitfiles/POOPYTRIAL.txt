@@ -1,0 +1,30 @@
+#
+#
+#	units definition file
+#
+#
+2	# number of units
+# POOPYTRIAL
+{
+	1 	# version
+	POOPYTRIAL 	# foldername
+	23 46 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 11 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# Wall_Unit_1
+{
+	1 	# version
+	Wall_Unit_1 	# foldername
+	1 1 	# dX/dZ ; cell size
+	0 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}
